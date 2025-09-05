@@ -11,7 +11,7 @@
       "content": "<h1>Заголовок</h1>",
       "background": {
         "type": "color",
-        "value": "#2c3e50"
+        "value": "#34495e"
       },
       "styles": {
         "color": "#ffffff",
@@ -25,6 +25,8 @@
           "id": "col-1",
           "width": "30%",
           "elements": [
+            "el-1757101328875",
+            "el-1757101233508",
             "el-1",
             "el-1757099257779"
           ]
@@ -132,12 +134,30 @@
       "adminTitle": "Новый reels",
       "type": "reels",
       "content": {
-        "url": "https://www.instagram.com/reel/DIom5WzibId/?igsh=MTRsYnl4dXlpdTQ1MA=="
+        "url": "https://1drv.ms/v/c/2919ff56cb24dc70/IQRpdxYPi6EBS7X21LMQxEvUAcdXCgHrBbrJ96rhr3TsMGc"
       },
       "styles": {
         "width": "397.684px",
         "height": "696.419px"
       }
+    },
+    {
+      "id": "el-1757101233508",
+      "adminTitle": "Новый externalBlock",
+      "type": "externalBlock",
+      "content": {
+        "url": "https://1drv.ms/v/c/2919ff56cb24dc70/IQRpdxYPi6EBS7X21LMQxEvUAcdXCgHrBbrJ96rhr3TsMGc"
+      },
+      "styles": {}
+    },
+    {
+      "id": "el-1757101328875",
+      "adminTitle": "Новый videoBlock",
+      "type": "videoBlock",
+      "content": {
+        "url": "https://1drv.ms/v/c/2919ff56cb24dc70/IQRpdxYPi6EBS7X21LMQxEvUAcdXCgHrBbrJ96rhr3TsMGc"
+      },
+      "styles": {}
     }
   ]
 }
