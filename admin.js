@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
         panelBodies: { inspector: document.getElementById('inspector-body'), global: document.getElementById('global-settings-body'), layout: document.getElementById('layout-settings-body') }
     };
 
-    // --- ИНИЦИАЛИЗАЦИЯ И АУТЕНТИФИКАЦИЯ ---
     const loginView = document.getElementById('login-view'), adminView = document.getElementById('admin-view'),
         tokenInput = document.getElementById('github-token-input'), loginBtn = document.getElementById('login-btn');
     const savedToken = localStorage.getItem('githubToken');
@@ -14,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginBtn) { loginBtn.addEventListener('click', () => { const token = tokenInput.value.trim(); if (token) { githubToken = token; localStorage.setItem('githubToken', token); loginView.style.display = 'none'; adminView.style.display = 'flex'; loadAdminPanel(); } else { alert('Введите токен.'); } }); }
     DOM.saveBtn.addEventListener('click', saveConfiguration);
 
-    // --- ЗАГРУЗКА И РЕНДЕРИНГ ---
     async function loadAdminPanel() {
         const configUrl = `config.json?v=${new Date().getTime()}`;
         try {
@@ -33,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- ОСНОВНЫЕ ФУНКЦИИ РЕНДЕРИНГА ---
     function renderAll() { renderCanvas(); renderFloatingPanels(); }
 
     function renderCanvas() {
@@ -87,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return wrapper;
     }
 
-    // --- ПАНЕЛИ НАСТРОЕК ---
     function renderFloatingPanels() { renderGlobalSettingsPanel(); setupLayoutSettingsPanel(); }
     
     function renderGlobalSettingsPanel() {
@@ -101,13 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const editorsContainer = document.getElementById('layout-section-editors');
         const renderEditor = key => {
             const config = currentConfig.layout[key];
-            let editorHtml = '';
-            if (key === 'main') {
-                // ЗАДАЧА 1: Возвращено поле для настройки отступов (gap)
-                editorHtml = `<div class="inspector-group">${createSectionEditorHTML(key, config)}<div class="inspector-field"><label>Отступ между колонками (gap)</label><input type="text" data-config-path="layout.main.columnGap" value="${currentConfig.layout.main.columnGap || '20px'}"></div><h5>Колонки</h5><div id="columns-editor">${currentConfig.layout.main.columns.map(col => createColumnEditorHTML(col)).join('')}</div><button id="add-column-btn" class="add-element-btn" style="width:100%; margin-top:10px;">+ Добавить колонку</button></div>`;
-            } else {
-                editorHtml = `<div class="inspector-group">${createSectionEditorHTML(key, config)}</div>`;
-            }
+            let editorHtml = (key === 'main')
+                ? `<div class="inspector-group">${createSectionEditorHTML(key, config)}<div class="inspector-field"><label>Отступ между колонками (gap)</label><input type="text" data-config-path="layout.main.columnGap" value="${currentConfig.layout.main.columnGap || '20px'}"></div><h5>Колонки</h5><div id="columns-editor">${currentConfig.layout.main.columns.map(col => createColumnEditorHTML(col)).join('')}</div><button id="add-column-btn" class="add-element-btn" style="width:100%; margin-top:10px;">+ Добавить колонку</button></div>`
+                : `<div class="inspector-group">${createSectionEditorHTML(key, config)}</div>`;
             editorsContainer.innerHTML = editorHtml;
             editorsContainer.querySelectorAll('input, select, textarea').forEach(el => el.addEventListener('input', updateConfigAndRenderCanvas));
             editorsContainer.querySelectorAll('.delete-column-btn').forEach(btn => btn.addEventListener('click', deleteColumn));
@@ -144,26 +136,25 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateElementFromInspector(event) {
         if (!selectedElementId) return;
         const elementData = currentConfig.elements.find(el => el.id === selectedElementId);
-        if (!elementData) return;
+        const wrapper = DOM.canvas.querySelector(`.admin-element-wrapper[data-element-id="${selectedElementId}"]`);
+        if (!elementData || !wrapper) return;
+
         const input = event.target;
         const value = input.type === 'checkbox' ? input.checked : input.value;
-        if (input.dataset.key) { elementData[input.dataset.key] = value; }
-        else if (input.dataset.contentKey) { elementData.content[input.dataset.contentKey] = value; }
-        else if (input.dataset.styleKey) {
+        
+        if (input.dataset.key) {
+            elementData[input.dataset.key] = value;
+        } else if (input.dataset.contentKey) {
+            elementData.content[input.dataset.contentKey] = value;
+            const newContent = createElement(elementData);
+            wrapper.querySelector('.element-wrapper').replaceWith(newContent);
+        } else if (input.dataset.styleKey) {
             if (!elementData.styles) elementData.styles = {};
             elementData.styles[input.dataset.styleKey] = value;
-        }
-        // ЗАДАЧА 2: Возвращена логика перерисовки элемента целиком, чтобы URL и стили применялись корректно.
-        const oldWrapper = DOM.canvas.querySelector(`.admin-element-wrapper[data-element-id="${selectedElementId}"]`);
-        if (oldWrapper) {
-            const newWrapper = createAdminElement(elementData);
-            oldWrapper.replaceWith(newWrapper);
-            newWrapper.classList.add('selected');
-            makeElementsResizable();
+            Object.assign(wrapper.style, elementData.styles);
         }
     }
 
-    // --- ИНТЕРАКТИВНОСТЬ ---
     function initInteractivity() { setupToolbarActions(); makePanelsInteractive(); makeElementsResizable(); }
     function makeElementsResizable() {
         interact('.admin-element-wrapper').resizable({
@@ -185,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ФАБРИКИ ЭЛЕМЕНТОВ И ИНТЕРФЕЙСА ---
     function urlToEmbed(url) {
         if (!url) return '';
         const instaMatch = url.match(/(?:www\.)?instagram\.com\/reel\/([a-zA-Z0-9_-]+)/);
@@ -200,7 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
         switch (elementData.type) {
             case 'externalBlock': case 'videoBlock': case 'reels':
                 element = document.createElement('iframe');
-                // ЗАДАЧА 3: Возвращена логика, которая исправляет отображение iframe в админке
                 element.src = urlToEmbed(elementData.content.url);
                 element.setAttribute('frameborder', '0');
                 element.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
@@ -219,7 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const elementData = currentConfig.elements.find(el => el.id === elementId);
         if (!elementData) return;
         const inspectorBody = DOM.panelBodies.inspector;
-        // ЗАДАЧА 3: Возвращен сворачиваемый список для стилей
         inspectorBody.innerHTML = `<div class="inspector-group"><h4>Действия</h4><button id="delete-element-btn">Удалить</button></div><div class="inspector-group"><h4>Общие</h4><div class="inspector-field"><label>Заголовок</label><input type="text" data-key="adminTitle" value="${elementData.adminTitle || ""}"></div></div><div class="inspector-group"><h4>Содержимое</h4>${generateContentFields(elementData)}</div><details class="inspector-group" open><summary><h4>Стили</h4></summary>${generateStyleFields(elementData.styles || {})}</details>`;
         DOM.panels.inspector.style.display = "block";
         inspectorBody.querySelectorAll("input, textarea, select").forEach(input => { input.addEventListener("input", updateElementFromInspector) });
@@ -257,7 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
             case "reels": return `<div class="inspector-field"><label>URL</label><input type="text" data-content-key="url" value="${element.content.url||""}"></div>${urlNote}<div class="inspector-field"><label>Соотношение сторон</label><select data-style-key="aspectRatio"><option value="">Авто</option><option value="9/16" ${element.styles?.aspectRatio==='9/16'?"selected":""}>Вертикальное (9:16)</option><option value="1/1" ${element.styles?.aspectRatio==='1/1'?"selected":""}>Квадратное (1:1)</option><option value="16/9" ${element.styles?.aspectRatio==='16/9'?"selected":""}>Горизонтальное (16:9)</option></select></div>`;
             case "textBlock": return `<div class="inspector-field"><label>HTML</label><textarea data-content-key="html">${element.content.html||""}</textarea></div>`;
             case "button":
-                // ЗАДАЧА 4: Восстановлен редактор выпадающего списка
                 const dropdownEditor = element.content.hasDropdown ? `<div class="inspector-group"><h4>Пункты списка</h4><div id="dropdown-items-editor">${element.content.dropdownItems?.map((item, index) => `<div class="dropdown-item-editor"><input type="text" placeholder="Текст" data-index="${index}" data-key="label" value="${item.label}"><input type="text" placeholder="URL" data-index="${index}" data-key="url" value="${item.url}"><button class="delete-dropdown-item" data-index="${index}">❌</button></div>`).join('') || ''}</div><button id="add-dropdown-item" style="width:100%;margin-top:5px;">+ Добавить пункт</button></div>`
                     : `<div class="inspector-field"><label>Действие</label><select data-content-key="action"><option value="openLink" ${element.content.action==="openLink"?"selected":""}>Открыть ссылку</option><option value="openModal" ${element.content.action==="openModal"?"selected":""}>Модальное окно</option></select></div><div class="inspector-field"><label>URL</label><input type="text" data-content-key="url" value="${element.content.url||""}"></div><div class="inspector-field"><label>HTML модального окна</label><textarea data-content-key="modalContent">${element.content.modalContent||""}</textarea></div>`;
                 return `<div class="inspector-field"><label>Текст кнопки</label><input type="text" data-content-key="text" value="${element.content.text||""}"></div><div class="inspector-field"><label><input type="checkbox" id="dropdown-toggle" data-content-key="hasDropdown" ${element.content.hasDropdown?"checked":""}> Выпадающий список</label></div>${dropdownEditor}`;
@@ -270,10 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const newElement = { id: `el-${Date.now()}`, adminTitle: `Новый ${type}`, type: type, content: {}, styles: {} };
         if (type === "textBlock") newElement.content.html = "<p>Новый текст.</p>";
         if (type === "photo") newElement.content.url = "";
-        // ЗАДАЧА 3: Добавляем высоту по умолчанию, чтобы новые блоки были видны
-        if (type === 'videoBlock' || type === 'reels' || type === 'externalBlock') {
-            newElement.styles.height = '300px';
-        }
+        if (type === 'videoBlock' || type === 'reels' || type === 'externalBlock') newElement.styles.height = '300px';
         if (type === "button") {
              newElement.content.text = "Кнопка";
              newElement.styles = { padding: "15px", backgroundColor: "#3498db", color: "#ffffff", border: "none", cursor: "pointer" };
@@ -284,7 +268,6 @@ document.addEventListener('DOMContentLoaded', () => {
         selectElement(newElement.id);
     }
 
-    // --- ОСТАЛЬНЫЕ ВСПОМОГАТЕЛЬНЫЕ И СЛУЖЕБНЫЕ ФУНКЦИИ (без изменений) ---
     function createSectionEditorHTML(key,config){return`${key!=="main"?`<div class="inspector-field"><label>HTML</label><textarea data-config-path="layout.${key}.content">${config.content||""}</textarea></div>`:""}<div class="inspector-field"><label>Тип фона</label><select data-config-path="layout.${key}.background.type"><option value="color" ${config.background?.type==="color"?"selected":""}>Цвет</option><option value="image" ${config.background?.type==="image"?"selected":""}>Изображение</option></select></div><div class="inspector-field"><label>Значение</label><input type="text" data-config-path="layout.${key}.background.value" value="${config.background?.value||""}"></div>`}
     function createColumnEditorHTML(column){return`<div class="column-editor" data-column-id="${column.id}"><input type="text" data-path="width" value="${column.width}"><button class="delete-column-btn">❌</button></div>`}
     function generateStyleFields(styles){return`<div class="inspector-field"><label>Ширина</label><input type="text" data-style-key="width" value="${styles.width||""}" placeholder="н-р, 100% или 300px"></div><div class="inspector-field"><label>Высота</label><input type="text" data-style-key="height" value="${styles.height||""}" placeholder="н-р, 650px или auto"></div><div class="inspector-field"><label>Цвет фона</label><input type="color" data-style-key="backgroundColor" value="${styles.backgroundColor||"#ffffff"}"></div><div class="inspector-field"><label>Цвет текста</label><input type="color" data-style-key="color" value="${styles.color||"#000000"}"></div><div class="inspector-field"><label>Отступы</label><input type="text" data-style-key="padding" value="${styles.padding||""}" placeholder="н-р, 15px"></div><div class="inspector-field"><label>Скругление</label><input type="text" data-style-key="borderRadius" value="${styles.borderRadius||""}" placeholder="н-р, 8px"></div><div class="inspector-field"><label>Тень</label><input type="text" data-style-key="boxShadow" value="${styles.boxShadow||""}" placeholder="0px 2px 4px rgba(0,0,0,0.1)"></div>`}

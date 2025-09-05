@@ -97,19 +97,21 @@ function createElement(elementData) {
                     dropdownMenu.appendChild(link);
                 });
                 element.appendChild(button);
-                element.appendChild(dropdownMenu);
-                button.addEventListener('click', () => {
+                document.body.appendChild(dropdownMenu); // Временно добавляем в body для расчета размеров
+                
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Задача 2: Позиционирование по центру экрана
+                    const buttonRect = button.getBoundingClientRect();
+                    const menuWidth = dropdownMenu.offsetWidth;
+                    
+                    dropdownMenu.style.top = `${buttonRect.bottom + 5}px`;
+                    dropdownMenu.style.left = `${(window.innerWidth / 2) - (menuWidth / 2)}px`;
+                    
                     dropdownMenu.classList.toggle('show');
-                    // Задача 2: "Умное" позиционирование
-                    const rect = dropdownMenu.getBoundingClientRect();
-                    if (rect.right > window.innerWidth) {
-                        dropdownMenu.classList.add('dropdown-menu-right');
-                    }
-                    if (rect.left < 0) {
-                        dropdownMenu.classList.remove('dropdown-menu-right');
-                    }
                 });
-                window.addEventListener('click', (e) => { if (!element.contains(e.target)) dropdownMenu.classList.remove('show'); });
+                window.addEventListener('click', () => { dropdownMenu.classList.remove('show'); });
+
             } else {
                 element = document.createElement('button');
                 element.textContent = elementData.content.text;
