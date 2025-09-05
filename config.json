@@ -4,121 +4,32 @@
     "repo": "Sitesi"
   },
   "globalSettings": {
-    "pageTitle": "Marmaris Yachting - Аренда яхт в Турции"
+    "pageTitle": "Новая страница"
   },
   "layout": {
     "header": {
-      "content": "<h1>Marmaris Yachting</h1><p>Ваше незабываемое путешествие начинается здесь</p>",
-      "background": {
-        "type": "color",
-        "value": "#2c3e50"
-      },
-      "styles": {
-        "color": "#ffffff",
-        "padding": "30px",
-        "textAlign": "center"
-      }
+      "content": "<h1>Заголовок</h1>",
+      "background": { "type": "color", "value": "#2c3e50" },
+      "styles": { "color": "#ffffff", "padding": "20px", "textAlign": "center" }
     },
     "main": {
       "columns": [
-        {
-          "id": "col-1757081341798",
-          "width": "35%",
-          "elements": [
-            "el-1757082482357"
-          ]
-        },
-        {
-          "id": "col-1757081355188",
-          "width": "35%",
-          "elements": [
-            "el-1757081395046"
-          ]
-        },
-        {
-          "id": "col-1757081370086",
-          "width": "35%",
-          "elements": []
-        }
+        { "id": "col-1", "width": "100%", "elements": ["el-1"] }
       ]
     },
     "footer": {
-      "content": "<p>© 2025 Marmaris Yachting. Все права защищены.</p>",
-      "background": {
-        "type": "color",
-        "value": "#34495e"
-      },
-      "styles": {
-        "color": "#ecf0f1",
-        "padding": "20px",
-        "textAlign": "center"
-      }
+      "content": "<p>Подвал сайта</p>",
+      "background": { "type": "color", "value": "#34495e" },
+      "styles": { "color": "#ecf0f1", "padding": "15px", "textAlign": "center" }
     }
   },
   "elements": [
     {
-      "id": "el-16623344",
-      "adminTitle": "Описание предложения",
+      "id": "el-1",
+      "adminTitle": "Стартовый блок",
       "type": "textBlock",
-      "content": {
-        "html": "<h2>Эксклюзивный тур</h2><p>Откройте для себя скрытые бухты и кристально чистые воды Эгейского моря на борту наших премиальных яхт. Мы предлагаем индивидуальные маршруты и первоклассный сервис.</p>"
-      },
-      "styles": {
-        "padding": "20px",
-        "backgroundColor": "#ffffff",
-        "borderRadius": "8px",
-        "boxShadow": "0 4px 15px rgba(0,0,0,0.1)"
-      }
-    },
-    {
-      "id": "el-16623566",
-      "adminTitle": "Кнопка запроса",
-      "type": "button",
-      "content": {
-        "text": "Узнать подробнее",
-        "action": "openLink",
-        "url": "/contacts",
-        "modalContent": ""
-      },
-      "styles": {
-        "width": "100%",
-        "padding": "15px",
-        "backgroundColor": "#e74c3c",
-        "color": "#ffffff",
-        "textAlign": "center",
-        "fontSize": "18px",
-        "borderRadius": "5px",
-        "border": "none",
-        "cursor": "pointer"
-      }
-    },
-    {
-      "id": "el-1757081395046",
-      "adminTitle": "Новый button",
-      "type": "button",
-      "content": {
-        "text": "Кнопка",
-        "action": "openModal",
-        "url": "https://script.google.com/macros/s/AKfycbw_zW9cCs6adluPNaVVm6spv16UwmQ4vAvvFSo5cenzsE8kpJnBAyktHy4zZaIeac_-VA/exec?page=route2"
-      },
-      "styles": {
-        "padding": "15px",
-        "backgroundColor": "#3498db",
-        "color": "#ffffff",
-        "border": "none",
-        "cursor": "pointer",
-        "width": "505.543px",
-        "height": "57.766px"
-      }
-    },
-    {
-      "id": "el-1757082482357",
-      "adminTitle": "Новый textBlock",
-      "type": "textBlock",
-      "content": {
-        "html": "<p>Новый текст.111111222222333333344444444466666677777777888888</p>"
-      },
-      "styles": {}
+      "content": { "html": "<h2>Добро пожаловать!</h2><p>Это ваш новый холст. Начните редактирование в админ-панели.</p>" },
+      "styles": { "padding": "20px", "backgroundColor": "#ffffff" }
     }
   ]
 }
