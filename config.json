@@ -37,7 +37,8 @@
           "id": "col-1757099308837",
           "width": "30%",
           "elements": [
-            "el-1757099242581"
+            "el-1757099242581",
+            "el-1757109442650"
           ]
         },
         {
@@ -196,8 +197,18 @@
       "content": {},
       "styles": {
         "width": "393.22px",
-        "height": "285.714px"
+        "height": "285.714px",
+        "aspectRatio": "16/9"
       }
+    },
+    {
+      "id": "el-1757109442650",
+      "adminTitle": "Новый textBlock",
+      "type": "textBlock",
+      "content": {
+        "html": "<p>Новый текст.</p>"
+      },
+      "styles": {}
     }
   ]
 }
