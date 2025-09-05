@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // FIX: Добавляем случайный параметр для обхода кэша браузера при загрузке конфига
     const cacheBust = `?v=${new Date().getTime()}`;
 
     fetch(`config.json${cacheBust}`)
@@ -18,23 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 
-/**
- * Главная функция рендеринга страницы
- * @param {object} config - Объект конфигурации сайта
- */
 function renderPage(config) {
-    // 1. Установка глобальных настроек
     document.title = config.globalSettings.pageTitle;
-
-    // Рендерим фон для BODY (из секции main)
     const mainLayout = config.layout.main || {};
     setupBackground(document.body, mainLayout.background);
-
-    // 2. Рендеринг секций: шапка и подвал
     setupSection('page-header', config.layout.header);
     setupSection('page-footer', config.layout.footer);
     
-    // 3. Рендеринг основного контента (колонки и элементы)
     const elementContainer = document.getElementById('element-container');
     elementContainer.innerHTML = ''; 
 
@@ -45,26 +34,22 @@ function renderPage(config) {
 
         column.elements.forEach(elementId => {
             const elementData = config.elements.find(el => el.id === elementId);
+            // FIX: Проверяем, что элемент действительно существует, прежде чем его рисовать
             if (elementData) {
                 const elementNode = createElement(elementData);
                 columnDiv.appendChild(elementNode);
+            } else {
+                console.warn(`Элемент с ID "${elementId}" не найден в основном списке, но на него есть ссылка в колонке.`);
             }
         });
         elementContainer.appendChild(columnDiv);
     });
     
-    // 4. Настройка интерактивности для модальных окон
     setupModalInteraction();
 }
 
-/**
- * Настраивает фон для любого элемента
- * @param {HTMLElement} element - DOM-элемент
- * @param {object} backgroundConfig - Конфигурация фона
- */
 function setupBackground(element, backgroundConfig) {
     if (!element || !backgroundConfig) return;
-
     if (backgroundConfig.type === 'color') {
         element.style.backgroundColor = backgroundConfig.value;
         element.style.backgroundImage = 'none';
@@ -74,32 +59,16 @@ function setupBackground(element, backgroundConfig) {
         element.style.backgroundPosition = 'center';
         element.style.backgroundColor = 'transparent';
     }
-    // Логика для видео-фона на публичной части может быть добавлена здесь
 }
 
-/**
- * Настраивает шапку или подвал
- * @param {string} elementId - ID секции
- * @param {object} sectionConfig - Конфигурация для этой секции
- */
 function setupSection(elementId, sectionConfig) {
     const element = document.getElementById(elementId);
     if (!element || !sectionConfig) return;
-    
     element.innerHTML = sectionConfig.content;
-    
     setupBackground(element, sectionConfig.background);
-
-    if (sectionConfig.styles) {
-        Object.assign(element.style, sectionConfig.styles);
-    }
+    if (sectionConfig.styles) Object.assign(element.style, sectionConfig.styles);
 }
 
-/**
- * "Фабрика" для создания HTML-элементов на основе данных
- * @param {object} elementData - Объект с описанием элемента
- * @returns {HTMLElement} Готовый для вставки DOM-узел
- */
 function createElement(elementData) {
     const wrapper = document.createElement('div');
     wrapper.className = `element-wrapper type-${elementData.type}`;
@@ -107,13 +76,12 @@ function createElement(elementData) {
 
     let element;
     switch (elementData.type) {
-        case 'externalBlock':
-        case 'videoBlock':
+        case 'externalBlock': case 'videoBlock':
             element = document.createElement('iframe');
             element.src = elementData.content.url;
             element.setAttribute('frameborder', '0');
             element.setAttribute('allowfullscreen', '');
-            element.setAttribute('loading', 'lazy'); // Для производительности
+            element.setAttribute('loading', 'lazy'); 
             break;
         case 'textBlock':
             element = document.createElement('div');
@@ -123,7 +91,7 @@ function createElement(elementData) {
             element = document.createElement('img');
             element.src = elementData.content.url;
             element.alt = elementData.adminTitle || 'Изображение';
-            element.setAttribute('loading', 'lazy'); // Для производительности
+            element.setAttribute('loading', 'lazy');
             break;
         case 'button':
             element = document.createElement('button');
@@ -141,22 +109,18 @@ function createElement(elementData) {
     }
 
     if (element) {
-        if (elementData.styles) {
-            Object.assign(element.style, elementData.styles);
-        }
+        if (elementData.styles) Object.assign(element.style, elementData.styles);
         wrapper.appendChild(element);
     }
-    
     return wrapper;
 }
 
-/**
- * Настраивает логику открытия и закрытия модального окна
- */
 function setupModalInteraction() {
     const modalOverlay = document.getElementById('modal-overlay');
     const modalBody = document.getElementById('modal-body');
     const closeModalBtn = document.querySelector('.modal-close-btn');
+
+    if (!modalOverlay || !modalBody || !closeModalBtn) return;
 
     document.querySelectorAll('.modal-trigger-btn').forEach(button => {
         button.addEventListener('click', () => {
@@ -171,8 +135,6 @@ function setupModalInteraction() {
 
     closeModalBtn.addEventListener('click', closeModal);
     modalOverlay.addEventListener('click', (event) => {
-        if (event.target === modalOverlay) {
-            closeModal();
-        }
+        if (event.target === modalOverlay) closeModal();
     });
 }
