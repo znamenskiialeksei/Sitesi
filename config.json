@@ -25,13 +25,13 @@
           "id": "col-1",
           "width": "30%",
           "elements": [
+            "el-1757110699128",
             "el-1757109752168",
             "el-1757104459496",
             "el-1",
             "el-1757102225175",
             "el-1757101328875",
-            "el-1757101233508",
-            "el-1757099257779"
+            "el-1757101233508"
           ]
         },
         {
@@ -46,8 +46,9 @@
           "width": "30%",
           "elements": [
             "el-1757109785397",
-            "el-1757110742949",
-            "el-1757109663931"
+            "el-1757110523004",
+            "el-1757109663931",
+            "el-1757099257779"
           ]
         }
       ]
@@ -225,7 +226,7 @@
       }
     },
     {
-      "id": "el-1757110742949",
+      "id": "el-1757110523004",
       "adminTitle": "Новый button",
       "type": "button",
       "content": {
@@ -259,9 +260,26 @@
         "backgroundColor": "#3498db",
         "color": "#ffffff",
         "border": "none",
-        "cursor": "pointer"
+        "cursor": "pointer",
+        "width": "100.66px",
+        "height": "60.147px"
       },
       "url": "https://t.me/marmarisyachtingru?text=Здравствуйте!%20Интересует%20бронирование."
+    },
+    {
+      "id": "el-1757110699128",
+      "adminTitle": "Новый button",
+      "type": "button",
+      "content": {
+        "text": "Кнопка"
+      },
+      "styles": {
+        "padding": "15px",
+        "backgroundColor": "#3498db",
+        "color": "#ffffff",
+        "border": "none",
+        "cursor": "pointer"
+      }
     }
   ]
 }
