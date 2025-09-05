@@ -93,7 +93,7 @@
       "type": "button",
       "content": {
         "text": "Кнопка",
-        "hasDropdown": false,
+        "hasDropdown": true,
         "dropdownItems": [
           {
             "label": "т",
