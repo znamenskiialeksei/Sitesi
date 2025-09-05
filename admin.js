@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         panelBodies: { inspector: document.getElementById('inspector-body'), global: document.getElementById('global-settings-body'), layout: document.getElementById('layout-settings-body') }
     };
 
+    // --- ИНИЦИАЛИЗАЦИЯ И АУТЕНТИФИКАЦИЯ ---
     const loginView = document.getElementById('login-view'), adminView = document.getElementById('admin-view'),
         tokenInput = document.getElementById('github-token-input'), loginBtn = document.getElementById('login-btn');
     const savedToken = localStorage.getItem('githubToken');
@@ -13,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginBtn) { loginBtn.addEventListener('click', () => { const token = tokenInput.value.trim(); if (token) { githubToken = token; localStorage.setItem('githubToken', token); loginView.style.display = 'none'; adminView.style.display = 'flex'; loadAdminPanel(); } else { alert('Введите токен.'); } }); }
     DOM.saveBtn.addEventListener('click', saveConfiguration);
 
+    // --- ЗАГРУЗКА И РЕНДЕРИНГ ---
     async function loadAdminPanel() {
         const configUrl = `config.json?v=${new Date().getTime()}`;
         try {
@@ -31,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- ОСНОВНЫЕ ФУНКЦИИ РЕНДЕРИНГА ---
     function renderAll() { renderCanvas(); renderFloatingPanels(); }
 
     function renderCanvas() {
@@ -84,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return wrapper;
     }
 
+    // --- ПАНЕЛИ НАСТРОЕК ---
     function renderFloatingPanels() { renderGlobalSettingsPanel(); setupLayoutSettingsPanel(); }
     
     function renderGlobalSettingsPanel() {
@@ -133,34 +137,28 @@ document.addEventListener('DOMContentLoaded', () => {
     function deleteColumn(event) { const columnId = event.target.closest('.column-editor').dataset.columnId; currentConfig.layout.main.columns = currentConfig.layout.main.columns.filter(c => c.id !== columnId); renderAll(); }
     function deleteSelectedElement() { if (!selectedElementId || !confirm("Вы уверены?")) return; currentConfig.elements = currentConfig.elements.filter(el => el.id !== selectedElementId); currentConfig.layout.main.columns.forEach(column => { column.elements = column.elements.filter(id => id !== selectedElementId); }); DOM.panels.inspector.style.display = 'none'; selectedElementId = null; renderCanvas(); }
 
-    // ЗАДАЧА 2: Полностью переписанная функция для стабильного обновления
     function updateElementFromInspector(event) {
         if (!selectedElementId) return;
         const elementData = currentConfig.elements.find(el => el.id === selectedElementId);
         if (!elementData) return;
-
         const input = event.target;
         const value = input.type === 'checkbox' ? input.checked : input.value;
-        
-        // Обновляем данные в объекте currentConfig
         if (input.dataset.key) { elementData[input.dataset.key] = value; }
         else if (input.dataset.contentKey) { elementData.content[input.dataset.contentKey] = value; }
         else if (input.dataset.styleKey) {
             if (!elementData.styles) elementData.styles = {};
             elementData.styles[input.dataset.styleKey] = value;
         }
-
-        // Вместо сложной логики, просто полностью перерисовываем измененный элемент.
-        // Это самый надёжный способ гарантировать, что все изменения (включая src iframe и стили) применятся.
         const oldWrapper = DOM.canvas.querySelector(`.admin-element-wrapper[data-element-id="${selectedElementId}"]`);
         if (oldWrapper) {
             const newWrapper = createAdminElement(elementData);
             oldWrapper.replaceWith(newWrapper);
-            newWrapper.classList.add('selected'); // Сохраняем выделение
-            makeElementsResizable(); // Пере-инициализируем resizable для нового элемента
+            newWrapper.classList.add('selected');
+            makeElementsResizable();
         }
     }
 
+    // --- ИНТЕРАКТИВНОСТЬ ---
     function initInteractivity() { setupToolbarActions(); makePanelsInteractive(); makeElementsResizable(); }
     function makeElementsResizable() {
         interact('.admin-element-wrapper').resizable({
@@ -182,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- ФАБРИКИ ЭЛЕМЕНТОВ И ИНТЕРФЕЙСА ---
     function urlToEmbed(url) {
         if (!url) return '';
         const instaMatch = url.match(/(?:www\.)?instagram\.com\/reel\/([a-zA-Z0-9_-]+)/);
@@ -198,8 +197,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 element = document.createElement('iframe');
                 element.src = urlToEmbed(elementData.content.url);
                 element.setAttribute('frameborder', '0');
-                element.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
-                element.setAttribute('allow', 'encrypted-media; picture-in-picture;');
+                // ✅ ИСПРАВЛЕНИЕ: Возвращена более простая и рабочая версия атрибута sandbox,
+                // которая с большей вероятностью позволит OneDrive отобразить контент.
+                element.setAttribute('sandbox', 'allow-scripts allow-popups allow-forms allow-same-origin');
+                element.setAttribute('allow', 'camera; microphone; geolocation; encrypted-media; picture-in-picture;');
+                element.setAttribute('allowfullscreen', '');
                 break;
             case 'textBlock': element = document.createElement('div'); element.innerHTML = elementData.content.html; break;
             case 'photo': element = document.createElement('img'); element.src = elementData.content.url; element.alt = elementData.adminTitle || "Изображение"; break;
@@ -245,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function generateContentFields(element) {
-        const urlNote = `<p style="font-size:12px;color:#777;">Для Instagram используйте обычную ссылку. Для OneDrive и др. может понадобиться 'embed' ссылка.</p>`;
+        const urlNote = `<p style="font-size:12px;color:#777;">Для Instagram используйте обычную ссылку. Для OneDrive и др. ищите специальную 'embed' ссылку.</p>`;
         switch(element.type){
             case "photo": case "videoBlock": case "externalBlock": return `<div class="inspector-field"><label>URL</label><input type="text" data-content-key="url" value="${element.content.url||""}"></div>${urlNote}`;
             case "reels": return `<div class="inspector-field"><label>URL</label><input type="text" data-content-key="url" value="${element.content.url||""}"></div>${urlNote}<div class="inspector-field"><label>Соотношение сторон</label><select data-style-key="aspectRatio"><option value="">Авто</option><option value="9/16" ${element.styles?.aspectRatio==='9/16'?"selected":""}>Вертикальное (9:16)</option><option value="1/1" ${element.styles?.aspectRatio==='1/1'?"selected":""}>Квадратное (1:1)</option><option value="16/9" ${element.styles?.aspectRatio==='16/9'?"selected":""}>Горизонтальное (16:9)</option></select></div>`;
