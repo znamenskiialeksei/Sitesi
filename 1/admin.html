@@ -7,24 +7,18 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <div id="login-view">
         <div class="login-box">
             <h2>Вход в панель управления</h2>
             <p>Введите ваш GitHub Personal Access Token с правами `repo`.</p>
             <input type="password" id="github-token-input" placeholder="ghp_...">
             <button id="login-btn">Войти</button>
-            <p class="token-note">Токен сохранится в браузере и не будет виден в коде сайта.</p>
         </div>
     </div>
-
     <div id="admin-view" style="display: none;">
         <div id="admin-toolbar">
+            <div class="toolbar-group"><button id="save-btn" title="Сохранить изменения">💾 Сохранить</button></div>
             <div class="toolbar-group">
-                <button id="save-btn" title="Сохранить изменения">💾 Сохранить</button>
-            </div>
-            <div class="toolbar-group">
-                <button class="add-element-btn" data-type="externalBlock">+ Внешний блок</button>
                 <button class="add-element-btn" data-type="textBlock">+ Текст</button>
                 <button class="add-element-btn" data-type="photo">+ Фото</button>
                 <button class="add-element-btn" data-type="videoBlock">+ Видео</button>
@@ -40,62 +34,34 @@
                 <button class="preview-btn" data-mode="mobile" title="Смартфон">📱</button>
             </div>
         </div>
-
-        <div id="canvas-wrapper">
-            <div id="admin-canvas">
-                </div>
-        </div>
-
+        <div id="canvas-wrapper"><div id="admin-canvas"></div></div>
         <div id="floating-panels-container">
             <div id="inspector-panel" class="floating-panel" style="display: none;">
-                <div class="panel-header">
-                    <span>Инспектор элемента</span>
-                    <div>
-                        <button class="panel-action" data-action="minimize" title="Свернуть">➖</button>
-                        <button class="panel-action" data-action="close" title="Закрыть">❌</button>
-                    </div>
-                </div>
+                <div class="panel-header"><span>Инспектор элемента</span><div><button class="panel-action" data-action="close" title="Закрыть">❌</button></div></div>
                 <div class="panel-body" id="inspector-body"></div>
             </div>
-
             <div id="global-settings-panel" class="floating-panel" style="display: none;">
-                <div class="panel-header">
-                    <span>🌍 Глобальные настройки</span>
-                    <div>
-                        <button class="panel-action" data-action="minimize" title="Свернуть">➖</button>
-                        <button class="panel-action" data-action="close" title="Закрыть">❌</button>
-                    </div>
-                </div>
+                <div class="panel-header"><span>🌍 Глобальные настройки</span><div><button class="panel-action" data-action="close" title="Закрыть">❌</button></div></div>
                 <div class="panel-body" id="global-settings-body"></div>
             </div>
-
             <div id="layout-settings-panel" class="floating-panel" style="display: none;">
-                <div class="panel-header">
-                    <span>🎨 Настройки макета</span>
-                    <div>
-                        <button class="panel-action" data-action="minimize" title="Свернуть">➖</button>
-                        <button class="panel-action" data-action="close" title="Закрыть">❌</button>
-                    </div>
-                </div>
+                <div class="panel-header"><span>🎨 Настройки макета</span><div><button class="panel-action" data-action="close" title="Закрыть">❌</button></div></div>
                 <div class="panel-body" id="layout-settings-body">
                     <div class="inspector-field">
-                        <label>Выберите секцию для редактирования</label>
+                        <label>Выберите секцию</label>
                         <select id="layout-section-selector">
                             <option value="header">Шапка (Header)</option>
                             <option value="main">Основная часть (Main)</option>
                             <option value="footer">Подвал (Footer)</option>
                         </select>
                     </div>
-                    <div id="layout-section-editors">
-                        </div>
+                    <div id="layout-section-editors"></div>
                 </div>
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-    
     <script src="admin.js"></script>
 </body>
 </html>
