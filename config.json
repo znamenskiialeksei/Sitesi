@@ -25,6 +25,8 @@
           "id": "col-1",
           "width": "30%",
           "elements": [
+            "el-1757091305769",
+            "el-1757091028243",
             "el-1757090568310",
             "el-1757090447985",
             "el-1",
@@ -80,10 +82,12 @@
       "adminTitle": "Новый reels",
       "type": "reels",
       "content": {
-        "url": "https://1drv.ms/v/c/2919ff56cb24dc70/IQRmfHoOiJ0USI41R15PiRxPAS3q42tuZDyBnREAIy_J2-0"
+        "url": "https://1drv.ms/i/c/2919ff56cb24dc70/IQS4SlSP1EukT49NhIfzIy6sAcsaeHHgAgI8L_4fZWN5eek?action=embedview"
       },
       "styles": {
-        "aspectRatio": "9/16"
+        "aspectRatio": "9/16",
+        "width": "386.077px",
+        "height": "703.218px"
       }
     },
     {
@@ -140,6 +144,30 @@
       "styles": {
         "width": "393.22px",
         "height": "576.191px"
+      }
+    },
+    {
+      "id": "el-1757091028243",
+      "adminTitle": "Новый photo",
+      "type": "photo",
+      "content": {
+        "url": "https://1drv.ms/i/c/2919ff56cb24dc70/IQS4SlSP1EukT49NhIfzIy6sAcsaeHHgAgI8L_4fZWN5eek?action=embedview"
+      },
+      "styles": {
+        "width": "246.196px",
+        "height": "342.829px"
+      }
+    },
+    {
+      "id": "el-1757091305769",
+      "adminTitle": "Новый videoBlock",
+      "type": "videoBlock",
+      "content": {
+        "url": "https://1drv.ms/v/c/2919ff56cb24dc70/IQRmfHoOiJ0USI41R15PiRxPAS3q42tuZDyBnREAIy_J2-0"
+      },
+      "styles": {
+        "width": "397.684px",
+        "height": "266.667px"
       }
     }
   ]
