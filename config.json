@@ -44,7 +44,7 @@
           "id": "col-1757099314077",
           "width": "30%",
           "elements": [
-            "el-1757099270436"
+            "el-1757105900691"
           ]
         }
       ]
@@ -84,7 +84,7 @@
       },
       "styles": {
         "width": "393.22px",
-        "height": "710.119px"
+        "height": "688.095px"
       }
     },
     {
@@ -148,19 +148,6 @@
       "url": "https://www.marmarisyachting.ru/Yacht-Vasilisa-Catalog/Route2"
     },
     {
-      "id": "el-1757099270436",
-      "adminTitle": "Новый reels",
-      "type": "reels",
-      "content": {
-        "url": "https://1drv.ms/v/c/2919ff56cb24dc70/IQSe6WT-_Nt4QYem_P3qEx_3Abn7W0p9009H02uPVTxShdI"
-      },
-      "styles": {
-        "width": "397.675px",
-        "height": "303.553px",
-        "aspectRatio": "9/16"
-      }
-    },
-    {
       "id": "el-1757101233508",
       "adminTitle": "Новый externalBlock",
       "type": "externalBlock",
@@ -185,7 +172,10 @@
       "content": {
         "url": "https://1drv.ms/v/c/2919ff56cb24dc70/IQSe6WT-_Nt4QYem_P3qEx_3Abn7W0p9009H02uPVTxShdI"
       },
-      "styles": {}
+      "styles": {
+        "width": "315.839px",
+        "height": "195.238px"
+      }
     },
     {
       "id": "el-1757104459496",
@@ -197,6 +187,16 @@
       "styles": {
         "width": "393.22px",
         "height": "211.31px"
+      }
+    },
+    {
+      "id": "el-1757105900691",
+      "adminTitle": "Новый reels",
+      "type": "reels",
+      "content": {},
+      "styles": {
+        "width": "393.22px",
+        "height": "285.714px"
       }
     }
   ]
