@@ -25,6 +25,7 @@
           "id": "col-1",
           "width": "30%",
           "elements": [
+            "el-1757109752168",
             "el-1757104459496",
             "el-1",
             "el-1757102225175",
@@ -37,15 +38,15 @@
           "id": "col-1757099308837",
           "width": "30%",
           "elements": [
-            "el-1757099242581",
-            "el-1757109442650"
+            "el-1757099242581"
           ]
         },
         {
           "id": "col-1757099314077",
           "width": "30%",
           "elements": [
-            "el-1757105900691"
+            "el-1757109785397",
+            "el-1757109663931"
           ]
         }
       ]
@@ -191,24 +192,36 @@
       }
     },
     {
-      "id": "el-1757105900691",
+      "id": "el-1757109663931",
       "adminTitle": "Новый reels",
       "type": "reels",
-      "content": {},
+      "content": {
+        "url": "https://1drv.ms/v/c/2919ff56cb24dc70/IQSe6WT-_Nt4QYem_P3qEx_3Abn7W0p9009H02uPVTxShdI"
+      },
       "styles": {
-        "width": "393.22px",
-        "height": "285.714px",
-        "aspectRatio": "16/9"
+        "aspectRatio": "1/1"
       }
     },
     {
-      "id": "el-1757109442650",
-      "adminTitle": "Новый textBlock",
-      "type": "textBlock",
+      "id": "el-1757109752168",
+      "adminTitle": "Новый videoBlock",
+      "type": "videoBlock",
       "content": {
-        "html": "<p>Новый текст.</p>"
+        "url": "https://1drv.ms/v/c/2919ff56cb24dc70/IQSe6WT-_Nt4QYem_P3qEx_3Abn7W0p9009H02uPVTxShdI"
       },
       "styles": {}
+    },
+    {
+      "id": "el-1757109785397",
+      "adminTitle": "Новый externalBlock",
+      "type": "externalBlock",
+      "content": {
+        "url": "https://znamenskiialeksei.github.io/marmarisyachting/2RouteVasilisa.html"
+      },
+      "styles": {
+        "width": "397.684px",
+        "height": "515.476px"
+      }
     }
   ]
 }
