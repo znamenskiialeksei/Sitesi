@@ -25,6 +25,8 @@
           "id": "col-1",
           "width": "30%",
           "elements": [
+            "el-1757110699128",
+            "el-1757110523004",
             "el-1757109752168",
             "el-1757104459496",
             "el-1",
@@ -221,6 +223,62 @@
       "styles": {
         "width": "397.684px",
         "height": "515.476px"
+      }
+    },
+    {
+      "id": "el-1757110523004",
+      "adminTitle": "Новый button",
+      "type": "button",
+      "content": {
+        "text": "Кнопка",
+        "hasDropdown": true,
+        "dropdownItems": [
+          {
+            "label": "Новый пункт",
+            "url": "https://360.bavariayachts.com/2021/tours/index_en.html?nav_id=5491-135719"
+          },
+          {
+            "label": "Новый пункт",
+            "url": "https://script.google.com/macros/s/AKfycbw_zW9cCs6adluPNaVVm6spv16UwmQ4vAvvFSo5cenzsE8kpJnBAyktHy4zZaIeac_-VA/exec?page=route2"
+          },
+          {
+            "label": "Новый пункт",
+            "url": "https://www.instagram.com/reel/DIom5WzibId/?igsh=MTRsYnl4dXlpdTQ1MA=="
+          },
+          {
+            "label": "Новый пункт",
+            "url": "https://wa.me/905366140347?text=Здравствуйте!%20Интересует%20бронирование."
+          },
+          {
+            "label": "Новый пункт",
+            "url": "https://t.me/marmarisyachtingru?text=Здравствуйте!%20Интересует%20бронирование."
+          }
+        ]
+      },
+      "styles": {
+        "padding": "15px",
+        "backgroundColor": "#3498db",
+        "color": "#ffffff",
+        "border": "none",
+        "cursor": "pointer",
+        "width": "100.66px",
+        "height": "60.147px"
+      },
+      "url": "https://t.me/marmarisyachtingru?text=Здравствуйте!%20Интересует%20бронирование."
+    },
+    {
+      "id": "el-1757110699128",
+      "adminTitle": "Новый button",
+      "type": "button",
+      "content": {
+        "text": "Кнопка"
+      },
+      "styles": {
+        "padding": "15px",
+        "backgroundColor": "#3498db",
+        "color": "#ffffff",
+        "border": "none",
+        "cursor": "pointer"
       }
     }
   ]
