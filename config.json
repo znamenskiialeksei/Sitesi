@@ -25,6 +25,7 @@
           "id": "col-1",
           "width": "30%",
           "elements": [
+            "el-1757104459496",
             "el-1",
             "el-1757102225175",
             "el-1757101328875",
@@ -92,7 +93,7 @@
       "type": "button",
       "content": {
         "text": "Кнопка",
-        "hasDropdown": true,
+        "hasDropdown": false,
         "dropdownItems": [
           {
             "label": "т",
@@ -185,6 +186,18 @@
         "url": "https://1drv.ms/v/c/2919ff56cb24dc70/IQSe6WT-_Nt4QYem_P3qEx_3Abn7W0p9009H02uPVTxShdI"
       },
       "styles": {}
+    },
+    {
+      "id": "el-1757104459496",
+      "adminTitle": "Новый photo",
+      "type": "photo",
+      "content": {
+        "url": "https://1drv.ms/i/c/2919ff56cb24dc70/IQS4SlSP1EukT49NhIfzIy6sAcsaeHHgAgI8L_4fZWN5eek?action=embedview"
+      },
+      "styles": {
+        "width": "393.22px",
+        "height": "211.31px"
+      }
     }
   ]
 }
