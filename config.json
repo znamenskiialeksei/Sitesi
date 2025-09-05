@@ -25,6 +25,7 @@
           "id": "col-1",
           "width": "30%",
           "elements": [
+            "el-1757102225175",
             "el-1757101328875",
             "el-1757101233508",
             "el-1",
@@ -158,7 +159,7 @@
       "adminTitle": "Новый externalBlock",
       "type": "externalBlock",
       "content": {
-        "url": "https://1drv.ms/v/c/2919ff56cb24dc70/IQRpdxYPi6EBS7X21LMQxEvUAcdXCgHrBbrJ96rhr3TsMGc"
+        "url": "https://360.bavariayachts.com/2021/tours/index_en.html?nav_id=5491-135719"
       },
       "styles": {}
     },
@@ -167,7 +168,16 @@
       "adminTitle": "Новый videoBlock",
       "type": "videoBlock",
       "content": {
-        "url": "https://1drv.ms/v/c/2919ff56cb24dc70/IQRpdxYPi6EBS7X21LMQxEvUAcdXCgHrBbrJ96rhr3TsMGc"
+        "url": "https://www.youtube.com/embed/Dp2g78eqw18"
+      },
+      "styles": {}
+    },
+    {
+      "id": "el-1757102225175",
+      "adminTitle": "Новый videoBlock",
+      "type": "videoBlock",
+      "content": {
+        "url": "https://1drv.ms/v/c/2919ff56cb24dc70/IQSe6WT-_Nt4QYem_P3qEx_3Abn7W0p9009H02uPVTxShdI"
       },
       "styles": {}
     }
