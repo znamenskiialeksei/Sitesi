@@ -101,33 +101,30 @@ function createElement(elementData) {
 
                 button.addEventListener('click', (e) => {
                     e.stopPropagation();
+                    // Сначала показываем меню, чтобы правильно рассчитать его размеры
                     dropdownMenu.classList.toggle('show');
-
-                    // Задача 1: "Умное" позиционирование (вверх/вниз)
+                    if (!dropdownMenu.classList.contains('show')) return;
+                    
                     const buttonRect = button.getBoundingClientRect();
-                    const menuHeight = dropdownMenu.offsetHeight;
+                    const menuRect = dropdownMenu.getBoundingClientRect();
                     const windowHeight = window.innerHeight;
+                    const windowWidth = window.innerWidth;
 
-                    // Проверяем, достаточно ли места снизу
-                    if (buttonRect.bottom + menuHeight > windowHeight) {
-                        // Если нет, открываем вверх
-                        dropdownMenu.style.top = 'auto';
-                        dropdownMenu.style.bottom = `${windowHeight - buttonRect.top}px`;
+                    // Вертикальное позиционирование (вверх/вниз)
+                    if (buttonRect.bottom + menuRect.height > windowHeight && buttonRect.top - menuRect.height > 0) {
+                        // Если внизу нет места, а вверху есть - открываем вверх
+                        dropdownMenu.style.top = `${buttonRect.top - menuRect.height}px`;
                     } else {
-                        // Иначе, открываем вниз
-                        dropdownMenu.style.bottom = 'auto';
+                        // В остальных случаях - открываем вниз
                         dropdownMenu.style.top = `${buttonRect.bottom}px`;
                     }
 
-                    // Позиционирование по горизонтали (чтобы не уходить за экран)
-                    const menuRect = dropdownMenu.getBoundingClientRect();
-                    if (menuRect.right > window.innerWidth) {
-                        dropdownMenu.style.left = 'auto';
-                        dropdownMenu.style.right = '0px';
-                    } else {
-                        dropdownMenu.style.right = 'auto';
-                        dropdownMenu.style.left = '0px';
+                    // Горизонтальное позиционирование (влево/вправо)
+                    let leftPosition = buttonRect.left;
+                    if (leftPosition + menuRect.width > windowWidth) {
+                        leftPosition = windowWidth - menuRect.width - 5; // Смещаем влево, если не помещается
                     }
+                    dropdownMenu.style.left = `${leftPosition}px`;
                 });
                 window.addEventListener('click', () => { dropdownMenu.classList.remove('show'); });
 
