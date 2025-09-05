@@ -25,8 +25,8 @@
           "id": "col-1",
           "width": "30%",
           "elements": [
-            "el-1757092655020",
             "el-1",
+            "el-1757091305769",
             "el-1757091028243",
             "el-1757090568310",
             "el-1757090447985"
@@ -159,15 +159,15 @@
       }
     },
     {
-      "id": "el-1757092655020",
+      "id": "el-1757091305769",
       "adminTitle": "Новый videoBlock",
       "type": "videoBlock",
       "content": {
         "url": "https://1drv.ms/v/c/2919ff56cb24dc70/IQRmfHoOiJ0USI41R15PiRxPAS3q42tuZDyBnREAIy_J2-0"
       },
       "styles": {
-        "width": "393.22px",
-        "height": "325.595px"
+        "width": "397.684px",
+        "height": "266.667px"
       }
     }
   ]
