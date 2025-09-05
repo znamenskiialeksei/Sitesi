@@ -93,7 +93,7 @@
       "type": "button",
       "content": {
         "text": "Кнопка",
-        "action": "openModal",
+        "action": "openLink",
         "url": "https://script.google.com/macros/s/AKfycbw_zW9cCs6adluPNaVVm6spv16UwmQ4vAvvFSo5cenzsE8kpJnBAyktHy4zZaIeac_-VA/exec?page=route2"
       },
       "styles": {
