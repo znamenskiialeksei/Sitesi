@@ -1,40 +1,59 @@
 document.addEventListener('DOMContentLoaded', () => {
-    let githubToken = null, currentConfig = null, selectedElementId = null;
+    // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И КОНСТАНТЫ ---
+    let githubToken = null;
+    let currentConfig = null;
+    let selectedElementId = null;
     const DOM = {
-        saveBtn: document.getElementById('save-btn'), canvas: document.getElementById('admin-canvas'),
-        panels: { inspector: document.getElementById('inspector-panel'), global: document.getElementById('global-settings-panel'), layout: document.getElementById('layout-settings-panel') },
-        panelBodies: { inspector: document.getElementById('inspector-body'), global: document.getElementById('global-settings-body'), layout: document.getElementById('layout-settings-body') }
+        loginView: document.getElementById('login-view'),
+        adminView: document.getElementById('admin-view'),
+        tokenInput: document.getElementById('github-token-input'),
+        loginBtn: document.getElementById('login-btn'),
+        saveBtn: document.getElementById('save-btn'),
+        canvas: document.getElementById('admin-canvas'),
+        panels: { inspector: document.getElementById('inspector-panel'), global: document.getElementById('global-settings-panel'), layout: document.getElementById('layout-settings-panel'), },
+        panelBodies: { inspector: document.getElementById('inspector-body'), global: document.getElementById('global-settings-body'), layout: document.getElementById('layout-settings-body'), }
     };
 
     // --- ИНИЦИАЛИЗАЦИЯ И АУТЕНТИФИКАЦИЯ ---
-    const loginView = document.getElementById('login-view'), adminView = document.getElementById('admin-view'),
-        tokenInput = document.getElementById('github-token-input'), loginBtn = document.getElementById('login-btn');
     const savedToken = localStorage.getItem('githubToken');
-    if (savedToken) { githubToken = savedToken; loginView.style.display = 'none'; adminView.style.display = 'flex'; loadAdminPanel(); }
-    if (loginBtn) { loginBtn.addEventListener('click', () => { const token = tokenInput.value.trim(); if (token) { githubToken = token; localStorage.setItem('githubToken', token); loginView.style.display = 'none'; adminView.style.display = 'flex'; loadAdminPanel(); } else { alert('Введите токен.'); } }); }
+    if (savedToken) {
+        githubToken = savedToken;
+        DOM.loginView.style.display = 'none';
+        DOM.adminView.style.display = 'flex';
+        loadAdminPanel();
+    }
+    if (DOM.loginBtn) {
+        DOM.loginBtn.addEventListener('click', () => {
+            const token = DOM.tokenInput.value.trim();
+            if (token) {
+                githubToken = token;
+                localStorage.setItem('githubToken', token);
+                DOM.loginView.style.display = 'none';
+                DOM.adminView.style.display = 'flex';
+                loadAdminPanel();
+            } else {
+                alert('Пожалуйста, введите токен доступа.');
+            }
+        });
+    }
     DOM.saveBtn.addEventListener('click', saveConfiguration);
 
-    // --- ЗАГРУЗКА И РЕНДЕРИНГ ---
+    // --- ЗАГРУЗКА И ОСНОВНОЙ РЕНДЕРИНГ ---
     async function loadAdminPanel() {
-        const configUrl = `config.json?v=${new Date().getTime()}`;
+        const cacheBust = `?v=${new Date().getTime()}`;
         try {
-            const response = await fetch(configUrl);
-            if (response.status === 404) {
-                const liveUrl = `https://${window.location.hostname}${window.location.pathname.replace('admin.html', '')}config.json`;
-                alert(`Критическая ошибка: Файл config.json не найден!\n\nПроверьте, что файл доступен по прямой ссылке:\n${liveUrl}`);
-                throw new Error("Файл config.json не найден (404)");
-            }
+            const response = await fetch(`config.json${cacheBust}`);
             if (!response.ok) throw new Error(`Ошибка сети (статус: ${response.status})`);
             currentConfig = await response.json();
             renderAll();
             initInteractivity();
-        } catch (error) {
-            if (!error.message.includes("404")) alert(`Критическая ошибка загрузки: ${error.message}`);
-        }
+        } catch (error) { alert(`Критическая ошибка загрузки: ${error.message}`); }
     }
-
-    // --- ОСНОВНЫЕ ФУНКЦИИ РЕНДЕРИНГА ---
-    function renderAll() { renderCanvas(); renderFloatingPanels(); }
+    
+    function renderAll() {
+        renderCanvas();
+        renderFloatingPanels();
+    }
 
     function renderCanvas() {
         DOM.canvas.innerHTML = '';
@@ -42,9 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const canvasMain = document.createElement('main');
         canvasMain.id = 'element-container';
         const canvasFooter = createSectionElement(currentConfig.layout.footer, 'footer');
+
         const mainLayout = currentConfig.layout.main || {};
-        DOM.canvas.style.backgroundColor = mainLayout.background?.type === 'color' ? mainLayout.background.value : '#ffffff';
-        canvasMain.style.gap = mainLayout.columnGap || '20px';
+        if (mainLayout.background) { if (mainLayout.background.type === 'color') DOM.canvas.style.backgroundColor = mainLayout.background.value; } 
+        else { DOM.canvas.style.backgroundColor = '#ffffff'; }
+
         currentConfig.layout.main.columns.forEach(column => {
             const columnDiv = document.createElement('div');
             columnDiv.className = 'layout-column sortable-column';
@@ -56,8 +77,32 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             canvasMain.appendChild(columnDiv);
         });
+        
         DOM.canvas.append(canvasHeader, canvasMain, canvasFooter);
         initDragAndDrop();
+    }
+    
+    // FIX: ВОССТАНОВЛЕНА НЕДОСТАЮЩАЯ ФУНКЦИЯ
+    function createSectionElement(sectionConfig, tagName) {
+        const element = document.createElement(tagName);
+        element.id = `canvas-${tagName}`;
+        if (sectionConfig) {
+            element.innerHTML = sectionConfig.content || '';
+            if (sectionConfig.styles) {
+                Object.assign(element.style, sectionConfig.styles);
+            }
+            if (sectionConfig.background) {
+                if (sectionConfig.background.type === 'color') {
+                    element.style.backgroundColor = sectionConfig.background.value;
+                    element.style.backgroundImage = 'none';
+                } else if (sectionConfig.background.type === 'image') {
+                    element.style.backgroundImage = `url('${sectionConfig.background.value}')`;
+                    element.style.backgroundSize = 'cover';
+                    element.style.backgroundPosition = 'center';
+                }
+            }
+        }
+        return element;
     }
 
     function createAdminElement(elementData) {
@@ -65,36 +110,48 @@ document.addEventListener('DOMContentLoaded', () => {
         wrapper.className = 'admin-element-wrapper';
         wrapper.dataset.elementId = elementData.id;
         if (elementData.styles) Object.assign(wrapper.style, elementData.styles);
+        
         const overlay = document.createElement('div');
         overlay.className = 'admin-element-overlay';
         wrapper.appendChild(overlay);
         wrapper.appendChild(createElement(elementData));
+        
         wrapper.addEventListener('click', e => { e.stopPropagation(); selectElement(elementData.id); });
         return wrapper;
     }
 
     // --- ПАНЕЛИ НАСТРОЕК ---
-    function renderFloatingPanels() { renderGlobalSettingsPanel(); setupLayoutSettingsPanel(); }
+    function renderFloatingPanels() {
+        renderGlobalSettingsPanel();
+        setupLayoutSettingsPanel();
+    }
+    
     function renderGlobalSettingsPanel() {
         const body = DOM.panelBodies.global;
         body.innerHTML = `<div class="inspector-group"><h4>Основные</h4><div class="inspector-field"><label>Заголовок сайта (Title)</label><input type="text" data-config-path="globalSettings.pageTitle" value="${currentConfig.globalSettings.pageTitle || ''}"></div></div>`;
-        body.querySelector('input').addEventListener('input', e => { currentConfig.globalSettings.pageTitle = e.target.value; });
+        body.querySelector('input').addEventListener('input', (e) => {
+            currentConfig.globalSettings.pageTitle = e.target.value;
+        });
     }
 
     function setupLayoutSettingsPanel() {
         const selector = document.getElementById('layout-section-selector');
         const editorsContainer = document.getElementById('layout-section-editors');
-        const renderEditor = key => {
+
+        const renderEditor = (key) => {
             const config = currentConfig.layout[key];
-            let editorHtml = (key === 'main')
-                ? `<div class="inspector-group">${createSectionEditorHTML(key, config)}<div class="inspector-field"><label>Отступ между колонками (gap)</label><input type="text" data-config-path="layout.main.columnGap" value="${currentConfig.layout.main.columnGap || '20px'}"></div><h5>Колонки</h5><div id="columns-editor">${currentConfig.layout.main.columns.map(col => createColumnEditorHTML(col)).join('')}</div><button id="add-column-btn" class="add-element-btn" style="width:100%; margin-top:10px;">+ Добавить колонку</button></div>`
-                : `<div class="inspector-group">${createSectionEditorHTML(key, config)}</div>`;
+            let editorHtml = '';
+            if (key === 'main') {
+                editorHtml = `<div class="inspector-group">${createSectionEditorHTML(key, config)}<h5>Колонки</h5><div id="columns-editor">${currentConfig.layout.main.columns.map(col => createColumnEditorHTML(col)).join('')}</div><button id="add-column-btn" class="add-element-btn" style="width:100%; margin-top:10px;">+ Добавить колонку</button></div>`;
+            } else {
+                editorHtml = `<div class="inspector-group">${createSectionEditorHTML(key, config)}</div>`;
+            }
             editorsContainer.innerHTML = editorHtml;
             editorsContainer.querySelectorAll('input, select, textarea').forEach(el => el.addEventListener('input', updateConfigAndRenderCanvas));
             editorsContainer.querySelectorAll('.delete-column-btn').forEach(btn => btn.addEventListener('click', deleteColumn));
             editorsContainer.querySelector('#add-column-btn')?.addEventListener('click', addColumn);
         };
-        selector.addEventListener('change', e => renderEditor(e.target.value));
+        selector.addEventListener('change', (e) => renderEditor(e.target.value));
         renderEditor(selector.value);
     }
     
@@ -118,42 +175,63 @@ document.addEventListener('DOMContentLoaded', () => {
         renderCanvas();
     }
     
-    function addColumn() { currentConfig.layout.main.columns.push({ id: `col-${Date.now()}`, width: '1fr', elements: [] }); renderAll(); }
-    function deleteColumn(event) { const columnId = event.target.closest('.column-editor').dataset.columnId; currentConfig.layout.main.columns = currentConfig.layout.main.columns.filter(c => c.id !== columnId); renderAll(); }
-    function deleteSelectedElement() { if (!selectedElementId || !confirm("Вы уверены?")) return; currentConfig.elements = currentConfig.elements.filter(el => el.id !== selectedElementId); currentConfig.layout.main.columns.forEach(column => { column.elements = column.elements.filter(id => id !== selectedElementId); }); DOM.panels.inspector.style.display = 'none'; selectedElementId = null; renderCanvas(); }
+    function addColumn() {
+        currentConfig.layout.main.columns.push({ id: `col-${Date.now()}`, width: '1fr', elements: [] });
+        renderAll();
+    }
 
-    // FIX: ГЛАВНОЕ ИЗМЕНЕНИЕ - ТОЧЕЧНОЕ ОБНОВЛЕНИЕ ВМЕСТО ПЕРЕРИСОВКИ
+    function deleteColumn(event) {
+        const columnId = event.target.closest('.column-editor').dataset.columnId;
+        currentConfig.layout.main.columns = currentConfig.layout.main.columns.filter(c => c.id !== columnId);
+        renderAll();
+    }
+
     function updateElementFromInspector(event) {
         if (!selectedElementId) return;
         const elementData = currentConfig.elements.find(el => el.id === selectedElementId);
-        const wrapper = DOM.canvas.querySelector(`.admin-element-wrapper[data-element-id="${selectedElementId}"]`);
-        if (!elementData || !wrapper) return;
-
         const input = event.target;
-        const value = input.type === 'checkbox' ? input.checked : input.value;
-        
-        if (input.dataset.key) { // Общие свойства (adminTitle)
-            elementData[input.dataset.key] = value;
-        } else if (input.dataset.contentKey) { // Свойства контента
-            elementData.content[input.dataset.contentKey] = value;
-            // Обновляем только контент элемента, не трогая wrapper
-            const newContent = createElement(elementData);
-            wrapper.querySelector('.element-wrapper').replaceWith(newContent);
-        } else if (input.dataset.styleKey) { // Свойства стиля
+        const value = input.value;
+        if (input.dataset.key) { elementData[input.dataset.key] = value; } 
+        else if (input.dataset.contentKey) { elementData.content[input.dataset.contentKey] = value; } 
+        else if (input.dataset.styleKey) {
             if (!elementData.styles) elementData.styles = {};
             elementData.styles[input.dataset.styleKey] = value;
-            // Применяем стили напрямую к wrapper
-            Object.assign(wrapper.style, elementData.styles);
+        }
+        const oldWrapper = DOM.canvas.querySelector(`.admin-element-wrapper[data-element-id="${selectedElementId}"]`);
+        if (oldWrapper) {
+            const newWrapper = createAdminElement(elementData);
+            oldWrapper.replaceWith(newWrapper);
+            newWrapper.classList.add('selected');
+            makeElementsResizable();
         }
     }
 
-    // --- ИНТЕРАКТИВНОСТЬ ---
-    function initInteractivity() { setupToolbarActions(); makePanelsInteractive(); makeElementsResizable(); }
+    function deleteSelectedElement() {
+        if (!selectedElementId || !confirm("Вы уверены, что хотите удалить этот элемент?")) return;
+        currentConfig.elements = currentConfig.elements.filter(el => el.id !== selectedElementId);
+        currentConfig.layout.main.columns.forEach(column => {
+            column.elements = column.elements.filter(id => id !== selectedElementId);
+        });
+        DOM.panels.inspector.style.display = 'none';
+        selectedElementId = null;
+        renderCanvas();
+    }
+    
+    function initInteractivity() {
+        setupToolbarActions();
+        makePanelsInteractive();
+        makeElementsResizable();
+    }
+
     function makeElementsResizable() {
         interact('.admin-element-wrapper').resizable({
-            edges: { right: true, bottom: true },
+            edges: { left: false, right: true, bottom: true, top: false },
             listeners: {
-                move(event) { const target = event.target; target.style.width = `${event.rect.width}px`; target.style.height = `${event.rect.height}px`; },
+                move(event) {
+                    const target = event.target;
+                    target.style.width = `${event.rect.width}px`;
+                    target.style.height = `${event.rect.height}px`;
+                },
                 end(event) {
                     const elementId = event.target.dataset.elementId;
                     const elementData = currentConfig.elements.find(el => el.id === elementId);
@@ -165,16 +243,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             },
-            modifiers: [interact.modifiers.restrictSize({ min: { width: 50, height: 50 } })],
+            modifiers: [ interact.modifiers.restrictSize({ min: { width: 50, height: 50 } }) ],
         });
-    }
-
-    // --- ФАБРИКИ ЭЛЕМЕНТОВ И ИНТЕРФЕЙСА ---
-    function urlToEmbed(url) {
-        if (!url) return '';
-        const instaMatch = url.match(/(?:www\.)?instagram\.com\/reel\/([a-zA-Z0-9_-]+)/);
-        if (instaMatch) return `https://www.instagram.com/reel/${instaMatch[1]}/embed/`;
-        return url;
     }
 
     function createElement(elementData) {
@@ -182,80 +252,31 @@ document.addEventListener('DOMContentLoaded', () => {
         wrapper.className = `element-wrapper type-${elementData.type}`;
         let element;
         switch (elementData.type) {
-            case 'externalBlock': case 'videoBlock': case 'reels':
+            case 'externalBlock': case 'videoBlock':
                 element = document.createElement('iframe');
-                element.src = urlToEmbed(elementData.content.url);
+                element.dataset.src = elementData.content.url; 
+                setTimeout(() => { if (element && element.dataset.src) element.src = element.dataset.src; }, 100);
                 element.setAttribute('frameborder', '0');
-                element.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
-                element.setAttribute('allow', 'encrypted-media; picture-in-picture;');
                 break;
             case 'textBlock': element = document.createElement('div'); element.innerHTML = elementData.content.html; break;
             case 'photo': element = document.createElement('img'); element.src = elementData.content.url; element.alt = elementData.adminTitle || "Изображение"; break;
-            case 'button': element = document.createElement('button'); element.textContent = elementData.content.text; element.style.pointerEvents = 'none'; element.title = "Эта кнопка станет кликабельной на публичной странице сайта."; break;
+            case 'button': element = document.createElement('button'); element.textContent = elementData.content.text; element.style.pointerEvents = 'none'; break;
             default: element = document.createElement('div'); element.textContent = `Неизвестный тип`;
         }
         if (element) wrapper.appendChild(element);
         return wrapper;
     }
     
-    function renderInspector(elementId) {
-        const elementData = currentConfig.elements.find(el => el.id === elementId);
-        if (!elementData) return;
-        const inspectorBody = DOM.panelBodies.inspector;
-        // Задача 7: Оборачиваем стили в <details>
-        inspectorBody.innerHTML = `<div class="inspector-group"><h4>Действия</h4><button id="delete-element-btn">Удалить</button></div><div class="inspector-group"><h4>Общие</h4><div class="inspector-field"><label>Заголовок</label><input type="text" data-key="adminTitle" value="${elementData.adminTitle || ""}"></div></div><div class="inspector-group"><h4>Содержимое</h4>${generateContentFields(elementData)}</div><details class="inspector-group"><summary><h4>Стили</h4></summary>${generateStyleFields(elementData.styles || {})}</details>`;
-        DOM.panels.inspector.style.display = "block";
-        inspectorBody.querySelectorAll("input, textarea, select").forEach(input => { input.addEventListener("input", updateElementFromInspector) });
-        inspectorBody.querySelector("#delete-element-btn").addEventListener("click", deleteSelectedElement);
-        if (elementData.type === 'button') {
-            const dropdownToggle = inspectorBody.querySelector('#dropdown-toggle');
-            dropdownToggle?.addEventListener('change', (e) => {
-                elementData.content.hasDropdown = e.target.checked;
-                if(e.target.checked && !elementData.content.dropdownItems) elementData.content.dropdownItems = [];
-                renderInspector(elementId);
-            });
-            inspectorBody.querySelector('#add-dropdown-item')?.addEventListener('click', () => {
-                elementData.content.dropdownItems.push({label: 'Новый пункт', url: '#'});
-                renderInspector(elementId);
-            });
-            inspectorBody.querySelectorAll('.delete-dropdown-item').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    elementData.content.dropdownItems.splice(e.target.dataset.index, 1);
-                    renderInspector(elementId);
-                });
-            });
-             inspectorBody.querySelectorAll('.dropdown-item-editor input').forEach(input => {
-                input.addEventListener('input', (e) => {
-                    const { index, key } = e.target.dataset;
-                    elementData.content.dropdownItems[index][key] = e.target.value;
-                });
-            });
-        }
-    }
-
-    function generateContentFields(element) {
-        const urlNote = `<p style="font-size:12px;color:#777;">Для Instagram используйте обычную ссылку (она будет преобразована). Для OneDrive, Google Drive и др. ищите специальную "embed" (встроить) ссылку.</p>`;
-        switch(element.type){
-            case "photo": case "videoBlock": case "externalBlock": return `<div class="inspector-field"><label>URL</label><input type="text" data-content-key="url" value="${element.content.url||""}"></div>${urlNote}`;
-            case "reels": return `<div class="inspector-field"><label>URL</label><input type="text" data-content-key="url" value="${element.content.url||""}"></div>${urlNote}<div class="inspector-field"><label>Соотношение сторон</label><select data-style-key="aspectRatio"><option value="">Авто</option><option value="9/16" ${element.styles?.aspectRatio==='9/16'?"selected":""}>Вертикальное (9:16)</option><option value="1/1" ${element.styles?.aspectRatio==='1/1'?"selected":""}>Квадратное (1:1)</option><option value="16/9" ${element.styles?.aspectRatio==='16/9'?"selected":""}>Горизонтальное (16:9)</option></select></div>`;
-            case "textBlock": return `<div class="inspector-field"><label>HTML</label><textarea data-content-key="html">${element.content.html||""}</textarea></div>`;
-            case "button":
-                const dropdownEditor = element.content.hasDropdown ? `<div class="inspector-group"><h4>Пункты списка</h4><div id="dropdown-items-editor">${element.content.dropdownItems?.map((item, index) => `<div class="dropdown-item-editor"><input type="text" placeholder="Текст" data-index="${index}" data-key="label" value="${item.label}"><input type="text" placeholder="URL" data-index="${index}" data-key="url" value="${item.url}"><button class="delete-dropdown-item" data-index="${index}">❌</button></div>`).join('') || ''}</div><button id="add-dropdown-item" style="width:100%;margin-top:5px;">+ Добавить пункт</button></div>`
-                    : `<div class="inspector-field"><label>Действие</label><select data-content-key="action"><option value="openLink" ${element.content.action==="openLink"?"selected":""}>Открыть ссылку</option><option value="openModal" ${element.content.action==="openModal"?"selected":""}>Модальное окно</option></select></div><div class="inspector-field"><label>URL</label><input type="text" data-content-key="url" value="${element.content.url||""}"></div><div class="inspector-field"><label>HTML модального окна</label><textarea data-content-key="modalContent">${element.content.modalContent||""}</textarea></div>`;
-                return `<div class="inspector-field"><label>Текст кнопки</label><input type="text" data-content-key="text" value="${element.content.text||""}"></div><div class="inspector-field"><label><input type="checkbox" id="dropdown-toggle" data-content-key="hasDropdown" ${element.content.hasDropdown?"checked":""}> Выпадающий список</label></div>${dropdownEditor}`;
-            default: return"<p>Нет настроек.</p>"
-        }
-    }
-    
-    // --- ОСТАЛЬНЫЕ ВСПОМОГАТЕЛЬНЫЕ И СЛУЖЕБНЫЕ ФУНКЦИИ ---
-    function createSectionEditorHTML(key,config){return`${key!=="main"?`<div class="inspector-field"><label>HTML</label><textarea data-config-path="layout.${key}.content">${config.content||""}</textarea></div>`:""}<div class="inspector-field"><label>Тип фона</label><select data-config-path="layout.${key}.background.type"><option value="color" ${config.background?.type==="color"?"selected":""}>Цвет</option><option value="image" ${config.background?.type==="image"?"selected":""}>Изображение</option></select></div><div class="inspector-field"><label>Значение</label><input type="text" data-config-path="layout.${key}.background.value" value="${config.background?.value||""}"></div>`}
+    function createSectionEditorHTML(key,config){return`${key!=="main"?`<div class="inspector-field"><label>HTML-контент</label><textarea data-config-path="layout.${key}.content">${config.content||""}</textarea></div>`:""}<div class="inspector-field"><label>Тип фона</label><select data-config-path="layout.${key}.background.type"><option value="color" ${config.background?.type==="color"?"selected":""}>Цвет</option><option value="image" ${config.background?.type==="image"?"selected":""}>Изображение</option></select></div><div class="inspector-field"><label>Значение (цвет или URL)</label><input type="text" data-config-path="layout.${key}.background.value" value="${config.background?.value||""}"></div>`}
     function createColumnEditorHTML(column){return`<div class="column-editor" data-column-id="${column.id}"><input type="text" data-path="width" value="${column.width}"><button class="delete-column-btn">❌</button></div>`}
-    function generateStyleFields(styles){return`<div class="inspector-field"><label>Ширина</label><input type="text" data-style-key="width" value="${styles.width||""}" placeholder="н-р, 100% или 300px"></div><div class="inspector-field"><label>Высота</label><input type="text" data-style-key="height" value="${styles.height||""}" placeholder="н-р, 650px или auto"></div><div class="inspector-field"><label>Цвет фона</label><input type="color" data-style-key="backgroundColor" value="${styles.backgroundColor||"#ffffff"}"></div><div class="inspector-field"><label>Цвет текста</label><input type="color" data-style-key="color" value="${styles.color||"#000000"}"></div><div class="inspector-field"><label>Отступы</label><input type="text" data-style-key="padding" value="${styles.padding||""}" placeholder="н-р, 15px"></div><div class="inspector-field"><label>Скругление</label><input type="text" data-style-key="borderRadius" value="${styles.borderRadius||""}" placeholder="н-р, 8px"></div><div class="inspector-field"><label>Тень</label><input type="text" data-style-key="boxShadow" value="${styles.boxShadow||""}" placeholder="0px 2px 4px rgba(0,0,0,0.1)"></div>`}
+    function generateContentFields(element){switch(element.type){case"externalBlock":case"photo":case"videoBlock":return`<div class="inspector-field"><label>URL</label><input type="text" data-content-key="url" value="${element.content.url||""}"></div>`;case"textBlock":return`<div class="inspector-field"><label>HTML</label><textarea data-content-key="html">${element.content.html||""}</textarea></div>`;case"button":return`<div class="inspector-field"><label>Текст</label><input type="text" data-content-key="text" value="${element.content.text||""}"></div><div class="inspector-field"><label>Действие</label><select data-content-key="action"><option value="openLink" ${element.content.action==="openLink"?"selected":""}>Ссылка</option><option value="openModal" ${element.content.action==="openModal"?"selected":""}>Модальное окно</option></select></div><div class="inspector-field"><label>URL</label><input type="text" data-content-key="url" value="${element.content.url||""}"></div><div class="inspector-field"><label>HTML модального окна</label><textarea data-content-key="modalContent">${element.content.modalContent||""}</textarea></div>`;default:return"<p>Нет настроек.</p>"}}
+    function generateStyleFields(styles){return`<div class="inspector-field"><label>Ширина</label><input type="text" data-style-key="width" value="${styles.width||""}" placeholder="(н-р, 100% или 300px)"></div><div class="inspector-field"><label>Высота</label><input type="text" data-style-key="height" value="${styles.height||""}" placeholder="(н-р, 650px или auto)"></div><div class="inspector-field"><label>Цвет фона</label><input type="color" data-style-key="backgroundColor" value="${styles.backgroundColor||"#ffffff"}"></div><div class="inspector-field"><label>Цвет текста</label><input type="color" data-style-key="color" value="${styles.color||"#000000"}"></div><div class="inspector-field"><label>Отступы</label><input type="text" data-style-key="padding" value="${styles.padding||""}"></div><div class="inspector-field"><label>Скругление</label><input type="text" data-style-key="borderRadius" value="${styles.borderRadius||""}"></div><div class="inspector-field"><label>Тень</label><input type="text" data-style-key="boxShadow" value="${styles.boxShadow||""}"></div>`}
     function setupToolbarActions(){document.querySelectorAll(".add-element-btn").forEach(btn=>{if(btn.id!=="add-column-btn")btn.onclick=()=>addNewElement(btn.dataset.type)});document.querySelectorAll(".preview-btn").forEach(btn=>{btn.onclick=()=>{if(btn.dataset.mode==="desktop")DOM.canvas.style.width="100%";if(btn.dataset.mode==="tablet")DOM.canvas.style.width="768px";if(btn.dataset.mode==="mobile")DOM.canvas.style.width="375px"}});document.querySelectorAll(".panel-toggle-btn").forEach(btn=>{btn.onclick=()=>{const panelId=btn.dataset.panel;const panel=document.getElementById(panelId);panel.style.display=panel.style.display==="none"?"block":"none"}})}
     function initDragAndDrop(){const columns=document.querySelectorAll(".sortable-column");columns.forEach(col=>{new Sortable(col,{group:"shared-elements",animation:150,ghostClass:"sortable-ghost",onEnd:updateStructureFromDOM})})}
-    function makePanelsInteractive(){interact(".floating-panel").draggable({allowFrom:".panel-header",inertia:true,modifiers:[interact.modifiers.restrictRect({restriction:"parent",endOnly:true})],listeners:{move(event){const target=event.target;const x=(parseFloat(target.getAttribute("data-x"))||0)+event.dx;const y=(parseFloat(target.getAttribute("data-y"))||0)+event.dy;target.style.transform=`translate(${x}px, ${y}px)`;target.setAttribute("data-x",x);target.setAttribute("data-y",y)}}});document.querySelectorAll(".panel-action").forEach(btn=>{btn.addEventListener("click",function(){const panel=this.closest(".floating-panel");const action=this.dataset.action;if(action==="close")panel.style.display="none"})})}
+    function makePanelsInteractive(){interact(".floating-panel").draggable({allowFrom:".panel-header",inertia:true,modifiers:[interact.modifiers.restrictRect({restriction:"parent",endOnly:true})],listeners:{move(event){const target=event.target;const x=(parseFloat(target.getAttribute("data-x"))||0)+event.dx;const y=(parseFloat(target.getAttribute("data-y"))||0)+event.dy;target.style.transform=`translate(${x}px, ${y}px)`;target.setAttribute("data-x",x);target.setAttribute("data-y",y)}}});document.querySelectorAll(".panel-action").forEach(btn=>{btn.addEventListener("click",function(){const panel=this.closest(".floating-panel");const action=this.dataset.action;if(action==="close")panel.style.display="none";if(action==="minimize")panel.querySelector(".panel-body").classList.toggle("minimized")})})}
     function selectElement(elementId){document.querySelector(".admin-element-wrapper.selected")?.classList.remove("selected");const newSelected=document.querySelector(`.admin-element-wrapper[data-element-id="${elementId}"]`);if(newSelected){newSelected.classList.add("selected");selectedElementId=elementId;renderInspector(elementId)}}
-    function addNewElement(type){if(currentConfig.layout.main.columns.length===0){return alert("Сначала добавьте колонку!")}const newElement={id:`el-${Date.now()}`,adminTitle:`Новый ${type}`,type:type,content:{},styles:{}};if(type==="textBlock")newElement.content.html="<p>Новый текст.</p>";if(type==="photo")newElement.content.url="";if(type==="button"){newElement.content.text="Кнопка";newElement.styles={padding:"15px",backgroundColor:"#3498db",color:"#ffffff",border:"none",cursor:"pointer"}}currentConfig.elements.push(newElement);currentConfig.layout.main.columns[0].elements.unshift(newElement.id);renderCanvas();selectElement(newElement.id)}
+    function renderInspector(elementId){const elementData=currentConfig.elements.find(el=>el.id===elementId);if(!elementData)return;const inspectorBody=DOM.panelBodies.inspector;inspectorBody.innerHTML=`<div class="inspector-group"><h4>Действия</h4><button id="delete-element-btn">Удалить</button></div><div class="inspector-group"><h4>Общие</h4><div class="inspector-field"><label>Заголовок</label><input type="text" data-key="adminTitle" value="${elementData.adminTitle||""}"></div></div><div class="inspector-group"><h4>Содержимое</h4>${generateContentFields(elementData)}</div><div class="inspector-group"><h4>Стили</h4>${generateStyleFields(elementData.styles||{})}</div>`;DOM.panels.inspector.style.display="block";inspectorBody.querySelectorAll("input, textarea, select").forEach(input=>{input.addEventListener("input",updateElementFromInspector)});document.getElementById("delete-element-btn").addEventListener("click",deleteSelectedElement)}
+    function addNewElement(type){if(currentConfig.layout.main.columns.length===0){return alert("Сначала добавьте колонку!")}const newElement={id:`el-${Date.now()}`,adminTitle:`Новый ${type}`,type:type,content:{},styles:{}};if(type==="textBlock")newElement.content.html="<p>Новый текст.</p>";if(type==="photo")newElement.content.url="https://via.placeholder.com/600x400.png?text=Фото";if(type==="button"){newElement.content.text="Кнопка";newElement.styles={padding:"15px",backgroundColor:"#3498db",color:"#ffffff",border:"none",cursor:"pointer"}}currentConfig.elements.push(newElement);currentConfig.layout.main.columns[0].elements.unshift(newElement.id);renderCanvas();selectElement(newElement.id)}
     function updateStructureFromDOM(){const newColumnsData=[];document.querySelectorAll(".sortable-column").forEach(columnDiv=>{const columnId=columnDiv.dataset.columnId;const originalColumn=currentConfig.layout.main.columns.find(c=>c.id===columnId);const elementIds=Array.from(columnDiv.querySelectorAll(".admin-element-wrapper")).map(el=>el.dataset.elementId);newColumnsData.push({...originalColumn,elements:elementIds})});currentConfig.layout.main.columns=newColumnsData}
     async function saveConfiguration(){DOM.saveBtn.textContent="Сохранение...";DOM.saveBtn.disabled=true;updateStructureFromDOM();try{if(!currentConfig||!currentConfig.github)throw new Error("Конфигурация не загружена");const{username,repo}=currentConfig.github;const url=`https://api.github.com/repos/${username}/${repo}/contents/config.json`;const getFileResponse=await fetch(url,{headers:{'Authorization':`token ${githubToken}`}});if(!getFileResponse.ok)throw new Error(`Не удалось получить SHA. Статус: ${getFileResponse.status}`);const fileData=await getFileResponse.json();const sha=fileData.sha;const contentToSave=JSON.stringify(currentConfig,null,2);const encodedContent=btoa(unescape(encodeURIComponent(contentToSave)));const body={message:`[Admin Panel] Update config.json at ${new Date().toISOString()}`,content:encodedContent,sha:sha};const saveResponse=await fetch(url,{method:'PUT',headers:{'Authorization':`token ${githubToken}`,'Content-Type':'application/json'},body:JSON.stringify(body)});if(saveResponse.ok){alert("Конфигурация успешно сохранена!")}else{throw new Error(`Ошибка сохранения. Статус: ${saveResponse.status}`)}}catch(error){console.error("ОШИБКА СОХРАНЕНИЯ:",error);alert(`Произошла ошибка: ${error.message}`)}finally{DOM.saveBtn.textContent="💾 Сохранить";DOM.saveBtn.disabled=false}}
 });
