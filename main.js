@@ -29,7 +29,7 @@ function renderPage(config) {
                 const elementNode = createElement(elementData);
                 columnDiv.appendChild(elementNode);
             } else {
-                console.warn(`Элемент с ID "${elementId}" не найден, но на него есть ссылка в колонке.`);
+                console.warn(`Элемент с ID "${elementId}" не найден.`);
             }
         });
         elementContainer.appendChild(columnDiv);
@@ -64,7 +64,7 @@ function createElement(elementData) {
     wrapper.id = elementData.id;
     let element;
     switch (elementData.type) {
-        case 'externalBlock': case 'videoBlock':
+        case 'externalBlock': case 'videoBlock': case 'reels':
             element = document.createElement('iframe');
             element.src = elementData.content.url;
             element.setAttribute('frameborder', '0');
@@ -82,13 +82,37 @@ function createElement(elementData) {
             element.setAttribute('loading', 'lazy');
             break;
         case 'button':
-            element = document.createElement('button');
-            element.textContent = elementData.content.text;
-            if (elementData.content.action === 'openLink' && elementData.content.url) {
-                element.onclick = () => window.open(elementData.content.url, '_blank');
-            } else if (elementData.content.action === 'openModal') {
-                element.classList.add('modal-trigger-btn');
-                element.dataset.modalContent = elementData.content.modalContent;
+            // Задача 8: Логика для кнопки с выпадающим списком
+            if (elementData.content.hasDropdown && elementData.content.dropdownItems?.length > 0) {
+                element = document.createElement('div');
+                element.className = 'dropdown-container';
+                const button = document.createElement('button');
+                button.textContent = elementData.content.text;
+                const dropdownMenu = document.createElement('div');
+                dropdownMenu.className = 'dropdown-menu';
+                elementData.content.dropdownItems.forEach(item => {
+                    const link = document.createElement('a');
+                    link.href = item.url;
+                    link.textContent = item.label;
+                    link.target = '_blank';
+                    dropdownMenu.appendChild(link);
+                });
+                element.appendChild(button);
+                element.appendChild(dropdownMenu);
+                button.addEventListener('click', () => dropdownMenu.classList.toggle('show'));
+                // Скрывать меню при клике вне его
+                window.addEventListener('click', (e) => {
+                    if (!element.contains(e.target)) dropdownMenu.classList.remove('show');
+                });
+            } else {
+                element = document.createElement('button');
+                element.textContent = elementData.content.text;
+                if (elementData.content.action === 'openLink' && elementData.content.url) {
+                    element.onclick = () => window.open(elementData.content.url, '_blank');
+                } else if (elementData.content.action === 'openModal') {
+                    element.classList.add('modal-trigger-btn');
+                    element.dataset.modalContent = elementData.content.modalContent;
+                }
             }
             break;
         default:
@@ -113,9 +137,7 @@ function setupModalInteraction() {
             modalOverlay.classList.add('active');
         });
     });
-    const closeModal = () => {
-        modalOverlay.classList.remove('active');
-    };
+    const closeModal = () => modalOverlay.classList.remove('active');
     closeModalBtn.addEventListener('click', closeModal);
     modalOverlay.addEventListener('click', event => {
         if (event.target === modalOverlay) closeModal();
