@@ -101,12 +101,8 @@ function createElement(elementData) {
                 button.addEventListener('click', () => {
                     dropdownMenu.classList.toggle('show');
                     const rect = dropdownMenu.getBoundingClientRect();
-                    if (rect.right > window.innerWidth) {
-                        dropdownMenu.classList.add('dropdown-menu-right');
-                    }
-                    if (rect.left < 0) {
-                        dropdownMenu.classList.remove('dropdown-menu-right');
-                    }
+                    if (rect.right > window.innerWidth) dropdownMenu.classList.add('dropdown-menu-right');
+                    if (rect.left < 0) dropdownMenu.classList.remove('dropdown-menu-right');
                 });
                 window.addEventListener('click', (e) => { if (!element.contains(e.target)) dropdownMenu.classList.remove('show'); });
             } else {
