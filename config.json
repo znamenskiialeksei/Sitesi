@@ -1,60 +1,104 @@
 {
-    "github": {
-      "username": "znamenskiialeksei",
-      "repo": "Sitesi"
-    },
-    "globalSettings": {
-      "pageTitle": "Новая страница"
-    },
-    "layout": {
-      "header": {
-        "content": "<h1>Заголовок</h1>",
-        "background": {
-          "type": "color",
-          "value": "#2c3e50"
-        },
-        "styles": {
-          "color": "#ffffff",
-          "padding": "20px",
-          "textAlign": "center"
-        }
+  "github": {
+    "username": "znamenskiialeksei",
+    "repo": "Sitesi"
+  },
+  "globalSettings": {
+    "pageTitle": "Новая страница"
+  },
+  "layout": {
+    "header": {
+      "content": "<h1>Заголовок</h1>",
+      "background": {
+        "type": "color",
+        "value": "#2c3e50"
       },
-      "main": {
-        "columns": [
-          {
-            "id": "col-1",
-            "width": "100%",
-            "elements": [
-              "el-1"
-            ]
-          }
-        ]
-      },
-      "footer": {
-        "content": "<p>Подвал сайта</p>",
-        "background": {
-          "type": "color",
-          "value": "#34495e"
-        },
-        "styles": {
-          "color": "#ecf0f1",
-          "padding": "15px",
-          "textAlign": "center"
-        }
+      "styles": {
+        "color": "#ffffff",
+        "padding": "20px",
+        "textAlign": "center"
       }
     },
-    "elements": [
-      {
-        "id": "el-1",
-        "adminTitle": "Стартовый блок",
-        "type": "textBlock",
-        "content": {
-          "html": "<h2>Добро пожаловать!</h2><p>Это ваш новый холст. Начните редактирование в админ-панели.</p>"
+    "main": {
+      "columns": [
+        {
+          "id": "col-1",
+          "width": "30%",
+          "elements": [
+            "el-1",
+            "el-1757099242581",
+            "el-1757099257779",
+            "el-1757099270436"
+          ]
         },
-        "styles": {
-          "padding": "20px",
-          "backgroundColor": "#ffffff"
+        {
+          "id": "col-1757099308837",
+          "width": "30%",
+          "elements": []
+        },
+        {
+          "id": "col-1757099314077",
+          "width": "30%",
+          "elements": []
         }
+      ]
+    },
+    "footer": {
+      "content": "<p>Подвал сайта</p>",
+      "background": {
+        "type": "color",
+        "value": "#34495e"
+      },
+      "styles": {
+        "color": "#ecf0f1",
+        "padding": "15px",
+        "textAlign": "center"
       }
-    ]
-  }
+    }
+  },
+  "elements": [
+    {
+      "id": "el-1",
+      "adminTitle": "Стартовый блок",
+      "type": "textBlock",
+      "content": {
+        "html": "<h2>Добро пожаловать!</h2><p>Это ваш новый холст. Начните редактирование в админ-панели.</p>"
+      },
+      "styles": {
+        "padding": "20px",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    {
+      "id": "el-1757099242581",
+      "adminTitle": "Новый externalBlock",
+      "type": "externalBlock",
+      "content": {
+        "url": "https://znamenskiialeksei.github.io/marmarisyachting/2RouteVasilisa.html"
+      },
+      "styles": {}
+    },
+    {
+      "id": "el-1757099257779",
+      "adminTitle": "Новый button",
+      "type": "button",
+      "content": {
+        "text": "Кнопка"
+      },
+      "styles": {
+        "padding": "15px",
+        "backgroundColor": "#3498db",
+        "color": "#ffffff",
+        "border": "none",
+        "cursor": "pointer"
+      }
+    },
+    {
+      "id": "el-1757099270436",
+      "adminTitle": "Новый reels",
+      "type": "reels",
+      "content": {},
+      "styles": {}
+    }
+  ]
+}
