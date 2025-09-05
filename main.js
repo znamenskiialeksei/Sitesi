@@ -82,7 +82,6 @@ function createElement(elementData) {
             element.setAttribute('loading', 'lazy');
             break;
         case 'button':
-            // Задача 8: Логика для кнопки с выпадающим списком
             if (elementData.content.hasDropdown && elementData.content.dropdownItems?.length > 0) {
                 element = document.createElement('div');
                 element.className = 'dropdown-container';
@@ -99,11 +98,18 @@ function createElement(elementData) {
                 });
                 element.appendChild(button);
                 element.appendChild(dropdownMenu);
-                button.addEventListener('click', () => dropdownMenu.classList.toggle('show'));
-                // Скрывать меню при клике вне его
-                window.addEventListener('click', (e) => {
-                    if (!element.contains(e.target)) dropdownMenu.classList.remove('show');
+                button.addEventListener('click', () => {
+                    dropdownMenu.classList.toggle('show');
+                    // Задача 8: "Умное" позиционирование
+                    const rect = dropdownMenu.getBoundingClientRect();
+                    if (rect.right > window.innerWidth) {
+                        dropdownMenu.classList.add('dropdown-menu-right');
+                    }
+                    if (rect.left < 0) {
+                        dropdownMenu.classList.remove('dropdown-menu-right');
+                    }
                 });
+                window.addEventListener('click', (e) => { if (!element.contains(e.target)) dropdownMenu.classList.remove('show'); });
             } else {
                 element = document.createElement('button');
                 element.textContent = elementData.content.text;
@@ -139,7 +145,5 @@ function setupModalInteraction() {
     });
     const closeModal = () => modalOverlay.classList.remove('active');
     closeModalBtn.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', event => {
-        if (event.target === modalOverlay) closeModal();
-    });
+    modalOverlay.addEventListener('click', event => { if (event.target === modalOverlay) closeModal(); });
 }

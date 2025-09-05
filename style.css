@@ -8,8 +8,9 @@ body,html{margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe
 .element-wrapper button{transition:filter .2s ease}
 .element-wrapper button:hover{filter:brightness(1.1)}
 .dropdown-container{position:relative;display:inline-block}
-.dropdown-menu{display:none;position:absolute;background-color:#f9f9f9;min-width:160px;box-shadow:0 8px 16px 0 rgba(0,0,0,0.2);z-index:1;border-radius:4px;padding:5px 0}
+.dropdown-menu{display:none;position:absolute;background-color:#f9f9f9;min-width:160px;box-shadow:0 8px 16px 0 rgba(0,0,0,0.2);z-index:10;border-radius:4px;padding:5px 0}
 .dropdown-menu.show{display:block}
+.dropdown-menu-right{right:0}
 .dropdown-menu a{color:black;padding:12px 16px;text-decoration:none;display:block;font-size:14px}
 .dropdown-menu a:hover{background-color:#f1f1f1}
 .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);display:none;justify-content:center;align-items:center;z-index:1000;opacity:0;transition:opacity .3s ease}
@@ -38,8 +39,11 @@ body,html{margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe
 .floating-panel{position:absolute;top:80px;right:20px;width:340px;background:#fdfdfd;border-radius:8px;box-shadow:0 8px 25px rgba(0,0,0,.2);display:flex;flex-direction:column;max-height:calc(100vh - 100px);z-index:100}
 .panel-header{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;background:var(--light-gray);cursor:move;border-bottom:1px solid var(--border-color);border-radius:8px 8px 0 0}
 .panel-body{padding:15px;overflow-y:auto;overflow-wrap:break-word}
-.inspector-group{margin-bottom:15px;border-top:1px solid var(--light-gray);padding-top:10px}
+.inspector-group{margin-bottom:12px;border-top:1px solid var(--light-gray);padding-top:8px}
 .inspector-group:first-child{border-top:none;padding-top:0}
+.inspector-group h4{margin:0 0 8px;font-size:13px;color:#7f8c8d;text-transform:uppercase}
+.inspector-group details summary{cursor:pointer;outline:none}
+.inspector-group details summary::marker{font-size:0.8em}
 .inspector-field{margin-bottom:8px}
 .inspector-field label{display:block;font-size:14px;margin-bottom:4px;font-weight:500;overflow-wrap:break-word}
 .inspector-field input,.inspector-field select,.inspector-field textarea{width:100%;max-width:100%;padding:8px;border:1px solid var(--border-color);border-radius:4px;background-color:white;word-break:break-all}

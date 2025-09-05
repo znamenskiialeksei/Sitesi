@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И КОНСТАНТЫ ---
     let githubToken = null, currentConfig = null, selectedElementId = null;
     const DOM = {
         saveBtn: document.getElementById('save-btn'), canvas: document.getElementById('admin-canvas'),
@@ -15,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginBtn) { loginBtn.addEventListener('click', () => { const token = tokenInput.value.trim(); if (token) { githubToken = token; localStorage.setItem('githubToken', token); loginView.style.display = 'none'; adminView.style.display = 'flex'; loadAdminPanel(); } else { alert('Введите токен.'); } }); }
     DOM.saveBtn.addEventListener('click', saveConfiguration);
 
-    // --- ЗАГРУЗКА И ОСНОВНОЙ РЕНДЕРИНГ ---
+    // --- ЗАГРУЗКА И РЕНДЕРИНГ ---
     async function loadAdminPanel() {
         const configUrl = `config.json?v=${new Date().getTime()}`;
         try {
@@ -34,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- ГЛАВНЫЕ ФУНКЦИИ РЕНДЕРИНГА ---
+    // --- ОСНОВНЫЕ ФУНКЦИИ РЕНДЕРИНГА ---
     function renderAll() { renderCanvas(); renderFloatingPanels(); }
 
     function renderCanvas() {
@@ -60,20 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
         DOM.canvas.append(canvasHeader, canvasMain, canvasFooter);
         initDragAndDrop();
     }
-    
-    function createSectionElement(sectionConfig, tagName) {
-        const element = document.createElement(tagName);
-        element.id = `canvas-${tagName}`;
-        if (sectionConfig) {
-            element.innerHTML = sectionConfig.content || '';
-            if (sectionConfig.styles) Object.assign(element.style, sectionConfig.styles);
-            if (sectionConfig.background) {
-                if (sectionConfig.background.type === 'color') { element.style.backgroundColor = sectionConfig.background.value; element.style.backgroundImage = 'none'; } 
-                else if (sectionConfig.background.type === 'image') { element.style.backgroundImage = `url('${sectionConfig.background.value}')`; element.style.backgroundSize = 'cover'; element.style.backgroundPosition = 'center'; }
-            }
-        }
-        return element;
-    }
 
     function createAdminElement(elementData) {
         const wrapper = document.createElement('div');
@@ -89,11 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- ПАНЕЛИ НАСТРОЕК ---
-    function renderFloatingPanels() {
-        renderGlobalSettingsPanel();
-        setupLayoutSettingsPanel();
-    }
-    
+    function renderFloatingPanels() { renderGlobalSettingsPanel(); setupLayoutSettingsPanel(); }
     function renderGlobalSettingsPanel() {
         const body = DOM.panelBodies.global;
         body.innerHTML = `<div class="inspector-group"><h4>Основные</h4><div class="inspector-field"><label>Заголовок сайта (Title)</label><input type="text" data-config-path="globalSettings.pageTitle" value="${currentConfig.globalSettings.pageTitle || ''}"></div></div>`;
@@ -141,20 +122,28 @@ document.addEventListener('DOMContentLoaded', () => {
     function deleteColumn(event) { const columnId = event.target.closest('.column-editor').dataset.columnId; currentConfig.layout.main.columns = currentConfig.layout.main.columns.filter(c => c.id !== columnId); renderAll(); }
     function deleteSelectedElement() { if (!selectedElementId || !confirm("Вы уверены?")) return; currentConfig.elements = currentConfig.elements.filter(el => el.id !== selectedElementId); currentConfig.layout.main.columns.forEach(column => { column.elements = column.elements.filter(id => id !== selectedElementId); }); DOM.panels.inspector.style.display = 'none'; selectedElementId = null; renderCanvas(); }
 
+    // FIX: ГЛАВНОЕ ИЗМЕНЕНИЕ - ТОЧЕЧНОЕ ОБНОВЛЕНИЕ ВМЕСТО ПЕРЕРИСОВКИ
     function updateElementFromInspector(event) {
         if (!selectedElementId) return;
         const elementData = currentConfig.elements.find(el => el.id === selectedElementId);
+        const wrapper = DOM.canvas.querySelector(`.admin-element-wrapper[data-element-id="${selectedElementId}"]`);
+        if (!elementData || !wrapper) return;
+
         const input = event.target;
         const value = input.type === 'checkbox' ? input.checked : input.value;
-        if (input.dataset.key) { elementData[input.dataset.key] = value; }
-        else if (input.dataset.contentKey) { elementData.content[input.dataset.contentKey] = value; }
-        else if (input.dataset.styleKey) { if (!elementData.styles) elementData.styles = {}; elementData.styles[input.dataset.styleKey] = value; }
-        const oldWrapper = DOM.canvas.querySelector(`.admin-element-wrapper[data-element-id="${selectedElementId}"]`);
-        if (oldWrapper) {
-            const newWrapper = createAdminElement(elementData);
-            oldWrapper.replaceWith(newWrapper);
-            newWrapper.classList.add('selected');
-            makeElementsResizable();
+        
+        if (input.dataset.key) { // Общие свойства (adminTitle)
+            elementData[input.dataset.key] = value;
+        } else if (input.dataset.contentKey) { // Свойства контента
+            elementData.content[input.dataset.contentKey] = value;
+            // Обновляем только контент элемента, не трогая wrapper
+            const newContent = createElement(elementData);
+            wrapper.querySelector('.element-wrapper').replaceWith(newContent);
+        } else if (input.dataset.styleKey) { // Свойства стиля
+            if (!elementData.styles) elementData.styles = {};
+            elementData.styles[input.dataset.styleKey] = value;
+            // Применяем стили напрямую к wrapper
+            Object.assign(wrapper.style, elementData.styles);
         }
     }
 
@@ -182,10 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- ФАБРИКИ ЭЛЕМЕНТОВ И ИНТЕРФЕЙСА ---
     function urlToEmbed(url) {
-        // FIX: Проверяем, что URL существует, прежде чем его обрабатывать
-        if (!url) {
-            return 'about:blank';
-        }
+        if (!url) return '';
         const instaMatch = url.match(/(?:www\.)?instagram\.com\/reel\/([a-zA-Z0-9_-]+)/);
         if (instaMatch) return `https://www.instagram.com/reel/${instaMatch[1]}/embed/`;
         return url;
@@ -216,21 +202,39 @@ document.addEventListener('DOMContentLoaded', () => {
         const elementData = currentConfig.elements.find(el => el.id === elementId);
         if (!elementData) return;
         const inspectorBody = DOM.panelBodies.inspector;
-        inspectorBody.innerHTML = `<div class="inspector-group"><h4>Действия</h4><button id="delete-element-btn">Удалить</button></div><div class="inspector-group"><h4>Общие</h4><div class="inspector-field"><label>Заголовок</label><input type="text" data-key="adminTitle" value="${elementData.adminTitle || ""}"></div></div><div class="inspector-group"><h4>Содержимое</h4>${generateContentFields(elementData)}</div><div class="inspector-group"><h4>Стили</h4>${generateStyleFields(elementData.styles || {})}</div>`;
+        // Задача 7: Оборачиваем стили в <details>
+        inspectorBody.innerHTML = `<div class="inspector-group"><h4>Действия</h4><button id="delete-element-btn">Удалить</button></div><div class="inspector-group"><h4>Общие</h4><div class="inspector-field"><label>Заголовок</label><input type="text" data-key="adminTitle" value="${elementData.adminTitle || ""}"></div></div><div class="inspector-group"><h4>Содержимое</h4>${generateContentFields(elementData)}</div><details class="inspector-group"><summary><h4>Стили</h4></summary>${generateStyleFields(elementData.styles || {})}</details>`;
         DOM.panels.inspector.style.display = "block";
         inspectorBody.querySelectorAll("input, textarea, select").forEach(input => { input.addEventListener("input", updateElementFromInspector) });
         inspectorBody.querySelector("#delete-element-btn").addEventListener("click", deleteSelectedElement);
         if (elementData.type === 'button') {
             const dropdownToggle = inspectorBody.querySelector('#dropdown-toggle');
-            dropdownToggle?.addEventListener('change', () => { elementData.content.hasDropdown = dropdownToggle.checked; if (dropdownToggle.checked && !elementData.content.dropdownItems) elementData.content.dropdownItems = []; renderInspector(elementId); });
-            inspectorBody.querySelector('#add-dropdown-item')?.addEventListener('click', () => { elementData.content.dropdownItems.push({ label: 'Новый пункт', url: '#' }); renderInspector(elementId); });
-            inspectorBody.querySelectorAll('.delete-dropdown-item').forEach(btn => { btn.addEventListener('click', (e) => { elementData.content.dropdownItems.splice(e.target.dataset.index, 1); renderInspector(elementId); }); });
-            inspectorBody.querySelectorAll('.dropdown-item-editor input').forEach(input => { input.addEventListener('input', (e) => { const { index, key } = e.target.dataset; elementData.content.dropdownItems[index][key] = e.target.value; }); });
+            dropdownToggle?.addEventListener('change', (e) => {
+                elementData.content.hasDropdown = e.target.checked;
+                if(e.target.checked && !elementData.content.dropdownItems) elementData.content.dropdownItems = [];
+                renderInspector(elementId);
+            });
+            inspectorBody.querySelector('#add-dropdown-item')?.addEventListener('click', () => {
+                elementData.content.dropdownItems.push({label: 'Новый пункт', url: '#'});
+                renderInspector(elementId);
+            });
+            inspectorBody.querySelectorAll('.delete-dropdown-item').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    elementData.content.dropdownItems.splice(e.target.dataset.index, 1);
+                    renderInspector(elementId);
+                });
+            });
+             inspectorBody.querySelectorAll('.dropdown-item-editor input').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const { index, key } = e.target.dataset;
+                    elementData.content.dropdownItems[index][key] = e.target.value;
+                });
+            });
         }
     }
 
     function generateContentFields(element) {
-        const urlNote = `<p style="font-size:12px;color:#777;">Для Instagram используйте обычную ссылку. Для OneDrive и др. может понадобиться 'embed' ссылка.</p>`;
+        const urlNote = `<p style="font-size:12px;color:#777;">Для Instagram используйте обычную ссылку (она будет преобразована). Для OneDrive, Google Drive и др. ищите специальную "embed" (встроить) ссылку.</p>`;
         switch(element.type){
             case "photo": case "videoBlock": case "externalBlock": return `<div class="inspector-field"><label>URL</label><input type="text" data-content-key="url" value="${element.content.url||""}"></div>${urlNote}`;
             case "reels": return `<div class="inspector-field"><label>URL</label><input type="text" data-content-key="url" value="${element.content.url||""}"></div>${urlNote}<div class="inspector-field"><label>Соотношение сторон</label><select data-style-key="aspectRatio"><option value="">Авто</option><option value="9/16" ${element.styles?.aspectRatio==='9/16'?"selected":""}>Вертикальное (9:16)</option><option value="1/1" ${element.styles?.aspectRatio==='1/1'?"selected":""}>Квадратное (1:1)</option><option value="16/9" ${element.styles?.aspectRatio==='16/9'?"selected":""}>Горизонтальное (16:9)</option></select></div>`;
