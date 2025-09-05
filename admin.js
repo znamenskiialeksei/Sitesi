@@ -133,25 +133,31 @@ document.addEventListener('DOMContentLoaded', () => {
     function deleteColumn(event) { const columnId = event.target.closest('.column-editor').dataset.columnId; currentConfig.layout.main.columns = currentConfig.layout.main.columns.filter(c => c.id !== columnId); renderAll(); }
     function deleteSelectedElement() { if (!selectedElementId || !confirm("Вы уверены?")) return; currentConfig.elements = currentConfig.elements.filter(el => el.id !== selectedElementId); currentConfig.layout.main.columns.forEach(column => { column.elements = column.elements.filter(id => id !== selectedElementId); }); DOM.panels.inspector.style.display = 'none'; selectedElementId = null; renderCanvas(); }
 
+    // ЗАДАЧА 2: Полностью переписанная функция для стабильного обновления
     function updateElementFromInspector(event) {
         if (!selectedElementId) return;
         const elementData = currentConfig.elements.find(el => el.id === selectedElementId);
-        const wrapper = DOM.canvas.querySelector(`.admin-element-wrapper[data-element-id="${selectedElementId}"]`);
-        if (!elementData || !wrapper) return;
+        if (!elementData) return;
 
         const input = event.target;
         const value = input.type === 'checkbox' ? input.checked : input.value;
         
-        if (input.dataset.key) {
-            elementData[input.dataset.key] = value;
-        } else if (input.dataset.contentKey) {
-            elementData.content[input.dataset.contentKey] = value;
-            const newContent = createElement(elementData);
-            wrapper.querySelector('.element-wrapper').replaceWith(newContent);
-        } else if (input.dataset.styleKey) {
+        // Обновляем данные в объекте currentConfig
+        if (input.dataset.key) { elementData[input.dataset.key] = value; }
+        else if (input.dataset.contentKey) { elementData.content[input.dataset.contentKey] = value; }
+        else if (input.dataset.styleKey) {
             if (!elementData.styles) elementData.styles = {};
             elementData.styles[input.dataset.styleKey] = value;
-            Object.assign(wrapper.style, elementData.styles);
+        }
+
+        // Вместо сложной логики, просто полностью перерисовываем измененный элемент.
+        // Это самый надёжный способ гарантировать, что все изменения (включая src iframe и стили) применятся.
+        const oldWrapper = DOM.canvas.querySelector(`.admin-element-wrapper[data-element-id="${selectedElementId}"]`);
+        if (oldWrapper) {
+            const newWrapper = createAdminElement(elementData);
+            oldWrapper.replaceWith(newWrapper);
+            newWrapper.classList.add('selected'); // Сохраняем выделение
+            makeElementsResizable(); // Пере-инициализируем resizable для нового элемента
         }
     }
 

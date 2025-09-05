@@ -97,18 +97,37 @@ function createElement(elementData) {
                     dropdownMenu.appendChild(link);
                 });
                 element.appendChild(button);
-                document.body.appendChild(dropdownMenu); // Временно добавляем в body для расчета размеров
-                
+                element.appendChild(dropdownMenu);
+
                 button.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    // Задача 2: Позиционирование по центру экрана
-                    const buttonRect = button.getBoundingClientRect();
-                    const menuWidth = dropdownMenu.offsetWidth;
-                    
-                    dropdownMenu.style.top = `${buttonRect.bottom + 5}px`;
-                    dropdownMenu.style.left = `${(window.innerWidth / 2) - (menuWidth / 2)}px`;
-                    
                     dropdownMenu.classList.toggle('show');
+
+                    // Задача 1: "Умное" позиционирование (вверх/вниз)
+                    const buttonRect = button.getBoundingClientRect();
+                    const menuHeight = dropdownMenu.offsetHeight;
+                    const windowHeight = window.innerHeight;
+
+                    // Проверяем, достаточно ли места снизу
+                    if (buttonRect.bottom + menuHeight > windowHeight) {
+                        // Если нет, открываем вверх
+                        dropdownMenu.style.top = 'auto';
+                        dropdownMenu.style.bottom = `${windowHeight - buttonRect.top}px`;
+                    } else {
+                        // Иначе, открываем вниз
+                        dropdownMenu.style.bottom = 'auto';
+                        dropdownMenu.style.top = `${buttonRect.bottom}px`;
+                    }
+
+                    // Позиционирование по горизонтали (чтобы не уходить за экран)
+                    const menuRect = dropdownMenu.getBoundingClientRect();
+                    if (menuRect.right > window.innerWidth) {
+                        dropdownMenu.style.left = 'auto';
+                        dropdownMenu.style.right = '0px';
+                    } else {
+                        dropdownMenu.style.right = 'auto';
+                        dropdownMenu.style.left = '0px';
+                    }
                 });
                 window.addEventListener('click', () => { dropdownMenu.classList.remove('show'); });
 
