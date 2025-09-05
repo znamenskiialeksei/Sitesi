@@ -137,7 +137,9 @@
         "backgroundColor": "#3498db",
         "color": "#ffffff",
         "border": "none",
-        "cursor": "pointer"
+        "cursor": "pointer",
+        "width": "89.6391px",
+        "height": "73.2142px"
       },
       "label": "мар2",
       "url": "https://www.marmarisyachting.ru/Yacht-Vasilisa-Catalog/Route2"
