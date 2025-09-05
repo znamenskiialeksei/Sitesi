@@ -42,7 +42,7 @@ body,html{margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe
 .inspector-group{margin-bottom:12px;border-top:1px solid var(--light-gray);padding-top:8px}
 .inspector-group:first-child{border-top:none;padding-top:0}
 .inspector-group h4{margin:0 0 8px;font-size:13px;color:#7f8c8d;text-transform:uppercase}
-.inspector-group details summary{cursor:pointer;outline:none}
+.inspector-group details summary{cursor:pointer;font-weight:bold;outline:none}
 .inspector-group details summary::marker{font-size:0.8em}
 .inspector-field{margin-bottom:8px}
 .inspector-field label{display:block;font-size:14px;margin-bottom:4px;font-weight:500;overflow-wrap:break-word}

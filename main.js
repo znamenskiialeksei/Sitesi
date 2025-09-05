@@ -100,7 +100,6 @@ function createElement(elementData) {
                 element.appendChild(dropdownMenu);
                 button.addEventListener('click', () => {
                     dropdownMenu.classList.toggle('show');
-                    // Задача 8: "Умное" позиционирование
                     const rect = dropdownMenu.getBoundingClientRect();
                     if (rect.right > window.innerWidth) {
                         dropdownMenu.classList.add('dropdown-menu-right');
