@@ -26,7 +26,6 @@
           "width": "30%",
           "elements": [
             "el-1757085805302",
-            "el-1757085744291",
             "el-1757085670339",
             "el-1"
           ]
@@ -39,7 +38,9 @@
         {
           "id": "col-1757085642683",
           "width": "30%",
-          "elements": []
+          "elements": [
+            "el-1757085744291"
+          ]
         }
       ]
     },
@@ -85,7 +86,10 @@
       "content": {
         "url": "https://1drv.ms/v/c/2919ff56cb24dc70/IQRmfHoOiJ0USI41R15PiRxPAS3q42tuZDyBnREAIy_J2-0"
       },
-      "styles": {}
+      "styles": {
+        "width": "300",
+        "height": "153.571px"
+      }
     },
     {
       "id": "el-1757085805302",
