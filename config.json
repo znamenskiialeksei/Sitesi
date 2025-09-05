@@ -22,20 +22,21 @@
     "main": {
       "columns": [
         {
-          "id": "col-16623211",
-          "width": "65%",
+          "id": "col-1757081341798",
+          "width": "35%",
+          "elements": []
+        },
+        {
+          "id": "col-1757081355188",
+          "width": "35%",
           "elements": [
-            "el-16623322",
-            "el-16623455"
+            "el-1757081395046"
           ]
         },
         {
-          "id": "col-16623212",
+          "id": "col-1757081370086",
           "width": "35%",
-          "elements": [
-            "el-16623344",
-            "el-16623566"
-          ]
+          "elements": []
         }
       ]
     },
@@ -54,21 +55,6 @@
   },
   "elements": [
     {
-      "id": "el-16623322",
-      "adminTitle": "Главное фото яхты",
-      "type": "photo",
-      "content": {
-        "url": "https://images.unsplash.com/photo-1598890982464-843461a28a13?q=80&w=2070&auto=format&fit=crop"
-      },
-      "styles": {
-        "width": "100%",
-        "borderRadius": "8px",
-        "boxShadow": "0 4px 15px rgba(0,0,0,0.1)",
-        "objectFit": "cover",
-        "height": "400px"
-      }
-    },
-    {
       "id": "el-16623344",
       "adminTitle": "Описание предложения",
       "type": "textBlock",
@@ -80,20 +66,6 @@
         "backgroundColor": "#ffffff",
         "borderRadius": "8px",
         "boxShadow": "0 4px 15px rgba(0,0,0,0.1)"
-      }
-    },
-    {
-      "id": "el-16623455",
-      "adminTitle": "Видео-обзор",
-      "type": "videoBlock",
-      "content": {
-        "url": "https://www.youtube.com/embed/dQw4w9WgXcQ"
-      },
-      "styles": {
-        "width": "100%",
-        "height": "350px",
-        "borderRadius": "8px",
-        "border": "none"
       }
     },
     {
@@ -116,6 +88,25 @@
         "borderRadius": "5px",
         "border": "none",
         "cursor": "pointer"
+      }
+    },
+    {
+      "id": "el-1757081395046",
+      "adminTitle": "Новый button",
+      "type": "button",
+      "content": {
+        "text": "Кнопка",
+        "action": "openModal",
+        "url": "https://script.google.com/macros/s/AKfycbw_zW9cCs6adluPNaVVm6spv16UwmQ4vAvvFSo5cenzsE8kpJnBAyktHy4zZaIeac_-VA/exec?page=route2"
+      },
+      "styles": {
+        "padding": "15px",
+        "backgroundColor": "#3498db",
+        "color": "#ffffff",
+        "border": "none",
+        "cursor": "pointer",
+        "width": "505.543px",
+        "height": "57.766px"
       }
     }
   ]
