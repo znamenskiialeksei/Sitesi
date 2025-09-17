@@ -4,11 +4,11 @@
     "repo": "Sitesi"
   },
   "globalSettings": {
-    "pageTitle": "Наши лучшие яхтенные маршруты в Мармарисе. Аренда яхты."
+    "pageTitle": "Новая страница"
   },
   "layout": {
     "header": {
-      "content": "<h1>Наши лучшие яхтенные маршруты в Мармарисе. Аренда яхты.</h1>",
+      "content": "<h1>Заголовок7777</h1>",
       "background": {
         "type": "color",
         "value": "#34495e"
