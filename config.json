@@ -4,7 +4,7 @@
     "repo": "Sitesi"
   },
   "globalSettings": {
-    "pageTitle": "Новая страница"
+    "pageTitle": "Наши лучшие яхтенные маршруты в Мармарисе. Аренда яхты."
   },
   "layout": {
     "header": {
@@ -210,12 +210,9 @@
       "adminTitle": "Новый videoBlock",
       "type": "videoBlock",
       "content": {
-        "url": "https://drive.google.com/file/d/11TDsKfDIg_GD27Lml0Pow-4fsUrIV3LO/preview"
+        "url": "https://1drv.ms/v/c/2919ff56cb24dc70/IQSe6WT-_Nt4QYem_P3qEx_3Abn7W0p9009H02uPVTxShdI"
       },
-      "styles": {
-        "width": "393.22px",
-        "height": "607.729px"
-      }
+      "styles": {}
     },
     {
       "id": "el-1757109785397",
