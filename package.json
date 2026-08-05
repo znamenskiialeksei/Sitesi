@@ -1,0 +1,43 @@
+{
+  "name": "villa-turaman-platform",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "node scripts/init-google-sheets.js && node scripts/sync-content.js && next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@paypal/checkout-server-sdk": "^1.0.3",
+    "@vercel/kv": "^3.0.0",
+    "axios": "^1.19.0",
+    "bcryptjs": "^3.0.3",
+    "date-fns": "^2.30.0",
+    "dotenv": "^17.4.2",
+    "force-graph": "^1.51.4",
+    "googleapis": "^174.0.0",
+    "iyzipay": "^2.0.69",
+    "jsonwebtoken": "^9.0.3",
+    "lucide-react": "^1.28.0",
+    "next": "14.2.35",
+    "node-ical": "^0.27.1",
+    "pdfkit": "^0.19.1",
+    "qrcode": "^1.5.4",
+    "react": "^18",
+    "react-datepicker": "^9.1.0",
+    "react-dom": "^18",
+    "speakeasy": "^2.0.0",
+    "stripe": "^22.4.0",
+    "yookassa": "^0.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "@types/react": "^19.2.18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.35",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^6.0.3"
+  }
+}
