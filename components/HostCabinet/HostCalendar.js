@@ -6,6 +6,7 @@
 
 import React, { useState } from 'react';
 import { addMonths, addDays, startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth, format } from 'date-fns';
+import { ru, enUS, tr } from 'date-fns/locale';
 import { Calendar, ChevronLeft, ChevronRight, Save, RotateCcw, Lock, Unlock, Zap, Clock, Tag } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../Toast';
@@ -19,7 +20,8 @@ export default function HostCalendar({
   onSaveCalendarRules,
   loading = false
 }) {
-  const { t, formatMoney } = useLanguage();
+  const { t, lang, formatMoney } = useLanguage();
+  const dateLocale = lang === 'en' ? enUS : (lang === 'tr' ? tr : ru);
   const toast = useToast();
 
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -304,7 +306,7 @@ export default function HostCalendar({
           <Calendar className="w-6 h-6 text-rose-500" />
           <div>
             <h3 className="text-base font-bold text-white capitalize">
-              {format(currentMonth, 'LLLL yyyy', { locale: ru })}
+              {format(currentMonth, 'LLLL yyyy', { locale: dateLocale })}
             </h3>
             <span className="text-xs text-slate-400">Базовая цена: {basePrice.toLocaleString()} ₽ • Мин. срок: {defaultMinNights} ночи</span>
           </div>

@@ -286,12 +286,16 @@ export default function HomeListing({ publicData, contentData }) {
       if (effectiveMode === 'instant') {
         // Мгновенное бронирование: редирект на платёжный шлюз (T-Банк для RUB, Stripe для EUR/USD)
         const paymentGateway = currency === 'RUB' ? 'tbank' : 'stripe';
+        const numericAmount = typeof bookingData.totalPrice === 'number'
+          ? bookingData.totalPrice
+          : parseInt(String(bookingData.totalPrice).replace(/[^\d]/g, ''), 10) || 0;
+
         const res = await fetch('/api/payment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             gateway: paymentGateway,
-            amount: bookingData.totalPrice,
+            amount: numericAmount,
             currency,
             bookingDetails: bookingData
           })

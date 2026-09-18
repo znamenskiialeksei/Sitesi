@@ -92,19 +92,15 @@ async function syncContent() {
     const safeGet = async (range) => {
       try {
         const res = await sheets.spreadsheets.values.get({ spreadsheetId, range });
-        if (res.data && res.data.values) fetchSuccessCount++;
+        if (res.data && res.data.values && res.data.values.length > 0) fetchSuccessCount++;
         return res;
       } catch (e) {
         console.warn(`- Не удалось получить данные для диапазона ${range}:`, e.message);
         return { data: { values: [] } };
       }
     };
-    console.warn(`- Не удалось получить данные для диапазона ${range}:`, e.message);
-    return { data: { values: [] } };
-  }
-    };
 
-console.log('Синхронизация контента (HomePage, About, Legal, Templates)...');
+    console.log('Синхронизация контента (HomePage, About, Legal, Templates)...');
 
 // 1. Главная страница (Hero и базовые заголовки)
 const homeData = await safeGet('HomePage!A:E');
