@@ -15,12 +15,12 @@ export default function HostChannelManager() {
   const [copied, setCopied] = useState(false);
 
   const channels = [
-    { name: "Airbnb", logo: "https://a0.muscache.com/airbnb/static/icons/apple-touch-icon-76x76-3b313d93b1b6e82329407d3b9ceb4272.png", status: "Активен", mode: "2-Way Sync" },
-    { name: "Booking.com", logo: "https://cf.bstatic.com/static/img/b2run_favicon/f8fb38a2e4ff477d6ee0572da9a19d08e5e8e8ff.ico", status: "Активен", mode: "2-Way Sync" },
-    { name: "Vrbo / Expedia", logo: "https://csvcus.homeaway.com/rsrcs/cdn-logos/2.11.0/bce/brand/misc/favicon.ico", status: "Активен", mode: "2-Way Sync" },
-    { name: "Авито Путешествия", logo: "https://www.avito.st/s/common/components/monetization/badge/1/icons/avito_favicon.ico", status: "Активен", mode: "2-Way Sync" },
-    { name: "Agoda", logo: "https://cdn6.agoda.net/images/header/agoda-logo.png", status: "Активен", mode: "2-Way Sync" },
-    { name: "Google Calendar", logo: "https://ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_31_2x.png", status: "Активен", mode: "1-Way Sync" }
+    { name: "Airbnb", logo: "https://a0.muscache.com/airbnb/static/icons/apple-touch-icon-76x76-3b313d93b1b6e82329407d3b9ceb4272.png", status: t('activeStatusLabel'), mode: "2-Way Sync" },
+    { name: "Booking.com", logo: "https://cf.bstatic.com/static/img/b2run_favicon/f8fb38a2e4ff477d6ee0572da9a19d08e5e8e8ff.ico", status: t('activeStatusLabel'), mode: "2-Way Sync" },
+    { name: "Vrbo / Expedia", logo: "https://csvcus.homeaway.com/rsrcs/cdn-logos/2.11.0/bce/brand/misc/favicon.ico", status: t('activeStatusLabel'), mode: "2-Way Sync" },
+    { name: "Авито Путешествия", logo: "https://www.avito.st/s/common/components/monetization/badge/1/icons/avito_favicon.ico", status: t('activeStatusLabel'), mode: "2-Way Sync" },
+    { name: "Agoda", logo: "https://cdn6.agoda.net/images/header/agoda-logo.png", status: t('activeStatusLabel'), mode: "2-Way Sync" },
+    { name: "Google Calendar", logo: "https://ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_31_2x.png", status: t('activeStatusLabel'), mode: "1-Way Sync" }
   ];
 
   const exportUrl = typeof window !== 'undefined'
@@ -44,7 +44,7 @@ export default function HostChannelManager() {
           <div>
             <h3 className="text-lg font-bold text-white">{t('channelManagerTitle')}</h3>
             <p className="text-xs text-slate-400">
-              Двусторонняя синхронизация предотвращает овербукинг и закрывает забронированные даты на всех площадках.
+              {t('twoWaySyncDesc')}
             </p>
           </div>
         </div>
@@ -69,12 +69,12 @@ export default function HostChannelManager() {
             className="px-5 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition-colors flex items-center gap-2 shrink-0 shadow-lg shadow-rose-600/30"
           >
             {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-            <span>{copied ? 'Скопировано' : t('copyFeedUrl')}</span>
+            <span>{copied ? t('copiedBtnLabel') : t('copyFeedUrl')}</span>
           </button>
         </div>
 
         <p className="text-[11px] text-slate-400">
-          Вставьте эту ссылку в настройки импорта календаря на Airbnb, Booking.com и других платформах.
+          {t('icalImportTip')}
         </p>
       </div>
 
@@ -110,7 +110,7 @@ export default function HostChannelManager() {
 
       <div className="p-4 rounded-2xl bg-slate-950/60 border border-white/5 flex items-center gap-3 text-xs text-slate-400">
         <ShieldCheck className="w-5 h-5 text-rose-500 shrink-0" />
-        <span>{t('lastSyncText')} Занятые даты из всех каналов блокируют календарь виллы мгновенно.</span>
+        <span>{t('channelsBlockDatesDesc')}</span>
       </div>
 
     </div>

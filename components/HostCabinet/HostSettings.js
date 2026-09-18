@@ -59,9 +59,9 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
       <div className="pb-4 border-b border-white/10 flex items-center gap-3">
         <Settings className="w-6 h-6 text-rose-500" />
         <div>
-          <h3 className="text-lg font-bold text-white">Базовые параметры бронирования виллы</h3>
+          <h3 className="text-lg font-bold text-white">{t('villaBaseParamsTitle')}</h3>
           <p className="text-xs text-slate-400">
-            Эти параметры действуют по умолчанию для всех дней, если в календаре не заданы индивидуальные правила.
+            {t('villaBaseParamsDesc')}
           </p>
         </div>
       </div>
@@ -71,7 +71,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
         {/* Базовая цена */}
         <div>
           <label className="block text-xs uppercase font-bold text-slate-400 mb-1.5 flex items-center gap-1.5">
-            <DollarSign className="w-3.5 h-3.5 text-emerald-400" /> Базовая цена за ночь
+            <DollarSign className="w-3.5 h-3.5 text-emerald-400" /> {t('baseNightPriceLabel')}
           </label>
           <input
             type="number"
@@ -86,7 +86,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
         {/* Валюта по умолчанию */}
         <div>
           <label className="block text-xs uppercase font-bold text-slate-400 mb-1.5">
-            Основная валюта расчетов
+            {t('mainCurrencyLabel')}
           </label>
           <select
             name="currency"
@@ -104,7 +104,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
         {/* Минимальный срок проживания */}
         <div>
           <label className="block text-xs uppercase font-bold text-slate-400 mb-1.5">
-            Минимальный срок проживания (ночей)
+            {t('minStayNightsLabel')}
           </label>
           <input
             type="number"
@@ -120,7 +120,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
         {/* Максимальный срок проживания */}
         <div>
           <label className="block text-xs uppercase font-bold text-slate-400 mb-1.5">
-            Максимальный срок проживания (ночей)
+            {t('maxStayNightsLabel')}
           </label>
           <input
             type="number"
@@ -136,7 +136,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
         {/* Окно раннего бронирования */}
         <div>
           <label className="block text-xs uppercase font-bold text-slate-400 mb-1.5 flex items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5 text-blue-400" /> Окно бронирования (месяцев вперед)
+            <Calendar className="w-3.5 h-3.5 text-blue-400" /> {t('bookingWindowLabel')}
           </label>
           <input
             type="number"
@@ -153,7 +153,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
         {/* Пауза перед заездом */}
         <div>
           <label className="block text-xs uppercase font-bold text-slate-400 mb-1.5">
-            Мин. дней до заезда (подготовка виллы)
+            {t('advanceNoticeDaysLabel')}
           </label>
           <input
             type="number"
@@ -169,7 +169,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
         {/* Время заезда и выезда */}
         <div>
           <label className="block text-xs uppercase font-bold text-slate-400 mb-1.5 flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5 text-amber-400" /> Стандартное время заезда (Check-in)
+            <Clock className="w-3.5 h-3.5 text-amber-400" /> {t('standardCheckInLabel')}
           </label>
           <input
             type="time"
@@ -183,7 +183,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
 
         <div>
           <label className="block text-xs uppercase font-bold text-slate-400 mb-1.5 flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5 text-amber-400" /> Стандартное время выезда (Check-out)
+            <Clock className="w-3.5 h-3.5 text-amber-400" /> {t('standardCheckOutLabel')}
           </label>
           <input
             type="time"
@@ -198,7 +198,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
         {/* Режим бронирования */}
         <div className="sm:col-span-2">
           <label className="block text-xs uppercase font-bold text-slate-400 mb-1.5">
-            Режим бронирования по умолчанию
+            {t('defaultBookingModeLabel')}
           </label>
           <div className="grid grid-cols-2 gap-3">
             <label className={`p-4 rounded-2xl border cursor-pointer flex items-center gap-3 transition-all ${form.bookingMode === 'instant' ? 'bg-rose-950/40 border-rose-500 text-white' : 'bg-slate-800 border-white/5 text-slate-400'
@@ -211,7 +211,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
                 onChange={handleChange}
                 className="hidden"
               />
-              <span className="font-bold text-xs">⚡ Мгновенное бронирование</span>
+              <span className="font-bold text-xs">⚡ {t('instantBookingOption')}</span>
             </label>
 
             <label className={`p-4 rounded-2xl border cursor-pointer flex items-center gap-3 transition-all ${form.bookingMode === 'manual' ? 'bg-rose-950/40 border-rose-500 text-white' : 'bg-slate-800 border-white/5 text-slate-400'
@@ -224,7 +224,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
                 onChange={handleChange}
                 className="hidden"
               />
-              <span className="font-bold text-xs">✋ Бронирование по запросу</span>
+              <span className="font-bold text-xs">✋ {t('manualBookingOption')}</span>
             </label>
           </div>
         </div>
@@ -234,22 +234,22 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
             type="button"
             onClick={async () => {
               try {
-                toast.info('Синхронизация с Google Таблицами...');
+                toast.info(t('syncingWithSheetsToast'));
                 const res = await fetch('/api/content?force=true', { method: 'POST' });
                 const data = await res.json();
                 if (data.success) {
-                  toast.success('Контент, фото, видео и тарифы успешно обновлены из Google Sheets!');
+                  toast.success(t('syncSuccessToast'));
                 } else {
-                  toast.warn('Синхронизация завершена с использованием локального кэша');
+                  toast.warn(t('syncCacheToast'));
                 }
               } catch (e) {
-                toast.error('Ошибка сети при синхронизации: ' + e.message);
+                toast.error(t('syncErrorToast') + ': ' + e.message);
               }
             }}
             className="px-6 py-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-bold text-xs sm:text-sm transition-all border border-white/10 flex items-center gap-2"
           >
             <Calendar className="w-4 h-4 text-rose-400" />
-            <span>Синхронизировать Google Sheets</span>
+            <span>{t('syncGoogleSheetsBtn')}</span>
           </button>
 
           <button
@@ -257,7 +257,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
             disabled={loading}
             className="px-8 py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold text-xs sm:text-sm transition-all shadow-lg shadow-rose-500/25 flex items-center gap-2 disabled:opacity-50"
           >
-            <Save className="w-4 h-4" /> Сохранить настройки
+            <Save className="w-4 h-4" /> {t('saveSettingsBtn')}
           </button>
         </div>
 

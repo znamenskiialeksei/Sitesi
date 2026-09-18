@@ -50,15 +50,15 @@ export default function HostInbox({
 
   // Быстрые шаблоны ответов
   const quickTemplates = [
-    { title: "Приветствие", text: "Здравствуйте, [FIRST_NAME]! С радостью ждем вас на Villa Turaman. Подскажите, во сколько планируете прибытие?" },
-    { title: "Подтверждение", text: "Ваша бронь на Villa Turaman с [CHECKIN_DATE] по [CHECKOUT_DATE] успешно подтверждена! Ждем вас в гости." },
-    { title: "Wi-Fi и правила", text: "Код от Wi-Fi: VillaTuraman_5G (пароль: turaman2026). Бассейн открыт с 08:00 до 23:00. Буду рад ответить на любые вопросы!" }
+    { title: t('quickTemplateGreetingTitle'), text: t('quickTemplateGreetingText') },
+    { title: t('quickTemplateConfirmationTitle'), text: t('quickTemplateConfirmationText') },
+    { title: t('quickTemplateRulesTitle'), text: t('quickTemplateRulesText') }
   ];
 
   const handleInsertTemplate = (templateText) => {
     let replaced = templateText;
     if (activeChat) {
-      replaced = replaced.replace(/\[FIRST_NAME\]/g, activeChat.clientName || 'Гость');
+      replaced = replaced.replace(/\[FIRST_NAME\]/g, activeChat.clientName || t('guestLabel'));
       const curReq = activeChat.activeRequests?.[0];
       if (curReq) {
         replaced = replaced.replace(/\[CHECKIN_DATE\]/g, curReq.checkIn || '');
@@ -70,10 +70,12 @@ export default function HostInbox({
 
   const handleSendLessonLink = (lesson) => {
     if (!lesson) return;
-    const lessonTitle = lesson.name?.[lang] || lesson.name?.ru || lesson.name || 'Путеводитель';
-    setMessageInput(
-      `🎓 Доступ к авторскому путеводителю открыт!\nГид: ${lessonTitle}\nКатегория: ${lesson.module}\n\nВаша персональная ссылка:\n${lesson.privateLink}\n\nПриятного просмотра!`
-    );
+    const lessonTitle = lesson.name?.[lang] || lesson.name?.ru || lesson.name || t('guideTypeLabel');
+    const msg = t('guideAccessGrantedMsg')
+      .replace('{title}', lessonTitle)
+      .replace('{module}', lesson.module || '')
+      .replace('{link}', lesson.privateLink);
+    setMessageInput(msg);
   };
 
   const handleSend = (e) => {
@@ -82,11 +84,11 @@ export default function HostInbox({
 
     if (isBroadcastMode) {
       if (selectedMultiSheets.length === 0) {
-        toast.warn('Выберите хотя бы одного получателя для массовой рассылки.');
+        toast.warn(t('selectAtLeastOneRecipient'));
         return;
       }
       onBroadcast(selectedMultiSheets, messageInput.trim());
-      toast.success(`Рассылка отправлена ${selectedMultiSheets.length} гостям!`);
+      toast.success(t('broadcastSentSuccess').replace('{count}', selectedMultiSheets.length));
       setMessageInput('');
       setIsBroadcastMode(false);
     } else {
@@ -115,9 +117,9 @@ export default function HostInbox({
       <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <MessageSquare className="w-5 h-5 text-rose-500" />
-          <h3 className="text-base font-bold text-white">Центр сообщений с гостями</h3>
+          <h3 className="text-base font-bold text-white">{t('guestMessageCenter')}</h3>
           <span className="text-xs text-slate-400 bg-slate-900 px-2.5 py-0.5 rounded-full border border-white/5">
-            Диалогов: {chats.length}
+            {t('dialogsCount').replace('{count}', chats.length)}
           </span>
         </div>
 
@@ -130,7 +132,7 @@ export default function HostInbox({
             }`}
         >
           <Users className="w-4 h-4" />
-          <span>{isBroadcastMode ? 'Обычный режим чата' : 'Массовая рассылка'}</span>
+          <span>{isBroadcastMode ? t('regularChatMode') : t('broadcastMode')}</span>
         </button>
       </div>
 
@@ -145,7 +147,7 @@ export default function HostInbox({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Поиск по имени или контакту..."
+                placeholder={t('searchChatPlaceholder')}
                 className="w-full bg-slate-800/80 border border-white/5 pl-9 pr-3 py-2 rounded-xl text-xs text-white outline-none focus:border-rose-500"
               />
             </div>
@@ -155,7 +157,7 @@ export default function HostInbox({
             <div className="p-2.5 bg-slate-800/60 border-b border-white/5 flex items-center justify-between text-xs text-slate-300">
               <button onClick={selectAllChats} className="font-bold hover:text-white flex items-center gap-1.5">
                 {selectedMultiSheets.length === chats.length ? <CheckSquare className="w-4 h-4 text-rose-400" /> : <Square className="w-4 h-4" />}
-                <span>Выбрать всех ({selectedMultiSheets.length})</span>
+                <span>{t('selectAllChatsLabel').replace('{count}', selectedMultiSheets.length)}</span>
               </button>
             </div>
           )}
@@ -187,7 +189,7 @@ export default function HostInbox({
                     </div>
                     <p className="text-[11px] text-slate-400 truncate mt-0.5">{c.clientContact}</p>
                     <p className="text-[11px] text-slate-500 truncate mt-1">
-                      {lastMsg ? `${lastMsg.sender}: ${lastMsg.original}` : 'Нет сообщений'}
+                      {lastMsg ? `${lastMsg.sender}: ${lastMsg.original}` : t('noMessages')}
                     </p>
                   </div>
                 </div>
@@ -202,7 +204,7 @@ export default function HostInbox({
           {/* Верхняя строка активного чата */}
           <div className="p-3.5 border-b border-white/10 bg-slate-800/40 flex items-center justify-between">
             <span className="text-xs font-bold text-white truncate">
-              {isBroadcastMode ? `Массовая рассылка (${selectedMultiSheets.length} получателей)` : `Диалог: ${activeChat?.clientName || 'Гость'}`}
+              {isBroadcastMode ? t('massBroadcastRecipients').replace('{count}', selectedMultiSheets.length) : t('chatWithGuest').replace('{name}', activeChat?.clientName || t('guestLabel'))}
             </span>
             <div className="flex items-center gap-2">
               <span className="text-[11px] text-slate-400">{activeChat?.clientContact}</span>
@@ -250,7 +252,7 @@ export default function HostInbox({
               type="text"
               value={messageInput}
               onChange={(e) => setMessageInput(e.target.value)}
-              placeholder="Введите ответ гостю (поддерживаются переменные [FIRST_NAME]...)"
+              placeholder={t('chatInputPlaceholder')}
               className="flex-1 bg-slate-800 border border-white/10 px-3.5 py-2.5 rounded-xl text-xs text-white outline-none focus:border-rose-500"
             />
             <button
@@ -268,25 +270,25 @@ export default function HostInbox({
         <div className="md:col-span-3 border-l border-white/10 bg-slate-950/60 p-4 flex flex-col justify-between overflow-y-auto space-y-6">
           <div className="space-y-4">
             <h4 className="text-xs font-bold uppercase tracking-wider text-white border-b border-white/10 pb-2">
-              Информация о госте
+              {t('guestInfoTitle')}
             </h4>
 
             <div className="space-y-2 text-xs">
-              <p className="text-slate-400">Имя: <b className="text-white">{activeChat?.clientName || 'Гость'}</b></p>
-              <p className="text-slate-400">Контакт: <b className="text-white">{activeChat?.clientContact || '—'}</b></p>
+              <p className="text-slate-400">{t('nameFieldLabel')} <b className="text-white">{activeChat?.clientName || t('guestLabel')}</b></p>
+              <p className="text-slate-400">{t('contactFieldLabel')} <b className="text-white">{activeChat?.clientContact || '—'}</b></p>
             </div>
 
             {/* Активные брони гостя */}
             {activeChat?.activeRequests && activeChat.activeRequests.length > 0 && (
               <div className="p-3 bg-slate-900 rounded-2xl border border-white/5 space-y-2">
                 <span className="text-[10px] uppercase font-bold text-rose-400 tracking-wider block">
-                  Текущая бронь
+                  {t('currentBookingTitle')}
                 </span>
                 {activeChat.activeRequests.map((r, rIdx) => (
                   <div key={rIdx} className="text-xs space-y-1">
                     <p className="font-bold text-white">{r.checkIn} — {r.checkOut}</p>
                     <p className="text-emerald-400 font-bold">{r.price}</p>
-                    <p className="text-slate-400 text-[11px]">Статус: {r.status}</p>
+                    <p className="text-slate-400 text-[11px]">{t('statusFieldLabel')} {r.status}</p>
 
                     {/* Кнопки управления заявкой (только для статуса ЗАПРОС) */}
                     {(r.status === 'ЗАПРОС' || (r.status && r.status.includes('ОЖИДАЕТ'))) && (
@@ -294,34 +296,34 @@ export default function HostInbox({
                         <button
                           onClick={() => onApprove && onApprove(r)}
                           disabled={loading}
-                          title="Одобрить на 24 часа — гость получит ссылку на оплату"
+                          title={t('approve24hBtn')}
                           className="flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold transition-all disabled:opacity-40"
                         >
-                          <CheckCircle className="w-3 h-3" /> Одобрить 24ч
+                          <CheckCircle className="w-3 h-3" /> {t('approve24hBtn')}
                         </button>
                         <button
                           onClick={() => onSpecialOffer && onSpecialOffer({ rowIndex: r.rowIndex, contact: r.contact, name: r.name, checkIn: r.checkIn, checkOut: r.checkOut, chatSheetName: `Chat_${r.name}_${r.contact}` })}
                           disabled={loading}
-                          title="Отправить специальное предложение"
+                          title={t('specialOfferShortBtn')}
                           className="flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-purple-600/20 hover:bg-purple-600/40 text-purple-400 border border-purple-500/30 text-[10px] font-bold transition-all disabled:opacity-40"
                         >
-                          <Gift className="w-3 h-3" /> Спецпредл.
+                          <Gift className="w-3 h-3" /> {t('specialOfferShortBtn')}
                         </button>
                         <button
                           onClick={() => onRevoke && onRevoke(r)}
                           disabled={loading}
-                          title="Отозвать предложение — освободить даты"
+                          title={t('revokeShortBtn')}
                           className="flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-amber-600/20 hover:bg-amber-600/40 text-amber-400 border border-amber-500/30 text-[10px] font-bold transition-all disabled:opacity-40"
                         >
-                          <RotateCcw className="w-3 h-3" /> Отозвать
+                          <RotateCcw className="w-3 h-3" /> {t('revokeShortBtn')}
                         </button>
                         <button
                           onClick={() => onReject && onReject(r)}
                           disabled={loading}
-                          title="Отклонить заявку"
+                          title={t('declineShortBtn')}
                           className="flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-red-600/20 hover:bg-red-600/40 text-red-400 border border-red-500/30 text-[10px] font-bold transition-all disabled:opacity-40"
                         >
-                          <XCircle className="w-3 h-3" /> Отклонить
+                          <XCircle className="w-3 h-3" /> {t('declineShortBtn')}
                         </button>
                       </div>
                     )}
@@ -333,7 +335,7 @@ export default function HostInbox({
             {/* Блок отправки путеводителя */}
             <div className="space-y-2 pt-2 border-t border-white/5">
               <span className="text-[10px] uppercase font-bold text-purple-400 tracking-wider flex items-center gap-1">
-                <PlayCircle className="w-3.5 h-3.5" /> Открыть доступ к гиду
+                <PlayCircle className="w-3.5 h-3.5" /> {t('grantGuideAccessTitle')}
               </span>
               <select
                 onChange={(e) => {
@@ -343,10 +345,10 @@ export default function HostInbox({
                 }}
                 className="w-full bg-slate-800 border border-white/10 p-2 rounded-xl text-xs text-white font-bold outline-none cursor-pointer"
               >
-                <option value="">Выберите видео-путеводитель...</option>
+                <option value="">{t('selectVideoGuidePlaceholder')}</option>
                 {lmsModules.map((m, mIdx) => (
                   <option key={mIdx} value={m.privateLink}>
-                    {m.name?.ru || m.name?.en || m.name}
+                    {m.name?.[lang] || m.name?.ru || m.name?.en || m.name}
                   </option>
                 ))}
               </select>
@@ -354,7 +356,7 @@ export default function HostInbox({
           </div>
 
           <div className="text-[10px] text-slate-500 border-t border-white/5 pt-3">
-            Все сообщения автоматически архивируются в таблице гостевых чатов Google Таблиц.
+            {t('chatArchiveNotice')}
           </div>
         </div>
 

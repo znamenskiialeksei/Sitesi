@@ -36,9 +36,20 @@ export default function HostReservations({
     setOfferModalOpen(true);
   };
 
+  const getLocalizedStatus = (status) => {
+    if (!status) return '';
+    const upper = status.toUpperCase();
+    if (upper.includes('ЗАПРОС') || upper.includes('REQUEST')) return t('statusRequest');
+    if (upper.includes('ОЖИДАЕТ') || upper.includes('AWAITING')) return t('statusAwaitingPayment');
+    if (upper.includes('СПЕЦПРЕДЛОЖЕНИЕ') || upper.includes('SPECIAL')) return t('statusSpecialOffer');
+    if (upper.includes('ОПЛАЧЕНО') || upper.includes('PAID')) return t('statusPaid');
+    if (upper.includes('ОТКЛОНЕНО') || upper.includes('DECLINED')) return t('statusRejected');
+    return status;
+  };
+
   const submitSpecialOffer = () => {
     if (!offerPrice || !selectedReq) {
-      toast.warn('Укажите стоимость специального предложения.');
+      toast.warn(t('specifyOfferPriceToast'));
       return;
     }
 
@@ -63,8 +74,8 @@ export default function HostReservations({
     return (
       <div className="bg-slate-900/60 border border-white/10 rounded-3xl p-10 text-center text-slate-400">
         <Calendar className="w-12 h-12 mx-auto mb-3 opacity-40 text-rose-400" />
-        <h4 className="text-base font-bold text-white mb-1">Новых заявок на модерацию нет</h4>
-        <p className="text-xs">Все поступающие запросы от путешественников появятся здесь.</p>
+        <h4 className="text-base font-bold text-white mb-1">{t('noNewRequests')}</h4>
+        <p className="text-xs">{t('allIncomingRequestsAppear')}</p>
       </div>
     );
   }
@@ -73,7 +84,7 @@ export default function HostReservations({
     <div className="space-y-4 fade-in">
       <div className="flex items-center justify-between pb-3 border-b border-white/10">
         <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Clock className="w-5 h-5 text-rose-500" /> Активные заявки путешественников ({requests.length})
+          <Clock className="w-5 h-5 text-rose-500" /> {t('activeTravelerRequests')} ({requests.length})
         </h3>
       </div>
 
@@ -89,25 +100,25 @@ export default function HostReservations({
               <div className="space-y-2">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-sm font-bold text-white flex items-center gap-1.5">
-                    <User className="w-4 h-4 text-rose-400" /> {req.name || 'Гость'}
+                    <User className="w-4 h-4 text-rose-400" /> {req.name || t('guestLabel')}
                   </span>
                   <span className="text-xs text-slate-400">({req.contact})</span>
                   <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
                     isHold ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                   }`}>
-                    {req.status}
+                    {getLocalizedStatus(req.status)}
                   </span>
                 </div>
 
                 <div className="text-xs text-slate-300 flex flex-wrap items-center gap-4">
-                  <span>Период: <b className="text-white">{req.checkIn} — {req.checkOut}</b> ({req.nights} ночей)</span>
-                  <span>Гостей: <b className="text-white">{req.guests || (req.adults + req.children)}</b></span>
-                  <span>Сумма: <b className="text-emerald-400 font-bold">{req.price}</b></span>
+                  <span>{t('periodLabel')} <b className="text-white">{req.checkIn} — {req.checkOut}</b> ({req.nights} {t('nightsWord')})</span>
+                  <span>{t('guestsCountLabel')} <b className="text-white">{req.guests || (req.adults + req.children)}</b></span>
+                  <span>{t('amountLabel')} <b className="text-emerald-400 font-bold">{req.price}</b></span>
                 </div>
 
                 {req.expiresAt && isHold && (
                   <p className="text-[11px] text-amber-300 flex items-center gap-1 font-mono">
-                    <Clock className="w-3.5 h-3.5" /> Окно оплаты открыто до: {new Date(req.expiresAt).toLocaleString('ru-RU')}
+                    <Clock className="w-3.5 h-3.5" /> {t('paymentWindowOpenUntil')} {new Date(req.expiresAt).toLocaleString()}
                   </p>
                 )}
               </div>
@@ -163,16 +174,16 @@ export default function HostReservations({
         <div className="fixed inset-0 z-[1200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 fade-in">
           <div className="bg-slate-900 border border-white/10 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
             <h4 className="text-base font-bold text-white">
-              Специальное предложение для {selectedReq.name}
+              {t('specialOfferForGuest').replace('{name}', selectedReq.name || t('guestLabel'))}
             </h4>
             <p className="text-xs text-slate-400">
-              Вы можете изменить стоимость за весь период или скорректировать даты проживания.
+              {t('specialOfferDesc')}
             </p>
 
             <div className="space-y-3">
               <div>
                 <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">
-                  Специальная итоговая стоимость ({hostCurrency})
+                  {t('specialTotalPriceLabel').replace('{currency}', hostCurrency)}
                 </label>
                 <input
                   type="number"
@@ -185,7 +196,7 @@ export default function HostReservations({
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">
-                    Заезд
+                    {t('checkIn')}
                   </label>
                   <input
                     type="text"
@@ -196,7 +207,7 @@ export default function HostReservations({
                 </div>
                 <div>
                   <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">
-                    Выезд
+                    {t('checkOut')}
                   </label>
                   <input
                     type="text"
@@ -213,13 +224,13 @@ export default function HostReservations({
                 onClick={() => setOfferModalOpen(false)}
                 className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300"
               >
-                Отмена
+                {t('cancelBtn')}
               </button>
               <button
                 onClick={submitSpecialOffer}
                 className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-xs font-bold text-white shadow-lg shadow-rose-600/30"
               >
-                Отправить предложение
+                {t('sendOfferBtn')}
               </button>
             </div>
           </div>

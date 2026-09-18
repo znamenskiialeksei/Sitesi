@@ -41,10 +41,10 @@ export default function HostGraphPage() {
         if (res.data.warnings) setWarnings(res.data.warnings);
         renderGraph(res.data.nodes, res.data.edges);
       } else {
-        toast.error('Не удалось загрузить граф задач.');
+        toast.error(t('failedLoadGraph'));
       }
     } catch (err) {
-      toast.error('Ошибка загрузки графа задач.');
+      toast.error(t('errorLoadGraph'));
     } finally {
       setLoadingGraph(false);
     }
@@ -101,12 +101,12 @@ export default function HostGraphPage() {
           <div>
             <div className="flex items-center gap-2 text-xs text-slate-400 mb-1">
               <Link href="/host" className="hover:text-white flex items-center gap-1">
-                <ArrowLeft className="w-3.5 h-3.5" /> Назад в панель хозяина
+                <ArrowLeft className="w-3.5 h-3.5" /> {t('backToHostPanel')}
               </Link>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight flex items-center gap-3">
               <Layers className="w-7 h-7 text-purple-400" />
-              <span>Командный граф задач и событий (C&C Panel)</span>
+              <span>{t('ccGraphTitle')}</span>
             </h1>
           </div>
 
@@ -117,7 +117,7 @@ export default function HostGraphPage() {
               className="px-4 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white transition-colors flex items-center gap-2 border border-white/10"
             >
               <RefreshCw className={`w-4 h-4 ${loadingGraph ? 'animate-spin' : ''}`} />
-              <span>Обновить граф</span>
+              <span>{t('refreshGraphBtn')}</span>
             </button>
           </div>
         </div>
@@ -128,11 +128,11 @@ export default function HostGraphPage() {
 
           {/* Легенда узлов графа */}
           <div className="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 text-xs space-y-1.5 pointer-events-none">
-            <div className="text-[10px] uppercase font-bold text-slate-400">Типы узлов:</div>
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-blue-500" /> Списки задач</div>
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-emerald-500" /> Завершенные задачи</div>
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-amber-500" /> Внешние брони (iCal)</div>
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-purple-500" /> Теги и кластеры</div>
+            <div className="text-[10px] uppercase font-bold text-slate-400">{t('nodeTypesLabel')}</div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-blue-500" /> {t('taskListsNode')}</div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-emerald-500" /> {t('completedTasksNode')}</div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-amber-500" /> {t('icalBookingsNode')}</div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-purple-500" /> {t('tagsClustersNode')}</div>
           </div>
 
           {/* Карточка выбранного узла */}

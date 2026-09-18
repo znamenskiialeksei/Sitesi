@@ -125,7 +125,7 @@ export default function HostCalendar({
   const handleApplyRules = () => {
     const [start, end] = selectedRange;
     if (!start) {
-      toast.warn('Сначала выберите дату или диапазон дат в сетке календаря.');
+      toast.warn(t('selectDateFirst'));
       return;
     }
 
@@ -152,7 +152,7 @@ export default function HostCalendar({
     }
 
     if (rulesToSave.length === 0) {
-      toast.info('Нет параметров для сохранения.');
+      toast.info(t('noParamsToSave'));
       return;
     }
 
@@ -168,7 +168,7 @@ export default function HostCalendar({
   const handleResetRules = () => {
     const [start, end] = selectedRange;
     if (!start) {
-      toast.warn('Сначала выберите дату или диапазон дат для сброса.');
+      toast.warn(t('selectDateFirst'));
       return;
     }
 
@@ -188,7 +188,7 @@ export default function HostCalendar({
     setEditMinNights('');
     setEditBookingMode('');
     setEditNote('');
-    toast.info('Правила периода сброшены до значений по умолчанию.');
+    toast.info(t('resetPeriodRulesDesc'));
   };
 
   // Отрисовка календарной сетки
@@ -201,7 +201,9 @@ export default function HostCalendar({
     const rows = [];
     let days = [];
     let day = startDateGrid;
-    const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+    const weekDays = lang === 'en'
+      ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      : (lang === 'tr' ? ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'] : ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']);
 
     const header = (
       <div className="grid grid-cols-7 gap-1 mb-2 w-full text-center text-xs font-bold text-slate-500 uppercase">
@@ -319,7 +321,7 @@ export default function HostCalendar({
             <h3 className="text-base font-bold text-white capitalize">
               {format(currentMonth, 'LLLL yyyy', { locale: dateLocale })}
             </h3>
-            <span className="text-xs text-slate-400">Базовая цена: {formatMoney(basePrice, hostCurrency, hostCurrency)} • Мин. срок: {defaultMinNights} ночи</span>
+            <span className="text-xs text-slate-400">{t('basePriceLabel')} {formatMoney(basePrice, hostCurrency, hostCurrency)} • {t('minStayLabel')} {defaultMinNights} {t('nightsWord')}</span>
           </div>
         </div>
 
@@ -334,7 +336,7 @@ export default function HostCalendar({
             onClick={() => setCurrentMonth(new Date())}
             className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white transition-colors"
           >
-            Сегодня
+            {t('todayBtn')}
           </button>
           <button
             onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
@@ -356,13 +358,13 @@ export default function HostCalendar({
         <div className="bg-slate-900/90 p-6 rounded-3xl border border-white/10 shadow-xl flex flex-col justify-between space-y-6 h-fit">
           <div>
             <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-1">
-              Настройки выбранных дат
+              {t('selectedDatesSettings')}
             </h4>
             <p className="text-xs text-slate-400 mb-4">
               {selectedRange[0] ? (
-                <>Период: <b className="text-rose-400">{format(selectedRange[0], 'dd.MM.yy')}</b> {selectedRange[1] ? `— ${format(selectedRange[1], 'dd.MM.yy')}` : ''}</>
+                <>{t('periodLabel')} <b className="text-rose-400">{format(selectedRange[0], 'dd.MM.yy')}</b> {selectedRange[1] ? `— ${format(selectedRange[1], 'dd.MM.yy')}` : ''}</>
               ) : (
-                'Кликните по дате в календаре для редактирования'
+                t('clickDateToEdit')
               )}
             </p>
 
@@ -370,7 +372,7 @@ export default function HostCalendar({
               {/* Статус доступности */}
               <div>
                 <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">
-                  Доступность
+                  {t('availabilityLabel')}
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
@@ -379,7 +381,7 @@ export default function HostCalendar({
                     className={`py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${editStatus === 'Открыто' ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white'
                       }`}
                   >
-                    <Unlock className="w-3.5 h-3.5" /> Открыто
+                    <Unlock className="w-3.5 h-3.5" /> {t('statusOpen')}
                   </button>
                   <button
                     type="button"
@@ -387,7 +389,7 @@ export default function HostCalendar({
                     className={`py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${editStatus === 'Заблокировано' ? 'bg-red-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white'
                       }`}
                   >
-                    <Lock className="w-3.5 h-3.5" /> Блок
+                    <Lock className="w-3.5 h-3.5" /> {t('statusBlocked')}
                   </button>
                 </div>
               </div>
@@ -395,11 +397,11 @@ export default function HostCalendar({
               {/* Стоимость за ночь */}
               <div>
                 <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">
-                  Цена за ночь ({hostCurrency})
+                  {t('setPriceLabel')} ({hostCurrency})
                 </label>
                 <input
                   type="number"
-                  placeholder={`Базовая: ${basePrice}`}
+                  placeholder={`${t('baseLabel')} ${basePrice}`}
                   value={editPrice}
                   onChange={(e) => setEditPrice(e.target.value)}
                   className="w-full bg-slate-800 border border-white/10 p-3 rounded-xl text-xs font-bold text-white outline-none focus:border-rose-500"
@@ -409,11 +411,11 @@ export default function HostCalendar({
               {/* Мин. ночей */}
               <div>
                 <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">
-                  Мин. срок аренды (ночей)
+                  {t('minRentalNights')}
                 </label>
                 <input
                   type="number"
-                  placeholder={`Базовый: ${defaultMinNights}`}
+                  placeholder={`${t('baseDefaultLabel')} ${defaultMinNights}`}
                   value={editMinNights}
                   onChange={(e) => setEditMinNights(e.target.value)}
                   className="w-full bg-slate-800 border border-white/10 p-3 rounded-xl text-xs font-bold text-white outline-none focus:border-rose-500"
@@ -423,27 +425,27 @@ export default function HostCalendar({
               {/* Режим бронирования */}
               <div>
                 <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">
-                  Режим бронирования
+                  {t('bookingModeHost')}
                 </label>
                 <select
                   value={editBookingMode}
                   onChange={(e) => setEditBookingMode(e.target.value)}
                   className="w-full bg-slate-800 border border-white/10 p-3 rounded-xl text-xs font-bold text-white outline-none"
                 >
-                  <option value="">По умолчанию (Мгновенное)</option>
-                  <option value="instant">⚡ Мгновенное бронирование</option>
-                  <option value="manual">✋ Бронирование по запросу</option>
+                  <option value="">{t('defaultInstantMode')}</option>
+                  <option value="instant">{t('instantBookingOption')}</option>
+                  <option value="manual">{t('manualBookingOption')}</option>
                 </select>
               </div>
 
               {/* Внутренняя заметка */}
               <div>
                 <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">
-                  Внутренняя заметка хозяина
+                  {t('hostInternalNote')}
                 </label>
                 <input
                   type="text"
-                  placeholder="Например: Праздничный период"
+                  placeholder={t('internalNotePlaceholder')}
                   value={editNote}
                   onChange={(e) => setEditNote(e.target.value)}
                   className="w-full bg-slate-800 border border-white/10 p-3 rounded-xl text-xs text-white outline-none focus:border-rose-500"
@@ -458,15 +460,15 @@ export default function HostCalendar({
               disabled={loading || !selectedRange[0]}
               className="flex-1 py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold text-xs transition-all shadow-lg shadow-rose-500/25 flex items-center justify-center gap-2 disabled:opacity-40"
             >
-              <Save className="w-4 h-4" /> Сохранить в календарь
+              <Save className="w-4 h-4" /> {t('saveToCalendarBtn')}
             </button>
             <button
               onClick={handleResetRules}
               disabled={loading || !selectedRange[0]}
-              title="Сбросить цену, блокировку и минимальный срок до значений по умолчанию"
+              title={t('resetPeriodRulesDesc')}
               className="py-4 px-4 rounded-2xl bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white font-bold text-xs transition-all border border-white/10 flex items-center justify-center gap-2 disabled:opacity-40"
             >
-              <RotateCcw className="w-4 h-4" /> Сбросить
+              <RotateCcw className="w-4 h-4" /> {t('resetBtn')}
             </button>
           </div>
         </div>
