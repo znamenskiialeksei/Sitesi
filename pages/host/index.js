@@ -225,14 +225,16 @@ export default function HostDashboardPage() {
       const res = await axios.post('/api/booking', {
         action: 'master_save_global_rules',
         rules,
-        sender: currentUser.name
+        sender: currentUser?.name || 'Admin'
       });
       if (res.data && res.data.success) {
-        toast.success(t('successGlobalSave') || 'Базовые настройки сохранены!');
-        fetchSettings();
+        toast.success(t('successGlobalSave') || 'Базовые настройки успешно сохранены в Google Sheets!');
+        await fetchSettings();
+      } else {
+        toast.error(res.data?.error || 'Не удалось сохранить базовые настройки.');
       }
     } catch (err) {
-      toast.error('Ошибка сохранения глобальных настроек.');
+      toast.error(err.response?.data?.error || 'Ошибка сохранения глобальных настроек.');
     } finally {
       setLoading(false);
     }

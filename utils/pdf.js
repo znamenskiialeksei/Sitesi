@@ -46,8 +46,8 @@ export const generateVoucher = async (bookingData) => {
       doc.text(`Guest Full Name: ${bookingData.name || 'Valued Guest'}`);
       doc.text(`Contact: ${bookingData.contact || 'Registered Contact'}`);
       if (bookingData.checkIn && bookingData.checkOut) {
-        doc.text(`Check-in Date: ${bookingData.checkIn} (from 15:00)`);
-        doc.text(`Check-out Date: ${bookingData.checkOut} (until 11:00)`);
+        doc.text(`Check-in Date: ${bookingData.checkIn} (from 16:00)`);
+        doc.text(`Check-out Date: ${bookingData.checkOut} (until 10:00)`);
         doc.text(`Total Nights: ${bookingData.nights || 1}`);
       }
       doc.text(`Total Guests: ${bookingData.total_guests || bookingData.guests || 2} (Adults: ${bookingData.adults || 2}, Children: ${bookingData.children || 0})`);

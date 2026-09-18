@@ -9,6 +9,8 @@ import React, { useState } from 'react';
 import { ShoppingBag, PlayCircle, Compass, Car, Sparkles, ChevronRight, Eye } from 'lucide-react';
 import { useLanguage } from '../utils/language';
 import { useAuth } from '../context/AuthContext';
+import { useLegalConsent } from '../context/LegalConsentContext';
+import LegalConsentCheckboxes from './LegalConsentCheckboxes';
 import { useToast } from './Toast';
 import { MediaCarousel } from '../utils/media';
 
@@ -19,6 +21,7 @@ export default function CatalogSection({
 }) {
   const { t, lang, currency, formatMoney } = useLanguage();
   const { currentUser, setAuthModalOpen } = useAuth();
+  const { allAgreed } = useLegalConsent();
   const toast = useToast();
 
   const [activeTab, setActiveTab] = useState('services'); // 'services' или 'guides'
@@ -29,13 +32,22 @@ export default function CatalogSection({
     return obj[field][lang] || obj[field]['ru'] || '';
   };
 
-  const getPrice = (item) => {
-    const currKey = currency.toLowerCase();
-    const priceObj = item.price || {};
-    return priceObj[currKey] || priceObj.eur || priceObj.rub || 0;
+  // Получение стоимости в базовой валюте USD с поддержкой Google Sheets цен
+  const getItemPriceUSD = (item) => {
+    if (!item) return 0;
+    const p = item.price || {};
+    if (p.usd && !isNaN(Number(p.usd))) return Number(p.usd);
+    if (p.eur && !isNaN(Number(p.eur))) return Number(p.eur) / 0.92;
+    if (p.rub && !isNaN(Number(p.rub))) return Number(p.rub) / 92.5;
+    if (p.try && !isNaN(Number(p.try))) return Number(p.try) / 34.5;
+    return 0;
   };
 
   const handleBuy = (item, type) => {
+    if (!allAgreed) {
+      toast.warn(t('legalConsentContract') || 'Необходимо подтвердить все юридические согласия');
+      return;
+    }
     if (!currentUser) {
       toast.info('Пожалуйста, авторизуйтесь для оформления заказа.');
       setAuthModalOpen(true);
@@ -139,7 +151,7 @@ export default function CatalogSection({
           {effectiveProducts.map((p) => {
             const name = getLocalized(p, 'name');
             const desc = getLocalized(p, 'desc');
-            const price = getPrice(p);
+            const priceUSD = getItemPriceUSD(p);
             const mediaList = p.images && p.images.length > 0
               ? p.images
               : ["https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1200"];
@@ -175,15 +187,21 @@ export default function CatalogSection({
                     <span>Подробнее об услуге</span>
                   </button>
 
+                  {/* Чекбоксы юридических согласий со сквозной синхронизацией */}
+                  <div className="pt-2 border-t border-white/5">
+                    <LegalConsentCheckboxes compact />
+                  </div>
+
                   <div className="pt-3 border-t border-white/5 flex items-center justify-between">
                     <div>
                       <span className="text-[10px] text-slate-400 block uppercase tracking-wider">Стоимость:</span>
-                      <span className="text-lg font-extrabold text-emerald-400">{formatMoney(price)}</span>
+                      <span className="text-lg font-extrabold text-emerald-400">{formatMoney(priceUSD)}</span>
                     </div>
 
                     <button
                       onClick={() => handleBuy(p, 'product')}
-                      className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-colors flex items-center gap-1.5 shadow-lg shadow-rose-900/20 active:scale-95"
+                      disabled={!allAgreed}
+                      className={`px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-colors flex items-center gap-1.5 shadow-lg shadow-rose-900/20 ${!allAgreed ? 'opacity-50 cursor-not-allowed' : 'active:scale-95'}`}
                     >
                       <ShoppingBag className="w-3.5 h-3.5" />
                       <span>{t('productBuy') || 'Заказать'}</span>
@@ -202,7 +220,7 @@ export default function CatalogSection({
           {effectiveCourses.map((c) => {
             const name = getLocalized(c, 'name');
             const desc = getLocalized(c, 'desc');
-            const price = getPrice(c);
+            const priceUSD = getItemPriceUSD(c);
             const mediaList = c.images && c.images.length > 0
               ? c.images
               : ["https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200"];
@@ -238,15 +256,21 @@ export default function CatalogSection({
                     <span>Трейлер и программа</span>
                   </button>
 
+                  {/* Чекбоксы юридических согласий со сквозной синхронизацией */}
+                  <div className="pt-2 border-t border-white/5">
+                    <LegalConsentCheckboxes compact />
+                  </div>
+
                   <div className="pt-3 border-t border-white/5 flex items-center justify-between">
                     <div>
                       <span className="text-[10px] text-slate-400 block uppercase tracking-wider">Доступ:</span>
-                      <span className="text-lg font-extrabold text-emerald-400">{formatMoney(price)}</span>
+                      <span className="text-lg font-extrabold text-emerald-400">{formatMoney(priceUSD)}</span>
                     </div>
 
                     <button
                       onClick={() => handleBuy(c, 'course')}
-                      className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition-colors flex items-center gap-1.5 shadow-lg shadow-purple-900/20 active:scale-95"
+                      disabled={!allAgreed}
+                      className={`px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition-colors flex items-center gap-1.5 shadow-lg shadow-purple-900/20 ${!allAgreed ? 'opacity-50 cursor-not-allowed' : 'active:scale-95'}`}
                     >
                       <PlayCircle className="w-3.5 h-3.5" />
                       <span>{t('buyGuideBtn') || 'Получить доступ'}</span>

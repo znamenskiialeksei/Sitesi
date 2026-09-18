@@ -354,7 +354,7 @@ const initializeSpreadsheet = async () => {
                 ['highlightSuperhostTitle', 'Опытный Суперхозяин (Superhost)', '', '', ''],
                 ['highlightSuperhostDesc', 'Алексей имеет рейтинг 4.98★ и стремится предоставить первоклассный сервис каждому гостю.', '', '', ''],
                 ['highlightCheckinTitle', 'Бесконтактное прибытие (Self check-in)', '', '', ''],
-                ['highlightCheckinDesc', 'Удобный электронный замок и персональный код доступа для заселения в любое удобное время с 15:00.', '', '', ''],
+                ['highlightCheckinDesc', 'Удобный электронный замок и персональный код доступа для заселения в любое удобное время с 16:00.', '', '', ''],
                 ['highlightCancellationTitle', 'Бесплатная отмена за 14 дней', '', '', ''],
                 ['highlightCancellationDesc', 'Полный возврат средств при отмене не позднее чем за 14 суток до даты заезда.', '', '', ''],
                 ['locationTitle', 'Расположение: Дальян, Ортаджа, Мугла, Турция', '', '', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200'],
@@ -406,10 +406,10 @@ const initializeSpreadsheet = async () => {
                 ['[FIRST_NAME]', 'name', 'Имя гостя', 'Иван'],
                 ['[CHECKIN_DATE]', 'checkIn', 'Дата заезда', '01.05.2027'],
                 ['[CHECKOUT_DATE]', 'checkOut', 'Дата выезда', '10.05.2027'],
-                ['[CHECKIN_TIME]', 'checkInTime', 'Стандартное время заезда', '15:00'],
-                ['[CHECKOUT_TIME]', 'checkOutTime', 'Стандартное время выезда', '11:00'],
+                ['[CHECKIN_TIME]', 'checkInTime', 'Стандартное время заезда', '16:00'],
+                ['[CHECKOUT_TIME]', 'checkOutTime', 'Стандартное время выезда', '10:00'],
                 ['[GUESTS]', 'total_guests', 'Общее количество гостей', '4'],
-                ['[PRICE]', 'totalPrice', 'Итоговая стоимость', '150000 RUB']
+                ['[PRICE]', 'totalPrice', 'Итоговая стоимость', '1500 USD']
               ]
             });
           }

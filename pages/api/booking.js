@@ -207,7 +207,7 @@ export default async function handler(req, res) {
     <div class="detail"><span class="label">Объект:</span><span class="val">Villa Turaman (Дальян, Мугла, Турция)</span></div>
     <div class="detail"><span class="label">Владелец / Tax ID:</span><span class="val">Алексей Знаменский (VKN: 9991120181)</span></div>
     ${checkInHtml}
-    <div class="detail"><span class="label">Время заезда / выезда:</span><span class="val">Заезд с 15:00 • Выезд до 11:00</span></div>
+    <div class="detail"><span class="label">Время заезда / выезда:</span><span class="val">Заезд с 16:00 • Выезд до 10:00</span></div>
     <div class="detail"><span class="label">Код доступа Wi-Fi:</span><span class="val code">turaman2026</span></div>
     <div class="detail"><span class="label">Персональный консьерж:</span><span class="val">@AlekseiZnamenskii</span></div>
 
@@ -456,10 +456,10 @@ export default async function handler(req, res) {
               ["[FIRST_NAME]", "name", "Имя гостя", "Иван"],
               ["[CHECKIN_DATE]", "checkIn", "Дата заезда", "01.05.2027"],
               ["[CHECKOUT_DATE]", "checkOut", "Дата выезда", "10.05.2027"],
-              ["[CHECKIN_TIME]", "checkInTime", "Стандартное время заезда", "15:00"],
-              ["[CHECKOUT_TIME]", "checkOutTime", "Стандартное время выезда", "11:00"],
+              ["[CHECKIN_TIME]", "checkInTime", "Стандартное время заезда", "16:00"],
+              ["[CHECKOUT_TIME]", "checkOutTime", "Стандартное время выезда", "10:00"],
               ["[GUESTS]", "total_guests", "Общее количество гостей", "4"],
-              ["[PRICE]", "totalPrice", "Итоговая стоимость", "150000 RUB"]
+              ["[PRICE]", "totalPrice", "Итоговая стоимость", "1500 USD"]
             ]
           }
         });
@@ -576,7 +576,7 @@ export default async function handler(req, res) {
       if (!sheets || !spreadsheetId) {
         return res.status(200).json({
           success: true,
-          globalRules: { basePrice: 15000, currency: 'RUB', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant' },
+          globalRules: { basePrice: 165, currency: 'USD', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', checkInTime: '16:00', checkOutTime: '10:00' },
           dateRules: []
         });
       }
@@ -616,7 +616,7 @@ export default async function handler(req, res) {
 
       const result = {
         success: true,
-        globalRules: globalRules || { basePrice: 15000, currency: 'RUB', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant' },
+        globalRules: globalRules || { basePrice: 165, currency: 'USD', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', checkInTime: '16:00', checkOutTime: '10:00' },
         dateRules,
         variablesDict
       };
@@ -1087,6 +1087,7 @@ export default async function handler(req, res) {
   // --- API: Сохранение глобальных правил ---
   if (action === 'master_save_global_rules') {
     try {
+      await ensureSystemSheets();
       if (sheets && spreadsheetId && data.rules) {
         const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
         await sheets.spreadsheets.values.append({
@@ -1100,6 +1101,7 @@ export default async function handler(req, res) {
       }
       return res.status(200).json({ success: true });
     } catch (e) {
+      console.error('[master_save_global_rules Error]:', e);
       return res.status(500).json({ success: false, error: e.message });
     }
   }

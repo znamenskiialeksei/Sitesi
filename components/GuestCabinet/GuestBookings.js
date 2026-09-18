@@ -148,7 +148,7 @@ export default function GuestBookings({ activeRequests = [], timeLefter = {}, on
                 <div className="text-xs text-slate-300 space-y-1">
                   <div className="flex items-center gap-1.5 text-slate-300">
                     <Clock className="w-3.5 h-3.5 text-rose-400" />
-                    <span>Заезд с 15:00 • Выезд до 11:00</span>
+                    <span>Заезд с 16:00 • Выезд до 10:00</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-slate-300">
                     <Wifi className="w-3.5 h-3.5 text-blue-400" />

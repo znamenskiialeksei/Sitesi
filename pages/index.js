@@ -113,16 +113,16 @@ export default function HomeListing({ publicData, contentData }) {
   // События iCal для отображения цветных полосок в виджете-календаре
   const [apiEvents, setApiEvents] = useState([]);
   const [dynamicRules, setDynamicRules] = useState({
-    basePrice: 15000,
-    currency: 'RUB',
+    basePrice: 165,
+    currency: 'USD',
     minNights: 3,
     maxNights: 30,
     maxTotalGuests: 10,
     bookingWindowMonths: 18,
     advanceNoticeDays: 2,
     bookingMode: 'instant',
-    checkInTime: '15:00',
-    checkOutTime: '11:00'
+    checkInTime: '16:00',
+    checkOutTime: '10:00'
   });
   const [dateRules, setDateRules] = useState([]);
 

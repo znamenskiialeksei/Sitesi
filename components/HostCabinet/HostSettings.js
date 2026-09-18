@@ -14,15 +14,15 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
   const toast = useToast();
 
   const [form, setForm] = useState({
-    basePrice: globalRules.basePrice || 15000,
-    currency: globalRules.currency || 'RUB',
+    basePrice: globalRules.basePrice || 165,
+    currency: globalRules.currency || 'USD',
     minNights: globalRules.minNights || 3,
     maxNights: globalRules.maxNights || 30,
     bookingWindowMonths: globalRules.bookingWindowMonths || 18,
     advanceNoticeDays: globalRules.advanceNoticeDays || 2,
     bookingMode: globalRules.bookingMode || 'instant',
-    checkInTime: globalRules.checkInTime || '15:00',
-    checkOutTime: globalRules.checkOutTime || '11:00'
+    checkInTime: globalRules.checkInTime || '16:00',
+    checkOutTime: globalRules.checkOutTime || '10:00'
   });
 
   const handleChange = (e) => {
@@ -30,10 +30,11 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSaveSettings(form);
-    toast.success('Базовые правила и тарифы успешно сохранены!');
+    if (onSaveSettings) {
+      await onSaveSettings(form);
+    }
   };
 
   return (

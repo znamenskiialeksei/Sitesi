@@ -9,6 +9,7 @@ import React from 'react';
 import { LanguageProvider } from '../utils/language';
 import { AuthProvider } from '../context/AuthContext';
 import { ToastProvider } from '../components/Toast';
+import { LegalConsentProvider } from '../context/LegalConsentContext';
 
 // Стили календаря react-datepicker и глобальный Tailwind CSS с поддержкой кастомных скроллбаров
 import 'react-datepicker/dist/react-datepicker.css';
@@ -18,13 +19,16 @@ function MyApp({ Component, pageProps }) {
   return (
     // Провайдер языка и валют (RU, EN, TR / RUB, EUR, TRY, USD)
     <LanguageProvider>
-      {/* Провайдер авторизации и ролей (Гость / Владелец с 2FA сессией) */}
-      <AuthProvider>
-        {/* Провайдер современных неблокирующих всплывающих уведомлений */}
-        <ToastProvider>
-          <Component {...pageProps} />
-        </ToastProvider>
-      </AuthProvider>
+      {/* Провайдер сквозных юридических согласий (KVKK, Договор, Конфиденциальность) */}
+      <LegalConsentProvider>
+        {/* Провайдер авторизации и ролей (Гость / Владелец с 2FA сессией) */}
+        <AuthProvider>
+          {/* Провайдер современных неблокирующих всплывающих уведомлений */}
+          <ToastProvider>
+            <Component {...pageProps} />
+          </ToastProvider>
+        </AuthProvider>
+      </LegalConsentProvider>
     </LanguageProvider>
   );
 }

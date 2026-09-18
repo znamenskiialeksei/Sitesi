@@ -34,18 +34,26 @@ export default function HostCalendar({
   const [editBookingMode, setEditBookingMode] = useState('');
   const [editNote, setEditNote] = useState('');
 
-  const basePrice = dynamicRules.basePrice || 15000;
+  const rawBase = Number(dynamicRules.basePrice) || 165;
+  const basePrice = (dynamicRules.currency === 'RUB' || rawBase > 1000) ? Math.round(rawBase / 92.5) : rawBase;
   const defaultMinNights = dynamicRules.minNights || 3;
 
-  // Определение динамической цены на дату (с приоритетом последних правил)
+  // Определение динамической цены на дату (в базовой валюте USD с поддержкой переопределений)
   const getPriceForDate = (date) => {
+    if (!date) return basePrice;
     if (!dateRules || !Array.isArray(dateRules)) return basePrice;
     for (let i = dateRules.length - 1; i >= 0; i--) {
       const rule = dateRules[i];
       const rS = parseDateRU(rule.start);
       const rE = parseDateRU(rule.end);
       if (isDateInRange(date, rS, rE)) {
-        if (rule.type === 'Цена') return parseInt(rule.value, 10) || basePrice;
+        if (rule.type === 'Цена') {
+          const val = Number(rule.value);
+          if (!isNaN(val) && val > 0) {
+            return (dynamicRules.currency === 'RUB' || val > 1000) ? Math.round(val / 92.5) : val;
+          }
+          return basePrice;
+        }
         if (rule.type === 'Сброс цены') return basePrice;
       }
     }
@@ -311,7 +319,7 @@ export default function HostCalendar({
             <h3 className="text-base font-bold text-white capitalize">
               {format(currentMonth, 'LLLL yyyy', { locale: dateLocale })}
             </h3>
-            <span className="text-xs text-slate-400">Базовая цена: {basePrice.toLocaleString()} ₽ • Мин. срок: {defaultMinNights} ночи</span>
+            <span className="text-xs text-slate-400">Базовая цена: {formatMoney(basePrice)} • Мин. срок: {defaultMinNights} ночи</span>
           </div>
         </div>
 

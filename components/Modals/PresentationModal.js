@@ -9,12 +9,15 @@ import React from 'react';
 import { X, ShoppingBag, PlayCircle, Eye, CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useAuth } from '../../context/AuthContext';
+import { useLegalConsent } from '../../context/LegalConsentContext';
+import LegalConsentCheckboxes from '../LegalConsentCheckboxes';
 import { useToast } from '../Toast';
 import { MediaCarousel } from '../../utils/media';
 
 export default function PresentationModal({ item, type, onClose, onPurchase }) {
   const { t, lang, currency, formatMoney } = useLanguage();
   const { currentUser, setAuthModalOpen } = useAuth();
+  const { allAgreed } = useLegalConsent();
   const toast = useToast();
 
   if (!item) return null;
@@ -29,18 +32,30 @@ export default function PresentationModal({ item, type, onClose, onPurchase }) {
     ...(Array.isArray(item.videos) ? item.videos : (item.videos ? [item.videos] : []))
   ].filter(Boolean);
 
-  const priceObj = item.price || {};
-  const currKey = currency.toLowerCase();
-  const price = priceObj[currKey] || priceObj.eur || priceObj.rub || 0;
+  // Определение цены в базовой валюте USD для авто-конвертации по TCMB
+  const getItemPriceUSD = () => {
+    const p = item.price || {};
+    if (p.usd && !isNaN(Number(p.usd))) return Number(p.usd);
+    if (p.eur && !isNaN(Number(p.eur))) return Number(p.eur) / 0.92;
+    if (p.rub && !isNaN(Number(p.rub))) return Number(p.rub) / 92.5;
+    if (p.try && !isNaN(Number(p.try))) return Number(p.try) / 34.5;
+    return 0;
+  };
+
+  const priceUSD = getItemPriceUSD();
 
   const handleOrder = () => {
+    if (!allAgreed) {
+      toast.warn(t('legalConsentContract') || 'Необходимо подтвердить все юридические согласия');
+      return;
+    }
     if (!currentUser) {
       toast.info('Пожалуйста, авторизуйтесь для оформления заказа.');
       setAuthModalOpen(true);
       return;
     }
     if (onPurchase) {
-      onPurchase(price, type, item);
+      onPurchase(priceUSD, type, item);
     }
   };
 
@@ -99,6 +114,11 @@ export default function PresentationModal({ item, type, onClose, onPurchase }) {
             </div>
           </div>
 
+          {/* Юридические согласия со сквозной синхронизацией по сайту */}
+          <div className="pt-3 border-t border-white/10">
+            <LegalConsentCheckboxes compact />
+          </div>
+
           {/* Нижняя панель с ценой и кнопкой заказа */}
           <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-4">
             <div>
@@ -106,13 +126,14 @@ export default function PresentationModal({ item, type, onClose, onPurchase }) {
                 Итого к оплате:
               </span>
               <span className="text-xl sm:text-2xl font-extrabold text-emerald-400">
-                {formatMoney(price)}
+                {formatMoney(priceUSD)}
               </span>
             </div>
 
             <button
               onClick={handleOrder}
-              className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold text-xs sm:text-sm transition-all shadow-lg shadow-rose-500/30 flex items-center gap-2 active:scale-95"
+              disabled={!allAgreed}
+              className={`px-6 py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold text-xs sm:text-sm transition-all shadow-lg shadow-rose-500/30 flex items-center gap-2 ${!allAgreed ? 'opacity-50 cursor-not-allowed' : 'active:scale-95'}`}
             >
               {type === 'course' ? (
                 <>

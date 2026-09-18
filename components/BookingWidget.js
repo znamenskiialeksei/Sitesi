@@ -14,9 +14,10 @@ import {
   differenceInDays
 } from 'date-fns';
 import { ru, enUS, tr } from 'date-fns/locale';
-import { Calendar, Users, Zap, Clock, ShieldCheck, ChevronDown, ChevronLeft, ChevronRight, Plus, Minus, AlertCircle } from 'lucide-react';
 import { useLanguage } from '../utils/language';
 import { useAuth } from '../context/AuthContext';
+import { useLegalConsent } from '../context/LegalConsentContext';
+import LegalConsentCheckboxes from './LegalConsentCheckboxes';
 import { useToast } from './Toast';
 import { calculateNights, formatDateRU, parseDateRU, isSameDay, isDateInRange } from '../utils/dates';
 
@@ -78,9 +79,7 @@ export default function BookingWidget({
   const [children, setChildren] = useState(0);
   const [isGuestPickerOpen, setIsGuestPickerOpen] = useState(false);
 
-  const [agreedKVKK, setAgreedKVKK] = useState(false);
-  const [agreedContract, setAgreedContract] = useState(false);
-  const [agreedPrivacy, setAgreedPrivacy] = useState(false);
+  const { agreedKVKK, agreedContract, agreedPrivacy, allAgreed } = useLegalConsent();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const calendarRef = useRef(null);
@@ -90,7 +89,10 @@ export default function BookingWidget({
   const safeMinDate = new Date();
   safeMinDate.setHours(0, 0, 0, 0);
 
-  const basePrice = dynamicRules.basePrice || 15000;
+  // Базовая цена виллы за ночь в USD (при динамической конвертации по курсам ЦБ Турции)
+  // Если в dynamicRules передано старое значение в рублях (> 1000), конвертируем в USD базу
+  const rawBase = Number(dynamicRules.basePrice) || 165;
+  const basePrice = (dynamicRules.currency === 'RUB' || rawBase > 1000) ? Math.round(rawBase / 92.5) : rawBase;
   const maxTotalGuests = 10;
   const totalGuests = adults + children;
 
@@ -119,7 +121,7 @@ export default function BookingWidget({
     return false;
   };
 
-  // Получение цены для конкретного дня с приоритетом последних правил
+  // Получение цены для конкретного дня с гарантией числового значения (в USD)
   const getPriceForDate = (date) => {
     if (!date) return basePrice;
     if (!dateRules || !Array.isArray(dateRules)) return basePrice;
@@ -128,7 +130,13 @@ export default function BookingWidget({
       const rS = parseDateRU(rule.start);
       const rE = parseDateRU(rule.end);
       if (isDateInRange(date, rS, rE)) {
-        if (rule.type === 'Цена') return parseInt(rule.value, 10) || basePrice;
+        if (rule.type === 'Цена') {
+          const val = Number(rule.value);
+          if (!isNaN(val) && val > 0) {
+            return (dynamicRules.currency === 'RUB' || val > 1000) ? Math.round(val / 92.5) : val;
+          }
+          return basePrice;
+        }
         if (rule.type === 'Сброс цены') return basePrice;
       }
     }
@@ -183,17 +191,17 @@ export default function BookingWidget({
   const isShortStay = nights > 0 && nights < minRequiredNights;
   const effectiveMode = isShortStay ? 'manual' : getBookingModeForRange(startDate, endDate);
 
-  // Расчет итоговой стоимости за весь период проживания
+  // Расчет итоговой стоимости за весь период проживания (в базовой валюте USD)
   const calculateTotal = () => {
     if (!startDate || !endDate || nights <= 0) return 0;
     let sum = 0;
     let cur = new Date(startDate);
     const end = new Date(endDate);
     while (cur < end) {
-      sum += getPriceForDate(cur);
+      sum += Number(getPriceForDate(cur)) || 0;
       cur.setDate(cur.getDate() + 1);
     }
-    return sum;
+    return Math.round(sum);
   };
 
   const totalPrice = calculateTotal();
@@ -394,8 +402,8 @@ export default function BookingWidget({
       return;
     }
 
-    if (!agreedKVKK || !agreedContract || !agreedPrivacy) {
-      toast.warn(t('legalConsentContract'));
+    if (!allAgreed) {
+      toast.warn(t('legalConsentContract') || 'Необходимо подтвердить все юридические согласия');
       return;
     }
 
@@ -416,7 +424,7 @@ export default function BookingWidget({
         total_adults: adults,
         total_children: children,
         total_guests: totalGuests,
-        totalPrice: `${totalPrice} ${CURRENCY_SYMBOLS[currency]}`,
+        totalPrice: formatMoney(totalPrice),
         isRegistered: !!currentUser
       };
 
@@ -650,59 +658,16 @@ export default function BookingWidget({
           </div>
         )}
 
-        {/* Юридические согласия */}
-        <div className="space-y-2 pt-2 border-t border-white/10 text-[11px] text-slate-300">
-          <label className="flex items-start gap-2.5 cursor-pointer group">
-            <input
-              type="checkbox"
-              checked={agreedKVKK}
-              onChange={(e) => setAgreedKVKK(e.target.checked)}
-              className="mt-0.5 w-3.5 h-3.5 rounded accent-rose-500 cursor-pointer shrink-0"
-            />
-            <span className="leading-tight group-hover:text-white">
-              {t('legalConsentKVKK')}{' '}
-              <Link href="/legal/kvkk" target="_blank" className="text-rose-400 underline">
-                ({t('linkKVKK')})
-              </Link>
-            </span>
-          </label>
-
-          <label className="flex items-start gap-2.5 cursor-pointer group">
-            <input
-              type="checkbox"
-              checked={agreedContract}
-              onChange={(e) => setAgreedContract(e.target.checked)}
-              className="mt-0.5 w-3.5 h-3.5 rounded accent-rose-500 cursor-pointer shrink-0"
-            />
-            <span className="leading-tight group-hover:text-white">
-              {t('legalConsentContract')}{' '}
-              <Link href="/legal/contract" target="_blank" className="text-rose-400 underline">
-                ({t('linkContract')})
-              </Link>
-            </span>
-          </label>
-
-          <label className="flex items-start gap-2.5 cursor-pointer group">
-            <input
-              type="checkbox"
-              checked={agreedPrivacy}
-              onChange={(e) => setAgreedPrivacy(e.target.checked)}
-              className="mt-0.5 w-3.5 h-3.5 rounded accent-rose-500 cursor-pointer shrink-0"
-            />
-            <span className="leading-tight group-hover:text-white">
-              {t('legalConsentPrivacy')}{' '}
-              <Link href="/legal/privacy" target="_blank" className="text-rose-400 underline">
-                ({t('linkPrivacy')})
-              </Link>
-            </span>
-          </label>
+        {/* Юридические согласия со сквозной синхронизацией по сайту */}
+        <div className="pt-2 border-t border-white/10">
+          <LegalConsentCheckboxes />
         </div>
 
         {/* Кнопка отправки формы */}
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="w-full py-4 rounded-2xl font-bold text-sm text-white bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 active:scale-[0.99] transition-all shadow-lg shadow-rose-500/30 flex items-center justify-center gap-2 disabled:opacity-50"
+          disabled={isSubmitting || !allAgreed}
+          className="w-full py-4 rounded-2xl font-bold text-sm text-white bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 active:scale-[0.99] transition-all shadow-lg shadow-rose-500/30 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {effectiveMode === 'instant' ? (
             <>
