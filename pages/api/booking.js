@@ -2,7 +2,7 @@
 // ОСНОВНОЙ API СЕРВЕР GOOGLE SHEETS & CRM VILLA TURAMAN
 // Файл: pages/api/booking.js
 // Назначение: Обработка бронирований, авторизация, чаты, настройки календаря
-// СТАНДАРТ: 100% канонические формулы с запятыми (,) для исключения #ERROR!
+// СТАНДАРТ: 100% канонические формулы со СТРОГОЙ ТОЧКОЙ С ЗАПЯТОЙ (;) для русской локали Google Таблиц
 // ==============================================================================
 
 import { google } from 'googleapis';
@@ -290,8 +290,12 @@ export default async function handler(req, res) {
   const getChatSpreadsheetId = () => chatsSpreadsheetId || spreadsheetId;
 
   // Безопасное инъецирование формул со СТРОГОЙ ТОЧКОЙ С ЗАПЯТОЙ (;) для русской локали Google Таблиц
+  // Оптимизация квоты: один values.batchUpdate вместо 32 индивидуальных вызовов + кэш-защита на 30 дней
   const injectSafeFormulas = async () => {
     if (!sheets || !spreadsheetId) return;
+    const formulasDone = await safeCacheGet('formulas_injected_v2');
+    if (formulasDone) return;
+
     const formulaRequests = [
       { sheet: 'HomePage', cell: 'C2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))' },
       { sheet: 'HomePage', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' },
@@ -327,21 +331,34 @@ export default async function handler(req, res) {
       { sheet: 'Gallery', cell: 'L2', f: '=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' }
     ];
 
-    for (const item of formulaRequests) {
-      try {
-        await sheets.spreadsheets.values.update({
-          spreadsheetId,
-          range: `${item.sheet}!${item.cell}`,
+    try {
+      await sheets.spreadsheets.values.batchUpdate({
+        spreadsheetId,
+        requestBody: {
           valueInputOption: 'USER_ENTERED',
-          requestBody: { values: [[item.f]] }
-        });
-      } catch (e) { }
+          data: formulaRequests.map((item) => ({
+            range: `${item.sheet}!${item.cell}`,
+            values: [[item.f]]
+          }))
+        }
+      });
+      await safeCacheSet('formulas_injected_v2', true, { ex: 86400 * 30 });
+    } catch (e) {
+      if (e?.code === 429 || e?.message?.includes('Quota exceeded')) {
+        console.warn('[injectSafeFormulas 429]: Превышен лимит запросов квоты Google Sheets API, повтор позже.');
+      } else {
+        console.warn('[injectSafeFormulas Warning]:', e.message);
+      }
     }
   };
 
   // Автоматическая проверка и гарантированное создание всех 14 системных листов БД
+  // Оптимизация квоты: проверка кэша system_sheets_initialized_v2 для предотвращения лишних запросов
   const ensureSystemSheets = async () => {
     if (!sheets || !spreadsheetId) return;
+    const isSystemReady = await safeCacheGet('system_sheets_initialized_v2');
+    if (isSystemReady) return;
+
     try {
       const ss = await sheets.spreadsheets.get({ spreadsheetId });
       const existingTitles = ss.data.sheets.map((s) => s.properties.title);
@@ -529,15 +546,19 @@ export default async function handler(req, res) {
           }
         });
       }
+      await safeCacheSet('system_sheets_initialized_v2', true, { ex: 86400 * 30 });
     } catch (e) {
-      console.warn('[ensureSystemSheets Error]:', e.message);
+      if (e?.code === 429 || e?.message?.includes('Quota exceeded')) {
+        console.warn('[ensureSystemSheets 429]: Превышена квота записи Google Sheets API, отложено.');
+      } else {
+        console.warn('[ensureSystemSheets Error]:', e.message);
+      }
     }
   };
 
   // --- API: Получение публичных данных (услуги, курсы, галерея) ---
   if (action === 'get_public_data') {
     try {
-      await ensureSystemSheets();
       if (!sheets || !spreadsheetId) {
         return res.status(200).json({ success: true, products: [], courses: [], gallery: [] });
       }
@@ -594,8 +615,6 @@ export default async function handler(req, res) {
     try {
       const cached = await safeCacheGet('settings_cache');
       if (cached) return res.status(200).json(cached);
-
-      await ensureSystemSheets();
 
       if (!sheets || !spreadsheetId) {
         return res.status(200).json({
@@ -761,10 +780,10 @@ export default async function handler(req, res) {
         const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
         const msgText = data.message || '';
 
-        // Канонические формулы перевода с ЗАПЯТЫМИ (,) для исключения #ERROR!
-        const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "ru")';
-        const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "en")';
-        const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "tr")';
+        // Канонические формулы перевода со СТРОГОЙ ТОЧКОЙ С ЗАПЯТОЙ (;) для русской локали Google Таблиц
+        const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+        const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+        const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
 
         if (sheets && targetChatId) {
           try {
@@ -830,7 +849,6 @@ export default async function handler(req, res) {
   // --- API: Получение всех чатов для панели хозяина ---
   if (action === 'master_get_chats') {
     try {
-      await ensureSystemSheets();
       const targetChatId = getChatSpreadsheetId();
       let allChats = [];
 
@@ -914,9 +932,9 @@ export default async function handler(req, res) {
 
         // Отправка системного сообщения гостю
         const targetChatId = getChatSpreadsheetId();
-        const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "ru")';
-        const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "en")';
-        const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "tr")';
+        const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+        const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+        const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
         const msg = `✅ Ваша заявка на даты ${data.checkIn} — ${data.checkOut} одобрена владельцем!\nДаты удержаны за вами на 24 часа.Пожалуйста, завершите онлайн - оплату в личном кабинете.`;
 
         await sheets.spreadsheets.values.append({
@@ -965,9 +983,9 @@ export default async function handler(req, res) {
         });
 
         const msg = `🎁 Для вас сформировано специальное предложение!\nДаты проживания: ${data.checkIn} — ${data.checkOut}\nОбновленная стоимость: ${data.price}\nПожалуйста, перейдите к оплате в карточке бронирования. Окно оплаты открыто до: ${deadlineStr}.`;
-        const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "ru")';
-        const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "en")';
-        const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "tr")';
+        const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+        const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+        const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
 
         await sheets.spreadsheets.values.append({
           spreadsheetId: targetChatId,
@@ -1010,9 +1028,9 @@ export default async function handler(req, res) {
         });
 
         const msg = `❌ Сообщаю, что предложение на бронирование с ${data.checkIn} по ${data.checkOut} было отозвано администрацией.`;
-        const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "ru")';
-        const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "en")';
-        const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "tr")';
+        const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+        const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+        const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
 
         await sheets.spreadsheets.values.append({
           spreadsheetId: targetChatId,
@@ -1046,9 +1064,9 @@ export default async function handler(req, res) {
 
         const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
         const msg = `❌ К сожалению, ваша заявка на даты ${data.checkIn} — ${data.checkOut} была отклонена. Пожалуйста, выберите другие доступные даты в календаре.`;
-        const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "ru")';
-        const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "en")';
-        const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "tr")';
+        const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+        const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+        const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
 
         await sheets.spreadsheets.values.append({
           spreadsheetId: targetChatId,
@@ -1070,7 +1088,6 @@ export default async function handler(req, res) {
   // --- API: Получение обучающих материалов для мастера (LMS) ---
   if (action === 'master_get_lms') {
     try {
-      await ensureSystemSheets();
       if (!sheets || !spreadsheetId) return res.status(200).json({ success: true, lms: [] });
 
       const coursesSheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: `'${GOOGLE_CONFIG.coursesSheetName}'!A:Q` });
@@ -1135,9 +1152,9 @@ export default async function handler(req, res) {
     try {
       const targetChatId = getChatSpreadsheetId();
       const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
-      const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "ru")';
-      const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "en")';
-      const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "tr")';
+      const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+      const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+      const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
 
       if (sheets && targetChatId) {
         for (const sheetName of data.targetSheets || []) {
@@ -1244,11 +1261,11 @@ export default async function handler(req, res) {
             });
           }
 
-          // Системное сообщение с деталями заявки (формулы с запятыми для API!)
+          // Системное сообщение с деталями заявки (канонические формулы с точкой с запятой)
           const miniCard = `📋 Заявка отправлена на модерацию.\nДетали: ${data.checkIn} — ${data.checkOut}\nГостей: ${data.total_guests}\nСтоимость: ${data.totalPrice}\n\nОжидайте подтверждения от владельца.`;
-          const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "ru")';
-          const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "en")';
-          const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "tr")';
+          const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+          const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+          const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
 
           await sheets.spreadsheets.values.append({
             spreadsheetId: targetChatId,
@@ -1308,9 +1325,9 @@ export default async function handler(req, res) {
               });
             }
             const miniCard = `✅ Заказ успешно оформлен!\nДетали: ${data.checkIn} — ${data.checkOut}\nГостей: ${data.total_guests}\nСумма: ${data.totalPrice}`;
-            const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "ru")';
-            const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "en")';
-            const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "tr")';
+            const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+            const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+            const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
             await sheets.spreadsheets.values.append({
               spreadsheetId: targetChatId,
               range: `'${chatSheetName}'!A:G`,

@@ -2,7 +2,7 @@
 // ИНИЦИАЛИЗАЦИЯ И СТРУКТУРИРОВАНИЕ GOOGLE SHEETS CRM
 // Файл: scripts/init-google-sheets.js
 // Назначение: Создание листов, стилизация шапок и инъекция канонических формул
-// автоперевода (строго с запятыми ',' для исключения #ERROR! в русском интерфейсе).
+// автоперевода (строго с точкой с запятой ';' для русской локали Google Таблиц).
 // ==============================================================================
 
 require('dotenv').config({ path: '.env.local' });
@@ -433,23 +433,31 @@ const initializeSpreadsheet = async () => {
       await sheets.spreadsheets.batchUpdate({ spreadsheetId, requestBody: { requests: formatRequests } });
     }
 
-    // Заполнение начальных данных
-    for (const req of dataAppendRequests) {
-      await sheets.spreadsheets.values.update({
+    // Заполнение начальных данных единым пакетом (batchUpdate для экономии квоты)
+    if (dataAppendRequests.length > 0) {
+      await sheets.spreadsheets.values.batchUpdate({
         spreadsheetId,
-        range: req.range,
-        valueInputOption: 'USER_ENTERED',
-        requestBody: { values: req.values }
+        requestBody: {
+          valueInputOption: 'USER_ENTERED',
+          data: dataAppendRequests.map((req) => ({
+            range: req.range,
+            values: req.values
+          }))
+        }
       });
     }
 
-    // Безопасное внедрение формул авто-перевода с запятыми
-    for (const req of safeFormulasToInject) {
-      await sheets.spreadsheets.values.update({
+    // Безопасное внедрение формул авто-перевода со СТРОГОЙ ТОЧКОЙ С ЗАПЯТОЙ (;) единым batchUpdate
+    if (safeFormulasToInject.length > 0) {
+      await sheets.spreadsheets.values.batchUpdate({
         spreadsheetId,
-        range: req.range,
-        valueInputOption: 'USER_ENTERED',
-        requestBody: { values: req.values }
+        requestBody: {
+          valueInputOption: 'USER_ENTERED',
+          data: safeFormulasToInject.map((req) => ({
+            range: req.range,
+            values: req.values
+          }))
+        }
       });
     }
 

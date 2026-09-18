@@ -82,12 +82,20 @@ export default function HostDashboardPage() {
           setAllRequestsList(res.data.allRequests);
         }
       }
+    } catch (err) {
+      console.warn('Ошибка загрузки чатов хозяина:', err);
+    }
+  };
+
+  // Однократная загрузка обучающих материалов (LMS) для мастера
+  const fetchLmsModules = async () => {
+    try {
       const lmsRes = await axios.post('/api/booking', { action: 'master_get_lms' });
       if (lmsRes.data && lmsRes.data.success) {
         setLmsModules(lmsRes.data.lms || []);
       }
     } catch (err) {
-      console.warn('Ошибка загрузки чатов хозяина:', err);
+      console.warn('Ошибка загрузки LMS:', err);
     }
   };
 
@@ -96,6 +104,7 @@ export default function HostDashboardPage() {
     fetchCalendarEvents();
     if (currentUser?.isHost) {
       fetchMasterChats();
+      fetchLmsModules();
       const interval = setInterval(() => {
         fetchMasterChats();
       }, 30000);
