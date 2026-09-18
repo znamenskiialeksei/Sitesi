@@ -26,10 +26,89 @@ export default function CatalogSection({
 
   const [activeTab, setActiveTab] = useState('services'); // 'services' или 'guides'
 
+  // Словарь часто используемых сервисных названий и фраз для мгновенной локализации
+  const dictionaryFallback = {
+    'массаж': { ru: 'Массаж', en: 'Massage', tr: 'Masaj' },
+    'massage': { ru: 'Массаж', en: 'Massage', tr: 'Masaj' },
+    'masaj': { ru: 'Массаж', en: 'Massage', tr: 'Masaj' },
+    'cool, high quality': { ru: 'Первоклассный, высокое качество', en: 'Cool, high quality', tr: 'Harika, yüksek kalite' },
+    'первоклассный, высокое качество': { ru: 'Первоклассный, высокое качество', en: 'Cool, high quality', tr: 'Harika, yüksek kalite' },
+    'трансфер': { ru: 'Индивидуальный VIP-трансфер', en: 'Private VIP Transfer', tr: 'Özel VIP Transfer' },
+    'transfer': { ru: 'Индивидуальный VIP-трансфер', en: 'Private VIP Transfer', tr: 'Özel VIP Transfer' },
+    'яхта': { ru: 'Аренда яхты', en: 'Yacht Charter', tr: 'Tekne Turu' },
+    'yacht': { ru: 'Аренда яхты', en: 'Yacht Charter', tr: 'Tekne Turu' },
+    'шеф-повар': { ru: 'Персональный шеф-повар', en: 'Private Chef', tr: 'Özel Şef' },
+    'chef': { ru: 'Персональный шеф-повар', en: 'Private Chef', tr: 'Özel Şef' },
+    'барбекю': { ru: 'Барбекю на вилле', en: 'Villa BBQ', tr: 'Villa Barbekü' },
+    'bbq': { ru: 'Барбекю на вилле', en: 'Villa BBQ', tr: 'Villa Barbekü' },
+    'спа': { ru: 'СПА и термальные источники', en: 'SPA & Thermal Baths', tr: 'SPA ve Termal Kaynaklar' },
+    'spa': { ru: 'СПА и термальные источники', en: 'SPA & Thermal Baths', tr: 'SPA ve Termal Kaynaklar' }
+  };
+
   const getLocalized = (obj, field) => {
     if (!obj || !obj[field]) return '';
-    if (typeof obj[field] === 'string') return obj[field];
-    return obj[field][lang] || obj[field]['ru'] || '';
+
+    // Если передана прямая строка
+    if (typeof obj[field] === 'string') {
+      const raw = obj[field].trim();
+      const lower = raw.toLowerCase();
+      if (dictionaryFallback[lower] && dictionaryFallback[lower][lang]) {
+        return dictionaryFallback[lower][lang];
+      }
+      return raw;
+    }
+
+    const val = obj[field][lang];
+    if (val && typeof val === 'string') {
+      const clean = val.trim();
+      if (!clean.startsWith('#') && clean.toUpperCase() !== 'ERROR') {
+        return clean;
+      }
+    }
+
+    // Если на выбранном языке в таблице пусто или #ERROR!, проверяем словарь
+    const anyText = (obj[field]['ru'] || obj[field]['en'] || obj[field]['tr'] || '').toString().trim();
+    const anyLower = anyText.toLowerCase();
+    if (dictionaryFallback[anyLower] && dictionaryFallback[anyLower][lang]) {
+      return dictionaryFallback[anyLower][lang];
+    }
+
+    // Каскадный фоллбэк: EN -> RU -> TR
+    if (lang !== 'en' && obj[field]['en'] && !obj[field]['en'].toString().startsWith('#')) return obj[field]['en'];
+    if (lang !== 'ru' && obj[field]['ru'] && !obj[field]['ru'].toString().startsWith('#')) return obj[field]['ru'];
+    if (obj[field]['tr'] && !obj[field]['tr'].toString().startsWith('#')) return obj[field]['tr'];
+
+    return anyText;
+  };
+
+  const getLocalizedType = (typeObj) => {
+    if (!typeObj) return t('serviceTypeLabel') || 'Услуга';
+    if (typeof typeObj === 'object') {
+      const v = typeObj[lang] || typeObj.ru || '';
+      if (v) return v;
+    }
+    const str = String(typeObj).toLowerCase();
+    if (str.includes('пакет') || str.includes('package') || str.includes('paket')) {
+      return t('packageTypeLabel') || (lang === 'en' ? 'Service Package' : lang === 'tr' ? 'Hizmet Paketi' : 'Пакет услуг');
+    }
+    return t('serviceTypeLabel') || (lang === 'en' ? 'Service' : lang === 'tr' ? 'Hizmet' : 'Услуга');
+  };
+
+  const getLocalizedModule = (mod) => {
+    if (!mod) return t('guideTypeLabel') || (lang === 'en' ? 'Video guide' : lang === 'tr' ? 'Video rehber' : 'Видео-гид');
+    const lower = String(mod).toLowerCase().trim();
+    const map = {
+      'путеводитель': { ru: 'Путеводитель', en: 'Guide', tr: 'Rehber' },
+      'видео-гид': { ru: 'Видео-гид', en: 'Video Guide', tr: 'Video Rehber' },
+      'локации': { ru: 'Локации', en: 'Locations', tr: 'Konumlar' },
+      'история': { ru: 'История', en: 'History', tr: 'Tarih' },
+      'гастрономия': { ru: 'Гастрономия', en: 'Gastronomy', tr: 'Gastronomi' },
+      'здоровье': { ru: 'Здоровье', en: 'Wellness', tr: 'Sağlık' },
+      'основной': { ru: 'Основной', en: 'Main', tr: 'Ana Modül' },
+      'для гостей': { ru: 'Для гостей', en: 'For Guests', tr: 'Misafirler İçin' }
+    };
+    if (map[lower] && map[lower][lang]) return map[lower][lang];
+    return mod;
   };
 
   // Получение и форматирование цены карточки: приоритет прямого значения из ExtraServices и VideoGuides
@@ -59,11 +138,13 @@ export default function CatalogSection({
       return;
     }
     if (!currentUser) {
-      toast.info('Пожалуйста, авторизуйтесь для оформления заказа.');
+      toast.info(t('authRequiredOrderToast') || 'Пожалуйста, авторизуйтесь для оформления заказа.');
       setAuthModalOpen(true);
       return;
     }
-    toast.success(`Заказ на «${getLocalized(item, 'name')}» сформирован! Переходим к деталям...`);
+    const itemName = getLocalized(item, 'name');
+    const toastTemplate = t('orderCreatedToast') || 'Заказ на «{name}» сформирован! Переходим к деталям...';
+    toast.success(toastTemplate.replace('{name}', itemName));
     if (onSelectPresentation) {
       onSelectPresentation(item, type);
     }
@@ -125,7 +206,7 @@ export default function CatalogSection({
             <span>{t('catalogTitle') || 'Впечатления и сервис'}</span>
           </h2>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Сделайте ваш отдых на Villa Turaman по-настоящему незабываемым
+            {t('catalogSubtitle') || 'Сделайте ваш отдых на Villa Turaman по-настоящему незабываемым'}
           </p>
         </div>
 
@@ -175,7 +256,7 @@ export default function CatalogSection({
                   <div className="h-52 overflow-hidden relative bg-slate-900">
                     <MediaCarousel media={mediaList} type="image" />
                     <span className="absolute top-3 right-3 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-white border border-white/10 z-10">
-                      {p.type?.[lang] || p.type?.ru || 'Услуга'}
+                      {getLocalizedType(p.type)}
                     </span>
                   </div>
 
@@ -193,7 +274,7 @@ export default function CatalogSection({
                     className="w-full py-2 px-3 rounded-xl bg-slate-700/50 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors border border-white/5"
                   >
                     <Eye className="w-3.5 h-3.5 text-blue-400" />
-                    <span>Подробнее об услуге</span>
+                    <span>{t('serviceDetailsBtn') || 'Подробнее об услуге'}</span>
                   </button>
 
                   {/* Чекбоксы юридических согласий со сквозной синхронизацией */}
@@ -203,7 +284,7 @@ export default function CatalogSection({
 
                   <div className="pt-3 border-t border-white/5 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-slate-400 block uppercase tracking-wider">Стоимость:</span>
+                      <span className="text-[10px] text-slate-400 block uppercase tracking-wider">{t('priceLabel') || 'Стоимость:'}</span>
                       <span className="text-lg font-extrabold text-emerald-400">{formatItemPrice(p)}</span>
                     </div>
 
@@ -243,7 +324,7 @@ export default function CatalogSection({
                   <div className="h-52 overflow-hidden relative bg-slate-900">
                     <MediaCarousel media={mediaList} type="image" />
                     <span className="absolute top-3 right-3 bg-purple-600/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-white z-10 shadow">
-                      {c.module || 'Видео-гид'}
+                      {getLocalizedModule(c.module)}
                     </span>
                   </div>
 
@@ -261,7 +342,7 @@ export default function CatalogSection({
                     className="w-full py-2 px-3 rounded-xl bg-slate-700/50 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors border border-white/5"
                   >
                     <PlayCircle className="w-3.5 h-3.5 text-purple-400" />
-                    <span>Трейлер и программа</span>
+                    <span>{t('guideTrailerBtn') || 'Трейлер и программа'}</span>
                   </button>
 
                   {/* Чекбоксы юридических согласий со сквозной синхронизацией */}
@@ -271,7 +352,7 @@ export default function CatalogSection({
 
                   <div className="pt-3 border-t border-white/5 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-slate-400 block uppercase tracking-wider">Доступ:</span>
+                      <span className="text-[10px] text-slate-400 block uppercase tracking-wider">{t('accessLabel') || 'Доступ:'}</span>
                       <span className="text-lg font-extrabold text-emerald-400">{formatItemPrice(c)}</span>
                     </div>
 

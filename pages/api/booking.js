@@ -297,38 +297,38 @@ export default async function handler(req, res) {
     if (formulasDone) return;
 
     const formulaRequests = [
-      { sheet: 'HomePage', cell: 'C2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))' },
-      { sheet: 'HomePage', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' },
-      { sheet: 'About', cell: 'C2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))' },
-      { sheet: 'About', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' },
-      { sheet: 'About', cell: 'F2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))' },
-      { sheet: 'About', cell: 'G2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' },
-      { sheet: 'Legal', cell: 'C2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))' },
-      { sheet: 'Legal', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' },
-      { sheet: 'Legal', cell: 'F2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))' },
-      { sheet: 'Legal', cell: 'G2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' },
-      { sheet: 'Templates', cell: 'C2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))' },
-      { sheet: 'Templates', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' },
-      { sheet: 'Templates', cell: 'F2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))' },
-      { sheet: 'Templates', cell: 'G2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' },
-      { sheet: 'ExtraServices', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))' },
-      { sheet: 'ExtraServices', cell: 'F2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' },
-      { sheet: 'ExtraServices', cell: 'E2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))' },
-      { sheet: 'ExtraServices', cell: 'G2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' },
-      { sheet: 'ExtraServices', cell: 'P2', f: '=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))' },
-      { sheet: 'ExtraServices', cell: 'Q2', f: '=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' },
-      { sheet: 'VideoGuides', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))' },
-      { sheet: 'VideoGuides', cell: 'F2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' },
-      { sheet: 'VideoGuides', cell: 'E2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))' },
-      { sheet: 'VideoGuides', cell: 'G2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' },
-      { sheet: 'VideoGuides', cell: 'P2', f: '=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))' },
-      { sheet: 'VideoGuides', cell: 'Q2', f: '=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' },
-      { sheet: 'Gallery', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))' },
-      { sheet: 'Gallery', cell: 'F2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' },
-      { sheet: 'Gallery', cell: 'E2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))' },
-      { sheet: 'Gallery', cell: 'G2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' },
-      { sheet: 'Gallery', cell: 'K2', f: '=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))' },
-      { sheet: 'Gallery', cell: 'L2', f: '=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))' }
+      { sheet: 'HomePage', cell: 'C2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: 'HomePage', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: 'About', cell: 'C2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: 'About', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: 'About', cell: 'F2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: 'About', cell: 'G2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: 'Legal', cell: 'C2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: 'Legal', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: 'Legal', cell: 'F2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: 'Legal', cell: 'G2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: 'Templates', cell: 'C2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: 'Templates', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: 'Templates', cell: 'F2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: 'Templates', cell: 'G2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: 'ExtraServices', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: 'ExtraServices', cell: 'F2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: 'ExtraServices', cell: 'E2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: 'ExtraServices', cell: 'G2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: 'ExtraServices', cell: 'P2', f: '=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: 'ExtraServices', cell: 'Q2', f: '=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: 'VideoGuides', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: 'VideoGuides', cell: 'F2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: 'VideoGuides', cell: 'E2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: 'VideoGuides', cell: 'G2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: 'VideoGuides', cell: 'P2', f: '=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: 'VideoGuides', cell: 'Q2', f: '=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: 'Gallery', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: 'Gallery', cell: 'F2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: 'Gallery', cell: 'E2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: 'Gallery', cell: 'G2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: 'Gallery', cell: 'K2', f: '=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: 'Gallery', cell: 'L2', f: '=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' }
     ];
 
     try {
@@ -567,33 +567,64 @@ export default async function handler(req, res) {
       const coursesSheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: `${GOOGLE_CONFIG.coursesSheetName}!A:Q` });
       const gallerySheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: `${GOOGLE_CONFIG.gallerySheetName}!A:L` });
 
-      const products = (productsSheet.data.values || []).slice(1).map((r) => ({
-        id: r[0],
-        name: { ru: r[1], en: r[3], tr: r[5] },
-        desc: { ru: r[2], en: r[4], tr: r[6] },
-        price: { eur: r[7], rub: r[8], try: r[9] },
-        images: (r[10] || '').split(',').map((s) => s.trim()).filter(Boolean),
-        videos: (r[13] || '').split(',').map((s) => s.trim()).filter(Boolean),
-        detailedDesc: { ru: r[14] || '', en: r[15] || '', tr: r[16] || '' },
-        type: {
-          ru: r[12] === 'Пакет' ? 'Пакет услуг' : 'Услуга',
-          en: r[12] === 'Пакет' ? 'Service Package' : 'Service',
-          tr: r[12] === 'Пакет' ? 'Hizmet Paketi' : 'Hizmet'
-        }
-      })).filter((p) => p.id && p.name?.ru);
+      const cleanField = (val) => {
+        if (!val || typeof val !== 'string') return '';
+        const trimmed = val.trim();
+        if (trimmed.startsWith('#') || trimmed.toUpperCase() === 'ERROR') return '';
+        return trimmed;
+      };
 
-      const courses = (coursesSheet.data.values || []).slice(1).map((r) => ({
-        id: r[0],
-        name: { ru: r[1], en: r[3], tr: r[5] },
-        desc: { ru: r[2], en: r[4], tr: r[6] },
-        images: (r[7] || '').split(',').map((s) => s.trim()).filter(Boolean),
-        module: r[8] || 'Путеводитель',
-        privateLink: r[9],
-        price: { eur: r[10], rub: r[11], try: r[12] },
-        videos: (r[13] || '').split(',').map((s) => s.trim()).filter(Boolean),
-        detailedDesc: { ru: r[14] || '', en: r[15] || '', tr: r[16] || '' },
-        level: 'Для гостей'
-      })).filter((c) => c.id && c.name?.ru);
+      const products = (productsSheet.data.values || []).slice(1).map((r) => {
+        const ruName = cleanField(r[1]);
+        const enName = cleanField(r[3]);
+        const trName = cleanField(r[5]);
+        const ruDesc = cleanField(r[2]);
+        const enDesc = cleanField(r[4]);
+        const trDesc = cleanField(r[6]);
+        const ruDetailed = cleanField(r[14]);
+        const enDetailed = cleanField(r[15]);
+        const trDetailed = cleanField(r[16]);
+
+        return {
+          id: r[0],
+          name: { ru: ruName, en: enName, tr: trName },
+          desc: { ru: ruDesc, en: enDesc, tr: trDesc },
+          price: { eur: r[7], rub: r[8], try: r[9] },
+          images: (r[10] || '').split(',').map((s) => s.trim()).filter(Boolean),
+          videos: (r[13] || '').split(',').map((s) => s.trim()).filter(Boolean),
+          detailedDesc: { ru: ruDetailed, en: enDetailed, tr: trDetailed },
+          type: {
+            ru: r[12] === 'Пакет' ? 'Пакет услуг' : 'Услуга',
+            en: r[12] === 'Пакет' ? 'Service Package' : 'Service',
+            tr: r[12] === 'Пакет' ? 'Hizmet Paketi' : 'Hizmet'
+          }
+        };
+      }).filter((p) => p.id && (p.name?.ru || p.name?.en || p.name?.tr));
+
+      const courses = (coursesSheet.data.values || []).slice(1).map((r) => {
+        const ruName = cleanField(r[1]);
+        const enName = cleanField(r[3]);
+        const trName = cleanField(r[5]);
+        const ruDesc = cleanField(r[2]);
+        const enDesc = cleanField(r[4]);
+        const trDesc = cleanField(r[6]);
+        const ruDetailed = cleanField(r[14]);
+        const enDetailed = cleanField(r[15]);
+        const trDetailed = cleanField(r[16]);
+
+        return {
+          id: r[0],
+          name: { ru: ruName, en: enName, tr: trName },
+          desc: { ru: ruDesc, en: enDesc, tr: trDesc },
+          images: (r[7] || '').split(',').map((s) => s.trim()).filter(Boolean),
+          module: r[8] || 'Путеводитель',
+          privateLink: r[9],
+          price: { eur: r[10], rub: r[11], try: r[12] },
+          videos: (r[13] || '').split(',').map((s) => s.trim()).filter(Boolean),
+          detailedDesc: { ru: ruDetailed, en: enDetailed, tr: trDetailed },
+          level: 'Для гостей'
+        };
+      }).filter((c) => c.id && (c.name?.ru || c.name?.en || c.name?.tr));
 
       const gallery = (gallerySheet.data.values || []).slice(1).map((r) => ({
         id: r[0],

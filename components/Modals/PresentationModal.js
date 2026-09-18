@@ -22,9 +22,78 @@ export default function PresentationModal({ item, type, onClose, onPurchase }) {
 
   if (!item) return null;
 
-  const title = item.name?.[lang] || item.name?.ru || '';
-  const desc = item.desc?.[lang] || item.desc?.ru || '';
-  const detailed = item.detailedDesc?.[lang] || item.detailedDesc?.ru || desc;
+  // Словарь для мгновенной локализации названий и описаний даже при сбоях формул в Google Sheets
+  const dictionaryFallback = {
+    'массаж': { ru: 'Массаж', en: 'Massage', tr: 'Masaj' },
+    'massage': { ru: 'Массаж', en: 'Massage', tr: 'Masaj' },
+    'masaj': { ru: 'Массаж', en: 'Massage', tr: 'Masaj' },
+    'cool, high quality': { ru: 'Первоклассный, высокое качество', en: 'Cool, high quality', tr: 'Harika, yüksek kalite' },
+    'первоклассный, высокое качество': { ru: 'Первоклассный, высокое качество', en: 'Cool, high quality', tr: 'Harika, yüksek kalite' },
+    'трансфер': { ru: 'Индивидуальный VIP-трансфер', en: 'Private VIP Transfer', tr: 'Özel VIP Transfer' },
+    'transfer': { ru: 'Индивидуальный VIP-трансфер', en: 'Private VIP Transfer', tr: 'Özel VIP Transfer' },
+    'яхта': { ru: 'Аренда яхты', en: 'Yacht Charter', tr: 'Tekne Turu' },
+    'yacht': { ru: 'Аренда яхты', en: 'Yacht Charter', tr: 'Tekne Turu' },
+    'шеф-повар': { ru: 'Персональный шеф-повар', en: 'Private Chef', tr: 'Özel Şef' },
+    'chef': { ru: 'Персональный шеф-повар', en: 'Private Chef', tr: 'Özel Şef' },
+    'барбекю': { ru: 'Барбекю на вилле', en: 'Villa BBQ', tr: 'Villa Barbekü' },
+    'bbq': { ru: 'Барбекю на вилле', en: 'Villa BBQ', tr: 'Villa Barbekü' },
+    'спа': { ru: 'СПА и термальные источники', en: 'SPA & Thermal Baths', tr: 'SPA ve Termal Kaynaklar' },
+    'spa': { ru: 'СПА и термальные источники', en: 'SPA & Thermal Baths', tr: 'SPA ve Termal Kaynaklar' }
+  };
+
+  const getLocalized = (obj, field) => {
+    if (!obj || !obj[field]) return '';
+
+    if (typeof obj[field] === 'string') {
+      const raw = obj[field].trim();
+      const lower = raw.toLowerCase();
+      if (dictionaryFallback[lower] && dictionaryFallback[lower][lang]) {
+        return dictionaryFallback[lower][lang];
+      }
+      return raw;
+    }
+
+    const val = obj[field][lang];
+    if (val && typeof val === 'string') {
+      const clean = val.trim();
+      if (!clean.startsWith('#') && clean.toUpperCase() !== 'ERROR') {
+        return clean;
+      }
+    }
+
+    const anyText = (obj[field]['ru'] || obj[field]['en'] || obj[field]['tr'] || '').toString().trim();
+    const anyLower = anyText.toLowerCase();
+    if (dictionaryFallback[anyLower] && dictionaryFallback[anyLower][lang]) {
+      return dictionaryFallback[anyLower][lang];
+    }
+
+    if (lang !== 'en' && obj[field]['en'] && !obj[field]['en'].toString().startsWith('#')) return obj[field]['en'];
+    if (lang !== 'ru' && obj[field]['ru'] && !obj[field]['ru'].toString().startsWith('#')) return obj[field]['ru'];
+    if (obj[field]['tr'] && !obj[field]['tr'].toString().startsWith('#')) return obj[field]['tr'];
+
+    return anyText;
+  };
+
+  const getLocalizedModule = (mod) => {
+    if (!mod) return t('guideTypeLabel') || (lang === 'en' ? 'Video guide' : lang === 'tr' ? 'Video rehber' : 'Видео-гид');
+    const lower = String(mod).toLowerCase().trim();
+    const map = {
+      'путеводитель': { ru: 'Путеводитель', en: 'Guide', tr: 'Rehber' },
+      'видео-гид': { ru: 'Видео-гид', en: 'Video Guide', tr: 'Video Rehber' },
+      'локации': { ru: 'Локации', en: 'Locations', tr: 'Konumlar' },
+      'история': { ru: 'История', en: 'History', tr: 'Tarih' },
+      'гастрономия': { ru: 'Гастрономия', en: 'Gastronomy', tr: 'Gastronomi' },
+      'здоровье': { ru: 'Здоровье', en: 'Wellness', tr: 'Sağlık' },
+      'основной': { ru: 'Основной', en: 'Main', tr: 'Ana Modül' },
+      'для гостей': { ru: 'Для гостей', en: 'For Guests', tr: 'Misafirler İçin' }
+    };
+    if (map[lower] && map[lower][lang]) return map[lower][lang];
+    return mod;
+  };
+
+  const title = getLocalized(item, 'name');
+  const desc = getLocalized(item, 'desc');
+  const detailed = getLocalized(item, 'detailedDesc') || desc;
 
   // Объединение изображений и видео в единый список для карусели
   const mediaList = [
@@ -59,7 +128,7 @@ export default function PresentationModal({ item, type, onClose, onPurchase }) {
       return;
     }
     if (!currentUser) {
-      toast.info('Пожалуйста, авторизуйтесь для оформления заказа.');
+      toast.info(t('authRequiredOrderToast') || 'Пожалуйста, авторизуйтесь для оформления заказа.');
       setAuthModalOpen(true);
       return;
     }
@@ -93,11 +162,11 @@ export default function PresentationModal({ item, type, onClose, onPurchase }) {
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <span className="text-[11px] font-bold uppercase tracking-wider text-rose-400 bg-rose-500/10 px-3 py-1 rounded-full border border-rose-500/20">
-                {type === 'course' ? 'Авторский видео-путеводитель' : 'Премиальный консьерж-сервис'}
+                {type === 'course' ? (t('authorGuideBadge') || 'Авторский видео-путеводитель') : (t('vipConciergeBadge') || 'Премиальный консьерж-сервис')}
               </span>
               {item.module && (
                 <span className="text-[11px] font-medium text-purple-300 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/20">
-                  {item.module}
+                  {getLocalizedModule(item.module)}
                 </span>
               )}
             </div>
@@ -114,11 +183,11 @@ export default function PresentationModal({ item, type, onClose, onPurchase }) {
             <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-400">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Официальный сервис от владельца</span>
+                <span>{t('officialServiceFeature') || 'Официальный сервис от владельца'}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Фиксация в календаре и CRM</span>
+                <span>{t('calendarCrmFeature') || 'Фиксация в календаре и CRM'}</span>
               </div>
             </div>
           </div>
@@ -132,7 +201,7 @@ export default function PresentationModal({ item, type, onClose, onPurchase }) {
           <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-4">
             <div>
               <span className="text-[10px] text-slate-400 block uppercase tracking-wider">
-                Итого к оплате:
+                {t('totalToPay') || 'Итого к оплате:'}
               </span>
               <span className="text-xl sm:text-2xl font-extrabold text-emerald-400">
                 {formatItemPrice(item)}
@@ -147,12 +216,12 @@ export default function PresentationModal({ item, type, onClose, onPurchase }) {
               {type === 'course' ? (
                 <>
                   <PlayCircle className="w-4 h-4" />
-                  <span>Получить доступ</span>
+                  <span>{t('buyGuideBtn') || 'Получить доступ'}</span>
                 </>
               ) : (
                 <>
                   <ShoppingBag className="w-4 h-4" />
-                  <span>Заказать услугу</span>
+                  <span>{t('orderServiceBtn') || 'Заказать услугу'}</span>
                 </>
               )}
             </button>
