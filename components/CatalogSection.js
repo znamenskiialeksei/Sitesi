@@ -161,7 +161,6 @@ export default function CatalogSection({
           {effectiveProducts.map((p) => {
             const name = getLocalized(p, 'name');
             const desc = getLocalized(p, 'desc');
-            const priceUSD = getItemPriceUSD(p);
             const mediaList = p.images && p.images.length > 0
               ? p.images
               : ["https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1200"];
@@ -230,7 +229,6 @@ export default function CatalogSection({
           {effectiveCourses.map((c) => {
             const name = getLocalized(c, 'name');
             const desc = getLocalized(c, 'desc');
-            const priceUSD = getItemPriceUSD(c);
             const mediaList = c.images && c.images.length > 0
               ? c.images
               : ["https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200"];
