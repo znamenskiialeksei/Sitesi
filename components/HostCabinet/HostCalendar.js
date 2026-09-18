@@ -31,6 +31,7 @@ export default function HostCalendar({
   const [editPrice, setEditPrice] = useState('');
   const [editMinNights, setEditMinNights] = useState('');
   const [editStatus, setEditStatus] = useState('Открыто'); // 'Открыто' или 'Заблокировано'
+  const [editBookingMode, setEditBookingMode] = useState('');
   const [editNote, setEditNote] = useState('');
 
   const basePrice = dynamicRules.basePrice || 15000;
@@ -151,6 +152,7 @@ export default function HostCalendar({
     setSelectedRange([null, null]);
     setEditPrice('');
     setEditMinNights('');
+    setEditBookingMode('');
     setEditNote('');
   };
 
@@ -176,6 +178,7 @@ export default function HostCalendar({
     setSelectedRange([null, null]);
     setEditPrice('');
     setEditMinNights('');
+    setEditBookingMode('');
     setEditNote('');
     toast.info('Правила периода сброшены до значений по умолчанию.');
   };

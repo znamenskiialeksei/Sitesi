@@ -267,19 +267,18 @@ const initializeSpreadsheet = async () => {
             }
           });
 
-          // ВАЖНО: Канонический синтаксис формул Google Sheets API со строгими запятыми (',')
-          // При записи с запятыми движок парсит формулу без ошибки, а в интерфейсе с русской локалью
-          // автоматически подставляет точку с запятой (';').
+          // ВАЖНО: Канонический синтаксис формул Google Sheets со СТРОГОЙ ТОЧКОЙ С ЗАПЯТОЙ (;)
+          // В русскоязычной локали Google Таблиц разделителем аргументов ВСЕГДА является точка с запятой (;).
           if (config.title === GOOGLE_CONFIG.productsSheetName) {
             // Перевод названий (B -> D, F)
-            safeFormulasToInject.push({ range: `'${config.title}'!D2`, values: [['=MAP(B2:B, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!F2`, values: [['=MAP(B2:B, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))']] });
             // Перевод кратких описаний (C -> E, G)
-            safeFormulasToInject.push({ range: `'${config.title}'!E2`, values: [['=MAP(C2:C, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!G2`, values: [['=MAP(C2:C, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))']] });
             // Перевод подробных описаний (O -> P, Q)
-            safeFormulasToInject.push({ range: `'${config.title}'!P2`, values: [['=MAP(O2:O, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!Q2`, values: [['=MAP(O2:O, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!P2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!Q2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))']] });
 
             // Посев начальных услуг
             dataAppendRequests.push({
@@ -296,12 +295,12 @@ const initializeSpreadsheet = async () => {
           }
 
           if (config.title === GOOGLE_CONFIG.coursesSheetName) {
-            safeFormulasToInject.push({ range: `'${config.title}'!D2`, values: [['=MAP(B2:B, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!F2`, values: [['=MAP(B2:B, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "tr"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!E2`, values: [['=MAP(C2:C, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!G2`, values: [['=MAP(C2:C, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "tr"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!P2`, values: [['=MAP(O2:O, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!Q2`, values: [['=MAP(O2:O, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!P2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!Q2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))']] });
 
             // Посев начальных путеводителей
             dataAppendRequests.push({
@@ -316,12 +315,12 @@ const initializeSpreadsheet = async () => {
           }
 
           if (config.title === GOOGLE_CONFIG.gallerySheetName) {
-            safeFormulasToInject.push({ range: `'${config.title}'!D2`, values: [['=MAP(B2:B, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!F2`, values: [['=MAP(B2:B, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "tr"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!E2`, values: [['=MAP(C2:C, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!G2`, values: [['=MAP(C2:C, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "tr"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!K2`, values: [['=MAP(J2:J, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!L2`, values: [['=MAP(J2:J, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!K2`, values: [['=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!L2`, values: [['=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))']] });
 
             // Посев начальной фото и видео галереи
             dataAppendRequests.push({
@@ -338,8 +337,8 @@ const initializeSpreadsheet = async () => {
           }
 
           if (config.title === GOOGLE_CONFIG.homePageSheetName) {
-            safeFormulasToInject.push({ range: `'${config.title}'!C2`, values: [['=MAP(B2:B, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!D2`, values: [['=MAP(B2:B, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))']] });
 
             dataAppendRequests.push({
               range: `${config.title}!A2:E6`,
@@ -354,10 +353,10 @@ const initializeSpreadsheet = async () => {
           }
 
           if (config.title === GOOGLE_CONFIG.aboutSheetName || config.title === GOOGLE_CONFIG.legalSheetName || config.title === GOOGLE_CONFIG.templatesSheetName) {
-            safeFormulasToInject.push({ range: `'${config.title}'!C2`, values: [['=MAP(B2:B, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!D2`, values: [['=MAP(B2:B, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "tr"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!F2`, values: [['=MAP(E2:E, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!G2`, values: [['=MAP(E2:E, LAMBDA(val, IF(val="", "", GOOGLETRANSLATE(val, "ru", "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!F2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${config.title}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))']] });
 
             if (config.title === GOOGLE_CONFIG.legalSheetName) {
               dataAppendRequests.push({
