@@ -1,0 +1,22 @@
+# Зависимости
+/node_modules
+/.pnp
+.pnp.js
+
+# Сборка и временные файлы Next.js
+/.next/
+/out/
+/build
+.vercel
+
+# Переменные окружения (секреты не должны попадать в публичный репозиторий)
+.env*.local
+
+# Локальный кэш контента
+utils/content.json
+
+# Логи отладки
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+

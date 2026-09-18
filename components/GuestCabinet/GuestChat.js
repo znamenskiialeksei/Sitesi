@@ -1,0 +1,180 @@
+// ==============================================================================
+// ПЕРСОНАЛЬНЫЙ ЧАТ ГОСТЯ С ХОЗЯИНОМ (GUEST CHAT)
+// Файл: components/GuestCabinet/GuestChat.js
+// Назначение: Защищенный диалог с владельцем виллы, вложения, перевод RU/EN/TR
+// ==============================================================================
+
+import React, { useState, useRef, useEffect } from 'react';
+import { Send, Paperclip, X, MessageCircle, User, Shield, FileText } from 'lucide-react';
+import { useLanguage } from '../../utils/language';
+import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../Toast';
+
+export default function GuestChat({ messages = [], onSendMessage, loading = false }) {
+  const { t, lang } = useLanguage();
+  const { currentUser } = useAuth();
+  const toast = useToast();
+
+  const [input, setInput] = useState('');
+  const [file, setFile] = useState(null);
+  const bottomRef = useRef(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const handleFileChange = (e) => {
+    const selected = e.target.files[0];
+    if (!selected) return;
+
+    if (selected.size > 5 * 1024 * 1024) {
+      toast.warn('Файл слишком большой. Максимальный размер: 5 МБ.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFile({
+        name: selected.name,
+        type: selected.type,
+        base64: reader.result.split(',')[1]
+      });
+    };
+    reader.readAsDataURL(selected);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!input.trim() && !file) return;
+
+    onSendMessage(input.trim(), file);
+    setInput('');
+    setFile(null);
+  };
+
+  return (
+    <div className="bg-slate-900 border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[650px] fade-in">
+      
+      {/* Шапка чата */}
+      <div className="p-5 bg-slate-800/80 border-b border-white/10 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-amber-500 flex items-center justify-center text-white font-bold text-sm">
+            AZ
+          </div>
+          <div>
+            <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
+              Алексей Знаменский <Shield className="w-3.5 h-3.5 text-amber-400" />
+            </h3>
+            <span className="text-[11px] text-emerald-400 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+              Владелец Villa Turaman (Онлайн)
+            </span>
+          </div>
+        </div>
+
+        <span className="text-xs text-slate-400 bg-slate-900 px-3 py-1 rounded-full border border-white/5">
+          Авто-перевод: {lang.toUpperCase()}
+        </span>
+      </div>
+
+      {/* Лента сообщений */}
+      <div className="flex-1 p-5 overflow-y-auto space-y-4 bg-slate-950/40">
+        {messages.length === 0 ? (
+          <div className="h-full flex flex-col items-center justify-center text-slate-500 text-xs">
+            <MessageCircle className="w-10 h-10 mb-2 opacity-30" />
+            <p>Диалог пуст. Напишите сообщение хозяину виллы!</p>
+          </div>
+        ) : (
+          messages.map((m, idx) => {
+            const isMe = m.sender === currentUser?.name;
+            const isSystem = m.sender === 'Система';
+
+            if (isSystem) {
+              return (
+                <div key={idx} className="flex justify-center my-2">
+                  <div className="bg-slate-800/60 border border-white/5 px-4 py-2 rounded-2xl text-xs text-slate-300 text-center max-w-md italic">
+                    {m[lang] || m.original}
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <div
+                key={idx}
+                className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
+              >
+                <span className="text-[10px] text-slate-500 mb-1 px-1">
+                  {m.sender} • {m.date}
+                </span>
+
+                <div
+                  className={`p-4 rounded-2xl max-w-[82%] text-xs sm:text-sm whitespace-pre-wrap break-words shadow-md ${
+                    isMe
+                      ? 'bg-rose-600 text-white rounded-tr-sm'
+                      : 'bg-slate-800 text-slate-200 border border-white/10 rounded-tl-sm'
+                  }`}
+                >
+                  {m[lang] || m.original}
+
+                  {m.file && (
+                    <div className="mt-2.5 p-2 bg-black/20 rounded-xl flex items-center gap-2 text-xs font-semibold text-rose-200">
+                      <Paperclip className="w-3.5 h-3.5" />
+                      <span>{m.file}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })
+        )}
+        <div ref={bottomRef} />
+      </div>
+
+      {/* Прикрепленный файл превью */}
+      {file && (
+        <div className="px-5 py-2.5 bg-slate-800 border-t border-white/10 flex items-center justify-between text-xs text-slate-300">
+          <div className="flex items-center gap-2 truncate">
+            <Paperclip className="w-4 h-4 text-rose-400" />
+            <span className="truncate">{file.name}</span>
+          </div>
+          <button
+            onClick={() => setFile(null)}
+            className="p-1 text-slate-400 hover:text-white"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {/* Поле ввода сообщения */}
+      <form
+        onSubmit={handleSubmit}
+        className="p-4 bg-slate-900 border-t border-white/10 flex items-center gap-3"
+      >
+        <label className="p-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white cursor-pointer transition-colors border border-white/10">
+          <Paperclip className="w-4 h-4" />
+          <input type="file" className="hidden" onChange={handleFileChange} />
+        </label>
+
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder={t('typeMessagePrompt')}
+          className="flex-1 bg-slate-800 border border-white/10 px-4 py-3 rounded-2xl text-xs sm:text-sm text-white focus:border-rose-500 outline-none transition-colors"
+        />
+
+        <button
+          type="submit"
+          disabled={loading || (!input.trim() && !file)}
+          className="p-3.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white transition-all shadow-lg shadow-rose-600/30 disabled:opacity-40"
+        >
+          <Send className="w-4 h-4" />
+        </button>
+      </form>
+
+    </div>
+  );
+}
+

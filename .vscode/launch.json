@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "🚀 Next.js: Запуск и Отладка (Сервер + Клиент: F5)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev"
+    },
+    {
+      "name": "🌐 Next.js: Отладка в браузере Chrome (http://localhost:3000)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "🌐 Next.js: Отладка в браузере Edge (http://localhost:3000)",
+      "type": "msedge",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "⚡ Next.js: Полный стек (Сервер + Chrome)",
+      "configurations": [
+        "🚀 Next.js: Запуск и Отладка (Сервер + Клиент: F5)",
+        "🌐 Next.js: Отладка в браузере Chrome (http://localhost:3000)"
+      ]
+    }
+  ]
+}

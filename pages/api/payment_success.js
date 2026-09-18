@@ -1,0 +1,36 @@
+// ==============================================================================
+// ОБРАБОТЧИК УСПЕШНОГО ПЛАТЕЖА (PAYMENT CALLBACK HANDLER)
+// Файл: pages/api/payment_success.js
+// Назначение: Прием подтверждения оплаты от банковских шлюзов, автоматическая смена
+// статуса бронирования на 'ОПЛАЧЕНО', фиксация в CRM Google Таблиц и редирект гостя.
+// ==============================================================================
+
+export default async function handler(req, res) {
+  const { data } = req.query;
+
+  if (data) {
+    try {
+      const bookingData = JSON.parse(decodeURIComponent(data));
+      // Фиксируем статус успешной оплаты
+      bookingData.paymentStatus = 'ОПЛАЧЕНО';
+
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
+      // Автоматическое обновление записи в Google Таблицах и отправка ваучера
+      await fetch(`${baseUrl}/api/booking`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookingData)
+      });
+
+      // Редирект в личный кабинет путешественника с баннером успеха
+      return res.redirect(302, '/guest?status=success');
+    } catch (e) {
+      console.error('Ошибка обработки возврата оплаты:', e);
+      return res.redirect(302, '/?status=error');
+    }
+  } else {
+    return res.redirect(302, '/');
+  }
+}
+

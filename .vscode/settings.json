@@ -1,0 +1,24 @@
+{
+  "files.encoding": "utf8",
+  "files.autoGuessEncoding": true,
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/.next": false
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/.next/**": true
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "javascript.suggest.completeFunctionCalls": true
+}
