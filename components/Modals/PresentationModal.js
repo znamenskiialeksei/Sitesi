@@ -15,7 +15,7 @@ import { useToast } from '../Toast';
 import { MediaCarousel } from '../../utils/media';
 
 export default function PresentationModal({ item, type, onClose, onPurchase }) {
-  const { t, lang, currency, formatMoney } = useLanguage();
+  const { t, lang, currency, formatMoney, formatRawMoney } = useLanguage();
   const { currentUser, setAuthModalOpen } = useAuth();
   const { allAgreed } = useLegalConsent();
   const toast = useToast();
@@ -32,17 +32,26 @@ export default function PresentationModal({ item, type, onClose, onPurchase }) {
     ...(Array.isArray(item.videos) ? item.videos : (item.videos ? [item.videos] : []))
   ].filter(Boolean);
 
-  // Определение цены в базовой валюте USD для авто-конвертации по TCMB
-  const getItemPriceUSD = () => {
-    const p = item.price || {};
-    if (p.usd && !isNaN(Number(p.usd))) return Number(p.usd);
-    if (p.eur && !isNaN(Number(p.eur))) return Number(p.eur) / 0.92;
-    if (p.rub && !isNaN(Number(p.rub))) return Number(p.rub) / 92.5;
-    if (p.try && !isNaN(Number(p.try))) return Number(p.try) / 34.5;
-    return 0;
-  };
+  // Форматирование стоимости: приоритет прямого значения из ExtraServices и VideoGuides
+  const formatItemPrice = (targetItem) => {
+    if (!targetItem) return '';
+    const p = targetItem.price || {};
+    const curr = currency || 'RUB';
 
-  const priceUSD = getItemPriceUSD();
+    // 1. Если цена напрямую задана в выбранной валюте в таблице Google Sheets
+    if (curr === 'RUB' && p.rub && Number(p.rub) > 0) return formatRawMoney(p.rub, 'RUB');
+    if (curr === 'EUR' && p.eur && Number(p.eur) > 0) return formatRawMoney(p.eur, 'EUR');
+    if (curr === 'TRY' && p.try && Number(p.try) > 0) return formatRawMoney(p.try, 'TRY');
+    if (curr === 'USD' && p.usd && Number(p.usd) > 0) return formatRawMoney(p.usd, 'USD');
+
+    // 2. Если в выбранной валюте нет прямой колонки (или USD), конвертируем из имеющейся по курсу ЦБ Турции
+    if (p.eur && Number(p.eur) > 0) return formatMoney(p.eur, curr, 'EUR');
+    if (p.rub && Number(p.rub) > 0) return formatMoney(p.rub, curr, 'RUB');
+    if (p.try && Number(p.try) > 0) return formatMoney(p.try, curr, 'TRY');
+    if (p.usd && Number(p.usd) > 0) return formatMoney(p.usd, curr, 'USD');
+
+    return formatRawMoney(0, curr);
+  };
 
   const handleOrder = () => {
     if (!allAgreed) {
@@ -126,7 +135,7 @@ export default function PresentationModal({ item, type, onClose, onPurchase }) {
                 Итого к оплате:
               </span>
               <span className="text-xl sm:text-2xl font-extrabold text-emerald-400">
-                {formatMoney(priceUSD)}
+                {formatItemPrice(item)}
               </span>
             </div>
 

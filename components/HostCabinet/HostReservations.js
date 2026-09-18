@@ -11,6 +11,7 @@ import { useToast } from '../Toast';
 
 export default function HostReservations({
   requests = [],
+  dynamicRules = {},
   onApprove,
   onSpecialOffer,
   onReject,
@@ -19,6 +20,7 @@ export default function HostReservations({
 }) {
   const { t, formatMoney } = useLanguage();
   const toast = useToast();
+  const hostCurrency = dynamicRules.currency || 'RUB';
 
   const [offerModalOpen, setOfferModalOpen] = useState(false);
   const [selectedReq, setSelectedReq] = useState(null);
@@ -46,7 +48,7 @@ export default function HostReservations({
       chatSheetName: `Chat_${selectedReq.name || 'Гость'}_${selectedReq.contact}`,
       checkIn: offerCheckIn,
       checkOut: offerCheckOut,
-      price: `${offerPrice} RUB`,
+      price: `${offerPrice} ${hostCurrency}`,
       nights: selectedReq.nights,
       adults: selectedReq.adults,
       children: selectedReq.children,
@@ -170,7 +172,7 @@ export default function HostReservations({
             <div className="space-y-3">
               <div>
                 <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">
-                  Специальная итоговая стоимость (RUB)
+                  Специальная итоговая стоимость ({hostCurrency})
                 </label>
                 <input
                   type="number"

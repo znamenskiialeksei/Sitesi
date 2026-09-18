@@ -93,12 +93,16 @@ export default function BookingWidget({
   const safeMinDate = new Date();
   safeMinDate.setHours(0, 0, 0, 0);
 
-  // Базовая цена виллы за ночь в USD (при динамической конвертации по курсам ЦБ Турции)
-  // Если в dynamicRules передано старое значение в рублях (> 1000), конвертируем в USD базу
-  const rawBase = Number(dynamicRules.basePrice) || 165;
-  const basePrice = (dynamicRules.currency === 'RUB' || rawBase > 1000) ? Math.round(rawBase / 92.5) : rawBase;
+  // Базовые параметры бронирования виллы, установленные хозяином в CalendarSettings
+  const villaCurrency = dynamicRules.currency || 'RUB';
+  const basePrice = Number(dynamicRules.basePrice) || 15000;
   const maxTotalGuests = 10;
   const totalGuests = adults + children;
+
+  // Форматирование стоимости виллы с конвертацией из базовой валюты виллы (villaCurrency) в выбранную гостем (currency)
+  const formatVillaMoney = (amount) => {
+    return formatMoney(amount, currency, villaCurrency);
+  };
 
   // Закрытие выпадающих меню при клике снаружи
   useEffect(() => {
@@ -125,7 +129,7 @@ export default function BookingWidget({
     return false;
   };
 
-  // Получение цены для конкретного дня с гарантией числового значения (в USD)
+  // Получение цены для конкретного дня с гарантией числового значения (в валюте виллы villaCurrency)
   const getPriceForDate = (date) => {
     if (!date) return basePrice;
     if (!dateRules || !Array.isArray(dateRules)) return basePrice;
@@ -137,7 +141,7 @@ export default function BookingWidget({
         if (rule.type === 'Цена') {
           const val = Number(rule.value);
           if (!isNaN(val) && val > 0) {
-            return (dynamicRules.currency === 'RUB' || val > 1000) ? Math.round(val / 92.5) : val;
+            return val;
           }
           return basePrice;
         }
@@ -354,8 +358,8 @@ export default function BookingWidget({
           >
             <span className="z-10 leading-none">{format(cloneDay, 'd')}</span>
             {isCurrentMonth && !isPast && !isOccupied && (
-              <span className="text-[7px] text-slate-500 leading-none mt-0.5">
-                {Math.round(getPriceForDate(checkDate) / 1000)}к
+              <span className="text-[7px] text-slate-400 leading-none mt-0.5 font-medium truncate max-w-full px-0.5">
+                {formatVillaMoney(getPriceForDate(checkDate))}
               </span>
             )}
             <div className="absolute bottom-0 left-0 right-0 flex flex-col gap-[1px] z-0 pointer-events-none opacity-80">
@@ -428,7 +432,7 @@ export default function BookingWidget({
         total_adults: adults,
         total_children: children,
         total_guests: totalGuests,
-        totalPrice: formatMoney(totalPrice),
+        totalPrice: formatVillaMoney(totalPrice),
         isRegistered: !!currentUser
       };
 
@@ -447,7 +451,7 @@ export default function BookingWidget({
       <div className="flex items-center justify-between gap-2 mb-6">
         <div>
           <span className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-            {formatMoney(activeNightPrice)}
+            {formatVillaMoney(activeNightPrice)}
           </span>
           <span className="text-xs text-slate-400 font-medium ml-1.5">
             {t('pricePerNight')}
@@ -692,9 +696,9 @@ export default function BookingWidget({
         <div className="mt-6 pt-5 border-t border-white/10 space-y-3 text-xs text-slate-300">
           <div className="flex justify-between">
             <span className="underline cursor-pointer">
-              {formatMoney(activeNightPrice)} × {nights} {t('nightsCountLabel')}
+              {formatVillaMoney(activeNightPrice)} × {nights} {t('nightsCountLabel')}
             </span>
-            <span>{formatMoney(totalPrice)}</span>
+            <span>{formatVillaMoney(totalPrice)}</span>
           </div>
 
           <div className="flex justify-between">
@@ -709,7 +713,7 @@ export default function BookingWidget({
 
           <div className="border-t border-white/10 pt-3 flex justify-between text-sm font-bold text-white">
             <span>{t('totalPriceLabel')}</span>
-            <span className="text-rose-400 text-lg">{formatMoney(totalPrice)}</span>
+            <span className="text-rose-400 text-lg">{formatVillaMoney(totalPrice)}</span>
           </div>
 
           <div className="flex items-center gap-2 text-[11px] text-slate-400 bg-slate-900/60 p-2.5 rounded-xl border border-white/5 mt-2">

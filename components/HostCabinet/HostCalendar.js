@@ -34,11 +34,11 @@ export default function HostCalendar({
   const [editBookingMode, setEditBookingMode] = useState('');
   const [editNote, setEditNote] = useState('');
 
-  const rawBase = Number(dynamicRules.basePrice) || 165;
-  const basePrice = (dynamicRules.currency === 'RUB' || rawBase > 1000) ? Math.round(rawBase / 92.5) : rawBase;
+  const hostCurrency = dynamicRules.currency || 'RUB';
+  const basePrice = Number(dynamicRules.basePrice) || 15000;
   const defaultMinNights = dynamicRules.minNights || 3;
 
-  // Определение динамической цены на дату (в базовой валюте USD с поддержкой переопределений)
+  // Определение динамической цены на дату (в валюте виллы hostCurrency)
   const getPriceForDate = (date) => {
     if (!date) return basePrice;
     if (!dateRules || !Array.isArray(dateRules)) return basePrice;
@@ -50,7 +50,7 @@ export default function HostCalendar({
         if (rule.type === 'Цена') {
           const val = Number(rule.value);
           if (!isNaN(val) && val > 0) {
-            return (dynamicRules.currency === 'RUB' || val > 1000) ? Math.round(val / 92.5) : val;
+            return val;
           }
           return basePrice;
         }
@@ -285,7 +285,7 @@ export default function HostCalendar({
             {/* Нижняя строка стоимости за ночь */}
             <div className="text-right z-10">
               <span className="text-[11px] font-black text-emerald-400">
-                {price.toLocaleString()} ₽
+                {formatMoney(price, hostCurrency, hostCurrency)}
               </span>
             </div>
           </div>
@@ -319,7 +319,7 @@ export default function HostCalendar({
             <h3 className="text-base font-bold text-white capitalize">
               {format(currentMonth, 'LLLL yyyy', { locale: dateLocale })}
             </h3>
-            <span className="text-xs text-slate-400">Базовая цена: {formatMoney(basePrice)} • Мин. срок: {defaultMinNights} ночи</span>
+            <span className="text-xs text-slate-400">Базовая цена: {formatMoney(basePrice, hostCurrency, hostCurrency)} • Мин. срок: {defaultMinNights} ночи</span>
           </div>
         </div>
 
@@ -395,7 +395,7 @@ export default function HostCalendar({
               {/* Стоимость за ночь */}
               <div>
                 <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">
-                  Цена за ночь (RUB)
+                  Цена за ночь ({hostCurrency})
                 </label>
                 <input
                   type="number"

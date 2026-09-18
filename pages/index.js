@@ -113,8 +113,8 @@ export default function HomeListing({ publicData, contentData }) {
   // События iCal для отображения цветных полосок в виджете-календаре
   const [apiEvents, setApiEvents] = useState([]);
   const [dynamicRules, setDynamicRules] = useState({
-    basePrice: 165,
-    currency: 'USD',
+    basePrice: 15000,
+    currency: 'RUB',
     minNights: 3,
     maxNights: 30,
     maxTotalGuests: 10,

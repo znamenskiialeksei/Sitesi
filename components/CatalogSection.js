@@ -19,7 +19,7 @@ export default function CatalogSection({
   courses = [],
   onSelectPresentation
 }) {
-  const { t, lang, currency, formatMoney } = useLanguage();
+  const { t, lang, currency, formatMoney, formatRawMoney } = useLanguage();
   const { currentUser, setAuthModalOpen } = useAuth();
   const { allAgreed } = useLegalConsent();
   const toast = useToast();
@@ -32,15 +32,25 @@ export default function CatalogSection({
     return obj[field][lang] || obj[field]['ru'] || '';
   };
 
-  // Получение стоимости в базовой валюте USD с поддержкой Google Sheets цен
-  const getItemPriceUSD = (item) => {
-    if (!item) return 0;
+  // Получение и форматирование цены карточки: приоритет прямого значения из ExtraServices и VideoGuides
+  const formatItemPrice = (item) => {
+    if (!item) return '';
     const p = item.price || {};
-    if (p.usd && !isNaN(Number(p.usd))) return Number(p.usd);
-    if (p.eur && !isNaN(Number(p.eur))) return Number(p.eur) / 0.92;
-    if (p.rub && !isNaN(Number(p.rub))) return Number(p.rub) / 92.5;
-    if (p.try && !isNaN(Number(p.try))) return Number(p.try) / 34.5;
-    return 0;
+    const curr = currency || 'RUB';
+
+    // 1. Если цена напрямую задана в выбранной валюте в таблице Google Sheets
+    if (curr === 'RUB' && p.rub && Number(p.rub) > 0) return formatRawMoney(p.rub, 'RUB');
+    if (curr === 'EUR' && p.eur && Number(p.eur) > 0) return formatRawMoney(p.eur, 'EUR');
+    if (curr === 'TRY' && p.try && Number(p.try) > 0) return formatRawMoney(p.try, 'TRY');
+    if (curr === 'USD' && p.usd && Number(p.usd) > 0) return formatRawMoney(p.usd, 'USD');
+
+    // 2. Если в выбранной валюте нет прямой колонки (или USD), конвертируем из имеющейся по курсу ЦБ Турции
+    if (p.eur && Number(p.eur) > 0) return formatMoney(p.eur, curr, 'EUR');
+    if (p.rub && Number(p.rub) > 0) return formatMoney(p.rub, curr, 'RUB');
+    if (p.try && Number(p.try) > 0) return formatMoney(p.try, curr, 'TRY');
+    if (p.usd && Number(p.usd) > 0) return formatMoney(p.usd, curr, 'USD');
+
+    return formatRawMoney(0, curr);
   };
 
   const handleBuy = (item, type) => {
@@ -195,7 +205,7 @@ export default function CatalogSection({
                   <div className="pt-3 border-t border-white/5 flex items-center justify-between">
                     <div>
                       <span className="text-[10px] text-slate-400 block uppercase tracking-wider">Стоимость:</span>
-                      <span className="text-lg font-extrabold text-emerald-400">{formatMoney(priceUSD)}</span>
+                      <span className="text-lg font-extrabold text-emerald-400">{formatItemPrice(p)}</span>
                     </div>
 
                     <button
@@ -264,7 +274,7 @@ export default function CatalogSection({
                   <div className="pt-3 border-t border-white/5 flex items-center justify-between">
                     <div>
                       <span className="text-[10px] text-slate-400 block uppercase tracking-wider">Доступ:</span>
-                      <span className="text-lg font-extrabold text-emerald-400">{formatMoney(priceUSD)}</span>
+                      <span className="text-lg font-extrabold text-emerald-400">{formatItemPrice(c)}</span>
                     </div>
 
                     <button

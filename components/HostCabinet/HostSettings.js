@@ -4,7 +4,7 @@
 // Назначение: Базовая цена, валюта, мин/макс ночи, время заезда и выезда
 // ==============================================================================
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Settings, Save, Clock, DollarSign, Calendar, Shield } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../Toast';
@@ -14,16 +14,33 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
   const toast = useToast();
 
   const [form, setForm] = useState({
-    basePrice: globalRules.basePrice || 165,
-    currency: globalRules.currency || 'USD',
+    basePrice: globalRules.basePrice !== undefined ? globalRules.basePrice : 15000,
+    currency: globalRules.currency || 'RUB',
     minNights: globalRules.minNights || 3,
     maxNights: globalRules.maxNights || 30,
     bookingWindowMonths: globalRules.bookingWindowMonths || 18,
-    advanceNoticeDays: globalRules.advanceNoticeDays || 2,
+    advanceNoticeDays: globalRules.advanceNoticeDays !== undefined ? globalRules.advanceNoticeDays : 2,
     bookingMode: globalRules.bookingMode || 'instant',
     checkInTime: globalRules.checkInTime || '16:00',
     checkOutTime: globalRules.checkOutTime || '10:00'
   });
+
+  // Синхронизация формы при асинхронной загрузке настроек из Google Sheets (CalendarSettings)
+  useEffect(() => {
+    if (globalRules && Object.keys(globalRules).length > 0) {
+      setForm({
+        basePrice: globalRules.basePrice !== undefined ? globalRules.basePrice : 15000,
+        currency: globalRules.currency || 'RUB',
+        minNights: globalRules.minNights !== undefined ? globalRules.minNights : 3,
+        maxNights: globalRules.maxNights !== undefined ? globalRules.maxNights : 30,
+        bookingWindowMonths: globalRules.bookingWindowMonths !== undefined ? globalRules.bookingWindowMonths : 18,
+        advanceNoticeDays: globalRules.advanceNoticeDays !== undefined ? globalRules.advanceNoticeDays : 2,
+        bookingMode: globalRules.bookingMode || 'instant',
+        checkInTime: globalRules.checkInTime || '16:00',
+        checkOutTime: globalRules.checkOutTime || '10:00'
+      });
+    }
+  }, [globalRules]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

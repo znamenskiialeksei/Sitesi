@@ -444,6 +444,30 @@ export default async function handler(req, res) {
         });
       }
 
+      // Добавление базовых настроек календаря по умолчанию (15000 RUB)
+      const calDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: `'${GOOGLE_CONFIG.calendarSettingsSheetName}'!A:A` });
+      if ((calDb.data.values || []).length <= 1) {
+        const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
+        const defaultRules = {
+          basePrice: 15000,
+          currency: 'RUB',
+          minNights: 3,
+          maxNights: 30,
+          bookingWindowMonths: 18,
+          advanceNoticeDays: 2,
+          bookingMode: 'instant',
+          checkInTime: '16:00',
+          checkOutTime: '10:00'
+        };
+        await sheets.spreadsheets.values.append({
+          spreadsheetId,
+          range: `'${GOOGLE_CONFIG.calendarSettingsSheetName}'!A:G`,
+          valueInputOption: 'USER_ENTERED',
+          insertDataOption: 'INSERT_ROWS',
+          requestBody: { values: [["Глобальные правила", "Все даты", "Настройки", JSON.stringify(defaultRules), "Базовые тарифы по умолчанию", "Admin", timestamp]] }
+        });
+      }
+
       // Добавление словаря переменных по умолчанию
       const varsDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: `'${GOOGLE_CONFIG.variablesSheetName}'!A:A` });
       if ((varsDb.data.values || []).length <= 1) {
@@ -576,7 +600,7 @@ export default async function handler(req, res) {
       if (!sheets || !spreadsheetId) {
         return res.status(200).json({
           success: true,
-          globalRules: { basePrice: 165, currency: 'USD', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', checkInTime: '16:00', checkOutTime: '10:00' },
+          globalRules: { basePrice: 15000, currency: 'RUB', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', checkInTime: '16:00', checkOutTime: '10:00' },
           dateRules: []
         });
       }
@@ -616,14 +640,14 @@ export default async function handler(req, res) {
 
       const result = {
         success: true,
-        globalRules: globalRules || { basePrice: 165, currency: 'USD', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', checkInTime: '16:00', checkOutTime: '10:00' },
+        globalRules: globalRules || { basePrice: 15000, currency: 'RUB', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', checkInTime: '16:00', checkOutTime: '10:00' },
         dateRules,
         variablesDict
       };
       await safeCacheSet('settings_cache', result, { ex: 1800 });
       return res.status(200).json(result);
     } catch (e) {
-      return res.status(200).json({ success: true, globalRules: { basePrice: 15000, currency: 'RUB', minNights: 3 }, dateRules: [] });
+      return res.status(200).json({ success: true, globalRules: { basePrice: 15000, currency: 'RUB', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', checkInTime: '16:00', checkOutTime: '10:00' }, dateRules: [] });
     }
   }
 
@@ -856,7 +880,7 @@ export default async function handler(req, res) {
         } catch (e) { }
       }
 
-      return res.status(200).json({ success: true, chats: allChats });
+      return res.status(200).json({ success: true, chats: allChats, allRequests: allReqs });
     } catch (e) {
       return res.status(500).json({ success: false, error: e.message });
     }

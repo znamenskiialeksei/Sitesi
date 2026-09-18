@@ -25,14 +25,24 @@ export const roundToFive = (amount) => {
   return Math.ceil(num / 5) * 5;
 };
 
-// Конвертация суммы из базовой валюты USD в целевую валюту по курсам ЦБ Турции (TCMB)
-export const convertPrice = (amountInUSD, targetCurrency, currentRates) => {
-  const amt = Number(amountInUSD) || 0;
+// Конвертация суммы из валюты fromCurrency в целевую валюту targetCurrency по курсам ЦБ Турции (TCMB)
+export const convertPrice = (amount, targetCurrency, currentRates, fromCurrency = 'USD') => {
+  const amt = Number(amount) || 0;
   if (amt <= 0) return 0;
   const target = targetCurrency || 'USD';
-  if (target === 'USD') return roundToFive(amt);
-  const rate = (currentRates && currentRates[target]) || 1;
-  return roundToFive(amt * rate);
+  const from = fromCurrency || 'USD';
+
+  if (target === from) return roundToFive(amt);
+
+  // Переводим исходную сумму в базовую единицу USD по курсу TCMB
+  const fromRate = (currentRates && currentRates[from]) || (from === 'USD' ? 1.0 : (from === 'EUR' ? 0.92 : (from === 'TRY' ? 34.5 : 92.5)));
+  const amountInUSD = from === 'USD' ? amt : (amt / fromRate);
+
+  // Переводим из USD в целевую валюту
+  const targetRate = (currentRates && currentRates[target]) || (target === 'USD' ? 1.0 : (target === 'EUR' ? 0.92 : (target === 'TRY' ? 34.5 : 92.5)));
+  const inTarget = target === 'USD' ? amountInUSD : (amountInUSD * targetRate);
+
+  return roundToFive(inTarget);
 };
 
 export const LanguageProvider = ({ children }) => {
@@ -116,11 +126,11 @@ export const LanguageProvider = ({ children }) => {
     return text;
   };
 
-  // Форматирование цены из базовой валюты USD со знаком активной валюты и округлением до кратного 5
-  const formatMoney = (amountInUSD, customCurrency) => {
+  // Форматирование цены из валюты fromCurrency (по умолчанию USD) со знаком активной валюты и округлением до кратного 5
+  const formatMoney = (amount, customCurrency, fromCurrency = 'USD') => {
     const activeCurr = customCurrency || currency;
     const symbol = CURRENCY_SYMBOLS[activeCurr] || activeCurr;
-    const num = convertPrice(amountInUSD, activeCurr, rates);
+    const num = convertPrice(amount, activeCurr, rates, fromCurrency);
     return `${num.toLocaleString('ru-RU')} ${symbol}`;
   };
 
@@ -143,7 +153,7 @@ export const LanguageProvider = ({ children }) => {
       formatMoney,
       formatRawMoney,
       roundToFive,
-      convertPrice: (amt, curr) => convertPrice(amt, curr || currency, rates),
+      convertPrice: (amt, curr, fromCurr) => convertPrice(amt, curr || currency, rates, fromCurr || 'USD'),
       CURRENCY_SYMBOLS
     }}>
       {children}
