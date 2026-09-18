@@ -14,6 +14,10 @@ import {
   differenceInDays
 } from 'date-fns';
 import { ru, enUS, tr } from 'date-fns/locale';
+import {
+  Calendar, Users, Zap, Clock, ShieldCheck,
+  ChevronDown, ChevronLeft, ChevronRight, Plus, Minus, AlertCircle
+} from 'lucide-react';
 import { useLanguage } from '../utils/language';
 import { useAuth } from '../context/AuthContext';
 import { useLegalConsent } from '../context/LegalConsentContext';
