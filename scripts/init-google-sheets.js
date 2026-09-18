@@ -341,13 +341,24 @@ const initializeSpreadsheet = async () => {
             safeFormulasToInject.push({ range: `'${config.title}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "ru"; "tr"))))']] });
 
             dataAppendRequests.push({
-              range: `${config.title}!A2:E6`,
+              range: `${config.title}!A2:E17`,
               values: [
                 ['heroTitle', 'Аренда Villa Turaman', '', '', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600'],
                 ['heroSubtitle', 'Ваш идеальный отдых в Дальяне. Прямое бронирование виллы, премиальный сервис и авторские видео-путеводители от Алексея Знаменского.', '', '', ''],
                 ['aboutTitle', 'О Вилле Turaman', '', '', ''],
                 ['aboutText', 'Villa Turaman — это гармоничное сочетание уединения, современного комфорта и первоклассного сервиса для незабываемого отпуска в сердце Дальяна с собственным бассейном, просторным садом и панорамным видом на Ликийские скальные гробницы.', '', '', ''],
-                ['heroImage', 'Главное фото фасада виллы', '', '', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600']
+                ['heroImage', 'Главное фото фасада виллы', '', '', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600'],
+                ['hostHeader', 'Отдельная вилла целиком • Хозяин: Алексей Знаменский', '', '', ''],
+                ['hostName', 'Алексей Знаменский', '', '', ''],
+                ['hostAvatar', 'Аватар владельца виллы', '', '', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160'],
+                ['highlightSuperhostTitle', 'Опытный Суперхозяин (Superhost)', '', '', ''],
+                ['highlightSuperhostDesc', 'Алексей имеет рейтинг 4.98★ и стремится предоставить первоклассный сервис каждому гостю.', '', '', ''],
+                ['highlightCheckinTitle', 'Бесконтактное прибытие (Self check-in)', '', '', ''],
+                ['highlightCheckinDesc', 'Удобный электронный замок и персональный код доступа для заселения в любое удобное время с 15:00.', '', '', ''],
+                ['highlightCancellationTitle', 'Бесплатная отмена за 14 дней', '', '', ''],
+                ['highlightCancellationDesc', 'Полный возврат средств при отмене не позднее чем за 14 суток до даты заезда.', '', '', ''],
+                ['locationTitle', 'Расположение: Дальян, Ортаджа, Мугла, Турция', '', '', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200'],
+                ['locationDesc', 'Вилла расположена в тихом зеленом районе в 5 минутах ходьбы от набережной реки Дальян. В пешей доступности рестораны традиционной эгейской кухни, лодочные причалы для поездок на пляж Изтузу (пляж черепах Caretta Caretta) и термальные грязевые источники Султание.', '', '', '']
               ]
             });
           }
@@ -360,12 +371,18 @@ const initializeSpreadsheet = async () => {
 
             if (config.title === GOOGLE_CONFIG.legalSheetName) {
               dataAppendRequests.push({
-                range: `${config.title}!A2:E5`,
+                range: `${config.title}!A2:E11`,
                 values: [
                   ['company_name', 'Организация', '', '', 'ALEKSEI ZNAMENSKII - Villa Turaman'],
                   ['tax_info', 'Налоговый номер', '', '', 'Ortaca Vergi Dairesi, VKN: 9991120181'],
                   ['contact_email', 'Email', '', '', 'villaturaman@gmail.com'],
-                  ['contract', 'Договор аренды', '', '', 'Договор краткосрочной аренды Villa Turaman (Дальян, Мугла, Турция). Владелец: Aleksei Znamenskii (VKN: 9991120181).']
+                  ['contract', 'Договор аренды', '', '', 'Договор краткосрочной аренды Villa Turaman (Дальян, Мугла, Турция). Владелец: Aleksei Znamenskii (VKN: 9991120181).'],
+                  ['footerDesc', 'О Villa Turaman', '', '', 'Премиальная частная вилла в Дальяне (Турция). Прямое бронирование от владельца Алексея Знаменского без скрытых комиссий сторонних агрегаторов.'],
+                  ['footerLocation', 'Адрес', '', '', 'Дальян, Ортаджа, Мугла, Турция'],
+                  ['etbis_placeholder', 'QR-код ETBIS', '', '', 'ETBIS QR CODE\nVKN: 9991120181'],
+                  ['etbis_text', 'Госреестр ETBIS', '', '', "ETBİS'e Kayıtlıdır"],
+                  ['kvkk', 'Политика KVKK', '', '', 'Полный текст политики защиты персональных данных (KVKK Aydınlatma Metni)...'],
+                  ['privacy', 'Конфиденциальность', '', '', 'Политика конфиденциальности персональных данных гостей виллы...']
                 ]
               });
             }

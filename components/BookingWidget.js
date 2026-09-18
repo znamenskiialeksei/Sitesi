@@ -244,7 +244,9 @@ export default function BookingWidget({
     const startDateGrid = startOfWeek(monthStart, { weekStartsOn: 1 });
     const endDateGrid = endOfWeek(monthEnd, { weekStartsOn: 1 });
 
-    const weekDayLabels = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+    const weekDayLabels = lang === 'en'
+      ? ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
+      : (lang === 'tr' ? ['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pz'] : ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']);
     const header = (
       <div className="grid grid-cols-7 gap-0.5 mb-1">
         {weekDayLabels.map((wd, i) => (
@@ -398,7 +400,7 @@ export default function BookingWidget({
     }
 
     if (totalGuests > maxTotalGuests) {
-      toast.error(`Максимальное количество гостей: ${maxTotalGuests}`);
+      toast.error(`${t('maxGuestsError') || 'Максимальное количество гостей: '}${maxTotalGuests}`);
       return;
     }
 
@@ -420,7 +422,7 @@ export default function BookingWidget({
 
       await onBookingSubmit(payload, effectiveMode);
     } catch (err) {
-      toast.error('Произошла ошибка при отправке заявки.');
+      toast.error(t('bookingError') || 'Произошла ошибка при отправке заявки.');
     } finally {
       setIsSubmitting(false);
     }
@@ -494,7 +496,7 @@ export default function BookingWidget({
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <span className="text-xs font-bold text-slate-300">
-                  {startDate ? `${formatDateRU(startDate)}${endDate ? ` — ${formatDateRU(endDate)}` : ' →'}` : 'Выберите даты'}
+                  {startDate ? `${formatDateRU(startDate)}${endDate ? ` — ${formatDateRU(endDate)}` : ' →'}` : (t('selectDatesTitle') || 'Выберите даты')}
                 </span>
                 <button
                   type="button"
@@ -519,17 +521,17 @@ export default function BookingWidget({
                     onClick={() => { setDateRange([null, null]); }}
                     className="text-xs text-slate-400 hover:text-white underline transition-colors"
                   >
-                    Сбросить выбор дат
+                    {t('resetDatesBtn') || 'Сбросить выбор дат'}
                   </button>
                 </div>
               )}
 
               {/* Легенда */}
               <div className="mt-3 pt-2 border-t border-white/5 flex flex-wrap gap-3 text-[10px] text-slate-500">
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-sm bg-rose-600 inline-block"></span> Ваш выбор</span>
-                <span className="flex items-center gap-1"><span className="w-3 h-1 bg-[#ff5a5f] inline-block"></span> AirBnB</span>
-                <span className="flex items-center gap-1"><span className="w-3 h-1 bg-slate-600 inline-block"></span> Прямое</span>
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-sm bg-yellow-500/20 border border-dashed border-yellow-500/50 inline-block"></span> Мин. срок</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-sm bg-rose-600 inline-block"></span> {t('yourSelection')}</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-1 bg-[#ff5a5f] inline-block"></span> {t('airbnbSync')}</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-1 bg-slate-600 inline-block"></span> {t('directBooking')}</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-sm bg-yellow-500/20 border border-dashed border-yellow-500/50 inline-block"></span> {t('minStayBadge')}</span>
               </div>
             </div>
           )}
@@ -546,7 +548,7 @@ export default function BookingWidget({
                 {t('guestsLabel')}
               </span>
               <span className="text-xs sm:text-sm font-semibold text-white block mt-0.5">
-                {totalGuests} {totalGuests === 1 ? 'гость' : 'гостей'}
+                {totalGuests} {totalGuests === 1 ? t('guestOne') : t('guestsMany')}
               </span>
             </div>
             <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isGuestPickerOpen ? 'rotate-180' : ''}`} />
@@ -559,7 +561,7 @@ export default function BookingWidget({
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-bold text-white">{t('adultsLabel')}</p>
-                  <p className="text-[10px] text-slate-400">От 13 лет</p>
+                  <p className="text-[10px] text-slate-400">{t('adultsDesc')}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <button
@@ -586,7 +588,7 @@ export default function BookingWidget({
               <div className="flex items-center justify-between border-t border-white/5 pt-3">
                 <div>
                   <p className="text-xs font-bold text-white">{t('childrenLabel')}</p>
-                  <p className="text-[10px] text-slate-400">2-12 лет</p>
+                  <p className="text-[10px] text-slate-400">{t('childrenDesc')}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <button
@@ -610,7 +612,7 @@ export default function BookingWidget({
               </div>
 
               <div className="text-[10px] text-slate-400 italic text-center">
-                Максимальная вместимость виллы: 10 человек
+                {t('maxCapacityNotice')}
               </div>
             </div>
           )}
@@ -623,7 +625,7 @@ export default function BookingWidget({
               <input
                 name="guestName"
                 required
-                placeholder="Ваше Имя и Фамилия"
+                placeholder={t('guestNamePlaceholder')}
                 className="w-full bg-slate-900/80 border border-white/10 p-3.5 rounded-2xl text-xs sm:text-sm text-white focus:border-rose-500 outline-none transition-colors"
               />
             </div>
@@ -631,7 +633,7 @@ export default function BookingWidget({
               <input
                 name="guestContact"
                 required
-                placeholder="Телефон или Telegram (@username)"
+                placeholder={t('guestContactPlaceholder')}
                 className="w-full bg-slate-900/80 border border-white/10 p-3.5 rounded-2xl text-xs sm:text-sm text-white focus:border-rose-500 outline-none transition-colors"
               />
             </div>
@@ -643,7 +645,7 @@ export default function BookingWidget({
           <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-start gap-2 text-xs text-amber-200">
             <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
             <span>
-              Срок проживания меньше {minRequiredNights} ночей. Заявка будет отправлена на согласование хозяину.
+              {t('shortStayNotice', { min: minRequiredNights })}
             </span>
           </div>
         )}
@@ -705,12 +707,12 @@ export default function BookingWidget({
           {effectiveMode === 'instant' ? (
             <>
               <Zap className="w-4 h-4 fill-white" />
-              <span>{isSubmitting ? 'Обработка...' : t('bookNowBtn')}</span>
+              <span>{isSubmitting ? (t('submittingOrder') || 'Обработка...') : t('bookNowBtn')}</span>
             </>
           ) : (
             <>
               <Clock className="w-4 h-4" />
-              <span>{isSubmitting ? 'Отправка...' : t('sendRequestBtn')}</span>
+              <span>{isSubmitting ? (t('submittingRequest') || 'Отправка...') : t('sendRequestBtn')}</span>
             </>
           )}
         </button>

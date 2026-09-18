@@ -177,7 +177,7 @@ export default function PhotoGrid({ photos = [], gallery = [], heroImage = '' })
               </span>
               {currentItem?.group && (
                 <span className="hidden sm:inline-block text-slate-400 text-xs font-medium">
-                  Альбом: <strong className="text-white">{currentItem.group}</strong>
+                  {t('albumLabel') || 'Альбом:'} <strong className="text-white">{currentItem.group}</strong>
                 </span>
               )}
             </div>

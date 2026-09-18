@@ -260,19 +260,72 @@ export default function HomeListing({ publicData, contentData }) {
     aboutTitle:
       currentContentData.home?.aboutTitle?.[lang] ||
       currentContentData.home?.aboutTitle?.ru ||
-      t('aboutTitle') ||
+      t('aboutVillaTitle') ||
       'О Вилле',
     aboutText:
       currentContentData.home?.aboutText?.[lang] ||
       currentContentData.home?.aboutText?.ru ||
-      t('aboutText') ||
+      t('aboutVillaText') ||
       'Роскошная приватная вилла в живописном Дальяне с собственным бассейном, просторным садом и панорамным видом на Ликийские скальные гробницы.',
     heroImage: parseDriveLink(
       currentContentData.home?.heroImage?.media ||
       currentContentData.home?.heroTitle?.media ||
       'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600',
       'image'
-    )
+    ),
+    hostHeader:
+      currentContentData.home?.hostHeader?.[lang] ||
+      currentContentData.home?.hostHeader?.ru ||
+      t('hostHeader'),
+    hostName:
+      currentContentData.home?.hostName?.[lang] ||
+      currentContentData.home?.hostName?.ru ||
+      t('hostName'),
+    hostAvatar:
+      parseDriveLink(
+        currentContentData.home?.hostAvatar?.media ||
+        currentContentData.home?.hostAvatar?.ru ||
+        currentContentData.home?.hostAvatar?.[lang],
+        'image'
+      ) || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160',
+    highlightSuperhostTitle:
+      currentContentData.home?.highlightSuperhostTitle?.[lang] ||
+      currentContentData.home?.highlightSuperhostTitle?.ru ||
+      t('highlightSuperhostTitle'),
+    highlightSuperhostDesc:
+      currentContentData.home?.highlightSuperhostDesc?.[lang] ||
+      currentContentData.home?.highlightSuperhostDesc?.ru ||
+      t('highlightSuperhostDesc'),
+    highlightCheckinTitle:
+      currentContentData.home?.highlightCheckinTitle?.[lang] ||
+      currentContentData.home?.highlightCheckinTitle?.ru ||
+      t('highlightCheckinTitle'),
+    highlightCheckinDesc:
+      currentContentData.home?.highlightCheckinDesc?.[lang] ||
+      currentContentData.home?.highlightCheckinDesc?.ru ||
+      t('highlightCheckinDesc'),
+    highlightCancellationTitle:
+      currentContentData.home?.highlightCancellationTitle?.[lang] ||
+      currentContentData.home?.highlightCancellationTitle?.ru ||
+      t('highlightCancellationTitle'),
+    highlightCancellationDesc:
+      currentContentData.home?.highlightCancellationDesc?.[lang] ||
+      currentContentData.home?.highlightCancellationDesc?.ru ||
+      t('highlightCancellationDesc'),
+    locationTitle:
+      currentContentData.home?.locationTitle?.[lang] ||
+      currentContentData.home?.locationTitle?.ru ||
+      t('locationSectionTitle'),
+    locationDesc:
+      currentContentData.home?.locationDesc?.[lang] ||
+      currentContentData.home?.locationDesc?.ru ||
+      t('locationDefaultDesc'),
+    locationImage:
+      parseDriveLink(
+        currentContentData.home?.locationImage?.media ||
+        currentContentData.home?.locationTitle?.media,
+        'image'
+      ) || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200'
   };
 
   const fullDescriptionSections = Object.values(currentContentData.about || {}).map((item) => ({
@@ -364,23 +417,23 @@ export default function HomeListing({ publicData, contentData }) {
             <div className="flex flex-wrap items-center justify-between gap-6 pb-8 border-b border-white/10">
               <div>
                 <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
-                  Отдельная вилла целиком • Хозяин: Алексей Знаменский
+                  {homeData.hostHeader}
                 </h2>
                 <div className="flex flex-wrap items-center gap-4 text-sm text-slate-300">
                   <span className="flex items-center gap-1.5">
-                    <Users className="w-4 h-4 text-rose-400" /> До {dynamicRules.maxTotalGuests || 10} гостей
+                    <Users className="w-4 h-4 text-rose-400" /> {t('hostSpecsGuests', { count: dynamicRules.maxTotalGuests || 10 })}
                   </span>
                   <span>•</span>
                   <span className="flex items-center gap-1.5">
-                    <Bed className="w-4 h-4 text-rose-400" /> 4 спальни
+                    <Bed className="w-4 h-4 text-rose-400" /> {t('hostSpecsBedrooms', { count: 4 })}
                   </span>
                   <span>•</span>
                   <span className="flex items-center gap-1.5">
-                    <Bed className="w-4 h-4 text-rose-400" /> 5 кроватей
+                    <Bed className="w-4 h-4 text-rose-400" /> {t('hostSpecsBeds', { count: 5 })}
                   </span>
                   <span>•</span>
                   <span className="flex items-center gap-1.5">
-                    <Bath className="w-4 h-4 text-rose-400" /> 4 ванные комнаты
+                    <Bath className="w-4 h-4 text-rose-400" /> {t('hostSpecsBaths', { count: 4 })}
                   </span>
                 </div>
               </div>
@@ -388,8 +441,8 @@ export default function HomeListing({ publicData, contentData }) {
               {/* Аватар хозяина */}
               <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-rose-500/50 shadow-lg shrink-0">
                 <img
-                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160"
-                  alt="Aleksei Znamenskii"
+                  src={homeData.hostAvatar}
+                  alt={homeData.hostName}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -402,9 +455,9 @@ export default function HomeListing({ publicData, contentData }) {
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-white text-base">Опытный Суперхозяин (Superhost)</h3>
+                  <h3 className="font-semibold text-white text-base">{homeData.highlightSuperhostTitle}</h3>
                   <p className="text-sm text-slate-400 mt-0.5">
-                    Алексей имеет рейтинг 4.98★ и стремится предоставить первоклассный сервис каждому гостю.
+                    {homeData.highlightSuperhostDesc}
                   </p>
                 </div>
               </div>
@@ -414,9 +467,9 @@ export default function HomeListing({ publicData, contentData }) {
                   <Key className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-white text-base">Бесконтактное прибытие (Self check-in)</h3>
+                  <h3 className="font-semibold text-white text-base">{homeData.highlightCheckinTitle}</h3>
                   <p className="text-sm text-slate-400 mt-0.5">
-                    Удобный электронный замок и персональный код доступа для заселения в любое удобное время с 15:00.
+                    {homeData.highlightCheckinDesc}
                   </p>
                 </div>
               </div>
@@ -426,9 +479,9 @@ export default function HomeListing({ publicData, contentData }) {
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-white text-base">Бесплатная отмена за 14 дней</h3>
+                  <h3 className="font-semibold text-white text-base">{homeData.highlightCancellationTitle}</h3>
                   <p className="text-sm text-slate-400 mt-0.5">
-                    Полный возврат средств при отмене не позднее чем за 14 суток до даты заезда.
+                    {homeData.highlightCancellationDesc}
                   </p>
                 </div>
               </div>
@@ -436,7 +489,7 @@ export default function HomeListing({ publicData, contentData }) {
 
             {/* Описание виллы из Google Sheets с кнопкой раскрытия */}
             <div className="space-y-4 pb-8 border-b border-white/10">
-              <h2 className="text-xl font-bold text-white">{homeData.aboutTitle || 'Об этом жилье'}</h2>
+              <h2 className="text-xl font-bold text-white">{homeData.aboutTitle}</h2>
               <p className="text-slate-300 leading-relaxed line-clamp-4 text-base">
                 {homeData.aboutText}
               </p>
@@ -444,7 +497,7 @@ export default function HomeListing({ publicData, contentData }) {
                 onClick={() => setAboutModalOpen(true)}
                 className="inline-flex items-center gap-1.5 text-sm font-semibold text-rose-400 hover:text-rose-300 underline underline-offset-4 transition-colors"
               >
-                Показать подробнее об объекте <ChevronRight className="w-4 h-4" />
+                {t('showMoreAboutProperty')} <ChevronRight className="w-4 h-4" />
               </button>
             </div>
 
@@ -475,15 +528,15 @@ export default function HomeListing({ publicData, contentData }) {
             {/* Локация и окрестности Дальяна */}
             <div className="space-y-4 pt-4 border-t border-white/10">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-rose-400" /> Расположение: Дальян, Ортаджа, Мугла, Турция
+                <MapPin className="w-5 h-5 text-rose-400" /> {homeData.locationTitle}
               </h2>
               <p className="text-sm text-slate-400 leading-relaxed">
-                Вилла расположена в тихом зеленом районе в 5 минутах ходьбы от набережной реки Дальян. В пешей доступности рестораны традиционной эгейской кухни, лодочные причалы для поездок на пляж Изтузу (пляж черепах Caretta Caretta) и термальные грязевые источники Султание.
+                {homeData.locationDesc}
               </p>
               <div className="w-full h-64 rounded-3xl overflow-hidden border border-white/10 relative shadow-xl">
                 <img
-                  src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200"
-                  alt="Dalyan Map Landscape"
+                  src={homeData.locationImage}
+                  alt={homeData.locationTitle}
                   className="w-full h-full object-cover opacity-80"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-6">
@@ -542,7 +595,7 @@ export default function HomeListing({ publicData, contentData }) {
         <div className="fixed inset-0 z-[1000] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 select-none">
           <div className="bg-slate-900 border border-white/10 rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
             <div className="flex items-center justify-between p-6 border-b border-white/10">
-              <h3 className="text-xl font-bold text-white">Об этой вилле</h3>
+              <h3 className="text-xl font-bold text-white">{t('modalAboutVilla') || 'Об этой вилле'}</h3>
               <button
                 onClick={() => setAboutModalOpen(false)}
                 className="p-2 text-slate-400 hover:text-white rounded-full bg-slate-800 transition-colors"

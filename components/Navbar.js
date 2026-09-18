@@ -277,7 +277,7 @@ export default function Navbar() {
                       }}
                       className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors w-full text-left"
                     >
-                      <Shield className="w-3.5 h-3.5 text-amber-400" /> Вход для владельца
+                      <Shield className="w-3.5 h-3.5 text-amber-400" /> {t('ownerLoginBtn') || 'Вход для владельца'}
                     </button>
                   </>
                 )}

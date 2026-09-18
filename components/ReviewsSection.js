@@ -12,12 +12,12 @@ export default function ReviewsSection() {
   const { t } = useLanguage();
 
   const categories = [
-    { label: "Чистота", score: "5.0", percent: 100 },
-    { label: "Точность описания", score: "4.9", percent: 98 },
-    { label: "Общение с хозяином", score: "5.0", percent: 100 },
-    { label: "Расположение", score: "4.9", percent: 98 },
-    { label: "Прибытие и заезд", score: "5.0", percent: 100 },
-    { label: "Соотношение цена/качество", score: "4.9", percent: 98 }
+    { label: t('reviewCleanliness') || "Чистота", score: "5.0", percent: 100 },
+    { label: t('reviewAccuracy') || "Точность описания", score: "4.9", percent: 98 },
+    { label: t('reviewCommunication') || "Общение с хозяином", score: "5.0", percent: 100 },
+    { label: t('reviewLocation') || "Расположение", score: "4.9", percent: 98 },
+    { label: t('reviewCheckIn') || "Прибытие и заезд", score: "5.0", percent: 100 },
+    { label: t('reviewValue') || "Соотношение цена/качество", score: "4.9", percent: 98 }
   ];
 
   const sampleReviews = [
@@ -54,7 +54,7 @@ export default function ReviewsSection() {
       <div className="flex items-center gap-3 mb-8">
         <Star className="w-8 h-8 text-rose-500 fill-rose-500" />
         <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-          4.98 • 28 отзывов гостей
+          4.98 • {t('reviewsRatingHeader')}
         </h2>
       </div>
 
@@ -101,7 +101,7 @@ export default function ReviewsSection() {
             </div>
             <div className="mt-4 flex items-center gap-1 text-emerald-400 text-[11px] font-semibold">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Подтвержденное бронирование</span>
+              <span>{t('verifiedBooking')}</span>
             </div>
           </div>
         ))}

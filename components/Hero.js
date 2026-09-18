@@ -23,13 +23,13 @@ export default function Hero({ homeData }) {
       navigator.share({ title, url: window.location.href }).catch(() => { });
     } else if (typeof navigator !== 'undefined' && navigator.clipboard) {
       navigator.clipboard.writeText(window.location.href);
-      toast.success('Ссылка на виллу скопирована в буфер обмена!');
+      toast.success(t('linkCopiedToast') || 'Ссылка на виллу скопирована в буфер обмена!');
     }
   };
 
   const handleFavorite = (e) => {
     e.currentTarget.classList.toggle('text-rose-500');
-    toast.info('Вилла добавлена в список сохраненных объектов');
+    toast.info(t('addedToFavoritesToast') || 'Вилла добавлена в список сохраненных объектов');
   };
 
   return (
@@ -82,7 +82,7 @@ export default function Hero({ homeData }) {
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-slate-800 text-xs font-semibold text-slate-300 hover:text-white transition-colors"
           >
             <Share2 className="w-4 h-4" />
-            <span className="hidden sm:inline">Поделиться</span>
+            <span className="hidden sm:inline">{t('shareBtn') || 'Поделиться'}</span>
           </button>
 
           <button
@@ -91,7 +91,7 @@ export default function Hero({ homeData }) {
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-slate-800 text-xs font-semibold text-slate-300 hover:text-white transition-colors"
           >
             <Heart className="w-4 h-4" />
-            <span className="hidden sm:inline">В избранное</span>
+            <span className="hidden sm:inline">{t('saveFavoriteBtn') || 'В избранное'}</span>
           </button>
         </div>
       </div>

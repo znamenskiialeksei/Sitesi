@@ -33,21 +33,21 @@ export default function Footer({ legalData = {} }) {
           {/* Колонка 1: О Villa Turaman */}
           <div className="space-y-3">
             <h4 className="text-sm font-bold text-white uppercase tracking-wider">
-              Villa Turaman
+              {t('footerAboutTitle') || 'Villa Turaman'}
             </h4>
             <p className="text-xs leading-relaxed text-slate-400">
-              Премиальная частная вилла в Дальяне (Турция). Прямое бронирование от владельца Алексея Знаменского без скрытых комиссий сторонних агрегаторов.
+              {legalData.footerDesc?.text?.[lang] || legalData.footerDesc?.text?.ru || t('footerAboutDesc')}
             </p>
             <div className="flex items-center gap-2 text-slate-300 font-medium">
               <MapPin className="w-4 h-4 text-rose-500 shrink-0" />
-              <span>Dalyan, Ortaca, Muğla, Turkey</span>
+              <span>{legalData.footerLocation?.text?.[lang] || legalData.footerLocation?.text?.ru || t('footerAddress')}</span>
             </div>
           </div>
 
           {/* Колонка 2: Юридическая база из Google Sheets */}
           <div className="space-y-3">
             <h4 className="text-sm font-bold text-white uppercase tracking-wider">
-              Юридическая база
+              {t('footerLegalSection')}
             </h4>
             <ul className="space-y-2">
               <li>
@@ -80,7 +80,7 @@ export default function Footer({ legalData = {} }) {
           {/* Колонка 3: Контакты и реквизиты */}
           <div className="space-y-3">
             <h4 className="text-sm font-bold text-white uppercase tracking-wider">
-              Связь и реквизиты
+              {t('footerContactsSection')}
             </h4>
             <ul className="space-y-2">
               <li>
@@ -103,22 +103,22 @@ export default function Footer({ legalData = {} }) {
               </li>
             </ul>
             <div className="pt-2 text-[11px] text-slate-400 space-y-1 border-t border-white/5">
-              <p><strong className="text-slate-200">Компания:</strong> {companyName}</p>
-              <p><strong className="text-slate-200">Налоговый номер:</strong> {taxInfo}</p>
+              <p><strong className="text-slate-200">{t('companyLabel')}</strong> {companyName}</p>
+              <p><strong className="text-slate-200">{t('taxLabel')}</strong> {taxInfo}</p>
             </div>
           </div>
 
           {/* Колонка 4: ETBİS и стандарты */}
           <div className="space-y-3 flex flex-col items-start md:items-center text-center">
             <h4 className="text-sm font-bold text-white uppercase tracking-wider">
-              Госреестр ETBİS
+              {t('footerEtbisSection')}
             </h4>
             <div className="p-3 bg-slate-900 rounded-2xl border border-white/10 flex flex-col items-center justify-center w-36 h-36 text-center text-[10px] text-slate-400 space-y-1 shadow-inner">
               <QrCode className="w-12 h-12 text-slate-300" />
               <span className="font-mono leading-tight whitespace-pre-line text-[9px]">{etbisQr}</span>
             </div>
             <span className="text-[10px] text-emerald-400 font-semibold bg-emerald-950/40 border border-emerald-500/20 px-3 py-1 rounded-full">
-              {etbisText}
+              {etbisText || t('etbisVerified')}
             </span>
           </div>
 
@@ -126,7 +126,7 @@ export default function Footer({ legalData = {} }) {
 
         {/* Копирайт */}
         <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 text-xs">
-          <p>© {new Date().getFullYear()} ALEKSEI ZNAMENSKII • Villa Turaman. Все права защищены.</p>
+          <p>© {new Date().getFullYear()} ALEKSEI ZNAMENSKII • Villa Turaman. {t('allRightsReserved')}</p>
           <div className="flex items-center gap-4 text-slate-400">
             <span>Dalyan, Turkey</span>
             <span>•</span>

@@ -61,10 +61,16 @@ export const LanguageProvider = ({ children }) => {
     }
   };
 
-  // Функция перевода ключа с фоллбэком на русский язык
-  const t = (key) => {
+  // Функция перевода ключа с фоллбэком на русский язык и поддержкой интерполяции параметров {param}
+  const t = (key, params) => {
     if (!key) return '';
-    return translations[lang]?.[key] || translations['ru']?.[key] || key;
+    let text = translations[lang]?.[key] || translations['ru']?.[key] || key;
+    if (params && typeof params === 'object') {
+      Object.entries(params).forEach(([k, v]) => {
+        text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
+      });
+    }
+    return text;
   };
 
   // Форматирование цены со знаком валюты
@@ -90,7 +96,15 @@ export const useLanguage = () => {
       changeLanguage: () => {},
       currency: 'RUB',
       changeCurrency: () => {},
-      t: (key) => key,
+      t: (key, params) => {
+        let text = key;
+        if (params && typeof params === 'object') {
+          Object.entries(params).forEach(([k, v]) => {
+            text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
+          });
+        }
+        return text;
+      },
       formatMoney: (val) => `${val} ₽`,
       CURRENCY_SYMBOLS
     };
