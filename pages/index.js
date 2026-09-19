@@ -363,11 +363,11 @@ export default function HomeListing({ publicData, contentData }) {
           }
         }
 
-        // Мгновенное бронирование: редирект на платёжный шлюз (T-Банк для RUB, Stripe для EUR/USD)
+        // Мгновенное бронирование : редирект на платёжный шлюз
         const paymentGateway = currency === 'RUB' ? 'tbank' : 'stripe';
         const numericAmount = typeof bookingData.totalPrice === 'number'
           ? bookingData.totalPrice
-          : parseInt(String(bookingData.totalPrice).replace(/[^\d]/g, ''), 10) || 0;
+          : parseInt(String(bookingData.totalPrice).replace(/\D/g, ''), 10) || 0;
 
         const res = await fetch('/api/payment', {
           method: 'POST',
@@ -379,21 +379,24 @@ export default function HomeListing({ publicData, contentData }) {
             bookingDetails: bookingData
           })
         });
-        const result = await res.json();
-        if (result.url) {
+        const result = await res.json().catch(() => ({}));
+        if (result && result.url) {
+          if (result.isTestMode) {
+            toast.info(result.message || 'Тестовый режим оплаты : перенаправление на оформление');
+          }
           window.location.href = result.url;
         } else {
-          toast.error(result.error || 'Ошибка платёжного шлюза. Попробуйте снова.');
+          toast.error(result?.error || 'Ошибка платёжного шлюза. Попробуйте снова.');
         }
       } else {
-        // Бронирование по запросу: отправляем заявку хозяину
+        // Бронирование по запросу : отправляем заявку хозяину
         const res = await fetch('/api/booking', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(bookingData)
         });
-        const data = await res.json();
-        if (data.success) {
+        const data = await res.json().catch(() => ({}));
+        if (data && data.success) {
           // Мгновенная прямая авторизация гостя
           if (data.user) {
             loginGuestDirectly(data.user);
@@ -401,11 +404,12 @@ export default function HomeListing({ publicData, contentData }) {
           toast.success('Запрос отправлен! Хозяин ответит в течение 24 часов.');
           router.push('/guest?tab=chat');
         } else {
-          toast.error(data.error || 'Ошибка оформления заявки. Попробуйте снова.');
+          toast.error(data?.error || 'Ошибка оформления заявки. Попробуйте снова.');
         }
       }
     } catch (e) {
-      toast.error('Сетевая ошибка при отправке запроса.');
+      console.error('[handleBookingSubmit Error]:', e);
+      toast.error('Сетевой сбой при оформлении. Проверьте соединение.');
     }
   };
 

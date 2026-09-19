@@ -812,6 +812,58 @@ export default async function handler(req, res) {
     } catch (e) {
       return res.status(500).json({ success: false, error: e.message });
     }
+  // --- API: Фоновая авто-регистрация гостя при переходе к оплате ---
+  if (action === 'auto_register_guest') {
+    try {
+      await ensureSystemSheets();
+      const safeEmail = (data.email || '').toString().trim().toLowerCase();
+      const safePhone = (data.phone || '').toString().trim();
+      const safeContact = (data.contact || (safePhone && safeEmail ? `${safePhone} | ${safeEmail}` : (safePhone || safeEmail || ''))).toString().trim();
+      const safeName = (data.name || 'Гость').toString().trim();
+      const isEmailVerified = Boolean(data.emailVerified);
+      const isPhoneVerified = Boolean(data.phoneVerified);
+
+      if (sheets && spreadsheetId && (safeEmail || safeContact)) {
+        const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
+        try {
+          const existingData = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: resolveRange(sheetMap, 'ACCOUNTS', 'C:C')
+          });
+          const logins = existingData.data.values
+            ? existingData.data.values.flat().map((v) => (v || '').toString().trim().toLowerCase())
+            : [];
+          const checkKey = safeEmail || safeContact.toLowerCase();
+          if (!logins.includes(checkKey)) {
+            await sheets.spreadsheets.values.append({
+              spreadsheetId,
+              range: resolveRange(sheetMap, 'ACCOUNTS', 'A:G'),
+              valueInputOption: 'USER_ENTERED',
+              insertDataOption: 'INSERT_ROWS',
+              requestBody: { values: [[timestamp, safeName, checkKey, '123456', 'Нет', 'Нет', 'Нет']] }
+            });
+          }
+        } catch (regErr) {
+          console.warn('[auto_register_guest Sheet Warning]:', regErr.message);
+        }
+      }
+
+      return res.status(200).json({
+        success: true,
+        user: {
+          name: safeName,
+          contact: safeContact,
+          email: safeEmail,
+          phone: safePhone,
+          emailVerified: isEmailVerified,
+          phoneVerified: isPhoneVerified,
+          isHost: false,
+          hasChat: true
+        }
+      });
+    } catch (e) {
+      return res.status(500).json({ success: false, error: e.message });
+    }
   }
 
   // --- API: Отправка проверочного кода (Email или Телефон) ---
