@@ -1140,14 +1140,24 @@ export default async function handler(req, res) {
         });
         await safeCacheSet(cacheKey, existingCache, { ex: 86400 * 7 });
 
-        // Мгновенное Telegram-уведомление хозяину о новом сообщении гостя
+        // Мгновенное Telegram-уведомление хозяину о новом сообщении гостя с интерактивными кнопками
         if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
           const fileNote = data.fileName ? `\n📎 Вложение: ${data.fileName}` : '';
           const tgMsg = `💬 НОВОЕ СООБЩЕНИЕ ХОЗЯИНУ\n👤 От: ${data.sender || 'Гость'}\n📞 Контакт: ${data.contact || 'Не указан'}\n📝 Текст: ${msgText}${fileNote}`;
+          const inlineKeyboard = [
+            [
+              { text: `✍️ Ответить: ${data.contact || 'Гость'}`, callback_data: `reply_${data.contact || 'Гость'}` },
+              { text: `📜 История`, callback_data: `history_${data.contact || 'Гость'}` }
+            ]
+          ];
           fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: process.env.TELEGRAM_CHAT_ID, text: tgMsg })
+            body: JSON.stringify({
+              chat_id: process.env.TELEGRAM_CHAT_ID,
+              text: tgMsg,
+              reply_markup: { inline_keyboard: inlineKeyboard }
+            })
           }).catch(() => { });
         }
       }
@@ -1325,11 +1335,21 @@ export default async function handler(req, res) {
       // 3. Мгновенное Telegram-уведомление хозяину
       if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
         const fileNote = data.fileName ? `\n📎 Вложение: ${data.fileName}` : '';
-        const tgMsg = `💬 НОВОЕ СООБЩЕНИЕ ХОЗЯИНУ (Прямое обращение)\n👤 Гость: ${safeName}\n📞 Контакт: ${safeContact}\n📝 Текст: ${msgText}${fileNote}`;
+        const tgMsg = `💬 НОВОЕ СООБЩЕНИЕ ХОЗЯИНУ: Прямое обращение\n👤 Гость: ${safeName}\n📞 Контакт: ${safeContact}\n📝 Текст: ${msgText}${fileNote}`;
+        const inlineKeyboard = [
+          [
+            { text: `✍️ Ответить: ${safeName}`, callback_data: `reply_${safeContact}` },
+            { text: `📜 История`, callback_data: `history_${safeContact}` }
+          ]
+        ];
         fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: process.env.TELEGRAM_CHAT_ID, text: tgMsg })
+          body: JSON.stringify({
+            chat_id: process.env.TELEGRAM_CHAT_ID,
+            text: tgMsg,
+            reply_markup: { inline_keyboard: inlineKeyboard }
+          })
         }).catch(() => { });
       }
 
@@ -1804,18 +1824,6 @@ export default async function handler(req, res) {
         });
       }
 
-      // Telegram-уведомление хозяину о новой заявке со статусами проверки
-      if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
-        const emailStatus = data.emailVerified ? '✅ Подтвержден' : '⏳ Не подтвержден';
-        const phoneStatus = data.phoneVerified ? '✅ Подтвержден' : '⏳ Не подтвержден';
-        const tgMsg = `⚠️ НОВАЯ ЗАЯВКА (Модерация)\n👤 Гость: ${guestName}\n📧 Email: ${safeEmail || '—'} (${emailStatus})\n📞 Телефон: ${safePhone || effectiveContact || '—'} (${phoneStatus})\n📅 Период: ${data.checkIn} — ${data.checkOut}\n👥 Гостей: ${data.total_guests}\n💰 Стоимость: ${data.totalPrice}`;
-        await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: process.env.TELEGRAM_CHAT_ID, text: tgMsg })
-        }).catch(() => { });
-      }
-
       let userObj = {
         name: guestName,
         contact: effectiveContact,
@@ -1854,7 +1862,16 @@ export default async function handler(req, res) {
         } catch (regErr) { /* продолжаем даже если аккаунт не создан */ }
       }
 
+      let newBookingRowIndex = 2;
       if (sheets && spreadsheetId) {
+        try {
+          const currentBookings = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: resolveRange(sheetMap, 'BOOKINGS', 'A:A')
+          });
+          newBookingRowIndex = (currentBookings.data.values || []).length + 1;
+        } catch (e) { }
+
         // Запись заявки в лист бронирований (11 колонок A:K)
         await sheets.spreadsheets.values.append({
           spreadsheetId,
@@ -1878,14 +1895,14 @@ export default async function handler(req, res) {
           }
         });
 
-        // Создание листа чата для гостя (если ещё не существует)
+        // Создание листа чата для гостя: если еще не существует
         const targetChatId = getChatSpreadsheetId();
         const chatSheetName = getChatSheetName(guestName, effectiveContact);
 
         try {
           await ensureStyledChatSheet(sheets, targetChatId, chatSheetName);
 
-          // Системное сообщение с деталями заявки (канонические формулы с точкой с запятой)
+          // Системное сообщение с деталями заявки: канонические формулы с точкой с запятой
           const miniCard = `📋 Заявка отправлена на модерацию.\nДетали: ${data.checkIn} - ${data.checkOut}\nГостей: ${data.total_guests}\nСтоимость: ${data.totalPrice}\n\nОжидайте подтверждения от владельца.`;
           const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
           const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
@@ -1899,6 +1916,31 @@ export default async function handler(req, res) {
             requestBody: { values: [[timestamp, 'Система', miniCard, fRU, fEN, fTR, '']] }
           });
         } catch (chatErr) { /* чат создан по возможности */ }
+      }
+
+      // Telegram-уведомление хозяину о новой заявке со статусами проверки и интерактивными кнопками управления
+      if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
+        const emailStatus = data.emailVerified ? '✅ Подтвержден' : '⏳ Не подтвержден';
+        const phoneStatus = data.phoneVerified ? '✅ Подтвержден' : '⏳ Не подтвержден';
+        const tgMsg = `⚠️ НОВАЯ ЗАЯВКА: Модерация\n👤 Гость: ${guestName}\n📧 Email: ${safeEmail || '-'}: ${emailStatus}\n📞 Телефон: ${safePhone || effectiveContact || '-'}: ${phoneStatus}\n📅 Период: ${data.checkIn} - ${data.checkOut}\n👥 Гостей: ${data.total_guests}\n💰 Стоимость: ${data.totalPrice}\n\nВыберите действие:`;
+        const inlineKeyboard = [
+          [
+            { text: '✅ Одобрить: 24ч HOLD', callback_data: `approve_${newBookingRowIndex}_${effectiveContact}` },
+            { text: '❌ Отклонить', callback_data: `reject_${newBookingRowIndex}_${effectiveContact}` }
+          ],
+          [
+            { text: `✍️ Написать гостю: ${guestName}`, callback_data: `reply_${effectiveContact}` }
+          ]
+        ];
+        await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: process.env.TELEGRAM_CHAT_ID,
+            text: tgMsg,
+            reply_markup: { inline_keyboard: inlineKeyboard }
+          })
+        }).catch(() => { });
       }
 
       return res.status(200).json({ success: true, user: userObj, message: 'Заявка успешно принята!' });
@@ -1976,6 +2018,26 @@ export default async function handler(req, res) {
             });
           } catch (chatErr) { /* продолжаем */ }
         }
+      }
+
+      // Мгновенное Telegram-уведомление хозяину о подтвержденном бронировании
+      if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
+        const tgMsg = `🎉 НОВОЕ БРОНИРОВАНИЕ: Оплата подтверждена\n👤 Гость: ${guestName}\n📞 Контакт: ${effectiveContact}\n📅 Период: ${data.checkIn} - ${data.checkOut}\n👥 Гостей: ${data.total_guests}\n💰 Стоимость: ${data.totalPrice || '-'}\nСтатус: ${data.paymentStatus || 'ОЖИДАЕТ ОПЛАТЫ'}`;
+        const inlineKeyboard = [
+          [
+            { text: `✍️ Написать гостю: ${guestName}`, callback_data: `reply_${effectiveContact}` },
+            { text: `📜 История`, callback_data: `history_${effectiveContact}` }
+          ]
+        ];
+        fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: process.env.TELEGRAM_CHAT_ID,
+            text: tgMsg,
+            reply_markup: { inline_keyboard: inlineKeyboard }
+          })
+        }).catch(() => { });
       }
 
       return res.status(200).json({ success: true, message: 'Бронирование оформлено!' });
