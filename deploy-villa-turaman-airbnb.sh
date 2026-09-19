@@ -97,6 +97,7 @@ NEXT_PUBLIC_SITE_URL="http://localhost:3000"
 GOOGLE_CLIENT_EMAIL="your-service-account-email@your-project.iam.gserviceaccount.com"
 GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYOUR_PRIVATE_KEY\n-----END PRIVATE KEY-----\n"
 GOOGLE_SPREADSHEET_ID="1ESfaH3FBOx-Z0Z1CKU8-c1cQZCE2YjJBiTvX0MV0A5Q"
+GOOGLE_CHATS_SPREADSHEET_ID="1oiWwaT7KzbTdRS-pSCjHv-F84ymXlrmrkNE99IFD3rQ"
 
 # Telegram Bot (Уведомления владельца о новых заявках)
 TELEGRAM_BOT_TOKEN=""
@@ -124,10 +125,11 @@ if [ ! -f "package.json" ]; then
   "description": "Премиальная платформа аренды виллы Villa Turaman в стиле Airbnb с разделением кабинетов хозяина и гостя",
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/init-google-sheets.js && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "init-db": "node scripts/init-google-sheets.js"
+    "init-db": "node scripts/init-google-sheets.js",
+    "sync-content": "node scripts/sync-content.js"
   },
   "dependencies": {
     "@paypal/checkout-server-sdk": "^1.0.3",
