@@ -1,0 +1,396 @@
+{
+  "home": {
+    "heroTitle": {
+      "ru": "Villa Turaman",
+      "en": "Villa Turaman",
+      "tr": "Villa Turaman",
+      "media": ""
+    },
+    "heroSubtitle": {
+      "ru": "Ваш идеальный отдых в Дальяне. Бронирование виллы, премиальный сервис и авторские видео-путеводители от Алексея Знаменского.",
+      "en": "Your perfect Dalyan vacation. Villa reservations, premium service, and personalized video guides from Alexey Znamensky.",
+      "tr": "Mükemmel Dalyan tatiliniz. Alexey Znamensky'den villa rezervasyonları, birinci sınıf hizmet ve kişiselleştirilmiş video rehberleri.",
+      "media": ""
+    },
+    "aboutTitle": {
+      "ru": "О Вилле",
+      "en": "About Villa",
+      "tr": "Villa Hakkında",
+      "media": ""
+    },
+    "aboutText": {
+      "ru": "Villa Turaman — это гармоничное сочетание уединения, современного комфорта и первоклассного сервиса для незабываемого отпуска в сердце Дальяна.",
+      "en": "Villa Turaman offers a harmonious combination of privacy, modern comfort and first-class service for an unforgettable holiday in the heart of Dalyan.",
+      "tr": "Villa Turaman, Dalyan'ın kalbinde unutulmaz bir tatil için mahremiyet, modern konfor ve birinci sınıf hizmetin uyumlu bir kombinasyonunu sunmaktadır.",
+      "media": ""
+    },
+    "heroImage": {
+      "ru": "",
+      "en": "",
+      "tr": "",
+      "media": "https://drive.google.com/file/d/1NjSHRDa5eJpQTzO9268e8LMRzDVmYtX7/view?usp=sharing,https://drive.google.com/file/d/1IZMH6wtfLHZ6ibKHfmBhPGMFntZ_fXKU/view?usp=drive_link"
+    }
+  },
+  "about": {
+    "1": {
+      "title": {
+        "ru": "О вилле и о нас",
+        "en": "About the villa and about us",
+        "tr": "Villa hakkında ve biz hakkında"
+      },
+      "text": {
+        "ru": "Вилла Turaman расположена в живописном маленьком городке Дальян в провинции Мугла (Турция) на берегу реки Дальян и озера Кёйджегиз. Готова принять 10 гостей путешествиников. Приватный бассейн 36 квадратных метров и раскошная придомовая территория с терассой и садом. Адрес вилы: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla. Локация: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9",
+        "en": "Villa Turaman is located in the picturesque small town of Dalyan in the Muğla Province of Turkey, on the banks of the Dalyan River and Lake Köyceğiz. It can accommodate up to 10 guests. It features a private 36-square-meter pool and a luxurious courtyard with a terrace and garden. Address: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla. Location: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9",
+        "tr": "Villa Turaman, Türkiye'nin Muğla ilinin pitoresk Dalyan kasabasında, Dalyan Nehri ve Köyceğiz Gölü kıyısında yer almaktadır. 10 kişiye kadar konaklama imkanı sunan villada, 36 metrekarelik özel bir havuz ve teraslı ve bahçeli lüks bir avlu bulunmaktadır. Adres: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla. Konum: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9"
+      }
+    },
+    "2": {
+      "title": {
+        "ru": "Вместимость",
+        "en": "Capacity",
+        "tr": "Kapasite"
+      },
+      "text": {
+        "ru": "Вилла рассчитана максимум на 10 гостей (включая детей).",
+        "en": "The villa can accommodate a maximum of 10 guests (including children).",
+        "tr": "Villa en fazla 10 kişiyi (çocuklar dahil) ağırlayabilir."
+      }
+    },
+    "3": {
+      "title": {
+        "ru": "Описание виллы",
+        "en": "Description of the villa",
+        "tr": "Villanın Tanımı"
+      },
+      "text": {
+        "ru": "Вилла находится в самом центре Дальяна.. Вся компания оценит близость к достопримечательностям. Приватный бассейн. Полноценная кухня и гостиная комната. 4 большие спальни. Спальня на 1 этаже: рассчитана на 3 спальных места, располагает собственной ванной комнатой (душевая кабина) и кондиционером. Спальни на 2 этаже: три отдельные спальные комнаты по 2 спальных места, каждая со своей ванной комнатой и кондиционером. В одной из этих спален дополнительно установлена односпальная кровать (до 10 гостей).",
+        "en": "The villa is located in the heart of Dalyan. The whole group will appreciate the proximity to attractions. It features a private pool, a full kitchen, and a living room. Four large bedrooms. The bedroom on the first floor sleeps three and has an en-suite bathroom (shower) and air conditioning. The bedrooms on the second floor include three separate bedrooms, each with its own bathroom and air conditioning. One of these bedrooms can accommodate an additional single bed (sleeps up to 10 guests).",
+        "tr": "Villa, Dalyan'ın kalbinde yer almaktadır. Tüm grup, turistik yerlere yakınlığı takdir edecektir. Villada özel havuz, tam donanımlı mutfak ve oturma odası bulunmaktadır. Dört geniş yatak odası mevcuttur. Birinci kattaki yatak odasında üç kişi konaklayabilir ve özel banyo (duş) ve klima bulunmaktadır. İkinci kattaki yatak odaları ise her biri kendi banyosuna ve klimasına sahip üç ayrı yatak odasından oluşmaktadır. Bu yatak odalarından birine ilave bir tek kişilik yatak eklenebilir (10 kişiye kadar konaklama imkanı)."
+      }
+    },
+    "4": {
+      "title": {
+        "ru": "Что доступно гостю",
+        "en": "What is available to the guest?",
+        "tr": "Misafirlerin kullanımına sunulan olanaklar nelerdir?"
+      },
+      "text": {
+        "ru": "Первый этаж:\r\nПолноценная кухня и гостиная комната.\r\n55-дюймовый смарт-телевизор.\r\nТуалет для гостей, стиральная машина, гладильная доска и утюг.\r\nСпальня на 3 спальных места с собственной ванной комнатой (душевая кабина).\r\nПрихожая со шкафом для уличной одежды.\r\nЛестница на второй этаж.\r\n\r\nВторой этаж:\r\n3 спальные комнаты, каждая из которых имеет собственную ванную комнату.\r\nДополнительное спальное место в виде односпальной кровати в одной из спален второго этажа.\r\nСтиральная машина в одной из ванных комнат.",
+        "en": "First floor:\n\nFull kitchen and living room.\n\n55-inch smart TV.\n\nGuest toilet, washing machine, ironing board, and iron.\n\nTriple bedroom with en-suite bathroom (shower).\n\nEntrance hall with closet for outdoor clothing.\n\nStairs to the second floor.\n\nSecond floor:\n\nThree bedrooms, each with its own bathroom.\n\nAn additional single bed can be added in one of the second-floor bedrooms.\n\nWashing machine in one of the bathrooms.",
+        "tr": "Birinci Kat:\n\nTam donanımlı mutfak ve oturma odası.\n\n55 inç akıllı TV.\n\nMisafir tuvaleti, çamaşır makinesi, ütü masası ve ütü.\n\nEn-suite banyolu (duşlu) üç kişilik yatak odası.\n\nDış giyim için dolaplı giriş holü.\n\nİkinci kata çıkan merdivenler.\n\nİkinci Kat:\n\nHer biri kendi banyosuna sahip üç yatak odası.\n\nİkinci kattaki yatak odalarından birine ilave tek kişilik yatak eklenebilir.\n\nBanyolardan birinde çamaşır makinesi."
+      }
+    },
+    "5": {
+      "title": {
+        "ru": "Бассейн и Сад",
+        "en": "Pool and Garden",
+        "tr": "Havuz ve Bahçe"
+      },
+      "text": {
+        "ru": "Очистка бассейна и уход за садом проводятся рано утром с 8 до 10 часов.",
+        "en": "Pool cleaning and garden maintenance are carried out early in the morning from 8 am to 10 am.",
+        "tr": "Havuz temizliği ve bahçe bakımı sabah erken saatlerde, 08:00 ile 10:00 arasında yapılmaktadır."
+      }
+    },
+    "6": {
+      "title": {
+        "ru": "Правила проживания",
+        "en": "House Rules",
+        "tr": "Ev Kuralları"
+      },
+      "text": {
+        "ru": "Заезд после 16:00, выезд до 10:00. Курение в помещениях виллы строго запрещено.",
+        "en": "Check-in after 4:00 PM, check-out before 10:00 AM. Smoking is strictly prohibited in the villa.",
+        "tr": "Giriş saati 16:00'dan sonra, çıkış saati 10:00'dan öncedir. Villada sigara içmek kesinlikle yasaktır."
+      }
+    },
+    "7": {
+      "title": {
+        "ru": "Регистрация (KBS/KVKK)",
+        "en": "Registration (KBS/KVKK)",
+        "tr": "Kayıt (KBS/KVKK)"
+      },
+      "text": {
+        "ru": "Ваши данные защищены и используются исключительно для регистрации гостей в системе KBS согласно законам Турции.",
+        "en": "Your data is protected and used solely for the purpose of registering guests in the KBS system in accordance with Turkish law.",
+        "tr": "Verileriniz korunmaktadır ve Türk kanunlarına uygun olarak yalnızca KBS sistemine misafir kaydı amacıyla kullanılmaktadır."
+      }
+    }
+  },
+  "legal": {
+    "legal_info_title": {
+      "title": {
+        "ru": "Юридическая информация",
+        "en": "#REF!",
+        "tr": "#REF!"
+      },
+      "text": {
+        "ru": "",
+        "en": "#REF!",
+        "tr": "#REF!"
+      }
+    },
+    "company_name": {
+      "title": {
+        "ru": "Название компании:",
+        "en": "Company Name:",
+        "tr": "Ticari Ünvan:"
+      },
+      "text": {
+        "ru": "ALEKSEI ZNAMENSKII",
+        "en": "ALEKSEI ZNAMENSKII",
+        "tr": "ALEKSEI ZNAMENSKII"
+      }
+    },
+    "tax_info": {
+      "title": {
+        "ru": "Налоговая информация:",
+        "en": "Tax Information:",
+        "tr": "Vergi Bilgileri:"
+      },
+      "text": {
+        "ru": "Ortaca VD / 9991120181",
+        "en": "Ortaca Tax Office / 9991120181",
+        "tr": "Ortaca VD / 9991120181"
+      }
+    },
+    "contact_email": {
+      "title": {
+        "ru": "Email:",
+        "en": "Email:",
+        "tr": "E-posta:"
+      },
+      "text": {
+        "ru": "villaturaman@gmail.com",
+        "en": "villaturaman1@gmail.com",
+        "tr": "villaturaman2@gmail.com"
+      }
+    },
+    "etbis_placeholder": {
+      "title": {
+        "ru": "QR-код ETBIS",
+        "en": "ETBIS QR-code",
+        "tr": "ETBİS Karekodu"
+      },
+      "text": {
+        "ru": "QR КОД ETBIS\nБУДЕТ ДОБАВЛЕН СЮДА",
+        "en": "ETBIS QR CODE\nWILL BE ADDED HERE",
+        "tr": "ETBİS KAREKODU\nBURAYA EKLENECEK"
+      }
+    },
+    "etbis_text": {
+      "title": {
+        "ru": "Система инфо.",
+        "en": "Info system",
+        "tr": "Bilgi sistemi"
+      },
+      "text": {
+        "ru": "Система Электронной Коммерции",
+        "en": "Electronic Commerce Info System",
+        "tr": "Elektronik Ticaret Bilgi Sistemi"
+      }
+    },
+    "kvkk": {
+      "title": {
+        "ru": "Политика KVKK",
+        "en": "KVKK Policy",
+        "tr": "KVKK Metni"
+      },
+      "text": {
+        "ru": "Полный текст политики KVKK...",
+        "en": "Full text of KVKK policy...",
+        "tr": "KVKK metninin tam hali..."
+      }
+    },
+    "contract": {
+      "title": {
+        "ru": "Договор аренды",
+        "en": "Rental Contract",
+        "tr": "Kiralama Sözleşmesi"
+      },
+      "text": {
+        "ru": "Полный текст договора...",
+        "en": "Full text of the contract...",
+        "tr": "Sözleşmenin tam metni..."
+      }
+    },
+    "privacy": {
+      "title": {
+        "ru": "Конфиденциальность",
+        "en": "Privacy Policy",
+        "tr": "Gizlilik Politikası"
+      },
+      "text": {
+        "ru": "Полный текст политики...",
+        "en": "Full text of the policy...",
+        "tr": "Politikanın tam metni..."
+      }
+    },
+    "cancellation": {
+      "title": {
+        "ru": "Возврат и отмена",
+        "en": "Return & Cancellation",
+        "tr": "İptal ve İade"
+      },
+      "text": {
+        "ru": "Полный текст правил..",
+        "en": "Full text of the rules...",
+        "tr": "Kuralların tam metni....,"
+      }
+    }
+  },
+  "templates": {
+    "welcome": [
+      {
+        "name": {
+          "ru": "Приветствие на заявку для подтверждения дат",
+          "en": "Greeting for application to confirm dates",
+          "tr": "Tarihleri ​​teyit etmek için başvuruya yönelik selamlama"
+        },
+        "text": {
+          "ru": "Здравствуйте, [FIRST_NAME]! 👋\n\nСпасибо за ваш интерес к Villa Turaman! 🥳Ваша заявка на заселение 📅 с периодом проживания: [CHECKIN_DATE], [CHECKIN_TIME] — [CHECKOUT_DATE], [CHECKOUT_TIME] получена нами. В ближайшее время мы свяжемся с вами.\n\nЕсли у вас возникнут вопросы  — я всегда на связи и с радостью помогу. 📍✨\n\nС нетерпением ждём вас в гости!\n\nС уважением, Aleksei Znamenskii. Villa Turaman.",
+          "en": "Hello, [FIRST_NAME]! 👋\n\nThank you for your interest in Villa Turaman! 🥳Your check-in request 📅 for the stay period: [CHECKIN_DATE], [CHECKIN_TIME] - [CHECKOUT_DATE], [CHECKOUT_TIME] has been received. We will contact you shortly.\n\nIf you have any questions, I am always available and happy to help. 📍✨\n\nWe look forward to welcoming you!\n\nSincerely, Aleksei Znamenskii, Villa Turaman.",
+          "tr": "Merhaba, [ADINIZ]! 👋\n\nVilla Turaman'a gösterdiğiniz ilgi için teşekkür ederiz! 🥳 [GİRİŞ TARİHİ], [GİRİŞ SAATİ] - [ÇIKIŞ TARİHİ], [ÇIKIŞ SAATİ] tarihleri ​​arasındaki konaklama dönemi için giriş talebiniz 📅 alınmıştır. Kısa süre içinde sizinle iletişime geçeceğiz.\n\nHerhangi bir sorunuz olursa, her zaman yardımcı olmaktan memnuniyet duyarım. 📍✨\n\nSizi ağırlamayı dört gözle bekliyoruz!\n\nSaygılarımla, Aleksei Znamenskii, Villa Turaman."
+        }
+      }
+    ],
+    "confirmation": [
+      {
+        "name": {
+          "ru": "Подтверждение бронирования после оплаты",
+          "en": "Booking confirmation after payment",
+          "tr": "Ödeme yapıldıktan sonra rezervasyon onayı"
+        },
+        "text": {
+          "ru": "Здравствуйте, [FIRST_NAME]! 👋\n\nПоздравляем, ваше бронирование Villa Turaman успешно подтверждено! 🥳 Спасибо, что выбрали именно нас для своего отдыха.\n\n🔑 Код подтверждения: [CONFIRMATION_CODE]\n📅 Период проживания: [CHECKIN_DATE], [CHECKIN_TIME] — [CHECKOUT_DATE], [CHECKOUT_TIME]\n\nЕсли у вас возникнут вопросы по поездке или понадобятся рекомендации по местным ресторанам, пляжам и достопримечательностям — я всегда на связи и с радостью помогу. 📍✨\n\nС нетерпением ждём вас в гости!\n\nС уважением, Aleksei Znamenskii. Villa Turaman.",
+          "en": "Hello, [FIRST_NAME]! 👋\n\nCongratulations, your reservation at Villa Turaman has been successfully confirmed! 🥳 Thank you for choosing us for your vacation.\n\n🔑 Confirmation code: [CONFIRMATION_CODE]\n📅 Stay period: [CHECKIN_DATE], [CHECKIN_TIME] — [CHECKOUT_DATE], [CHECKOUT_TIME]\n\nIf you have any questions about your trip or need recommendations for local restaurants, beaches, and attractions, I'm always available and happy to help. 📍✨\n\nWe look forward to welcoming you!\n\nSincerely, Aleksei Znamenskii, Villa Turaman.",
+          "tr": "Merhaba, [ADINIZ]! 👋\n\nTebrikler, Villa Turaman'daki rezervasyonunuz başarıyla onaylandı! 🥳 Tatiliniz için bizi tercih ettiğiniz için teşekkür ederiz.\n\n🔑 Onay kodu: [ONAY_KODU]\n📅 Konaklama süresi: [GİRİŞ_TARİHİ], [GİRİŞ_SAATI] — [ÇIKIŞ_TARİHİ], [ÇIKIŞ_SAATI]\n\nSeyahatinizle ilgili herhangi bir sorunuz varsa veya yerel restoranlar, plajlar ve turistik yerler için önerilere ihtiyacınız varsa, her zaman yardımcı olmaktan mutluluk duyarım. 📍✨\n\nSizi ağırlamayı dört gözle bekliyoruz!\n\nSaygılarımla, Aleksei Znamenskii, Villa Turaman."
+        }
+      }
+    ]
+  },
+  "products": [
+    {
+      "id": "1",
+      "name": {
+        "ru": "Массаж",
+        "en": "Massage",
+        "tr": "Masaj"
+      },
+      "desc": {
+        "ru": "класный качественный",
+        "en": "cool, high quality",
+        "tr": "serin, yüksek kaliteli"
+      },
+      "price": {
+        "eur": "500",
+        "rub": "0",
+        "try": "0"
+      },
+      "images": [],
+      "videos": [],
+      "detailedDesc": {
+        "ru": "",
+        "en": "",
+        "tr": ""
+      },
+      "type": {
+        "ru": "Услуга",
+        "en": "Service",
+        "tr": "Hizmet"
+      }
+    }
+  ],
+  "courses": [],
+  "gallery": [
+    {
+      "id": "1",
+      "group": {
+        "ru": "Территория придомовая.",
+        "en": "The territory is adjacent to the house.",
+        "tr": "Söz konusu arazi evin bitişiğindedir."
+      },
+      "groupDesc": {
+        "ru": "",
+        "en": "",
+        "tr": ""
+      },
+      "type": "image",
+      "media": [
+        "https://drive.google.com/file/d/1NjSHRDa5eJpQTzO9268e8LMRzDVmYtX7/view?usp=sharing",
+        "https://drive.google.com/file/d/1IZMH6wtfLHZ6ibKHfmBhPGMFntZ_fXKU/view?usp=drive_link"
+      ],
+      "caption": {
+        "ru": "Главный фасад",
+        "en": "Main facade",
+        "tr": "Ana cephe"
+      }
+    },
+    {
+      "id": "2",
+      "group": {
+        "ru": "Бассейн и джакузи.",
+        "en": "Swimming pool and jacuzzi.",
+        "tr": "Yüzme havuzu ve jakuzi."
+      },
+      "groupDesc": {
+        "ru": "",
+        "en": "",
+        "tr": ""
+      },
+      "type": "image",
+      "media": [
+        "https://drive.google.com/file/d/1lXyEH0hUh3Hh5oYJyoW1QLCiv2j3W2ml/view?usp=drive_link"
+      ],
+      "caption": {
+        "ru": "Общий вид на бассейн и территорию вокруг.",
+        "en": "General view of the pool and surrounding area.",
+        "tr": "Havuzun ve çevresinin genel görünümü."
+      }
+    },
+    {
+      "id": "3",
+      "group": {
+        "ru": "Бассейн и джакузи.",
+        "en": "Swimming pool and jacuzzi.",
+        "tr": "Yüzme havuzu ve jakuzi."
+      },
+      "groupDesc": {
+        "ru": "",
+        "en": "",
+        "tr": ""
+      },
+      "type": "image",
+      "media": [
+        "https://drive.google.com/file/d/1HFV4EF5X5Xg52z1tGpPqyc_t6_-tRRE0/view?usp=drive_link"
+      ],
+      "caption": {
+        "ru": "Общий вид на бассейн и зону загара..",
+        "en": "General view of the pool and sunbathing area.",
+        "tr": "Havuz ve güneşlenme alanının genel görünümü."
+      }
+    },
+    {
+      "id": "4",
+      "group": {
+        "ru": "Бассейн и джакузи.",
+        "en": "Swimming pool and jacuzzi.",
+        "tr": "Yüzme havuzu ve jakuzi."
+      },
+      "groupDesc": {
+        "ru": "",
+        "en": "",
+        "tr": ""
+      },
+      "type": "image",
+      "media": [
+        "https://drive.google.com/file/d/1HFV4EF5X5Xg52z1tGpPqyc_t6_-tRRE0/view?usp=drive_link"
+      ],
+      "caption": {
+        "ru": "Вид на бассейн и зону загара..",
+        "en": "View of the pool and sunbathing area.",
+        "tr": "Havuz ve güneşlenme alanının manzarası."
+      }
+    }
+  ]
+}
