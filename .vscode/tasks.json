@@ -111,7 +111,10 @@
     {
       "label": "🧹 10. Очистить архивные дубли и корень рабочей области",
       "type": "shell",
-      "command": "powershell -ExecutionPolicy Bypass -File \"..\\Глобальные настройки проекта (накопитель)\\ОЧИСТИТЬ_АРХИВНЫЕ_ДУБЛИ_ИЗ_НАКОПИТЕЛЯ.ps1\"",
+      "command": "powershell -ExecutionPolicy Bypass -File .\\ОЧИСТИТЬ_АРХИВНЫЕ_ДУБЛИ_ИЗ_НАКОПИТЕЛЯ.ps1",
+      "options": {
+        "cwd": "${workspaceFolder}/../Глобальные настройки проекта (накопитель)"
+      },
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
@@ -121,7 +124,10 @@
     {
       "label": "📦 11. Пересобрать переносной запускатор (Уровень 3)",
       "type": "shell",
-      "command": "powershell -ExecutionPolicy Bypass -File \"..\\Глобальные настройки проекта (накопитель)\\rebuild_portable_launcher.ps1\"",
+      "command": "powershell -ExecutionPolicy Bypass -File .\\rebuild_portable_launcher.ps1",
+      "options": {
+        "cwd": "${workspaceFolder}/../Глобальные настройки проекта (накопитель)"
+      },
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
