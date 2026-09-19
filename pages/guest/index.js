@@ -17,6 +17,7 @@ import GuestChat from '../../components/GuestCabinet/GuestChat';
 import GuestGuides from '../../components/GuestCabinet/GuestGuides';
 import GuestProfile from '../../components/GuestCabinet/GuestProfile';
 import AuthModal from '../../components/Modals/AuthModal';
+import ContactHostModal from '../../components/Modals/ContactHostModal';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../../components/Toast';
@@ -24,7 +25,7 @@ import { useToast } from '../../components/Toast';
 export default function GuestCabinetPage() {
   const router = useRouter();
   const { t } = useLanguage();
-  const { currentUser, authLoading, setAuthModalOpen } = useAuth();
+  const { currentUser, authLoading, setAuthModalOpen, setContactModalOpen } = useAuth();
   const toast = useToast();
 
   const [activeTab, setActiveTab] = useState('trips'); // 'trips', 'chat', 'guides', 'profile'
@@ -98,6 +99,17 @@ export default function GuestCabinetPage() {
     if (!currentUser) return;
     setLoadingChat(true);
 
+    const tempMsg = {
+      date: new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' }),
+      sender: currentUser.name,
+      original: msgText,
+      ru: msgText,
+      en: msgText,
+      tr: msgText,
+      file: fileObj?.name || ''
+    };
+    setChatMessages((prev) => [...prev, tempMsg]);
+
     try {
       const res = await axios.post('/api/booking', {
         action: 'chat',
@@ -110,7 +122,9 @@ export default function GuestCabinetPage() {
       });
 
       if (res.data && res.data.success) {
-        setChatMessages(res.data.messages || []);
+        if (res.data.messages && res.data.messages.length > 0) {
+          setChatMessages(res.data.messages);
+        }
         toast.success('Сообщение отправлено хозяину.');
       } else {
         toast.error('Не удалось отправить сообщение.');
@@ -194,12 +208,23 @@ export default function GuestCabinetPage() {
             <p className="text-xs text-slate-400 mb-6 leading-relaxed">
               Войдите или зарегистрируйтесь, чтобы просматривать детали своих бронирований и общаться с владельцем виллы.
             </p>
-            <button
-              onClick={() => setAuthModalOpen(true)}
-              className="w-full py-3.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow-lg shadow-rose-600/30 transition-all"
-            >
-              Войти в личный кабинет
-            </button>
+            <div className="space-y-3">
+              <button
+                onClick={() => setContactModalOpen(true)}
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold text-xs sm:text-sm shadow-lg shadow-rose-500/30 transition-all flex items-center justify-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>{t('writeDirectlyBtn') || 'Написать хозяину без регистрации'}</span>
+              </button>
+
+              <button
+                onClick={() => setAuthModalOpen(true)}
+                className="w-full py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-semibold text-xs sm:text-sm border border-white/10 transition-all flex items-center justify-center gap-2"
+              >
+                <User className="w-4 h-4" />
+                <span>Войти по логину и паролю</span>
+              </button>
+            </div>
           </div>
         ) : (
           <div>
@@ -290,6 +315,7 @@ export default function GuestCabinetPage() {
 
       <Footer />
       <AuthModal />
+      <ContactHostModal />
     </div>
   );
 }

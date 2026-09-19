@@ -14,7 +14,7 @@ import { useAuth } from '../context/AuthContext';
 export default function Navbar() {
   const router = useRouter();
   const { t, lang, changeLanguage, currency, changeCurrency, CURRENCY_SYMBOLS } = useLanguage();
-  const { currentUser, logout, setAuthModalOpen, setAuthModalTab, activeRoleMode, toggleRoleMode } = useAuth();
+  const { currentUser, logout, setAuthModalOpen, setAuthModalTab, setContactModalOpen, activeRoleMode, toggleRoleMode } = useAuth();
 
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -248,6 +248,17 @@ export default function Navbar() {
                   </>
                 ) : (
                   <>
+                    <button
+                      onClick={() => {
+                        setContactModalOpen(true);
+                        setProfileMenuOpen(false);
+                      }}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-rose-400 hover:bg-rose-500/10 transition-colors w-full text-left"
+                    >
+                      <MessageCircle className="w-4 h-4 text-rose-400" />
+                      <span>{t('contactHostBtn')}</span>
+                    </button>
+                    <div className="border-t border-white/10 my-1"></div>
                     <button
                       onClick={() => {
                         setAuthModalTab('login');

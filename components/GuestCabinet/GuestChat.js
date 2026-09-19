@@ -86,8 +86,9 @@ export default function GuestChat({ messages = [], onSendMessage, loading = fals
           </div>
         ) : (
           messages.map((m, idx) => {
-            const isMe = m.sender === currentUser?.name;
+            const isHost = m.sender === 'Владелец' || m.sender === 'Алексей Знаменский' || m.sender === 'Admin' || m.sender === 'Owner';
             const isSystem = m.sender === 'Система';
+            const isMe = !isHost && !isSystem;
 
             if (isSystem) {
               return (

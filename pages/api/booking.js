@@ -815,9 +815,46 @@ export default async function handler(req, res) {
     try {
       const targetChatId = getChatSpreadsheetId();
       const chatSheetName = getChatSheetName(data.sender, data.contact);
+      const safeContact = (data.contact || '').toString().trim().toLowerCase();
+
+      // Гарантированное создание индивидуального листа диалога при его отсутствии
+      const ensureChatSheetExists = async (sheetTitle) => {
+        if (!sheets || !targetChatId) return;
+        try {
+          const meta = await sheets.spreadsheets.get({ spreadsheetId: targetChatId });
+          const exists = (meta.data.sheets || []).some((s) => s.properties.title === sheetTitle);
+          if (!exists) {
+            await sheets.spreadsheets.batchUpdate({
+              spreadsheetId: targetChatId,
+              requestBody: {
+                requests: [
+                  {
+                    addSheet: {
+                      properties: {
+                        title: sheetTitle,
+                        gridProperties: { frozenRowCount: 1 }
+                      }
+                    }
+                  }
+                ]
+              }
+            });
+            await sheets.spreadsheets.values.update({
+              spreadsheetId: targetChatId,
+              range: `'${sheetTitle}'!A1:G1`,
+              valueInputOption: 'USER_ENTERED',
+              requestBody: {
+                values: [GOOGLE_CONFIG.chatHeaders]
+              }
+            });
+          }
+        } catch (err) {
+          console.warn('[ensureChatSheetExists Warning]:', err.message);
+        }
+      };
 
       // Запись нового сообщения
-      if (data.message || data.fileBase64) {
+      if (data.message || data.fileBase64 || data.fileName) {
         const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
         const msgText = data.message || '';
 
@@ -828,6 +865,7 @@ export default async function handler(req, res) {
 
         if (sheets && targetChatId) {
           try {
+            await ensureChatSheetExists(chatSheetName);
             await sheets.spreadsheets.values.append({
               spreadsheetId: targetChatId,
               range: `'${chatSheetName}'!A:G`,
@@ -835,7 +873,34 @@ export default async function handler(req, res) {
               insertDataOption: 'INSERT_ROWS',
               requestBody: { values: [[timestamp, data.sender || 'Гость', msgText, fRU, fEN, fTR, data.fileName || '']] }
             });
-          } catch (e) { }
+          } catch (e) {
+            console.warn('[Chat Append Error]:', e.message);
+          }
+        }
+
+        // Сохраняем в кэш в памяти для непрерывности работы
+        const cacheKey = `chat_msgs_${safeContact}`;
+        const existingCache = (await safeCacheGet(cacheKey)) || [];
+        existingCache.push({
+          date: timestamp,
+          sender: data.sender || 'Гость',
+          original: msgText,
+          ru: msgText,
+          en: msgText,
+          tr: msgText,
+          file: data.fileName || ''
+        });
+        await safeCacheSet(cacheKey, existingCache, { ex: 86400 * 7 });
+
+        // Мгновенное Telegram-уведомление хозяину о новом сообщении гостя
+        if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
+          const fileNote = data.fileName ? `\n📎 Вложение: ${data.fileName}` : '';
+          const tgMsg = `💬 НОВОЕ СООБЩЕНИЕ ХОЗЯИНУ\n👤 От: ${data.sender || 'Гость'}\n📞 Контакт: ${data.contact || 'Не указан'}\n📝 Текст: ${msgText}${fileNote}`;
+          fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: process.env.TELEGRAM_CHAT_ID, text: tgMsg })
+          }).catch(() => { });
         }
       }
 
@@ -846,6 +911,14 @@ export default async function handler(req, res) {
           const chatDb = await sheets.spreadsheets.values.get({ spreadsheetId: targetChatId, range: `'${chatSheetName}'!A:G` });
           messages = (chatDb.data.values || []).slice(1).map(parseMessageRow);
         } catch (e) { }
+      }
+
+      // Если Google Sheets не вернул сообщений (демо-режим или задержка), подтягиваем из кэша
+      if (messages.length === 0) {
+        const cached = await safeCacheGet(`chat_msgs_${safeContact}`);
+        if (cached && Array.isArray(cached)) {
+          messages = cached;
+        }
       }
 
       // Получение активных заявок гостя
@@ -877,11 +950,180 @@ export default async function handler(req, res) {
               status,
               expiresAt
             };
-          }).filter((r) => (r.contact || '').toLowerCase() === (data.contact || '').toLowerCase());
+          }).filter((r) => (r.contact || '').toLowerCase() === safeContact);
         } catch (e) { }
       }
 
       return res.status(200).json({ success: true, messages, activeRequests });
+    } catch (e) {
+      return res.status(500).json({ success: false, error: e.message });
+    }
+  }
+
+  // --- API: Прямое обращение гостя к хозяину до регистрации ---
+  if (action === 'contact_host') {
+    try {
+      await ensureSystemSheets();
+      const targetChatId = getChatSpreadsheetId();
+      const safeContact = (data.contact || '').toString().trim().toLowerCase();
+      const safeName = (data.name || data.sender || 'Гость').toString().trim();
+      const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
+      const msgText = data.message || '';
+
+      // 1. Авто-регистрация гостя в листе ACCOUNTS (если еще не зарегистрирован)
+      if (sheets && spreadsheetId && safeContact) {
+        try {
+          const existingData = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: resolveRange(sheetMap, 'ACCOUNTS', 'C:C')
+          });
+          const logins = existingData.data.values
+            ? existingData.data.values.flat().map((v) => (v || '').toString().trim().toLowerCase())
+            : [];
+          if (!logins.includes(safeContact)) {
+            await sheets.spreadsheets.values.append({
+              spreadsheetId,
+              range: resolveRange(sheetMap, 'ACCOUNTS', 'A:G'),
+              valueInputOption: 'USER_ENTERED',
+              insertDataOption: 'INSERT_ROWS',
+              requestBody: {
+                values: [[timestamp, safeName, safeContact, '123456', 'Нет', 'Нет', 'Нет']]
+              }
+            });
+          }
+        } catch (regErr) {
+          console.warn('[contact_host auto-register warning]:', regErr.message);
+        }
+      }
+
+      const userObj = {
+        name: safeName,
+        contact: safeContact,
+        isHost: false,
+        blockChat: false,
+        hasChat: true
+      };
+
+      // 2. Гарантированное создание индивидуального листа диалога
+      const chatSheetName = getChatSheetName(safeName, safeContact);
+      if (sheets && targetChatId) {
+        try {
+          const meta = await sheets.spreadsheets.get({ spreadsheetId: targetChatId });
+          const exists = (meta.data.sheets || []).some((s) => s.properties.title === chatSheetName);
+          if (!exists) {
+            await sheets.spreadsheets.batchUpdate({
+              spreadsheetId: targetChatId,
+              requestBody: {
+                requests: [
+                  {
+                    addSheet: {
+                      properties: {
+                        title: chatSheetName,
+                        gridProperties: { frozenRowCount: 1 }
+                      }
+                    }
+                  }
+                ]
+              }
+            });
+            await sheets.spreadsheets.values.update({
+              spreadsheetId: targetChatId,
+              range: `'${chatSheetName}'!A1:G1`,
+              valueInputOption: 'USER_ENTERED',
+              requestBody: {
+                values: [GOOGLE_CONFIG.chatHeaders]
+              }
+            });
+          }
+
+          // Запись первого сообщения
+          const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+          const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+          const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
+
+          await sheets.spreadsheets.values.append({
+            spreadsheetId: targetChatId,
+            range: `'${chatSheetName}'!A:G`,
+            valueInputOption: 'USER_ENTERED',
+            insertDataOption: 'INSERT_ROWS',
+            requestBody: { values: [[timestamp, safeName, msgText, fRU, fEN, fTR, data.fileName || '']] }
+          });
+        } catch (sheetErr) {
+          console.warn('[contact_host sheet error]:', sheetErr.message);
+        }
+      }
+
+      // Кэширование сообщения в памяти
+      const cacheKey = `chat_msgs_${safeContact}`;
+      const msgItem = {
+        date: timestamp,
+        sender: safeName,
+        original: msgText,
+        ru: msgText,
+        en: msgText,
+        tr: msgText,
+        file: data.fileName || ''
+      };
+      await safeCacheSet(cacheKey, [msgItem], { ex: 86400 * 7 });
+
+      // 3. Мгновенное Telegram-уведомление хозяину
+      if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
+        const fileNote = data.fileName ? `\n📎 Вложение: ${data.fileName}` : '';
+        const tgMsg = `💬 НОВОЕ СООБЩЕНИЕ ХОЗЯИНУ (Прямое обращение)\n👤 Гость: ${safeName}\n📞 Контакт: ${safeContact}\n📝 Текст: ${msgText}${fileNote}`;
+        fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: process.env.TELEGRAM_CHAT_ID, text: tgMsg })
+        }).catch(() => { });
+      }
+
+      return res.status(200).json({
+        success: true,
+        user: userObj,
+        message: 'Сообщение успешно доставлено владельцу виллы!'
+      });
+    } catch (e) {
+      return res.status(500).json({ success: false, error: e.message });
+    }
+  }
+
+  // --- API: Мгновенная авто-регистрация гостя ---
+  if (action === 'auto_register_guest') {
+    try {
+      await ensureSystemSheets();
+      const safeContact = (data.contact || '').toString().trim().toLowerCase();
+      const safeName = (data.name || 'Гость').toString().trim();
+      const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
+
+      if (sheets && spreadsheetId && safeContact) {
+        try {
+          const existingData = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: resolveRange(sheetMap, 'ACCOUNTS', 'C:C')
+          });
+          const logins = existingData.data.values
+            ? existingData.data.values.flat().map((v) => (v || '').toString().trim().toLowerCase())
+            : [];
+          if (!logins.includes(safeContact)) {
+            await sheets.spreadsheets.values.append({
+              spreadsheetId,
+              range: resolveRange(sheetMap, 'ACCOUNTS', 'A:G'),
+              valueInputOption: 'USER_ENTERED',
+              insertDataOption: 'INSERT_ROWS',
+              requestBody: {
+                values: [[timestamp, safeName, safeContact, '123456', 'Нет', 'Нет', 'Нет']]
+              }
+            });
+          }
+        } catch (regErr) {
+          console.warn('[auto_register_guest warning]:', regErr.message);
+        }
+      }
+
+      return res.status(200).json({
+        success: true,
+        user: { name: safeName, contact: safeContact, isHost: false, blockChat: false, hasChat: true }
+      });
     } catch (e) {
       return res.status(500).json({ success: false, error: e.message });
     }

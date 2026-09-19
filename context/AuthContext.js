@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalTab, setAuthModalTab] = useState('login'); // 'login' или 'register'
   const [twoFaModalOpen, setTwoFaModalOpen] = useState(false);
+  const [contactModalOpen, setContactModalOpen] = useState(false);
 
   // Восстановление сессии при инициализации
   useEffect(() => {
@@ -129,6 +130,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Мгновенная прямая авторизация гостя (при бронировании или первом сообщении хозяину)
+  const loginGuestDirectly = (userObj) => {
+    if (!userObj) return;
+    try {
+      localStorage.setItem('villa_user', JSON.stringify(userObj));
+      setCurrentUser(userObj);
+      setActiveRoleMode('traveler');
+    } catch (e) {
+      console.warn('Ошибка прямой авторизации гостя:', e);
+    }
+  };
+
   // Выход из системы
   const logout = () => {
     localStorage.removeItem('villa_user');
@@ -150,6 +163,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         currentUser,
         setCurrentUser,
+        loginGuestDirectly,
         authLoading,
         activeRoleMode,
         setActiveRoleMode,
@@ -164,6 +178,8 @@ export const AuthProvider = ({ children }) => {
         setAuthModalTab,
         twoFaModalOpen,
         setTwoFaModalOpen,
+        contactModalOpen,
+        setContactModalOpen,
         pendingHostUser
       }}
     >

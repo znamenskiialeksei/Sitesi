@@ -12,7 +12,7 @@ import { useAuth } from '../context/AuthContext';
 
 export default function HostProfileCard() {
   const { t } = useLanguage();
-  const { currentUser, setAuthModalOpen } = useAuth();
+  const { currentUser, setContactModalOpen } = useAuth();
 
   return (
     <div className="py-8 border-t border-white/10">
@@ -70,8 +70,8 @@ export default function HostProfileCard() {
             </Link>
           ) : (
             <button
-              onClick={() => setAuthModalOpen(true)}
-              className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs sm:text-sm transition-all border border-white/10 flex items-center justify-center gap-2"
+              onClick={() => setContactModalOpen(true)}
+              className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs sm:text-sm transition-all shadow-lg shadow-rose-600/30 flex items-center justify-center gap-2"
             >
               <MessageCircle className="w-4 h-4" /> {t('contactHostBtn')}
             </button>

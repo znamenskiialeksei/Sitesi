@@ -48,6 +48,7 @@ import Footer from '../components/Footer';
 import AuthModal from '../components/Modals/AuthModal';
 import TwoFaModal from '../components/Modals/TwoFaModal';
 import PresentationModal from '../components/Modals/PresentationModal';
+import ContactHostModal from '../components/Modals/ContactHostModal';
 import { parseDriveLink } from '../utils/media';
 import { parseDateRU } from '../utils/dates';
 
@@ -91,7 +92,7 @@ export async function getStaticProps() {
 export default function HomeListing({ publicData, contentData }) {
   const router = useRouter();
   const { t, lang, currency } = useLanguage();
-  const { currentUser, setAuthModalOpen } = useAuth();
+  const { currentUser, setAuthModalOpen, loginGuestDirectly } = useAuth();
   const toast = useToast();
 
   // Динамические данные с поддержкой онлайн-регидрации из Google Sheets
@@ -337,6 +338,27 @@ export default function HomeListing({ publicData, contentData }) {
   const handleBookingSubmit = async (bookingData, effectiveMode) => {
     try {
       if (effectiveMode === 'instant') {
+        // Если пользователь не авторизован, обеспечиваем мгновенную авто-регистрацию гостя перед переходом к оплате
+        if (!currentUser && bookingData.contact) {
+          try {
+            const regRes = await fetch('/api/booking', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action: 'auto_register_guest',
+                name: bookingData.name || 'Гость',
+                contact: bookingData.contact
+              })
+            });
+            const regData = await regRes.json();
+            if (regData.success && regData.user) {
+              loginGuestDirectly(regData.user);
+            }
+          } catch (regErr) {
+            console.warn('Фоновая авто-регистрация при оплате:', regErr);
+          }
+        }
+
         // Мгновенное бронирование: редирект на платёжный шлюз (T-Банк для RUB, Stripe для EUR/USD)
         const paymentGateway = currency === 'RUB' ? 'tbank' : 'stripe';
         const numericAmount = typeof bookingData.totalPrice === 'number'
@@ -368,9 +390,9 @@ export default function HomeListing({ publicData, contentData }) {
         });
         const data = await res.json();
         if (data.success) {
-          // Сохраняем пользователя в localStorage для последующей авторизации
+          // Мгновенная прямая авторизация гостя
           if (data.user) {
-            localStorage.setItem('villa_user', JSON.stringify(data.user));
+            loginGuestDirectly(data.user);
           }
           toast.success('Запрос отправлен! Хозяин ответит в течение 24 часов.');
           router.push('/guest?tab=chat');
@@ -576,6 +598,9 @@ export default function HomeListing({ publicData, contentData }) {
 
       {/* Модальное окно двухфакторной аутентификации Google Authenticator */}
       <TwoFaModal />
+
+      {/* Модальное окно прямого обращения к хозяину виллы (до регистрации) */}
+      <ContactHostModal />
 
       {/* Модальное окно презентации услуг / видеогидов */}
       {selectedPresentation && (

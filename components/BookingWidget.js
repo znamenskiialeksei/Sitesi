@@ -83,6 +83,9 @@ export default function BookingWidget({
   const [children, setChildren] = useState(0);
   const [isGuestPickerOpen, setIsGuestPickerOpen] = useState(false);
 
+  const [guestName, setGuestName] = useState('');
+  const [guestContact, setGuestContact] = useState('');
+
   const { agreedKVKK, agreedContract, agreedPrivacy, allAgreed } = useLegalConsent();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -420,12 +423,20 @@ export default function BookingWidget({
       return;
     }
 
+    const finalName = currentUser?.name || guestName.trim() || e.target.guestName?.value?.trim() || 'Гость';
+    const finalContact = currentUser?.contact || guestContact.trim() || e.target.guestContact?.value?.trim() || '';
+
+    if (!currentUser && (!finalName || !finalContact)) {
+      toast.warn(t('contactPhonePlaceholder') || 'Пожалуйста, укажите ваши имя и контакт для связи');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const payload = {
         action: effectiveMode === 'manual' ? 'request_booking' : 'booking',
-        name: currentUser?.name || e.target.guestName?.value,
-        contact: currentUser?.contact || e.target.guestContact?.value,
+        name: finalName,
+        contact: finalContact,
         checkIn: formatDateRU(startDate),
         checkOut: formatDateRU(endDate),
         nights,
@@ -641,6 +652,8 @@ export default function BookingWidget({
               <input
                 name="guestName"
                 required
+                value={guestName}
+                onChange={(e) => setGuestName(e.target.value)}
                 placeholder={t('guestNamePlaceholder')}
                 className="w-full bg-slate-900/80 border border-white/10 p-3.5 rounded-2xl text-xs sm:text-sm text-white focus:border-rose-500 outline-none transition-colors"
               />
@@ -649,6 +662,8 @@ export default function BookingWidget({
               <input
                 name="guestContact"
                 required
+                value={guestContact}
+                onChange={(e) => setGuestContact(e.target.value)}
                 placeholder={t('guestContactPlaceholder')}
                 className="w-full bg-slate-900/80 border border-white/10 p-3.5 rounded-2xl text-xs sm:text-sm text-white focus:border-rose-500 outline-none transition-colors"
               />
