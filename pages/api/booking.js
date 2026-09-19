@@ -1284,7 +1284,7 @@ export default async function handler(req, res) {
             const title = s.properties.title;
             const parts = title.split('_');
             const clientName = parts[1] || 'Гость';
-            const clientContact = parts[2] || '';
+            const clientContact = parts.slice(2).join('_') || parts[2] || '';
 
             const msgsDb = await sheets.spreadsheets.values.get({ spreadsheetId: targetChatId, range: `'${title}'!A:G` });
             const messages = (msgsDb.data.values || []).slice(1).map(parseMessageRow);
@@ -1553,17 +1553,38 @@ export default async function handler(req, res) {
       const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
       const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
 
-      if (sheets && targetChatId) {
-        for (const sheetName of data.targetSheets || []) {
-          const clientName = sheetName.split('_')[1] || 'Гость';
-          const msg = (data.message || '').replace(/\[FIRST_NAME\]/g, clientName);
-          await sheets.spreadsheets.values.append({
-            spreadsheetId: targetChatId,
-            range: `'${sheetName}'!A:G`,
-            valueInputOption: 'USER_ENTERED',
-            insertDataOption: 'INSERT_ROWS',
-            requestBody: { values: [[timestamp, data.sender || 'Владелец', msg, fRU, fEN, fTR, ""]] }
+      for (const sheetName of data.targetSheets || []) {
+        const clientName = sheetName.split('_')[1] || 'Гость';
+        const clientContact = (sheetName.split('_').slice(2).join('_') || '').toLowerCase();
+        const msg = (data.message || '').replace(/\[FIRST_NAME\]/g, clientName);
+
+        if (sheets && targetChatId) {
+          try {
+            await sheets.spreadsheets.values.append({
+              spreadsheetId: targetChatId,
+              range: `'${sheetName}'!A:G`,
+              valueInputOption: 'USER_ENTERED',
+              insertDataOption: 'INSERT_ROWS',
+              requestBody: { values: [[timestamp, data.sender || 'Владелец', msg, fRU, fEN, fTR, ""]] }
+            });
+          } catch (sheetErr) {
+            console.warn('[master_send_chats Sheet Warning]:', sheetErr.message);
+          }
+        }
+
+        if (clientContact) {
+          const cacheKey = `chat_msgs_${clientContact}`;
+          const existingCache = (await safeCacheGet(cacheKey)) || [];
+          existingCache.push({
+            date: timestamp,
+            sender: data.sender || 'Владелец',
+            original: msg,
+            ru: msg,
+            en: msg,
+            tr: msg,
+            file: ''
           });
+          await safeCacheSet(cacheKey, existingCache, { ex: 86400 * 7 });
         }
       }
       return res.status(200).json({ success: true });

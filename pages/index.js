@@ -381,6 +381,20 @@ export default function HomeListing({ publicData, contentData }) {
         });
         const result = await res.json().catch(() => ({}));
         if (result && result.url) {
+          // Сохраняем авторизованную сессию гостя для бесшовного входа в личный кабинет и чат
+          const guestUser = {
+            name: bookingData.name || 'Гость',
+            contact: bookingData.contact || bookingData.email || '',
+            email: bookingData.email || '',
+            phone: bookingData.phone || '',
+            emailVerified: true,
+            phoneVerified: Boolean(bookingData.phoneVerified),
+            isHost: false,
+            blockChat: false,
+            hasChat: true
+          };
+          loginGuestDirectly(guestUser);
+
           if (result.isTestMode) {
             toast.info(result.message || 'Тестовый режим оплаты : перенаправление на оформление');
           }
