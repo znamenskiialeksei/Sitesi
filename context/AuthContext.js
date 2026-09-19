@@ -158,12 +158,25 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Обновление свойств текущего пользователя
+  const updateCurrentUser = (updates) => {
+    if (!currentUser) return;
+    const updated = { ...currentUser, ...updates };
+    try {
+      localStorage.setItem('villa_user', JSON.stringify(updated));
+      setCurrentUser(updated);
+    } catch (e) {
+      console.warn('Ошибка обновления пользователя:', e);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
         currentUser,
         setCurrentUser,
         loginGuestDirectly,
+        updateCurrentUser,
         authLoading,
         activeRoleMode,
         setActiveRoleMode,

@@ -9,7 +9,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import axios from 'axios';
-import { Compass, MessageCircle, Calendar, Sparkles, User, Shield, ArrowLeft } from 'lucide-react';
+import { Compass, MessageCircle, Calendar, Sparkles, User, Shield, ArrowLeft, CheckCircle2, Mail, Phone } from 'lucide-react';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import GuestBookings from '../../components/GuestCabinet/GuestBookings';
@@ -18,6 +18,7 @@ import GuestGuides from '../../components/GuestCabinet/GuestGuides';
 import GuestProfile from '../../components/GuestCabinet/GuestProfile';
 import AuthModal from '../../components/Modals/AuthModal';
 import ContactHostModal from '../../components/Modals/ContactHostModal';
+import VerificationModal from '../../components/Modals/VerificationModal';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../../components/Toast';
@@ -25,7 +26,7 @@ import { useToast } from '../../components/Toast';
 export default function GuestCabinetPage() {
   const router = useRouter();
   const { t } = useLanguage();
-  const { currentUser, authLoading, setAuthModalOpen, setContactModalOpen } = useAuth();
+  const { currentUser, authLoading, setAuthModalOpen, setContactModalOpen, updateCurrentUser } = useAuth();
   const toast = useToast();
 
   const [activeTab, setActiveTab] = useState('trips'); // 'trips', 'chat', 'guides', 'profile'
@@ -33,6 +34,7 @@ export default function GuestCabinetPage() {
   const [chatMessages, setChatMessages] = useState([]);
   const [timeLefter, setTimeLefter] = useState({});
   const [loadingChat, setLoadingChat] = useState(false);
+  const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
 
   // Синхронизация активной вкладки с URL query (?tab=chat)
   useEffect(() => {
@@ -188,6 +190,34 @@ export default function GuestCabinetPage() {
             <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
               {t('travelerHubTitle')}
             </h1>
+            {currentUser && (
+              <div className="flex flex-wrap items-center gap-2 mt-2">
+                <span className="text-xs text-slate-300 font-medium">
+                  {currentUser.name}
+                </span>
+                {currentUser.emailVerified && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-semibold">
+                    <CheckCircle2 className="w-3 h-3" />
+                    {t('emailVerifiedBadge') || 'Email подтвержден'}
+                  </span>
+                )}
+                {currentUser.phoneVerified ? (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-semibold">
+                    <CheckCircle2 className="w-3 h-3" />
+                    {t('phoneVerifiedBadge') || 'Телефон подтвержден'}
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setIsPhoneModalOpen(true)}
+                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 text-[11px] font-semibold transition-colors"
+                  >
+                    <Phone className="w-3 h-3" />
+                    {t('verifyPhonePrompt') || 'Подтвердить телефон'}
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           {currentUser?.isHost && (
@@ -312,6 +342,25 @@ export default function GuestCabinetPage() {
         )}
 
       </main>
+
+      {/* Модальное окно подтверждения номера телефона гостя */}
+      {currentUser && (
+        <VerificationModal
+          isOpen={isPhoneModalOpen}
+          onClose={() => setIsPhoneModalOpen(false)}
+          mode="strict"
+          guestData={{
+            name: currentUser.name || 'Гость',
+            email: currentUser.email || '',
+            phone: currentUser.phone || currentUser.contact || ''
+          }}
+          onSuccess={() => {
+            setIsPhoneModalOpen(false);
+            updateCurrentUser({ phoneVerified: true });
+            toast.success(t('verifySuccess') || 'Номер телефона успешно подтвержден!');
+          }}
+        />
+      )}
 
       <Footer />
       <AuthModal />

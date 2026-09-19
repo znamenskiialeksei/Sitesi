@@ -16,12 +16,14 @@ import {
 import { ru, enUS, tr } from 'date-fns/locale';
 import {
   Calendar, Users, Zap, Clock, ShieldCheck,
-  ChevronDown, ChevronLeft, ChevronRight, Plus, Minus, AlertCircle
+  ChevronDown, ChevronLeft, ChevronRight, Plus, Minus, AlertCircle,
+  Mail, Phone
 } from 'lucide-react';
 import { useLanguage } from '../utils/language';
 import { useAuth } from '../context/AuthContext';
 import { useLegalConsent } from '../context/LegalConsentContext';
 import LegalConsentCheckboxes from './LegalConsentCheckboxes';
+import VerificationModal from './Modals/VerificationModal';
 import { useToast } from './Toast';
 import { calculateNights, formatDateRU, parseDateRU, isSameDay, isDateInRange } from '../utils/dates';
 
@@ -84,7 +86,10 @@ export default function BookingWidget({
   const [isGuestPickerOpen, setIsGuestPickerOpen] = useState(false);
 
   const [guestName, setGuestName] = useState('');
-  const [guestContact, setGuestContact] = useState('');
+  const [guestEmail, setGuestEmail] = useState('');
+  const [guestPhone, setGuestPhone] = useState('');
+  const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
+  const [pendingPayload, setPendingPayload] = useState(null);
 
   const { agreedKVKK, agreedContract, agreedPrivacy, allAgreed } = useLegalConsent();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -423,35 +428,80 @@ export default function BookingWidget({
       return;
     }
 
-    const finalName = currentUser?.name || guestName.trim() || e.target.guestName?.value?.trim() || 'Гость';
-    const finalContact = currentUser?.contact || guestContact.trim() || e.target.guestContact?.value?.trim() || '';
+    const finalName = currentUser?.name || guestName.trim() || 'Гость';
+    const finalEmail = currentUser?.email || guestEmail.trim() || '';
+    const finalPhone = currentUser?.phone || guestPhone.trim() || '';
+    const combinedContact = finalPhone && finalEmail ? `${finalPhone} | ${finalEmail}` : (finalPhone || finalEmail || currentUser?.contact || '');
 
-    if (!currentUser && (!finalName || !finalContact)) {
-      toast.warn(t('contactPhonePlaceholder') || 'Пожалуйста, укажите ваши имя и контакт для связи');
+    if (!currentUser) {
+      if (!finalName) {
+        toast.warn(t('contactNamePlaceholder') || 'Пожалуйста, укажите ваше имя');
+        return;
+      }
+      if (!finalEmail || !/\S+@\S+\.\S+/.test(finalEmail)) {
+        toast.warn(t('guestEmailPlaceholder') || 'Пожалуйста, укажите корректный адрес электронной почты');
+        return;
+      }
+      if (!finalPhone || finalPhone.replace(/\D/g, '').length < 6) {
+        toast.warn(t('guestPhonePlaceholder') || 'Пожалуйста, укажите действующий номер телефона');
+        return;
+      }
+    }
+
+    const payload = {
+      action: effectiveMode === 'manual' ? 'request_booking' : 'booking',
+      name: finalName,
+      contact: combinedContact,
+      email: finalEmail,
+      phone: finalPhone,
+      checkIn: formatDateRU(startDate),
+      checkOut: formatDateRU(endDate),
+      nights,
+      total_adults: adults,
+      total_children: children,
+      total_guests: totalGuests,
+      totalPrice: formatVillaMoney(totalPrice),
+      isRegistered: !!currentUser
+    };
+
+    // Если гость уже авторизован — отправляем сразу
+    if (currentUser) {
+      setIsSubmitting(true);
+      try {
+        await onBookingSubmit(payload, effectiveMode);
+      } catch (err) {
+        toast.error(t('bookingError') || 'Произошла ошибка при отправке заявки.');
+      } finally {
+        setIsSubmitting(false);
+      }
       return;
     }
 
+    // Если гость не авторизован — запускаем модальное окно верификации
+    setPendingPayload(payload);
+    setIsVerificationModalOpen(true);
+  };
+
+  // Коллбэк успешного прохождения верификации
+  const handleVerificationSuccess = async (verificationResult) => {
+    setIsVerificationModalOpen(false);
+    if (!pendingPayload) return;
+
     setIsSubmitting(true);
     try {
-      const payload = {
-        action: effectiveMode === 'manual' ? 'request_booking' : 'booking',
-        name: finalName,
-        contact: finalContact,
-        checkIn: formatDateRU(startDate),
-        checkOut: formatDateRU(endDate),
-        nights,
-        total_adults: adults,
-        total_children: children,
-        total_guests: totalGuests,
-        totalPrice: formatVillaMoney(totalPrice),
-        isRegistered: !!currentUser
+      const enrichedPayload = {
+        ...pendingPayload,
+        email: verificationResult.email || guestEmail.trim(),
+        phone: verificationResult.phone || guestPhone.trim(),
+        emailVerified: verificationResult.emailVerified,
+        phoneVerified: verificationResult.phoneVerified
       };
-
-      await onBookingSubmit(payload, effectiveMode);
+      await onBookingSubmit(enrichedPayload, effectiveMode);
     } catch (err) {
       toast.error(t('bookingError') || 'Произошла ошибка при отправке заявки.');
     } finally {
       setIsSubmitting(false);
+      setPendingPayload(null);
     }
   };
 
@@ -645,7 +695,7 @@ export default function BookingWidget({
           )}
         </div>
 
-        {/* Данные неавторизованного гостя */}
+        {/* Данные неавторизованного гостя: раздельные поля Имя, Email и Телефон */}
         {!currentUser && (
           <div className="space-y-3 pt-2">
             <div>
@@ -654,18 +704,32 @@ export default function BookingWidget({
                 required
                 value={guestName}
                 onChange={(e) => setGuestName(e.target.value)}
-                placeholder={t('guestNamePlaceholder')}
+                placeholder={t('guestNamePlaceholder') || 'Ваше имя'}
                 className="w-full bg-slate-900/80 border border-white/10 p-3.5 rounded-2xl text-xs sm:text-sm text-white focus:border-rose-500 outline-none transition-colors"
               />
             </div>
-            <div>
+            <div className="relative">
+              <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
-                name="guestContact"
+                name="guestEmail"
+                type="email"
                 required
-                value={guestContact}
-                onChange={(e) => setGuestContact(e.target.value)}
-                placeholder={t('guestContactPlaceholder')}
-                className="w-full bg-slate-900/80 border border-white/10 p-3.5 rounded-2xl text-xs sm:text-sm text-white focus:border-rose-500 outline-none transition-colors"
+                value={guestEmail}
+                onChange={(e) => setGuestEmail(e.target.value)}
+                placeholder={t('guestEmailLabel') || 'Электронная почта (Email)'}
+                className="w-full bg-slate-900/80 border border-white/10 pl-10 pr-3.5 py-3.5 rounded-2xl text-xs sm:text-sm text-white focus:border-rose-500 outline-none transition-colors"
+              />
+            </div>
+            <div className="relative">
+              <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                name="guestPhone"
+                type="tel"
+                required
+                value={guestPhone}
+                onChange={(e) => setGuestPhone(e.target.value)}
+                placeholder={t('guestPhoneLabel') || 'Номер телефона (WhatsApp / Связь)'}
+                className="w-full bg-slate-900/80 border border-white/10 pl-10 pr-3.5 py-3.5 rounded-2xl text-xs sm:text-sm text-white focus:border-rose-500 outline-none transition-colors"
               />
             </div>
           </div>
@@ -737,6 +801,19 @@ export default function BookingWidget({
           </div>
         </div>
       )}
+
+      {/* Модальное окно пошаговой верификации Email и Телефона гостя */}
+      <VerificationModal
+        isOpen={isVerificationModalOpen}
+        onClose={() => setIsVerificationModalOpen(false)}
+        mode={dynamicRules.verificationMode || 'progressive'}
+        guestData={{
+          name: guestName.trim() || 'Гость',
+          email: guestEmail.trim(),
+          phone: guestPhone.trim()
+        }}
+        onSuccess={handleVerificationSuccess}
+      />
     </div>
   );
 }

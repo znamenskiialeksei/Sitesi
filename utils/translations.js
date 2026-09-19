@@ -435,7 +435,30 @@ export const translations = {
     reviewCommunication: "Общение с хозяином",
     reviewLocation: "Расположение",
     reviewCheckIn: "Прибытие и заезд",
-    reviewValue: "Соотношение цена/качество"
+    reviewValue: "Соотношение цена/качество",
+
+    // Верификация контактов при бронировании
+    guestEmailLabel: "Электронная почта (Email)",
+    guestEmailPlaceholder: "ivan@example.com",
+    guestPhoneLabel: "Номер телефона (WhatsApp / Связь)",
+    guestPhonePlaceholder: "+7 999 123-45-67",
+    verifyModalTitle: "Подтверждение контактов бронирования",
+    verifyModalSubtitle: "Для защиты бронирования введите проверочный код",
+    verifyStepEmail: "Шаг 1: Подтверждение Email",
+    verifyStepPhone: "Шаг 2: Подтверждение Телефона",
+    verifyEmailSentDesc: "Мы отправили 4-значный код подтверждения на почту:",
+    verifyPhoneSentDesc: "Мы отправили проверочный код на номер:",
+    verifySubmitBtn: "Подтвердить код",
+    verifyVerifyingBtn: "Проверка...",
+    verifyResendIn: "Повторить через",
+    verifyResendBtn: "Отправить код повторно",
+    verifyChangeContact: "Изменить адрес",
+    verifySuccess: "Контакты успешно подтверждены!",
+    verifyInvalidCode: "Неверный проверочный код. Попробуйте снова.",
+    verifyAttemptsLeft: "Осталось попыток:",
+    emailVerifiedBadge: "Email подтвержден",
+    phoneVerifiedBadge: "Телефон подтвержден",
+    verifyPhonePrompt: "Подтвердить номер телефона"
   },
 
   en: {
@@ -857,7 +880,30 @@ export const translations = {
     reviewCommunication: "Communication",
     reviewLocation: "Location",
     reviewCheckIn: "Check-in",
-    reviewValue: "Value"
+    reviewValue: "Value",
+
+    // Contact verification for booking
+    guestEmailLabel: "Email Address",
+    guestEmailPlaceholder: "alex@example.com",
+    guestPhoneLabel: "Phone Number (WhatsApp / Mobile)",
+    guestPhonePlaceholder: "+1 555 123 4567",
+    verifyModalTitle: "Booking Contact Verification",
+    verifyModalSubtitle: "To secure your booking, please enter the verification code",
+    verifyStepEmail: "Step 1: Verify Email",
+    verifyStepPhone: "Step 2: Verify Phone",
+    verifyEmailSentDesc: "We sent a 4-digit verification code to:",
+    verifyPhoneSentDesc: "We sent a verification code to:",
+    verifySubmitBtn: "Verify Code",
+    verifyVerifyingBtn: "Verifying...",
+    verifyResendIn: "Resend in",
+    verifyResendBtn: "Resend Code",
+    verifyChangeContact: "Change address",
+    verifySuccess: "Contacts successfully verified!",
+    verifyInvalidCode: "Invalid verification code. Please try again.",
+    verifyAttemptsLeft: "Attempts left:",
+    emailVerifiedBadge: "Email Verified",
+    phoneVerifiedBadge: "Phone Verified",
+    verifyPhonePrompt: "Verify Phone Number"
   },
 
   tr: {
@@ -1279,7 +1325,30 @@ export const translations = {
     reviewCommunication: "İletişim",
     reviewLocation: "Konum",
     reviewCheckIn: "Giriş Kolaylığı",
-    reviewValue: "Fiyat/Performans"
+    reviewValue: "Fiyat/Performans",
+
+    // Rezervasyon iletişim doğrulaması
+    guestEmailLabel: "E-posta Adresi",
+    guestEmailPlaceholder: "misafir@example.com",
+    guestPhoneLabel: "Telefon Numarası (WhatsApp / İletişim)",
+    guestPhonePlaceholder: "+90 555 123 4567",
+    verifyModalTitle: "Rezervasyon İletişim Doğrulaması",
+    verifyModalSubtitle: "Rezervasyonunuzu güvence altına almak için lütfen onay kodunu girin",
+    verifyStepEmail: "1. Adım: E-posta Doğrulama",
+    verifyStepPhone: "2. Adım: Telefon Doğrulama",
+    verifyEmailSentDesc: "4 haneli onay kodunu e-posta adresinize ilettik:",
+    verifyPhoneSentDesc: "Onay kodunu telefon numaranıza ilettik:",
+    verifySubmitBtn: "Kodu Doğrula",
+    verifyVerifyingBtn: "Doğrulanıyor...",
+    verifyResendIn: "Tekrar gönder",
+    verifyResendBtn: "Kodu Tekrar Gönder",
+    verifyChangeContact: "Adresi değiştir",
+    verifySuccess: "İletişim bilgileri başarıyla doğrulandı!",
+    verifyInvalidCode: "Geçersiz onay kodu. Lütfen tekrar deneyin.",
+    verifyAttemptsLeft: "Kalan deneme:",
+    emailVerifiedBadge: "E-posta Doğrulandı",
+    phoneVerifiedBadge: "Telefon Doğrulandı",
+    verifyPhonePrompt: "Telefon Numarasını Doğrula"
   }
 };
 

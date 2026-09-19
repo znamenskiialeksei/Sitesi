@@ -339,7 +339,7 @@ export default function HomeListing({ publicData, contentData }) {
     try {
       if (effectiveMode === 'instant') {
         // Если пользователь не авторизован, обеспечиваем мгновенную авто-регистрацию гостя перед переходом к оплате
-        if (!currentUser && bookingData.contact) {
+        if (!currentUser && (bookingData.contact || bookingData.email || bookingData.phone)) {
           try {
             const regRes = await fetch('/api/booking', {
               method: 'POST',
@@ -347,7 +347,11 @@ export default function HomeListing({ publicData, contentData }) {
               body: JSON.stringify({
                 action: 'auto_register_guest',
                 name: bookingData.name || 'Гость',
-                contact: bookingData.contact
+                contact: bookingData.contact,
+                email: bookingData.email,
+                phone: bookingData.phone,
+                emailVerified: bookingData.emailVerified,
+                phoneVerified: bookingData.phoneVerified
               })
             });
             const regData = await regRes.json();

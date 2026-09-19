@@ -9,6 +9,7 @@ import { google } from 'googleapis';
 import { createClient } from '@vercel/kv';
 import { generateVoucher } from '../../utils/pdf';
 import { getLiveSheetMap, resolveRange, SHEETS_REGISTRY } from '../../utils/sheetsRegistry';
+import { generateOtpCode, sendEmailVerificationCode, sendPhoneVerificationCode } from '../../utils/mailer';
 
 let memoryCache = {};
 
@@ -660,7 +661,7 @@ export default async function handler(req, res) {
       if (!sheets || !spreadsheetId) {
         return res.status(200).json({
           success: true,
-          globalRules: { basePrice: 15000, currency: 'RUB', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', checkInTime: '16:00', checkOutTime: '10:00' },
+          globalRules: { basePrice: 15000, currency: 'RUB', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', verificationMode: 'progressive', checkInTime: '16:00', checkOutTime: '10:00' },
           dateRules: []
         });
       }
@@ -673,7 +674,10 @@ export default async function handler(req, res) {
       for (let i = rows.length - 1; i >= 0; i--) {
         const row = rows[i];
         if (row[2] === 'Настройки' && !globalRules) {
-          try { globalRules = JSON.parse(row[3]); } catch (e) { }
+          try {
+            globalRules = JSON.parse(row[3]);
+            if (!globalRules.verificationMode) globalRules.verificationMode = 'progressive';
+          } catch (e) { }
         } else if (row[2] !== 'Настройки' && row[0] && row[0] !== 'Дата старта') {
           let isValid = true;
           if (row[2] === 'Блокировка' && row[3] && String(row[3]).startsWith('HOLD|')) {
@@ -700,14 +704,14 @@ export default async function handler(req, res) {
 
       const result = {
         success: true,
-        globalRules: globalRules || { basePrice: 15000, currency: 'RUB', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', checkInTime: '16:00', checkOutTime: '10:00' },
+        globalRules: globalRules || { basePrice: 15000, currency: 'RUB', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', verificationMode: 'progressive', checkInTime: '16:00', checkOutTime: '10:00' },
         dateRules,
         variablesDict
       };
       await safeCacheSet('settings_cache', result, { ex: 1800 });
       return res.status(200).json(result);
     } catch (e) {
-      return res.status(200).json({ success: true, globalRules: { basePrice: 15000, currency: 'RUB', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', checkInTime: '16:00', checkOutTime: '10:00' }, dateRules: [] });
+      return res.status(200).json({ success: true, globalRules: { basePrice: 15000, currency: 'RUB', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', verificationMode: 'progressive', checkInTime: '16:00', checkOutTime: '10:00' }, dateRules: [] });
     }
   }
 
@@ -804,6 +808,92 @@ export default async function handler(req, res) {
       return res.status(200).json({
         success: true,
         user: { name: safeName, contact: safeContact, isHost: false, hasChat: true }
+      });
+    } catch (e) {
+      return res.status(500).json({ success: false, error: e.message });
+    }
+  }
+
+  // --- API: Отправка проверочного кода (Email или Телефон) ---
+  if (action === 'send_verification_code') {
+    try {
+      const channel = data.channel || 'email';
+      const target = (data.target || '').toString().trim();
+      const guestName = (data.name || 'Гость').toString().trim();
+
+      if (!target) {
+        return res.status(400).json({ success: false, error: 'Не указан адрес или номер для отправки кода.' });
+      }
+
+      const cleanTarget = channel === 'email' ? target.toLowerCase() : target.replace(/\D/g, '');
+      const otpCode = generateOtpCode();
+      const cacheKey = `otp_${channel}_${cleanTarget}`;
+
+      // Сохраняем код в кэше с TTL 10 минут (600 секунд) и счетчиком попыток
+      await safeCacheSet(cacheKey, { code: otpCode, attempts: 0, createdAt: Date.now() }, { ex: 600 });
+
+      if (channel === 'email') {
+        await sendEmailVerificationCode({ to: target, code: otpCode, name: guestName });
+      } else {
+        await sendPhoneVerificationCode({ phone: target, code: otpCode, name: guestName });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: `Проверочный код успешно отправлен на ${target}`
+      });
+    } catch (e) {
+      return res.status(500).json({ success: false, error: e.message });
+    }
+  }
+
+  // --- API: Валидация проверочного кода (Email или Телефон) ---
+  if (action === 'verify_code') {
+    try {
+      const channel = data.channel || 'email';
+      const target = (data.target || '').toString().trim();
+      const code = (data.code || '').toString().trim();
+
+      if (!target || !code) {
+        return res.status(400).json({ success: false, error: 'Укажите контакт и проверочный код.' });
+      }
+
+      const cleanTarget = channel === 'email' ? target.toLowerCase() : target.replace(/\D/g, '');
+      const cacheKey = `otp_${channel}_${cleanTarget}`;
+      const cached = await safeCacheGet(cacheKey);
+
+      if (!cached || !cached.code) {
+        return res.status(400).json({
+          success: false,
+          error: 'Срок действия проверочного кода истек. Запросите новый код.'
+        });
+      }
+
+      const attempts = (cached.attempts || 0) + 1;
+      if (attempts > 3) {
+        await safeCacheDel(cacheKey);
+        return res.status(400).json({
+          success: false,
+          error: 'Превышен лимит попыток. Запросите новый код.'
+        });
+      }
+
+      if (cached.code.trim() !== code) {
+        await safeCacheSet(cacheKey, { ...cached, attempts }, { ex: 600 });
+        const remaining = 3 - attempts;
+        return res.status(400).json({
+          success: false,
+          error: `Неверный код. Осталось попыток: ${remaining}`
+        });
+      }
+
+      // Код верный: отмечаем контакт подтвержденным на 30 дней и удаляем OTP
+      await safeCacheSet(`verified_${channel}_${cleanTarget}`, true, { ex: 86400 * 30 });
+      await safeCacheDel(cacheKey);
+
+      return res.status(200).json({
+        success: true,
+        message: 'Контакт успешно подтвержден!'
       });
     } catch (e) {
       return res.status(500).json({ success: false, error: e.message });
@@ -1091,7 +1181,9 @@ export default async function handler(req, res) {
   if (action === 'auto_register_guest') {
     try {
       await ensureSystemSheets();
-      const safeContact = (data.contact || '').toString().trim().toLowerCase();
+      const safeEmail = (data.email || '').toString().trim();
+      const safePhone = (data.phone || '').toString().trim();
+      const safeContact = (data.contact || (safePhone && safeEmail ? `${safePhone} | ${safeEmail}` : (safePhone || safeEmail || ''))).toString().trim();
       const safeName = (data.name || 'Гость').toString().trim();
       const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
 
@@ -1104,7 +1196,8 @@ export default async function handler(req, res) {
           const logins = existingData.data.values
             ? existingData.data.values.flat().map((v) => (v || '').toString().trim().toLowerCase())
             : [];
-          if (!logins.includes(safeContact)) {
+          const checkKey = safeEmail ? safeEmail.toLowerCase() : safeContact.toLowerCase();
+          if (!logins.includes(checkKey) && !logins.includes(safeContact.toLowerCase())) {
             await sheets.spreadsheets.values.append({
               spreadsheetId,
               range: resolveRange(sheetMap, 'ACCOUNTS', 'A:G'),
@@ -1122,7 +1215,17 @@ export default async function handler(req, res) {
 
       return res.status(200).json({
         success: true,
-        user: { name: safeName, contact: safeContact, isHost: false, blockChat: false, hasChat: true }
+        user: {
+          name: safeName,
+          contact: safeContact,
+          email: safeEmail,
+          phone: safePhone,
+          emailVerified: !!data.emailVerified,
+          phoneVerified: !!data.phoneVerified,
+          isHost: false,
+          blockChat: false,
+          hasChat: true
+        }
       });
     } catch (e) {
       return res.status(500).json({ success: false, error: e.message });
@@ -1463,10 +1566,16 @@ export default async function handler(req, res) {
     try {
       await ensureSystemSheets();
       const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
+      const safeEmail = (data.email || '').toString().trim();
+      const safePhone = (data.phone || '').toString().trim();
+      const effectiveContact = (data.contact || (safePhone && safeEmail ? `${safePhone} | ${safeEmail}` : (safePhone || safeEmail || ''))).toString().trim();
+      const guestName = (data.name || 'Гость').toString().trim();
 
-      // Telegram-уведомление хозяину о новой заявке
+      // Telegram-уведомление хозяину о новой заявке со статусами проверки
       if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
-        const tgMsg = `⚠️ НОВАЯ ЗАЯВКА (Модерация)\n👤 Гость: ${data.name}\n📞 Связь: ${data.contact}\n📅 Период: ${data.checkIn} — ${data.checkOut}\n👥 Гостей: ${data.total_guests}\n💰 Стоимость: ${data.totalPrice}`;
+        const emailStatus = data.emailVerified ? '✅ Подтвержден' : '⏳ Не подтвержден';
+        const phoneStatus = data.phoneVerified ? '✅ Подтвержден' : '⏳ Не подтвержден';
+        const tgMsg = `⚠️ НОВАЯ ЗАЯВКА (Модерация)\n👤 Гость: ${guestName}\n📧 Email: ${safeEmail || '—'} (${emailStatus})\n📞 Телефон: ${safePhone || effectiveContact || '—'} (${phoneStatus})\n📅 Период: ${data.checkIn} — ${data.checkOut}\n👥 Гостей: ${data.total_guests}\n💰 Стоимость: ${data.totalPrice}`;
         await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1474,34 +1583,42 @@ export default async function handler(req, res) {
         }).catch(() => { });
       }
 
-      let userObj = null;
+      let userObj = {
+        name: guestName,
+        contact: effectiveContact,
+        email: safeEmail,
+        phone: safePhone,
+        emailVerified: !!data.emailVerified,
+        phoneVerified: !!data.phoneVerified,
+        isHost: false,
+        blockChat: false,
+        hasChat: true
+      };
 
       // Авто-регистрация незарегистрированного гостя в таблице аккаунтов
-      if (!data.isRegistered && sheets && spreadsheetId) {
-        const safeContact = (data.contact || '').toString().trim().toLowerCase();
+      if (!data.isRegistered && sheets && spreadsheetId && effectiveContact) {
+        const safeContactKey = effectiveContact.toLowerCase();
         try {
           const existingData = await sheets.spreadsheets.values.get({
             spreadsheetId,
             range: resolveRange(sheetMap, 'ACCOUNTS', 'C:C')
           });
           const logins = existingData.data.values
-            ? existingData.data.values.flat().map(v => (v || '').toString().trim().toLowerCase())
+            ? existingData.data.values.flat().map((v) => (v || '').toString().trim().toLowerCase())
             : [];
-          if (!logins.includes(safeContact)) {
+          const checkKey = safeEmail ? safeEmail.toLowerCase() : safeContactKey;
+          if (!logins.includes(checkKey) && !logins.includes(safeContactKey)) {
             await sheets.spreadsheets.values.append({
               spreadsheetId,
               range: resolveRange(sheetMap, 'ACCOUNTS', 'A:G'),
               valueInputOption: 'USER_ENTERED',
               insertDataOption: 'INSERT_ROWS',
               requestBody: {
-                values: [[timestamp, (data.name || '').trim(), (data.contact || '').trim(), '123456', 'Нет', 'Нет', 'Нет']]
+                values: [[timestamp, guestName, effectiveContact, '123456', 'Нет', 'Нет', 'Нет']]
               }
             });
           }
         } catch (regErr) { /* продолжаем даже если аккаунт не создан */ }
-        userObj = { name: (data.name || '').trim(), contact: (data.contact || '').trim(), isHost: false, blockChat: false, hasChat: true };
-      } else {
-        userObj = { name: (data.name || '').trim(), contact: (data.contact || '').trim(), isHost: false, blockChat: false, hasChat: true };
       }
 
       if (sheets && spreadsheetId) {
@@ -1514,8 +1631,8 @@ export default async function handler(req, res) {
           requestBody: {
             values: [[
               timestamp,
-              data.name || 'Гость',
-              data.contact || '',
+              guestName,
+              effectiveContact,
               data.checkIn,
               data.checkOut,
               data.nights,
@@ -1530,7 +1647,7 @@ export default async function handler(req, res) {
 
         // Создание листа чата для гостя (если ещё не существует)
         const targetChatId = getChatSpreadsheetId();
-        const chatSheetName = getChatSheetName(data.name, data.contact);
+        const chatSheetName = getChatSheetName(guestName, effectiveContact);
 
         try {
           const chatDbMeta = await sheets.spreadsheets.get({ spreadsheetId: targetChatId });
@@ -1571,6 +1688,10 @@ export default async function handler(req, res) {
     try {
       await ensureSystemSheets();
       const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
+      const safeEmail = (data.email || '').toString().trim();
+      const safePhone = (data.phone || '').toString().trim();
+      const effectiveContact = (data.contact || (safePhone && safeEmail ? `${safePhone} | ${safeEmail}` : (safePhone || safeEmail || ''))).toString().trim();
+      const guestName = (data.name || 'Гость').toString().trim();
 
       if (sheets && spreadsheetId) {
         await sheets.spreadsheets.values.append({
@@ -1581,8 +1702,8 @@ export default async function handler(req, res) {
           requestBody: {
             values: [[
               timestamp,
-              data.name || 'Гость',
-              data.contact || '',
+              guestName,
+              effectiveContact,
               data.checkIn,
               data.checkOut,
               data.nights,
@@ -1596,9 +1717,9 @@ export default async function handler(req, res) {
         });
 
         // Создаём чат для оплативших гостей
-        if (data.contact) {
+        if (effectiveContact) {
           const targetChatId = getChatSpreadsheetId();
-          const chatSheetName = getChatSheetName(data.name, data.contact);
+          const chatSheetName = getChatSheetName(guestName, effectiveContact);
           try {
             const chatDbMeta = await sheets.spreadsheets.get({ spreadsheetId: targetChatId });
             if (!chatDbMeta.data.sheets.find(s => s.properties.title === chatSheetName)) {
