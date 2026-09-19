@@ -79,9 +79,9 @@
       }
     },
     {
-      "label": "📱 7. Полный Стартер PowerShell (deploy_and_run.ps1)",
+      "label": "📱 7. Полный Стартер PowerShell - deploy_and_run.ps1",
       "type": "shell",
-      "command": "powershell -ExecutionPolicy Bypass -File .\\deploy_and_run.ps1",
+      "command": "pwsh -ExecutionPolicy Bypass -File .\\deploy_and_run.ps1",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
@@ -99,7 +99,7 @@
       }
     },
     {
-      "label": "📥 9. Установка Зависимостей (npm install)",
+      "label": "📥 9. Установка Зависимостей - npm install",
       "type": "shell",
       "command": "npm install",
       "problemMatcher": [],
@@ -109,9 +109,29 @@
       }
     },
     {
-      "label": "🧹 10. Очистить архивные дубли и корень рабочей области",
+      "label": "⏸️ 10. Перевести сайт в режим обслуживания - Vercel Pause",
       "type": "shell",
-      "command": "powershell -ExecutionPolicy Bypass -File .\\clean_accumulator_and_root.ps1",
+      "command": "bash \".\\160519092026 Исторические скрипты запуска корня\\pause-site.sh\"",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "▶️ 11. Возобновить штатную работу сайта - Vercel Resume",
+      "type": "shell",
+      "command": "bash \".\\160519092026 Исторические скрипты запуска корня\\resume-site.sh\"",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🧹 12. Очистить архивные дубли и корень рабочей области",
+      "type": "shell",
+      "command": "pwsh -ExecutionPolicy Bypass -File .\\clean_accumulator_and_root.ps1",
       "options": {
         "cwd": "${workspaceFolder}/../Глобальные настройки проекта (накопитель)"
       },
@@ -122,9 +142,9 @@
       }
     },
     {
-      "label": "📦 11. Пересобрать переносной запускатор (Уровень 3)",
+      "label": "📦 13. Пересобрать переносной запускатор - Уровень 3",
       "type": "shell",
-      "command": "powershell -ExecutionPolicy Bypass -File .\\rebuild_portable_launcher.ps1",
+      "command": "pwsh -ExecutionPolicy Bypass -File .\\rebuild_portable_launcher.ps1",
       "options": {
         "cwd": "${workspaceFolder}/../Глобальные настройки проекта (накопитель)"
       },

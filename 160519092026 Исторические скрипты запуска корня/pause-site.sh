@@ -1,87 +1,96 @@
-#!/bin/bash
-
-# [Rollback 6 Timestamp: 2026-06-16 20:45]
-# Остановка выполнения скрипта при возникновении критических ошибок
+#!/usr/bin/env bash
+# ==============================================================================
+# VILLA TURAMAN AIRBNB PLATFORM — РЕЖИМ ТЕХНИЧЕСКОГО ОБСЛУЖИВАНИЯ (VERCEL PAUSE)
+# Целевая ветка: v1-airbnb
+# ==============================================================================
 set -e
 
-echo "Запуск режима обслуживания из родительской директории..."
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Переходим в корень проекта/ветки v1-airbnb
+cd "$SCRIPT_DIR/.." || exit 1
 
-# Проверяем, что папка проекта на месте, чтобы избежать ошибок путей
-if [ ! -d "villa-turaman-platform" ]; then
-    echo "Критическая ошибка: Папка villa-turaman-platform не найдена в текущем расположении!"
-    exit 1
-fi
+echo "================================================================="
+echo "  ⚡ Активация режима обслуживания: Ветка v1-airbnb"
+echo "  Проект: Villa Turaman Airbnb Platform"
+echo "================================================================="
 
-# Создаем файл заглушки СТРОГО внутри целевой папки villa-turaman-platform
-echo "Создание файла заглушки (villa-turaman-platform/maintenance.html)..."
-cat << 'EOF' > villa-turaman-platform/maintenance.html
+# Создаем файл заглушки прямо в корне ветки
+echo "1. Создание страницы заглушки (maintenance.html)..."
+cat << 'EOF' > maintenance.html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Сайт временно недоступен</title>
+    <title>Villa Turaman — Технические работы</title>
     <style>
-        /* Блок стилей для корректного отображения информационного экрана */
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; /* Системный шрифт для быстрой загрузки и нативности */
-            display: flex; /* Используем Flexbox для выравнивания содержимого */
-            justify-content: center; /* Центрируем контент строго по горизонтали */
-            align-items: center; /* Центрируем контент строго по вертикали */
-            height: 100vh; /* Растягиваем высоту на весь экран (100% высоты окна просмотра) */
-            background-color: #fafafa; /* Устанавливаем светло-серый приятный и ненавязчивый фон */
-            margin: 0; /* Убираем внешние отступы браузера по умолчанию для полного прилегания к краям */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
+            margin: 0;
         }
-        .container { 
-            text-align: center; /* Выравниваем весь текст внутри контейнера по центру */
-            padding: 40px; /* Добавляем внутренние отступы в 40 пикселей со всех сторон для воздуха */
-            background: #ffffff; /* Устанавливаем абсолютно белый фон для самого информационного блока */
-            border-radius: 10px; /* Скругляем углы блока на 10 пикселей для современного вида */
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); /* Добавляем мягкую падающую тень для визуального объема */
-            max-width: 500px; /* Ограничиваем максимальную ширину блока для лучшей читаемости на широких экранах */
+        .card {
+            text-align: center;
+            padding: 48px;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            max-width: 520px;
         }
-        h1 { 
-            color: #111111; /* Делаем заголовок почти черным для высокой контрастности */
-            font-size: 24px; /* Устанавливаем размер шрифта заголовка 24 пикселя */
-            margin-bottom: 15px; /* Добавляем отступ снизу от заголовка до основного текста в 15 пикселей */
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #f87171;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-        p { 
-            color: #666666; /* Устанавливаем серый цвет для основного текста, чтобы снизить визуальную нагрузку */
-            font-size: 16px; /* Устанавливаем классический размер шрифта для комфортного чтения (16 пикселей) */
-            line-height: 1.5; /* Устанавливаем межстрочный интервал в 1.5 для легкости восприятия текста */
+        h1 {
+            color: #ffffff;
+            font-size: 26px;
+            margin: 0 0 16px 0;
+            font-weight: 700;
+        }
+        p {
+            color: #94a3b8;
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 0 0 24px 0;
+        }
+        .footer {
+            font-size: 13px;
+            color: #64748b;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 16px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Ведутся технические работы</h1>
-        <p>Публикация сайта временно приостановлена. Пожалуйста, зайдите позже. Спасибо за понимание.</p>
+    <div class="card">
+        <div class="badge">Режим обслуживания</div>
+        <h1>Villa Turaman Platform</h1>
+        <p>Платформа бронирования временно обновляется. Сервис станет доступен в ближайшее время. Благодарим за понимание!</p>
+        <div class="footer">Dalyan, Ortaca, Mugla | VKN: 9991120181</div>
     </div>
 </body>
 </html>
 EOF
 
-# Пояснения настроек блока конфигурации vercel.json к каждой строчке:
-# {                                  - Начало объекта конфигурации
-#   "version": 2,                    - Указание Vercel использовать вторую версию платформы маршрутизации
-#   "builds": [                      - Массив настроек сборки
-#     {                              - Начало объекта сборки
-#       "src": "maintenance.html",   - Указание исходного файла-заглушки для обработки
-#       "use": "@vercel/static"      - Использование встроенного статического обработчика Vercel для этого файла
-#     }                              - Конец объекта сборки
-#   ],                               - Конец массива сборок
-#   "routes": [                      - Массив правил маршрутизации запросов
-#     {                              - Начало объекта правила маршрутизации
-#       "src": "/(.*)",              - Регулярное выражение, перехватывающее абсолютно все входящие пути сайта
-#       "dest": "/maintenance.html", - Перенаправление всех перехваченных запросов на созданный файл заглушки
-#       "status": 503                - Установка HTTP-статуса 503 (Сервис недоступен) для корректной реакции поисковых систем без потери SEO
-#     }                              - Конец объекта правила маршрутизации
-#   ]                                - Конец массива правил маршрутизации
-# }                                  - Конец объекта конфигурации
-
-# Создаем файл конфигурации маршрутизации СТРОГО внутри папки villa-turaman-platform
-echo "Настройка маршрутизации Vercel (villa-turaman-platform/vercel.json)..."
-cat << 'EOF' > villa-turaman-platform/vercel.json
+# Создаем конфигурацию перенаправления Vercel с кодом HTTP 503
+echo "2. Настройка маршрутизации Vercel (vercel.json)..."
+cat << 'EOF' > vercel.json
 {
   "version": 2,
   "builds": [
@@ -100,20 +109,12 @@ cat << 'EOF' > villa-turaman-platform/vercel.json
 }
 EOF
 
-# Переходим в директорию изолированного репозитория для отправки изменений
-echo "Переход в репозиторий villa-turaman-platform для работы с Git..."
-cd villa-turaman-platform
-
-# Индексируем только созданные файлы обслуживания
+# Фиксация и отправка коммита строго в ветку v1-airbnb
+echo "3. Фиксация в Git и отправка в ветку v1-airbnb..."
 git add maintenance.html vercel.json
+git commit -m "chore: включение режима обслуживания (ветка v1-airbnb)" || true
+git push origin v1-airbnb || git push origin HEAD:v1-airbnb
 
-# Фиксируем изменения в истории Git
-git commit -m "Fix: Включение режима обслуживания [Rollback 6 Timestamp: 2026-06-16 20:45]"
-
-# Отправляем коммит на GitHub
-echo "Отправка конфигурации паузы в GitHub..."
-git push origin main
-
-echo "---------------------------------------------------"
-echo "УСПЕШНО! Режим обслуживания активирован."
-echo "Скрипт pause-site.sh остался снаружи и НЕ попал в ваш GitHub!"
+echo "================================================================="
+echo "  УСПЕХ! Режим обслуживания активирован для ветки v1-airbnb."
+echo "================================================================="
