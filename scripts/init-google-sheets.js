@@ -270,6 +270,38 @@ const initializeSpreadsheet = async () => {
             }
           });
 
+          // Смарт-форматирование ячеек данных: перенос слов (WRAP) и вертикальное центрирование
+          formatRequests.push({
+            repeatCell: {
+              range: {
+                sheetId,
+                startRowIndex: 1,
+                endRowIndex: 100,
+                startColumnIndex: 0,
+                endColumnIndex: config.headers.length
+              },
+              cell: {
+                userEnteredFormat: {
+                  wrapStrategy: 'WRAP',
+                  verticalAlignment: 'MIDDLE'
+                }
+              },
+              fields: 'userEnteredFormat(wrapStrategy,verticalAlignment)'
+            }
+          });
+
+          // Авто-подгонка оптимальной ширины столбцов под длину содержимого (autoResizeDimensions)
+          formatRequests.push({
+            autoResizeDimensions: {
+              dimensions: {
+                sheetId,
+                dimension: 'COLUMNS',
+                startIndex: 0,
+                endIndex: config.headers.length
+              }
+            }
+          });
+
           // ВАЖНО: Канонический синтаксис формул Google Sheets со СТРОГОЙ ТОЧКОЙ С ЗАПЯТОЙ (;)
           // В русскоязычной локали Google Таблиц разделителем аргументов ВСЕГДА является точка с запятой (;).
           if (config.key === 'SERVICES') {

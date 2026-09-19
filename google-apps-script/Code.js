@@ -84,11 +84,15 @@ function onOpen() {
     .addItem("📨 Проверить новые чаты с гостями", "checkGuestChatsStatus")
     .addItem("📝 Проверить корректность шаблонов ответов", "auditTemplatesFormat");
 
-  // 6. Блок 6: Системный аудит и диагностика формул
-  var auditMenu = ui.createMenu("⚙️ 6. Системный аудит & Формулы")
-    .addItem("🧪 Проверить стандарт точки с запятой (;) в формулах", "auditFormulasSemicolon")
-    .addItem("📋 Просмотр паспорта и ID всех листов", "showSheetsPassportModal")
-    .addItem("🛠️ Инициализировать недостающие листы", "ensureAllSystemSheets");
+  // 6. Блок 6: Системный аудит, формулы и Свойства скрипта (Script Properties)
+  var auditMenu = ui.createMenu("⚙️ 6. Системный аудит & Свойства")
+    .addItem("🔑 1. Настроить Свойства скрипта (Script Properties)", "setupScriptPropertiesInteractive")
+    .addItem("📋 2. Показать текущие Свойства скрипта", "viewCurrentScriptProperties")
+    .addItem("⚡ 3. Установить типовые свойства по умолчанию", "setupDefaultScriptProperties")
+    .addSeparator()
+    .addItem("🧪 4. Проверить стандарт точки с запятой (;) в формулах", "auditFormulasSemicolon")
+    .addItem("📄 5. Просмотр паспорта и ID всех листов", "showSheetsPassportModal")
+    .addItem("🛠️ 6. Инициализировать недостающие листы", "ensureAllSystemSheets");
 
   // Сборка главного меню верхнего уровня
   ui.createMenu("🏡 Villa Turaman Suite")
@@ -546,3 +550,99 @@ function ensureAllSystemSheets() {
   sortSheetsCanonically();
   SpreadsheetApp.getActive().toast("Структура системы Villa Turaman Suite проверена и синхронизирована.", "✅ Завершено", 5);
 }
+
+// ==============================================================================
+// УПРАВЛЕНИЕ СВОЙСТВАМИ СКРИПТА (SCRIPT PROPERTIES KEY-VALUE)
+// ==============================================================================
+
+/**
+ * Интерактивный диалог настройки Свойств скрипта (Script Properties)
+ */
+function setupScriptPropertiesInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var scriptProperties = PropertiesService.getScriptProperties();
+
+  var currentSiteUrl = scriptProperties.getProperty('SITE_URL') || "http://localhost:3000";
+  var resSiteUrl = ui.prompt("Свойство 1/6: Базовый адрес сайта (SITE_URL)", "Введите URL сайта (например, https://ваш-домен.vercel.app или http://localhost:3000):", ui.ButtonSet.OK_CANCEL);
+  if (resSiteUrl.getSelectedButton() !== ui.Button.OK) return;
+  var siteUrl = resSiteUrl.getResponseText().trim() || currentSiteUrl;
+
+  var currentRevalUrl = scriptProperties.getProperty('REVALIDATE_API_URL') || (siteUrl + "/api/revalidate");
+  var resRevalUrl = ui.prompt("Свойство 2/6: URL ревалидации (REVALIDATE_API_URL)", "Введите эндпоинт ревалидации Next.js:", ui.ButtonSet.OK_CANCEL);
+  if (resRevalUrl.getSelectedButton() !== ui.Button.OK) return;
+  var revalidateUrl = resRevalUrl.getResponseText().trim() || currentRevalUrl;
+
+  var currentSecret = scriptProperties.getProperty('REVALIDATE_SECRET_TOKEN') || "YOUR_VERY_SECRET_RANDOM_STRING";
+  var resSecret = ui.prompt("Свойство 3/6: Секретный токен (REVALIDATE_SECRET_TOKEN)", "Введите секретный токен из .env.local (REVALIDATE_SECRET_TOKEN):", ui.ButtonSet.OK_CANCEL);
+  if (resSecret.getSelectedButton() !== ui.Button.OK) return;
+  var secretToken = resSecret.getResponseText().trim() || currentSecret;
+
+  var currentDeployHook = scriptProperties.getProperty('VERCEL_DEPLOY_HOOK_URL') || "";
+  var resDeployHook = ui.prompt("Свойство 4/6: Vercel Deploy Hook (VERCEL_DEPLOY_HOOK_URL)", "Введите Deploy Hook URL из панели Vercel (необязательно):", ui.ButtonSet.OK_CANCEL);
+  if (resDeployHook.getSelectedButton() !== ui.Button.OK) return;
+  var deployHook = resDeployHook.getResponseText().trim() || currentDeployHook;
+
+  var currentTgToken = scriptProperties.getProperty('TELEGRAM_BOT_TOKEN') || "";
+  var resTgToken = ui.prompt("Свойство 5/6: Telegram Bot Token (TELEGRAM_BOT_TOKEN)", "Введите токен Telegram-бота для уведомлений владельца:", ui.ButtonSet.OK_CANCEL);
+  if (resTgToken.getSelectedButton() !== ui.Button.OK) return;
+  var tgToken = resTgToken.getResponseText().trim() || currentTgToken;
+
+  var currentTgChatId = scriptProperties.getProperty('TELEGRAM_CHAT_ID') || "";
+  var resTgChat = ui.prompt("Свойство 6/6: Telegram Chat ID (TELEGRAM_CHAT_ID)", "Введите ваш Chat ID в Telegram:", ui.ButtonSet.OK_CANCEL);
+  if (resTgChat.getSelectedButton() !== ui.Button.OK) return;
+  var tgChatId = resTgChat.getResponseText().trim() || currentTgChatId;
+
+  // Сохранение всех свойств
+  scriptProperties.setProperties({
+    'SITE_URL': siteUrl,
+    'REVALIDATE_API_URL': revalidateUrl,
+    'REVALIDATE_SECRET_TOKEN': secretToken,
+    'VERCEL_DEPLOY_HOOK_URL': deployHook,
+    'TELEGRAM_BOT_TOKEN': tgToken,
+    'TELEGRAM_CHAT_ID': tgChatId
+  }, false);
+
+  ui.alert("✅ Успех!", "Все Свойства скрипта (Script Properties) успешно зафиксированы и доступны для вебхуков, Vercel и Telegram.", ui.ButtonSet.OK);
+}
+
+/**
+ * Просмотр текущих сохраненных Свойств скрипта с маскированием секретов
+ */
+function viewCurrentScriptProperties() {
+  var scriptProperties = PropertiesService.getScriptProperties();
+  var props = scriptProperties.getProperties();
+
+  var mask = function(str) {
+    if (!str) return "[НЕ ЗАДАНО]";
+    if (str.length <= 8) return "******";
+    return str.substring(0, 4) + "..." + str.substring(str.length - 4);
+  };
+
+  var text = "📋 ТЕКУЩИЕ СВОЙСТВА СКРИПТА (SCRIPT PROPERTIES):\n\n" +
+    "1. SITE_URL:\n   " + (props['SITE_URL'] || "[НЕ ЗАДАНО]") + "\n\n" +
+    "2. REVALIDATE_API_URL:\n   " + (props['REVALIDATE_API_URL'] || "[НЕ ЗАДАНО]") + "\n\n" +
+    "3. REVALIDATE_SECRET_TOKEN:\n   " + mask(props['REVALIDATE_SECRET_TOKEN']) + "\n\n" +
+    "4. VERCEL_DEPLOY_HOOK_URL:\n   " + (props['VERCEL_DEPLOY_HOOK_URL'] ? mask(props['VERCEL_DEPLOY_HOOK_URL']) : "[НЕ ЗАДАНО]") + "\n\n" +
+    "5. TELEGRAM_BOT_TOKEN:\n   " + mask(props['TELEGRAM_BOT_TOKEN']) + "\n\n" +
+    "6. TELEGRAM_CHAT_ID:\n   " + (props['TELEGRAM_CHAT_ID'] || "[НЕ ЗАДАНО]");
+
+  SpreadsheetApp.getUi().alert("Свойства скрипта", text, SpreadsheetApp.getUi().ButtonSet.OK);
+}
+
+/**
+ * Установка типовых Свойств скрипта по умолчанию для локального запуска
+ */
+function setupDefaultScriptProperties() {
+  var scriptProperties = PropertiesService.getScriptProperties();
+  scriptProperties.setProperties({
+    'SITE_URL': "http://localhost:3000",
+    'REVALIDATE_API_URL': "http://localhost:3000/api/revalidate",
+    'REVALIDATE_SECRET_TOKEN': "YOUR_VERY_SECRET_RANDOM_STRING",
+    'VERCEL_DEPLOY_HOOK_URL': "",
+    'TELEGRAM_BOT_TOKEN': "",
+    'TELEGRAM_CHAT_ID': ""
+  }, false);
+
+  SpreadsheetApp.getActive().toast("Установлены базовые локальные свойства: SITE_URL=http://localhost:3000", "⚡ Свойства скрипта", 5);
+}
+
