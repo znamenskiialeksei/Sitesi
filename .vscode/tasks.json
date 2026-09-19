@@ -87,6 +87,16 @@
         "reveal": "always",
         "panel": "new"
       }
+    },
+    {
+      "label": "🗂️ 8. Миграция Листов Google Таблиц на Русские Названия",
+      "type": "shell",
+      "command": "npm run migrate-sheets",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
     }
   ]
 }

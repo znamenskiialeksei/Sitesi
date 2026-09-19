@@ -9,6 +9,7 @@ require('dotenv').config({ path: '.env.local' });
 const { google } = require('googleapis');
 const fs = require('fs');
 const path = require('path');
+const { getLiveSheetMap, resolveRange } = require('../utils/sheetsRegistry');
 
 const GOOGLE_SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID;
 const contentFilePath = path.join(__dirname, '../utils/content.json');
@@ -70,6 +71,10 @@ async function syncContent() {
     });
 
     const sheets = google.sheets({ version: 'v4', auth });
+
+    // Динамический резолвер структуры листов по sheetId и алиасам
+    const sheetMap = await getLiveSheetMap(sheets, spreadsheetId);
+
     let existingContent = {};
     try {
       if (fs.existsSync(contentFilePath)) {
@@ -100,20 +105,20 @@ async function syncContent() {
       }
     };
 
-    console.log('Синхронизация контента (HomePage, About, Legal, Templates)...');
+    console.log('Синхронизация контента (Главная, О вилле, Юридический блок, Шаблоны)...');
 
-// 1. Главная страница (Hero и базовые заголовки)
-const homeData = await safeGet('HomePage!A:E');
-(homeData.data.values || []).slice(1).forEach((r) => {
-  if (r[0]) {
-    content.home[r[0]] = { ru: r[1] || '', en: r[2] || '', tr: r[3] || '', media: r[4] || '' };
-  }
-});
+    // 1. Главная страница (Hero и базовые заголовки)
+    const homeData = await safeGet(resolveRange(sheetMap, 'HOME', 'A:E'));
+    (homeData.data.values || []).slice(1).forEach((r) => {
+      if (r[0]) {
+        content.home[r[0]] = { ru: r[1] || '', en: r[2] || '', tr: r[3] || '', media: r[4] || '' };
+      }
+    });
 
-// 2. Описание виллы, юридические документы, шаблоны CRM
-const aboutData = await safeGet('About!A:G');
-const legalData = await safeGet('Legal!A:G');
-const templatesData = await safeGet('Templates!A:G');
+    // 2. Описание виллы, юридические документы, шаблоны CRM
+    const aboutData = await safeGet(resolveRange(sheetMap, 'ABOUT', 'A:G'));
+    const legalData = await safeGet(resolveRange(sheetMap, 'LEGAL', 'A:G'));
+    const templatesData = await safeGet(resolveRange(sheetMap, 'TEMPLATES', 'A:G'));
 
 (aboutData.data.values || []).slice(1).forEach((r) => {
   if (r[0]) {
@@ -143,58 +148,58 @@ const templatesData = await safeGet('Templates!A:G');
   }
 });
 
-// 3. Каталог дополнительных услуг (трансферы, аренда яхт, шеф-повар)
-console.log('Синхронизация услуг и видео-гидов...');
-const productsSheet = await safeGet('ExtraServices!A:Q');
-content.products = (productsSheet.data.values || [])
-  .slice(1)
-  .map((r) => ({
-    id: r[0],
-    name: { ru: r[1] || '', en: r[3] || '', tr: r[5] || '' },
-    desc: { ru: r[2] || '', en: r[4] || '', tr: r[6] || '' },
-    price: { eur: r[7] || '0', rub: r[8] || '0', try: r[9] || '0' },
-    images: (r[10] || '').split(',').map((s) => s.trim()).filter(Boolean),
-    videos: (r[13] || '').split(',').map((s) => s.trim()).filter(Boolean),
-    detailedDesc: { ru: r[14] || '', en: r[15] || '', tr: r[16] || '' },
-    type: {
-      ru: r[12] === 'Пакет' ? 'Пакет услуг' : 'Услуга',
-      en: r[12] === 'Пакет' ? 'Service Package' : 'Service',
-      tr: r[12] === 'Пакет' ? 'Hizmet Paketi' : 'Hizmet'
-    }
-  }))
-  .filter((p) => p.id && p.name.ru);
+    // 3. Каталог дополнительных услуг (трансферы, аренда яхт, шеф-повар)
+    console.log('Синхронизация услуг и видео-гидов...');
+    const productsSheet = await safeGet(resolveRange(sheetMap, 'SERVICES', 'A:Q'));
+    content.products = (productsSheet.data.values || [])
+      .slice(1)
+      .map((r) => ({
+        id: r[0],
+        name: { ru: r[1] || '', en: r[3] || '', tr: r[5] || '' },
+        desc: { ru: r[2] || '', en: r[4] || '', tr: r[6] || '' },
+        price: { eur: r[7] || '0', rub: r[8] || '0', try: r[9] || '0' },
+        images: (r[10] || '').split(',').map((s) => s.trim()).filter(Boolean),
+        videos: (r[13] || '').split(',').map((s) => s.trim()).filter(Boolean),
+        detailedDesc: { ru: r[14] || '', en: r[15] || '', tr: r[16] || '' },
+        type: {
+          ru: r[12] === 'Пакет' ? 'Пакет услуг' : 'Услуга',
+          en: r[12] === 'Пакет' ? 'Service Package' : 'Service',
+          tr: r[12] === 'Пакет' ? 'Hizmet Paketi' : 'Hizmet'
+        }
+      }))
+      .filter((p) => p.id && p.name.ru);
 
-// 4. Авторские видео-путеводители по Дальяну
-const coursesSheet = await safeGet('VideoGuides!A:Q');
-content.courses = (coursesSheet.data.values || [])
-  .slice(1)
-  .map((r) => ({
-    id: r[0],
-    name: { ru: r[1] || '', en: r[3] || '', tr: r[5] || '' },
-    desc: { ru: r[2] || '', en: r[4] || '', tr: r[6] || '' },
-    images: (r[7] || '').split(',').map((s) => s.trim()).filter(Boolean),
-    module: r[8] || 'Основной',
-    privateLink: r[9] || '',
-    price: { eur: r[10] || '0', rub: r[11] || '0', try: r[12] || '0' },
-    videos: (r[13] || '').split(',').map((s) => s.trim()).filter(Boolean),
-    detailedDesc: { ru: r[14] || '', en: r[15] || '', tr: r[16] || '' },
-    level: 'Для гостей'
-  }))
-  .filter((c) => c.id && c.name.ru);
+    // 4. Авторские видео-путеводители по Дальяну
+    const coursesSheet = await safeGet(resolveRange(sheetMap, 'GUIDES', 'A:Q'));
+    content.courses = (coursesSheet.data.values || [])
+      .slice(1)
+      .map((r) => ({
+        id: r[0],
+        name: { ru: r[1] || '', en: r[3] || '', tr: r[5] || '' },
+        desc: { ru: r[2] || '', en: r[4] || '', tr: r[6] || '' },
+        images: (r[7] || '').split(',').map((s) => s.trim()).filter(Boolean),
+        module: r[8] || 'Основной',
+        privateLink: r[9] || '',
+        price: { eur: r[10] || '0', rub: r[11] || '0', try: r[12] || '0' },
+        videos: (r[13] || '').split(',').map((s) => s.trim()).filter(Boolean),
+        detailedDesc: { ru: r[14] || '', en: r[15] || '', tr: r[16] || '' },
+        level: 'Для гостей'
+      }))
+      .filter((c) => c.id && c.name.ru);
 
-// 5. Фотогалерея виллы
-const gallerySheet = await safeGet('Gallery!A:L');
-content.gallery = (gallerySheet.data.values || [])
-  .slice(1)
-  .map((r) => ({
-    id: r[0],
-    group: { ru: r[1] || '', en: r[3] || '', tr: r[5] || '' },
-    groupDesc: { ru: r[2] || '', en: r[4] || '', tr: r[6] || '' },
-    type: r[7] === 'Видео' ? 'video' : 'image',
-    media: (r[8] || '').split(',').map((s) => s.trim()).filter(Boolean),
-    caption: { ru: r[9] || '', en: r[10] || '', tr: r[11] || '' }
-  }))
-  .filter((g) => g.id && g.media.length > 0);
+    // 5. Фотогалерея виллы
+    const gallerySheet = await safeGet(resolveRange(sheetMap, 'GALLERY', 'A:L'));
+    content.gallery = (gallerySheet.data.values || [])
+      .slice(1)
+      .map((r) => ({
+        id: r[0],
+        group: { ru: r[1] || '', en: r[3] || '', tr: r[5] || '' },
+        groupDesc: { ru: r[2] || '', en: r[4] || '', tr: r[6] || '' },
+        type: r[7] === 'Видео' ? 'video' : 'image',
+        media: (r[8] || '').split(',').map((s) => s.trim()).filter(Boolean),
+        caption: { ru: r[9] || '', en: r[10] || '', tr: r[11] || '' }
+      }))
+      .filter((g) => g.id && g.media.length > 0);
 
 // Сохранение обновленного JSON файла только при успешном получении данных
 if (fetchSuccessCount > 0) {

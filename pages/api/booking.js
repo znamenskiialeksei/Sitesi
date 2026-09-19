@@ -8,6 +8,7 @@
 import { google } from 'googleapis';
 import { createClient } from '@vercel/kv';
 import { generateVoucher } from '../../utils/pdf';
+import { getLiveSheetMap, resolveRange, SHEETS_REGISTRY } from '../../utils/sheetsRegistry';
 
 let memoryCache = {};
 
@@ -287,6 +288,9 @@ export default async function handler(req, res) {
     } catch (e) { }
   }
 
+  // Динамический резолвер листов: находит актуальные имена по sheetId и алиасам
+  const sheetMap = await getLiveSheetMap(sheets, spreadsheetId);
+
   const getChatSpreadsheetId = () => chatsSpreadsheetId || spreadsheetId;
 
   // Безопасное инъецирование формул со СТРОГОЙ ТОЧКОЙ С ЗАПЯТОЙ (;) для русской локали Google Таблиц
@@ -296,39 +300,47 @@ export default async function handler(req, res) {
     const formulasDone = await safeCacheGet('formulas_injected_v2');
     if (formulasDone) return;
 
+    const homeSheet = sheetMap.HOME || '🏠 Главная витрина';
+    const aboutSheet = sheetMap.ABOUT || '📖 О вилле и Правила';
+    const legalSheet = sheetMap.LEGAL || '⚖️ Юридические документы';
+    const templatesSheet = sheetMap.TEMPLATES || '💬 Шаблоны сообщений';
+    const servicesSheet = sheetMap.SERVICES || '🛎️ Дополнительные услуги';
+    const guidesSheet = sheetMap.GUIDES || '🗺️ Видео-путеводители';
+    const gallerySheet = sheetMap.GALLERY || '📸 Фото и Видео Галерея';
+
     const formulaRequests = [
-      { sheet: 'HomePage', cell: 'C2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
-      { sheet: 'HomePage', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
-      { sheet: 'About', cell: 'C2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
-      { sheet: 'About', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
-      { sheet: 'About', cell: 'F2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
-      { sheet: 'About', cell: 'G2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
-      { sheet: 'Legal', cell: 'C2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
-      { sheet: 'Legal', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
-      { sheet: 'Legal', cell: 'F2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
-      { sheet: 'Legal', cell: 'G2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
-      { sheet: 'Templates', cell: 'C2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
-      { sheet: 'Templates', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
-      { sheet: 'Templates', cell: 'F2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
-      { sheet: 'Templates', cell: 'G2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
-      { sheet: 'ExtraServices', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
-      { sheet: 'ExtraServices', cell: 'F2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
-      { sheet: 'ExtraServices', cell: 'E2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
-      { sheet: 'ExtraServices', cell: 'G2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
-      { sheet: 'ExtraServices', cell: 'P2', f: '=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
-      { sheet: 'ExtraServices', cell: 'Q2', f: '=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
-      { sheet: 'VideoGuides', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
-      { sheet: 'VideoGuides', cell: 'F2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
-      { sheet: 'VideoGuides', cell: 'E2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
-      { sheet: 'VideoGuides', cell: 'G2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
-      { sheet: 'VideoGuides', cell: 'P2', f: '=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
-      { sheet: 'VideoGuides', cell: 'Q2', f: '=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
-      { sheet: 'Gallery', cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
-      { sheet: 'Gallery', cell: 'F2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
-      { sheet: 'Gallery', cell: 'E2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
-      { sheet: 'Gallery', cell: 'G2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
-      { sheet: 'Gallery', cell: 'K2', f: '=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
-      { sheet: 'Gallery', cell: 'L2', f: '=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' }
+      { sheet: homeSheet, cell: 'C2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: homeSheet, cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: aboutSheet, cell: 'C2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: aboutSheet, cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: aboutSheet, cell: 'F2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: aboutSheet, cell: 'G2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: legalSheet, cell: 'C2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: legalSheet, cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: legalSheet, cell: 'F2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: legalSheet, cell: 'G2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: templatesSheet, cell: 'C2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: templatesSheet, cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: templatesSheet, cell: 'F2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: templatesSheet, cell: 'G2', f: '=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: servicesSheet, cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: servicesSheet, cell: 'F2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: servicesSheet, cell: 'E2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: servicesSheet, cell: 'G2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: servicesSheet, cell: 'P2', f: '=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: servicesSheet, cell: 'Q2', f: '=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: guidesSheet, cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: guidesSheet, cell: 'F2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: guidesSheet, cell: 'E2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: guidesSheet, cell: 'G2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: guidesSheet, cell: 'P2', f: '=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: guidesSheet, cell: 'Q2', f: '=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: gallerySheet, cell: 'D2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: gallerySheet, cell: 'F2', f: '=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: gallerySheet, cell: 'E2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: gallerySheet, cell: 'G2', f: '=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' },
+      { sheet: gallerySheet, cell: 'K2', f: '=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))' },
+      { sheet: gallerySheet, cell: 'L2', f: '=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))' }
     ];
 
     try {
@@ -337,7 +349,7 @@ export default async function handler(req, res) {
         requestBody: {
           valueInputOption: 'USER_ENTERED',
           data: formulaRequests.map((item) => ({
-            range: `${item.sheet}!${item.cell}`,
+            range: `'${item.sheet}'!${item.cell}`,
             values: [[item.f]]
           }))
         }
@@ -364,26 +376,22 @@ export default async function handler(req, res) {
       const existingTitles = ss.data.sheets.map((s) => s.properties.title);
       const sheetsToCreate = [];
 
-      const allConfigs = [
-        { title: GOOGLE_CONFIG.homePageSheetName, headers: GOOGLE_CONFIG.homeHeaders },
-        { title: GOOGLE_CONFIG.masterSheetName, headers: GOOGLE_CONFIG.masterHeaders },
-        { title: GOOGLE_CONFIG.calendarSettingsSheetName, headers: GOOGLE_CONFIG.calendarSettingsHeaders },
-        { title: GOOGLE_CONFIG.sheetName, headers: GOOGLE_CONFIG.headers },
-        { title: GOOGLE_CONFIG.accountSheetName, headers: GOOGLE_CONFIG.accountHeaders },
-        { title: GOOGLE_CONFIG.productsSheetName, headers: GOOGLE_CONFIG.productsHeaders },
-        { title: GOOGLE_CONFIG.coursesSheetName, headers: GOOGLE_CONFIG.coursesHeaders },
-        { title: GOOGLE_CONFIG.studentsSheetName, headers: GOOGLE_CONFIG.studentsHeaders },
-        { title: GOOGLE_CONFIG.ordersSheetName, headers: GOOGLE_CONFIG.ordersHeaders },
-        { title: GOOGLE_CONFIG.gallerySheetName, headers: GOOGLE_CONFIG.galleryHeaders },
-        { title: GOOGLE_CONFIG.aboutSheetName, headers: GOOGLE_CONFIG.aboutHeaders },
-        { title: GOOGLE_CONFIG.legalSheetName, headers: GOOGLE_CONFIG.legalHeaders },
-        { title: GOOGLE_CONFIG.templatesSheetName, headers: GOOGLE_CONFIG.templatesHeaders },
-        { title: GOOGLE_CONFIG.variablesSheetName, headers: GOOGLE_CONFIG.variablesHeaders }
-      ];
+      // Список всех 14 листов из канонического реестра SHEETS_REGISTRY
+      const allConfigs = Object.values(SHEETS_REGISTRY).map((cfg) => ({
+        key: cfg.key,
+        title: sheetMap[cfg.key] || cfg.defaultName,
+        defaultName: cfg.defaultName,
+        aliases: cfg.aliases,
+        headers: cfg.headers
+      }));
 
       for (const cfg of allConfigs) {
-        if (!existingTitles.includes(cfg.title)) {
-          sheetsToCreate.push(cfg);
+        // Проверяем, существует ли лист с текущим именем или любым из его алиасов
+        const exists = existingTitles.some((title) =>
+          cfg.aliases.some((alias) => alias.toLowerCase() === title.trim().toLowerCase())
+        );
+        if (!exists) {
+          sheetsToCreate.push({ title: cfg.defaultName, headers: cfg.headers });
         }
       }
 
@@ -399,9 +407,11 @@ export default async function handler(req, res) {
         const formatRequests = [];
 
         updatedSs.data.sheets.forEach((sheet) => {
-          const title = sheet.properties.title;
+          const title = sheet.properties.title.trim();
           const sheetId = sheet.properties.sheetId;
-          const matchedCfg = allConfigs.find((c) => c.title === title);
+          const matchedCfg = allConfigs.find((c) =>
+            c.aliases.some((alias) => alias.toLowerCase() === title.toLowerCase())
+          );
 
           if (matchedCfg) {
             formatRequests.push({
@@ -450,11 +460,11 @@ export default async function handler(req, res) {
       await injectSafeFormulas();
 
       // Добавление суперадмина по умолчанию
-      const masterDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: `'${GOOGLE_CONFIG.masterSheetName}'!A:A` });
+      const masterDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'MASTER', 'A:A') });
       if ((masterDb.data.values || []).length <= 1) {
         await sheets.spreadsheets.values.append({
           spreadsheetId,
-          range: `'${GOOGLE_CONFIG.masterSheetName}'!A:M`,
+          range: resolveRange(sheetMap, 'MASTER', 'A:M'),
           valueInputOption: 'USER_ENTERED',
           insertDataOption: 'INSERT_ROWS',
           requestBody: { values: [["Aleksei Z", "", "", "", "admin@villaturaman.com", "admin", "admin123", "Главный", "Да", "Да", "Да", "Да", "Да"]] }
@@ -462,7 +472,7 @@ export default async function handler(req, res) {
       }
 
       // Добавление базовых настроек календаря по умолчанию (15000 RUB)
-      const calDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: `'${GOOGLE_CONFIG.calendarSettingsSheetName}'!A:A` });
+      const calDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'CALENDAR', 'A:A') });
       if ((calDb.data.values || []).length <= 1) {
         const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
         const defaultRules = {
@@ -478,7 +488,7 @@ export default async function handler(req, res) {
         };
         await sheets.spreadsheets.values.append({
           spreadsheetId,
-          range: `'${GOOGLE_CONFIG.calendarSettingsSheetName}'!A:G`,
+          range: resolveRange(sheetMap, 'CALENDAR', 'A:G'),
           valueInputOption: 'USER_ENTERED',
           insertDataOption: 'INSERT_ROWS',
           requestBody: { values: [["Глобальные правила", "Все даты", "Настройки", JSON.stringify(defaultRules), "Базовые тарифы по умолчанию", "Admin", timestamp]] }
@@ -486,11 +496,11 @@ export default async function handler(req, res) {
       }
 
       // Добавление словаря переменных по умолчанию
-      const varsDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: `'${GOOGLE_CONFIG.variablesSheetName}'!A:A` });
+      const varsDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'VARIABLES', 'A:A') });
       if ((varsDb.data.values || []).length <= 1) {
         await sheets.spreadsheets.values.update({
           spreadsheetId,
-          range: `'${GOOGLE_CONFIG.variablesSheetName}'!A2:D8`,
+          range: resolveRange(sheetMap, 'VARIABLES', 'A2:D8'),
           valueInputOption: 'USER_ENTERED',
           requestBody: {
             values: [
@@ -507,11 +517,11 @@ export default async function handler(req, res) {
       }
 
       // Базовые тексты главной страницы
-      const homeDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: `'${GOOGLE_CONFIG.homePageSheetName}'!A:A` });
+      const homeDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'HOME', 'A:A') });
       if ((homeDb.data.values || []).length <= 1) {
         await sheets.spreadsheets.values.update({
           spreadsheetId,
-          range: `'${GOOGLE_CONFIG.homePageSheetName}'!A2:E6`,
+          range: resolveRange(sheetMap, 'HOME', 'A2:E6'),
           valueInputOption: 'USER_ENTERED',
           requestBody: {
             values: [
@@ -526,17 +536,17 @@ export default async function handler(req, res) {
       }
 
       // Шаблоны сообщений
-      const templatesDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: `'${GOOGLE_CONFIG.templatesSheetName}'!A:A` });
+      const templatesDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'TEMPLATES', 'A:A') });
       if ((templatesDb.data.values || []).length <= 1) {
         await sheets.spreadsheets.values.update({
           spreadsheetId,
-          range: `'${GOOGLE_CONFIG.templatesSheetName}'!A2:B3`,
+          range: resolveRange(sheetMap, 'TEMPLATES', 'A2:B3'),
           valueInputOption: 'USER_ENTERED',
           requestBody: { values: [["welcome", "Приветствие"], ["confirmation", "Подтверждение"]] }
         });
         await sheets.spreadsheets.values.update({
           spreadsheetId,
-          range: `'${GOOGLE_CONFIG.templatesSheetName}'!E2:E3`,
+          range: resolveRange(sheetMap, 'TEMPLATES', 'E2:E3'),
           valueInputOption: 'USER_ENTERED',
           requestBody: {
             values: [
@@ -563,9 +573,9 @@ export default async function handler(req, res) {
         return res.status(200).json({ success: true, products: [], courses: [], gallery: [] });
       }
 
-      const productsSheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: `${GOOGLE_CONFIG.productsSheetName}!A:Q` });
-      const coursesSheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: `${GOOGLE_CONFIG.coursesSheetName}!A:Q` });
-      const gallerySheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: `${GOOGLE_CONFIG.gallerySheetName}!A:L` });
+      const productsSheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'SERVICES', 'A:Q') });
+      const coursesSheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'GUIDES', 'A:Q') });
+      const gallerySheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'GALLERY', 'A:L') });
 
       const cleanField = (val) => {
         if (!val || typeof val !== 'string') return '';
@@ -655,7 +665,7 @@ export default async function handler(req, res) {
         });
       }
 
-      const db = await sheets.spreadsheets.values.get({ spreadsheetId, range: `'${GOOGLE_CONFIG.calendarSettingsSheetName}'!A:G` });
+      const db = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'CALENDAR', 'A:G') });
       const rows = db.data.values || [];
       let globalRules = null;
       let dateRules = [];
@@ -682,7 +692,7 @@ export default async function handler(req, res) {
       // Загрузка словаря переменных для фронтенда
       let variablesDict = {};
       try {
-        const varsDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: `'${GOOGLE_CONFIG.variablesSheetName}'!A:B` });
+        const varsDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'VARIABLES', 'A:B') });
         (varsDb.data.values || []).slice(1).forEach((row) => {
           if (row[0] && row[1]) variablesDict[row[1]] = row[0];
         });
@@ -711,7 +721,7 @@ export default async function handler(req, res) {
       // Проверка MasterAccount (Владелец)
       if (sheets && spreadsheetId) {
         try {
-          const masterDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: `'${GOOGLE_CONFIG.masterSheetName}'!A:M` });
+          const masterDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'MASTER', 'A:M') });
           const masterUser = (masterDb.data.values || []).find((r) => {
             const email = (r[4] || '').toString().trim().toLowerCase();
             const login = (r[5] || '').toString().trim().toLowerCase();
@@ -735,7 +745,7 @@ export default async function handler(req, res) {
 
         // Проверка обычного гостя
         try {
-          const accDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: `'${GOOGLE_CONFIG.accountSheetName}'!A:G` });
+          const accDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'ACCOUNTS', 'A:G') });
           const userRow = (accDb.data.values || []).find(
             (r) => (r[2] || '').toString().trim().toLowerCase() === safeContact && (r[3] || '').toString().trim() === safePassword
           );
@@ -784,7 +794,7 @@ export default async function handler(req, res) {
         const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
         await sheets.spreadsheets.values.append({
           spreadsheetId,
-          range: `${GOOGLE_CONFIG.accountSheetName}!A:G`,
+          range: resolveRange(sheetMap, 'ACCOUNTS', 'A:G'),
           valueInputOption: 'USER_ENTERED',
           insertDataOption: 'INSERT_ROWS',
           requestBody: { values: [[timestamp, safeName, safeContact, safePassword, "Нет", "Нет", "Нет"]] }
@@ -842,7 +852,7 @@ export default async function handler(req, res) {
       let activeRequests = [];
       if (sheets && spreadsheetId) {
         try {
-          const bookingDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: `'Вилла'!A:K` });
+          const bookingDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'BOOKINGS', 'A:K') });
           activeRequests = (bookingDb.data.values || []).slice(1).map((r, i) => {
             let statusFull = r[10] || '';
             let status = statusFull;
@@ -889,7 +899,7 @@ export default async function handler(req, res) {
           const chatSheets = (chatMetadata.data.sheets || []).filter((s) => s.properties.title.startsWith('Chat_'));
 
           // Получение всех бронирований
-          const bookingDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: `'Вилла'!A:K` });
+          const bookingDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'BOOKINGS', 'A:K') });
           const allReqs = (bookingDb.data.values || []).slice(1).map((r, i) => {
             let statusFull = r[10] || '';
             let status = statusFull;
@@ -942,10 +952,10 @@ export default async function handler(req, res) {
       const statusStr = `ОЖИДАЕТ ОПЛАТЫ | ${expiresAt}`;
 
       if (sheets && spreadsheetId) {
-        // Обновляем статус в листе Вилла
+        // Обновляем статус в листе бронирований
         await sheets.spreadsheets.values.update({
           spreadsheetId,
-          range: `'Вилла'!K${data.rowIndex + 1}`,
+          range: resolveRange(sheetMap, 'BOOKINGS', `K${data.rowIndex + 1}`),
           valueInputOption: 'USER_ENTERED',
           requestBody: { values: [[statusStr]] }
         });
@@ -955,7 +965,7 @@ export default async function handler(req, res) {
         const holdRow = [data.checkIn, data.checkOut, "Блокировка", `HOLD | ${data.contact} | ${expiresAt}`, "Одобрено (Ожидает оплаты)", "Система", timestamp];
         await sheets.spreadsheets.values.append({
           spreadsheetId,
-          range: `'${GOOGLE_CONFIG.calendarSettingsSheetName}'!A:G`,
+          range: resolveRange(sheetMap, 'CALENDAR', 'A:G'),
           valueInputOption: 'USER_ENTERED',
           insertDataOption: 'INSERT_ROWS',
           requestBody: { values: [holdRow] }
@@ -991,7 +1001,7 @@ export default async function handler(req, res) {
       const targetChatId = getChatSpreadsheetId();
       const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
       const statusStr = `СПЕЦПРЕДЛОЖЕНИЕ | ${expiresAt}`;
-      const range = `'Вилла'!D${data.rowIndex + 1}:K${data.rowIndex + 1}`;
+      const range = resolveRange(sheetMap, 'BOOKINGS', `D${data.rowIndex + 1}:K${data.rowIndex + 1}`);
 
       if (sheets && spreadsheetId) {
         await sheets.spreadsheets.values.update({
@@ -1007,7 +1017,7 @@ export default async function handler(req, res) {
         const ruleRow = [data.checkIn, data.checkOut, "Блокировка", `HOLD | ${data.clientContact} | ${expiresAt}`, "Ожидание оплаты (Спецпредложение)", "Система", timestamp];
         await sheets.spreadsheets.values.append({
           spreadsheetId,
-          range: `'${GOOGLE_CONFIG.calendarSettingsSheetName}'!A:G`,
+          range: resolveRange(sheetMap, 'CALENDAR', 'A:G'),
           valueInputOption: 'USER_ENTERED',
           insertDataOption: 'INSERT_ROWS',
           requestBody: { values: [ruleRow] }
@@ -1040,7 +1050,7 @@ export default async function handler(req, res) {
     try {
       const targetChatId = getChatSpreadsheetId();
       if (sheets && spreadsheetId) {
-        const range = `'Вилла'!K${data.rowIndex + 1}`;
+        const range = resolveRange(sheetMap, 'BOOKINGS', `K${data.rowIndex + 1}`);
         await sheets.spreadsheets.values.update({
           spreadsheetId,
           range,
@@ -1052,7 +1062,7 @@ export default async function handler(req, res) {
         const ruleRow = [data.checkIn, data.checkOut, "Сброс блокировки", "СБРОС", "Отозвано владельцем", "Система", timestamp];
         await sheets.spreadsheets.values.append({
           spreadsheetId,
-          range: `'${GOOGLE_CONFIG.calendarSettingsSheetName}'!A:G`,
+          range: resolveRange(sheetMap, 'CALENDAR', 'A:G'),
           valueInputOption: 'USER_ENTERED',
           insertDataOption: 'INSERT_ROWS',
           requestBody: { values: [ruleRow] }
@@ -1085,7 +1095,7 @@ export default async function handler(req, res) {
     try {
       const targetChatId = getChatSpreadsheetId();
       if (sheets && spreadsheetId) {
-        const range = `'Вилла'!K${data.rowIndex + 1}`;
+        const range = resolveRange(sheetMap, 'BOOKINGS', `K${data.rowIndex + 1}`);
         await sheets.spreadsheets.values.update({
           spreadsheetId,
           range,
@@ -1121,7 +1131,7 @@ export default async function handler(req, res) {
     try {
       if (!sheets || !spreadsheetId) return res.status(200).json({ success: true, lms: [] });
 
-      const coursesSheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: `'${GOOGLE_CONFIG.coursesSheetName}'!A:Q` });
+      const coursesSheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'GUIDES', 'A:Q') });
       const lms = (coursesSheet.data.values || []).slice(1).map((r) => ({
         id: r[0],
         name: { ru: r[1], en: r[3], tr: r[5] },
@@ -1143,7 +1153,7 @@ export default async function handler(req, res) {
         const rows = data.rules.map((r) => [r.start, r.end, r.type, r.value || '', r.note || '', data.sender || 'Admin', timestamp]);
         await sheets.spreadsheets.values.append({
           spreadsheetId,
-          range: `'${GOOGLE_CONFIG.calendarSettingsSheetName}'!A:G`,
+          range: resolveRange(sheetMap, 'CALENDAR', 'A:G'),
           valueInputOption: 'USER_ENTERED',
           insertDataOption: 'INSERT_ROWS',
           requestBody: { values: rows }
@@ -1164,7 +1174,7 @@ export default async function handler(req, res) {
         const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
         await sheets.spreadsheets.values.append({
           spreadsheetId,
-          range: `'${GOOGLE_CONFIG.calendarSettingsSheetName}'!A:G`,
+          range: resolveRange(sheetMap, 'CALENDAR', 'A:G'),
           valueInputOption: 'USER_ENTERED',
           insertDataOption: 'INSERT_ROWS',
           requestBody: { values: [["Глобальные правила", "Все даты", "Настройки", JSON.stringify(data.rules), "Изменение тарифов", data.sender || 'Admin', timestamp]] }
@@ -1230,7 +1240,7 @@ export default async function handler(req, res) {
         try {
           const existingData = await sheets.spreadsheets.values.get({
             spreadsheetId,
-            range: `'Аккаунты'!C:C`
+            range: resolveRange(sheetMap, 'ACCOUNTS', 'C:C')
           });
           const logins = existingData.data.values
             ? existingData.data.values.flat().map(v => (v || '').toString().trim().toLowerCase())
@@ -1238,7 +1248,7 @@ export default async function handler(req, res) {
           if (!logins.includes(safeContact)) {
             await sheets.spreadsheets.values.append({
               spreadsheetId,
-              range: `'Аккаунты'!A:G`,
+              range: resolveRange(sheetMap, 'ACCOUNTS', 'A:G'),
               valueInputOption: 'USER_ENTERED',
               insertDataOption: 'INSERT_ROWS',
               requestBody: {
@@ -1253,10 +1263,10 @@ export default async function handler(req, res) {
       }
 
       if (sheets && spreadsheetId) {
-        // Запись заявки в лист 'Вилла' (11 колонок A:K)
+        // Запись заявки в лист бронирований (11 колонок A:K)
         await sheets.spreadsheets.values.append({
           spreadsheetId,
-          range: `'Вилла'!A:K`,
+          range: resolveRange(sheetMap, 'BOOKINGS', 'A:K'),
           valueInputOption: 'USER_ENTERED',
           insertDataOption: 'INSERT_ROWS',
           requestBody: {
@@ -1323,7 +1333,7 @@ export default async function handler(req, res) {
       if (sheets && spreadsheetId) {
         await sheets.spreadsheets.values.append({
           spreadsheetId,
-          range: `'Вилла'!A:K`,
+          range: resolveRange(sheetMap, 'BOOKINGS', 'A:K'),
           valueInputOption: 'USER_ENTERED',
           insertDataOption: 'INSERT_ROWS',
           requestBody: {

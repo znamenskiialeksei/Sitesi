@@ -7,25 +7,26 @@
 
 require('dotenv').config({ path: '.env.local' });
 const { google } = require('googleapis');
+const { SHEETS_REGISTRY, getLiveSheetMap, resolveRange } = require('../utils/sheetsRegistry');
 
 // Конфигурация структуры базы данных Google Таблиц
 const GOOGLE_CONFIG = {
   parentFolderId: '11xBSWA02NypliPFbziRSMfC9aAPclYF_',
   spreadsheetName: 'VillaTuramanWebSitePlatform_DB',
-  sheetName: 'Вилла',
-  homePageSheetName: 'HomePage',
-  accountSheetName: 'Accounts',
-  masterSheetName: 'MasterAccount',
-  calendarSettingsSheetName: 'CalendarSettings',
-  productsSheetName: 'ExtraServices',
-  coursesSheetName: 'VideoGuides',
-  studentsSheetName: 'GuestsAccess',
-  ordersSheetName: 'ServiceOrders',
-  gallerySheetName: 'Gallery',
-  aboutSheetName: 'About',
-  legalSheetName: 'Legal',
-  templatesSheetName: 'Templates',
-  variablesSheetName: 'Variables',
+  sheetName: '📋 Заявки и Бронирования',
+  homePageSheetName: '🏠 Главная витрина',
+  accountSheetName: '👤 Гостевые аккаунты',
+  masterSheetName: '🔑 Управление доступом',
+  calendarSettingsSheetName: '📅 Календарь и Тарифы',
+  productsSheetName: '🛎️ Дополнительные услуги',
+  coursesSheetName: '🗺️ Видео-путеводители',
+  studentsSheetName: '🎟️ Доступы к путеводителям',
+  ordersSheetName: '💳 Заказы услуг и гидов',
+  gallerySheetName: '📸 Фото и Видео Галерея',
+  aboutSheetName: '📖 О вилле и Правила',
+  legalSheetName: '⚖️ Юридические документы',
+  templatesSheetName: '💬 Шаблоны сообщений',
+  variablesSheetName: '🧩 Словарь переменных',
 
   homeHeaders: ['Ключ (ID)', 'RU', 'EN', 'TR', 'Медиа/Картинка'],
   headers: [
@@ -184,27 +185,23 @@ const initializeSpreadsheet = async () => {
 
     // Считываем список существующих листов
     const ss = await sheets.spreadsheets.get({ spreadsheetId });
-    const existingTitles = ss.data.sheets.map((s) => s.properties.title);
+    const existingTitles = ss.data.sheets.map((s) => s.properties.title.trim());
 
-    const allSheetConfigs = [
-      { title: GOOGLE_CONFIG.homePageSheetName, headers: GOOGLE_CONFIG.homeHeaders },
-      { title: GOOGLE_CONFIG.masterSheetName, headers: GOOGLE_CONFIG.masterHeaders },
-      { title: GOOGLE_CONFIG.calendarSettingsSheetName, headers: GOOGLE_CONFIG.calendarSettingsHeaders },
-      { title: GOOGLE_CONFIG.sheetName, headers: GOOGLE_CONFIG.headers },
-      { title: GOOGLE_CONFIG.accountSheetName, headers: GOOGLE_CONFIG.accountHeaders },
-      { title: GOOGLE_CONFIG.productsSheetName, headers: GOOGLE_CONFIG.productsHeaders },
-      { title: GOOGLE_CONFIG.coursesSheetName, headers: GOOGLE_CONFIG.coursesHeaders },
-      { title: GOOGLE_CONFIG.studentsSheetName, headers: GOOGLE_CONFIG.studentsHeaders },
-      { title: GOOGLE_CONFIG.ordersSheetName, headers: GOOGLE_CONFIG.ordersHeaders },
-      { title: GOOGLE_CONFIG.gallerySheetName, headers: GOOGLE_CONFIG.galleryHeaders },
-      { title: GOOGLE_CONFIG.aboutSheetName, headers: GOOGLE_CONFIG.aboutHeaders },
-      { title: GOOGLE_CONFIG.legalSheetName, headers: GOOGLE_CONFIG.legalHeaders },
-      { title: GOOGLE_CONFIG.templatesSheetName, headers: GOOGLE_CONFIG.templatesHeaders },
-      { title: GOOGLE_CONFIG.variablesSheetName, headers: GOOGLE_CONFIG.variablesHeaders }
-    ];
+    // 14 листов из реестра SHEETS_REGISTRY с поддержкой алиасов
+    const allSheetConfigs = Object.values(SHEETS_REGISTRY).map((cfg) => ({
+      key: cfg.key,
+      title: cfg.defaultName,
+      aliases: cfg.aliases,
+      headers: cfg.headers
+    }));
 
-    // 1. Создание недостающих листов
-    const sheetsToCreate = allSheetConfigs.filter((config) => !existingTitles.includes(config.title));
+    // 1. Создание недостающих листов (проверка по названию и всем алиасам)
+    const sheetsToCreate = allSheetConfigs.filter((config) => {
+      return !existingTitles.some((title) =>
+        config.aliases.some((alias) => alias.toLowerCase() === title.toLowerCase())
+      );
+    });
+
     if (sheetsToCreate.length > 0) {
       const addRequests = sheetsToCreate.map((sheetDef) => ({
         addSheet: { properties: { title: sheetDef.title } }
@@ -222,12 +219,18 @@ const initializeSpreadsheet = async () => {
     const safeFormulasToInject = [];
 
     for (const config of allSheetConfigs) {
-      const sheet = updatedSs.data.sheets.find((s) => s.properties.title === config.title);
+      // Поиск листа по точному совпадению или любому алиасу
+      const sheet = updatedSs.data.sheets.find((s) => {
+        const title = s.properties.title.trim();
+        return config.aliases.some((alias) => alias.toLowerCase() === title.toLowerCase());
+      });
+
       if (sheet) {
+        const actualTitle = sheet.properties.title;
         const sheetId = sheet.properties.sheetId;
         const db = await sheets.spreadsheets.values.get({
           spreadsheetId,
-          range: `'${config.title}'!A:A`
+          range: `'${actualTitle}'!A:A`
         });
 
         if (!db.data.values || db.data.values.length === 0) {
@@ -269,20 +272,20 @@ const initializeSpreadsheet = async () => {
 
           // ВАЖНО: Канонический синтаксис формул Google Sheets со СТРОГОЙ ТОЧКОЙ С ЗАПЯТОЙ (;)
           // В русскоязычной локали Google Таблиц разделителем аргументов ВСЕГДА является точка с запятой (;).
-          if (config.title === GOOGLE_CONFIG.productsSheetName) {
+          if (config.key === 'SERVICES') {
             // Перевод названий (B -> D, F)
-            safeFormulasToInject.push({ range: `'${config.title}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
             // Перевод кратких описаний (C -> E, G)
-            safeFormulasToInject.push({ range: `'${config.title}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
             // Перевод подробных описаний (O -> P, Q)
-            safeFormulasToInject.push({ range: `'${config.title}'!P2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!Q2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!P2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
 
             // Посев начальных услуг
             dataAppendRequests.push({
-              range: `${config.title}!A2:O7`,
+              range: `'${actualTitle}'!A2:O7`,
               values: [
                 ['prod-1', 'Индивидуальный VIP-трансфер из аэропорта Даламан (DLM)', 'Mercedes Vito с кондиционером и напитками', '', '', '', '', '50', '5000', '1800', 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1200', 'Да', 'Услуга', '', 'Встреча в зоне прилета аэропорта Даламан (25 минут до виллы). В салоне Wi-Fi.'],
                 ['prod-2', 'Приватный круиз на яхте по реке Дальян и пляжу Изтузу', 'Традиционная деревянная лодка: Ликийские гробницы и черепахи', '', '', '', '', '250', '25000', '9000', 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200', 'Да', 'Пакет', '', 'Эксклюзивный маршрут на весь день со свежеприготовленным обедом от капитана.'],
@@ -294,17 +297,17 @@ const initializeSpreadsheet = async () => {
             });
           }
 
-          if (config.title === GOOGLE_CONFIG.coursesSheetName) {
-            safeFormulasToInject.push({ range: `'${config.title}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!P2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!Q2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          if (config.key === 'GUIDES') {
+            safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!P2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
 
             // Посев начальных путеводителей
             dataAppendRequests.push({
-              range: `${config.title}!A2:O5`,
+              range: `'${actualTitle}'!A2:O5`,
               values: [
                 ['guide-1', 'Секретные маршруты реки Дальян и черепаший пляж Изтузу', 'Эксклюзивный 40-минутный 4K видео-гид от Алексея Знаменского', '', '', '', '', 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200', 'Локации', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '20', '2000', '700', '', 'Где встретить гигантских черепах Caretta Caretta и как арендовать лодку со скидкой.'],
                 ['guide-2', 'Ликийские скальные гробницы и древний город Каунос', 'Историческое погружение в тайны Ликийского царства и акрополя', '', '', '', '', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200', 'История', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '25', '2500', '900', '', 'Маршрут подъема к Кауносу, расшифровка надписей и лучшие видовые точки на закате.'],
@@ -314,17 +317,17 @@ const initializeSpreadsheet = async () => {
             });
           }
 
-          if (config.title === GOOGLE_CONFIG.gallerySheetName) {
-            safeFormulasToInject.push({ range: `'${config.title}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!K2`, values: [['=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!L2`, values: [['=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          if (config.key === 'GALLERY') {
+            safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!K2`, values: [['=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!L2`, values: [['=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
 
             // Посев начальной фото и видео галереи
             dataAppendRequests.push({
-              range: `${config.title}!A2:J7`,
+              range: `'${actualTitle}'!A2:J7`,
               values: [
                 ['gal-1', 'Бассейн и лаунж-терраса', 'Кристально чистый бассейн глубиной 1.5м с шезлонгами', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1572120360610-d971b9d7767c?w=1600,https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=1600', 'Приватный бассейн виллы с удобными шезлонгами'],
                 ['gal-2', 'Бассейн и лаунж-терраса', 'Кристально чистый бассейн глубиной 1.5м с шезлонгами', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=1600', 'Затененная пергола для послеобеденного отдыха'],
@@ -336,12 +339,12 @@ const initializeSpreadsheet = async () => {
             });
           }
 
-          if (config.title === GOOGLE_CONFIG.homePageSheetName) {
-            safeFormulasToInject.push({ range: `'${config.title}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          if (config.key === 'HOME') {
+            safeFormulasToInject.push({ range: `'${actualTitle}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
 
             dataAppendRequests.push({
-              range: `${config.title}!A2:E17`,
+              range: `'${actualTitle}'!A2:E17`,
               values: [
                 ['heroTitle', 'Аренда Villa Turaman', '', '', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600'],
                 ['heroSubtitle', 'Ваш идеальный отдых в Дальяне. Прямое бронирование виллы, премиальный сервис и авторские видео-путеводители от Алексея Знаменского.', '', '', ''],
@@ -363,15 +366,15 @@ const initializeSpreadsheet = async () => {
             });
           }
 
-          if (config.title === GOOGLE_CONFIG.aboutSheetName || config.title === GOOGLE_CONFIG.legalSheetName || config.title === GOOGLE_CONFIG.templatesSheetName) {
-            safeFormulasToInject.push({ range: `'${config.title}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!F2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-            safeFormulasToInject.push({ range: `'${config.title}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          if (config.key === 'ABOUT' || config.key === 'LEGAL' || config.key === 'TEMPLATES') {
+            safeFormulasToInject.push({ range: `'${actualTitle}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
 
-            if (config.title === GOOGLE_CONFIG.legalSheetName) {
+            if (config.key === 'LEGAL') {
               dataAppendRequests.push({
-                range: `${config.title}!A2:E11`,
+                range: `'${actualTitle}'!A2:E11`,
                 values: [
                   ['company_name', 'Организация', '', '', 'ALEKSEI ZNAMENSKII - Villa Turaman'],
                   ['tax_info', 'Налоговый номер', '', '', 'Ortaca Vergi Dairesi, VKN: 9991120181'],
@@ -389,9 +392,9 @@ const initializeSpreadsheet = async () => {
           }
 
           // Добавление учетной записи суперадмина по умолчанию
-          if (config.title === GOOGLE_CONFIG.masterSheetName) {
+          if (config.key === 'MASTER') {
             dataAppendRequests.push({
-              range: `${config.title}!A2:M2`,
+              range: `'${actualTitle}'!A2:M2`,
               values: [
                 ['Aleksei Z', '', '', '', 'admin@villaturaman.com', 'admin', 'admin123', 'Главный', 'Да', 'Да', 'Да', 'Да', 'Да']
               ]
@@ -399,9 +402,9 @@ const initializeSpreadsheet = async () => {
           }
 
           // Добавление стандартного словаря переменных и плейсхолдеров
-          if (config.title === GOOGLE_CONFIG.variablesSheetName) {
+          if (config.key === 'VARIABLES') {
             dataAppendRequests.push({
-              range: `${config.title}!A2:D8`,
+              range: `'${actualTitle}'!A2:D8`,
               values: [
                 ['[FIRST_NAME]', 'name', 'Имя гостя', 'Иван'],
                 ['[CHECKIN_DATE]', 'checkIn', 'Дата заезда', '01.05.2027'],
@@ -415,9 +418,9 @@ const initializeSpreadsheet = async () => {
           }
 
           // Добавление шаблонов сообщений по умолчанию
-          if (config.title === GOOGLE_CONFIG.templatesSheetName) {
+          if (config.key === 'TEMPLATES') {
             dataAppendRequests.push({
-              range: `${config.title}!A2:E3`,
+              range: `'${actualTitle}'!A2:E3`,
               values: [
                 ['welcome', 'Приветствие', '', '', 'Здравствуйте, [FIRST_NAME]! Добро пожаловать. Я владелец Виллы Тураман.'],
                 ['confirmation', 'Подтверждение', '', '', 'Ваша заявка на бронирование [CHECKIN_DATE] — [CHECKOUT_DATE] принята.']

@@ -3,11 +3,13 @@
 // Файл: pages/api/content.js
 // Назначение: Чтение в реальном времени всех текстов, авто-переводов, фото, видео,
 // услуг, видеогидов и галереи напрямую из Google Таблицы с кэшированием и fallback.
+// ДИНАМИЧЕСКАЯ ПРИВЯЗКА: Работает через реестр sheetsRegistry по постоянным sheetId и алиасам.
 // ==============================================================================
 
 import { google } from 'googleapis';
 import fs from 'fs';
 import path from 'path';
+import { getLiveSheetMap, resolveRange } from '../../utils/sheetsRegistry';
 
 // Кэш в памяти сервера для снижения нагрузки на Google Sheets API
 let memoryCache = null;
@@ -88,8 +90,12 @@ export default async function handler(req, res) {
 
     const sheets = google.sheets({ version: 'v4', auth });
 
+    // Динамический резолвер листов: находит актуальные имена по ID/алиасам
+    const sheetMap = await getLiveSheetMap(sheets, spreadsheetId);
+
     // Безопасный запрос диапазона с перехватом ошибок
-    const safeGet = async (range) => {
+    const safeGet = async (key, rangeSuffix) => {
+      const range = resolveRange(sheetMap, key, rangeSuffix);
       try {
         const response = await sheets.spreadsheets.values.get({ spreadsheetId, range });
         return response.data.values || [];
@@ -99,7 +105,7 @@ export default async function handler(req, res) {
       }
     };
 
-    // Параллельное скачивание всех листов базы данных
+    // Параллельное скачивание всех листов базы данных через динамический маппинг
     const [
       homeRows,
       aboutRows,
@@ -109,13 +115,13 @@ export default async function handler(req, res) {
       coursesRows,
       galleryRows
     ] = await Promise.all([
-      safeGet('HomePage!A:E'),
-      safeGet('About!A:G'),
-      safeGet('Legal!A:G'),
-      safeGet('Templates!A:G'),
-      safeGet('ExtraServices!A:Q'),
-      safeGet('VideoGuides!A:Q'),
-      safeGet('Gallery!A:L')
+      safeGet('HOME', 'A:E'),
+      safeGet('ABOUT', 'A:G'),
+      safeGet('LEGAL', 'A:G'),
+      safeGet('TEMPLATES', 'A:G'),
+      safeGet('SERVICES', 'A:Q'),
+      safeGet('GUIDES', 'A:Q'),
+      safeGet('GALLERY', 'A:L')
     ]);
 
     const content = {
@@ -128,7 +134,7 @@ export default async function handler(req, res) {
       gallery: []
     };
 
-    // 1. Главная страница (HomePage)
+    // 1. Главная страница (HOME)
     homeRows.slice(1).forEach((r) => {
       if (r[0]) {
         content.home[r[0]] = {
@@ -140,7 +146,7 @@ export default async function handler(req, res) {
       }
     });
 
-    // 2. Описание виллы (About)
+    // 2. Описание виллы (ABOUT)
     aboutRows.slice(1).forEach((r) => {
       if (r[0]) {
         content.about[r[0]] = {
@@ -150,7 +156,7 @@ export default async function handler(req, res) {
       }
     });
 
-    // 3. Юридические данные и реквизиты (Legal)
+    // 3. Юридические данные и реквизиты (LEGAL)
     legalRows.slice(1).forEach((r) => {
       if (r[0]) {
         content.legal[r[0]] = {
@@ -160,7 +166,7 @@ export default async function handler(req, res) {
       }
     });
 
-    // 4. Шаблоны ответов (Templates)
+    // 4. Шаблоны ответов (TEMPLATES)
     templatesRows.slice(1).forEach((r) => {
       if (r[0]) {
         if (!content.templates[r[0]]) content.templates[r[0]] = [];
@@ -171,7 +177,7 @@ export default async function handler(req, res) {
       }
     });
 
-    // 5. Каталог услуг (ExtraServices)
+    // 5. Каталог услуг (SERVICES)
     content.products = productsRows
       .slice(1)
       .map((r) => ({
@@ -190,7 +196,7 @@ export default async function handler(req, res) {
       }))
       .filter((p) => p.id && (p.name.ru || p.name.en));
 
-    // 6. Видео-путеводители (VideoGuides)
+    // 6. Видео-путеводители (GUIDES)
     content.courses = coursesRows
       .slice(1)
       .map((r) => ({
@@ -207,7 +213,7 @@ export default async function handler(req, res) {
       }))
       .filter((c) => c.id && (c.name.ru || c.name.en));
 
-    // 7. Фото и видео галерея (Gallery)
+    // 7. Фото и видео галерея (GALLERY)
     content.gallery = galleryRows
       .slice(1)
       .map((r) => ({
@@ -235,6 +241,7 @@ export default async function handler(req, res) {
       success: true,
       source: 'google_sheets_live',
       cached: false,
+      sheetMap,
       ...content
     });
   } catch (err) {
@@ -249,4 +256,3 @@ export default async function handler(req, res) {
     });
   }
 }
-

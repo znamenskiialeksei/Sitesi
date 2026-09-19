@@ -3,9 +3,11 @@
 // Файл: pages/api/export-calendar.js
 // Назначение: Генерация динамического .ics файла для синхронизации броней и блокировок
 // виллы с внешними OTA-платформами (Airbnb, Booking.com, Vrbo, Avito и др.).
+// ДИНАМИЧЕСКАЯ ПРИВЯЗКА: Листы календаря и бронирований находятся через sheetsRegistry по ID и алиасам.
 // ==============================================================================
 
 import { google } from 'googleapis';
+import { getLiveSheetMap, resolveRange } from '../../utils/sheetsRegistry';
 
 export default async function handler(req, res) {
   try {
@@ -43,22 +45,21 @@ export default async function handler(req, res) {
     const sheets = google.sheets({ version: 'v4', auth });
     const spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID;
 
+    // Динамический резолвер актуальных названий листов
+    const sheetMap = await getLiveSheetMap(sheets, spreadsheetId);
+    const calRange = resolveRange(sheetMap, 'CALENDAR', 'A:G');
+    const bookRange = resolveRange(sheetMap, 'BOOKINGS', 'A:K');
+
     // Считываем правила блокировок и подтвержденные бронирования
     const [settingsRes, bookingsRes] = await Promise.allSettled([
-      sheets.spreadsheets.values.get({
-        spreadsheetId,
-        range: 'CalendarSettings!A:G'
-      }),
-      sheets.spreadsheets.values.get({
-        spreadsheetId,
-        range: `'Вилла'!A:K`
-      })
+      sheets.spreadsheets.values.get({ spreadsheetId, range: calRange }),
+      sheets.spreadsheets.values.get({ spreadsheetId, range: bookRange })
     ]);
 
     // Инициализация заголовка iCal (RFC 5545)
     let icsContent = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Villa Turaman//Airbnb Platform v2.0//RU\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\nX-WR-CALNAME:Villa Turaman Bookings & Blocks\r\nX-WR-TIMEZONE:UTC\r\n';
 
-    // 1. Экспорт ручных блокировок из листа CalendarSettings
+    // 1. Экспорт ручных блокировок из листа Календаря
     if (settingsRes.status === 'fulfilled' && settingsRes.value?.data?.values) {
       const rows = settingsRes.value.data.values.slice(1);
       rows.forEach((row, i) => {
@@ -83,7 +84,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // 2. Экспорт подтвержденных и оплаченных броней из листа Вилла
+    // 2. Экспорт подтвержденных и оплаченных броней из листа Бронирований
     if (bookingsRes.status === 'fulfilled' && bookingsRes.value?.data?.values) {
       const bRows = bookingsRes.value.data.values.slice(1);
       bRows.forEach((row, i) => {
@@ -123,4 +124,3 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'iCal Export Failed', details: error.message });
   }
 }
-
