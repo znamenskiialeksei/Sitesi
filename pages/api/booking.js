@@ -131,6 +131,191 @@ const replacePlaceholders = (templateText, dataObj) => {
   return result;
 };
 
+// Интеллектуальное создание и смарт-стилизация листа диалога Google Sheets
+const ensureStyledChatSheet = async (sheets, targetChatId, sheetTitle) => {
+  if (!sheets || !targetChatId || !sheetTitle) return;
+  try {
+    const meta = await sheets.spreadsheets.get({ spreadsheetId: targetChatId });
+    const existingSheet = (meta.data.sheets || []).find((s) => s.properties.title === sheetTitle);
+
+    if (!existingSheet) {
+      // 1. Создаем новый лист с закреплением строки 1
+      const addRes = await sheets.spreadsheets.batchUpdate({
+        spreadsheetId: targetChatId,
+        requestBody: {
+          requests: [
+            {
+              addSheet: {
+                properties: {
+                  title: sheetTitle,
+                  gridProperties: { frozenRowCount: 1 }
+                }
+              }
+            }
+          ]
+        }
+      });
+
+      const newSheetId = addRes.data.replies && addRes.data.replies[0]?.addSheet?.properties?.sheetId;
+
+      if (newSheetId !== undefined) {
+        // 2. Оформление темной шапки, автопереноса ячеек и автоширины колонок
+        await sheets.spreadsheets.batchUpdate({
+          spreadsheetId: targetChatId,
+          requestBody: {
+            requests: [
+              {
+                updateCells: {
+                  start: { sheetId: newSheetId, rowIndex: 0, columnIndex: 0 },
+                  rows: [
+                    {
+                      values: GOOGLE_CONFIG.chatHeaders.map((h) => ({
+                        userEnteredValue: { stringValue: h },
+                        userEnteredFormat: {
+                          backgroundColor: { red: 0.12, green: 0.16, blue: 0.23 },
+                          textFormat: { bold: true, fontSize: 10, foregroundColor: { red: 1, green: 1, blue: 1 } },
+                          horizontalAlignment: 'CENTER',
+                          verticalAlignment: 'MIDDLE',
+                          wrapStrategy: 'WRAP'
+                        }
+                      }))
+                    }
+                  ],
+                  fields: 'userEnteredValue,userEnteredFormat'
+                }
+              },
+              {
+                repeatCell: {
+                  range: {
+                    sheetId: newSheetId,
+                    startRowIndex: 1,
+                    endRowIndex: 1000,
+                    startColumnIndex: 0,
+                    endColumnIndex: GOOGLE_CONFIG.chatHeaders.length
+                  },
+                  cell: {
+                    userEnteredFormat: {
+                      wrapStrategy: 'WRAP',
+                      verticalAlignment: 'MIDDLE'
+                    }
+                  },
+                  fields: 'userEnteredFormat(wrapStrategy,verticalAlignment)'
+                }
+              },
+              {
+                autoResizeDimensions: {
+                  dimensions: {
+                    sheetId: newSheetId,
+                    dimension: 'COLUMNS',
+                    startIndex: 0,
+                    endIndex: GOOGLE_CONFIG.chatHeaders.length
+                  }
+                }
+              }
+            ]
+          }
+        });
+      }
+    } else {
+      // Лист уже существует: проверяем наличие строки заголовков
+      const sheetId = existingSheet.properties.sheetId;
+      let firstRow = [];
+      try {
+        const checkRows = await sheets.spreadsheets.values.get({
+          spreadsheetId: targetChatId,
+          range: `'${sheetTitle}'!A1:G1`
+        });
+        firstRow = (checkRows.data.values && checkRows.data.values[0]) || [];
+      } catch (readErr) {
+        firstRow = [];
+      }
+
+      // Если в ячейке A1 нет канонического заголовка "Дата и Время", лечим структуру
+      if (!firstRow || firstRow[0] !== 'Дата и Время') {
+        await sheets.spreadsheets.batchUpdate({
+          spreadsheetId: targetChatId,
+          requestBody: {
+            requests: [
+              // Вставляем пустую строку на позицию 0, сдвигая существующие сообщения вниз
+              {
+                insertDimension: {
+                  range: {
+                    sheetId,
+                    dimension: 'ROWS',
+                    startIndex: 0,
+                    endIndex: 1
+                  },
+                  inheritFromBefore: false
+                }
+              },
+              // Закрепляем первую строку
+              {
+                updateSheetProperties: {
+                  properties: { sheetId, gridProperties: { frozenRowCount: 1 } },
+                  fields: 'gridProperties.frozenRowCount'
+                }
+              },
+              // Оформляем шапку
+              {
+                updateCells: {
+                  start: { sheetId, rowIndex: 0, columnIndex: 0 },
+                  rows: [
+                    {
+                      values: GOOGLE_CONFIG.chatHeaders.map((h) => ({
+                        userEnteredValue: { stringValue: h },
+                        userEnteredFormat: {
+                          backgroundColor: { red: 0.12, green: 0.16, blue: 0.23 },
+                          textFormat: { bold: true, fontSize: 10, foregroundColor: { red: 1, green: 1, blue: 1 } },
+                          horizontalAlignment: 'CENTER',
+                          verticalAlignment: 'MIDDLE',
+                          wrapStrategy: 'WRAP'
+                        }
+                      }))
+                    }
+                  ],
+                  fields: 'userEnteredValue,userEnteredFormat'
+                }
+              },
+              // Настраиваем перенос строк ячеек
+              {
+                repeatCell: {
+                  range: {
+                    sheetId,
+                    startRowIndex: 1,
+                    endRowIndex: 1000,
+                    startColumnIndex: 0,
+                    endColumnIndex: GOOGLE_CONFIG.chatHeaders.length
+                  },
+                  cell: {
+                    userEnteredFormat: {
+                      wrapStrategy: 'WRAP',
+                      verticalAlignment: 'MIDDLE'
+                    }
+                  },
+                  fields: 'userEnteredFormat(wrapStrategy,verticalAlignment)'
+                }
+              },
+              // Выравниваем ширину столбцов
+              {
+                autoResizeDimensions: {
+                  dimensions: {
+                    sheetId,
+                    dimension: 'COLUMNS',
+                    startIndex: 0,
+                    endIndex: GOOGLE_CONFIG.chatHeaders.length
+                  }
+                }
+              }
+            ]
+          }
+        });
+      }
+    }
+  } catch (err) {
+    console.warn(`[ensureStyledChatSheet Warning for ${sheetTitle}]:`, err.message);
+  }
+};
+
 export default async function handler(req, res) {
   if (req.method !== 'POST' && req.method !== 'GET') {
     return res.status(405).json({ message: 'Method Not Allowed' });
@@ -913,41 +1098,8 @@ export default async function handler(req, res) {
       const chatSheetName = getChatSheetName(data.sender, data.contact);
       const safeContact = (data.contact || '').toString().trim().toLowerCase();
 
-      // Гарантированное создание индивидуального листа диалога при его отсутствии
-      const ensureChatSheetExists = async (sheetTitle) => {
-        if (!sheets || !targetChatId) return;
-        try {
-          const meta = await sheets.spreadsheets.get({ spreadsheetId: targetChatId });
-          const exists = (meta.data.sheets || []).some((s) => s.properties.title === sheetTitle);
-          if (!exists) {
-            await sheets.spreadsheets.batchUpdate({
-              spreadsheetId: targetChatId,
-              requestBody: {
-                requests: [
-                  {
-                    addSheet: {
-                      properties: {
-                        title: sheetTitle,
-                        gridProperties: { frozenRowCount: 1 }
-                      }
-                    }
-                  }
-                ]
-              }
-            });
-            await sheets.spreadsheets.values.update({
-              spreadsheetId: targetChatId,
-              range: `'${sheetTitle}'!A1:G1`,
-              valueInputOption: 'USER_ENTERED',
-              requestBody: {
-                values: [GOOGLE_CONFIG.chatHeaders]
-              }
-            });
-          }
-        } catch (err) {
-          console.warn('[ensureChatSheetExists Warning]:', err.message);
-        }
-      };
+      // Гарантированное создание индивидуального листа диалога с шапкой и смарт-стилизацией
+      await ensureStyledChatSheet(sheets, targetChatId, chatSheetName);
 
       // Запись нового сообщения
       if (data.message || data.fileBase64 || data.fileName) {
@@ -961,7 +1113,7 @@ export default async function handler(req, res) {
 
         if (sheets && targetChatId) {
           try {
-            await ensureChatSheetExists(chatSheetName);
+            await ensureStyledChatSheet(sheets, targetChatId, chatSheetName);
             await sheets.spreadsheets.values.append({
               spreadsheetId: targetChatId,
               range: `'${chatSheetName}'!A:G`,
@@ -1005,7 +1157,10 @@ export default async function handler(req, res) {
       if (sheets && targetChatId) {
         try {
           const chatDb = await sheets.spreadsheets.values.get({ spreadsheetId: targetChatId, range: `'${chatSheetName}'!A:G` });
-          messages = (chatDb.data.values || []).slice(1).map(parseMessageRow);
+          const rows = chatDb.data.values || [];
+          const hasHeader = rows.length > 0 && rows[0][0] === 'Дата и Время';
+          const rawMsgs = hasHeader ? rows.slice(1) : rows;
+          messages = rawMsgs.map(parseMessageRow);
         } catch (e) { }
       }
 
@@ -1248,6 +1403,7 @@ export default async function handler(req, res) {
     try {
       const targetChatId = getChatSpreadsheetId();
       let allChats = [];
+      let allReqs = [];
 
       if (sheets && targetChatId) {
         try {
@@ -1255,8 +1411,14 @@ export default async function handler(req, res) {
           const chatSheets = (chatMetadata.data.sheets || []).filter((s) => s.properties.title.startsWith('Chat_'));
 
           // Получение всех бронирований
-          const bookingDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'BOOKINGS', 'A:K') });
-          const allReqs = (bookingDb.data.values || []).slice(1).map((r, i) => {
+          let bookingDb = { data: { values: [] } };
+          try {
+            bookingDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'BOOKINGS', 'A:K') });
+          } catch (bErr) {
+            console.warn('[master_get_chats BOOKINGS Warning]:', bErr.message);
+          }
+
+          allReqs = (bookingDb.data.values || []).slice(1).map((r, i) => {
             let statusFull = r[10] || '';
             let status = statusFull;
             let expiresAt = null;
@@ -1286,13 +1448,30 @@ export default async function handler(req, res) {
             const clientName = parts[1] || 'Гость';
             const clientContact = parts.slice(2).join('_') || parts[2] || '';
 
-            const msgsDb = await sheets.spreadsheets.values.get({ spreadsheetId: targetChatId, range: `'${title}'!A:G` });
-            const messages = (msgsDb.data.values || []).slice(1).map(parseMessageRow);
+            let messages = [];
+            try {
+              const msgsDb = await sheets.spreadsheets.values.get({ spreadsheetId: targetChatId, range: `'${title}'!A:G` });
+              const rows = msgsDb.data.values || [];
+              const hasHeader = rows.length > 0 && rows[0][0] === 'Дата и Время';
+
+              // Если шапки нет, в фоновом режиме лечим структуру листа
+              if (!hasHeader && rows.length > 0) {
+                await ensureStyledChatSheet(sheets, targetChatId, title);
+              }
+
+              const rawMsgs = hasHeader ? rows.slice(1) : rows;
+              messages = rawMsgs.map(parseMessageRow);
+            } catch (mErr) {
+              console.warn(`[master_get_chats messages Warning for ${title}]:`, mErr.message);
+            }
+
             const userReqs = allReqs.filter((r) => (r.contact || '').toLowerCase() === clientContact.toLowerCase());
 
             allChats.push({ sheetName: title, clientName, clientContact, messages, activeRequests: userReqs });
           }
-        } catch (e) { }
+        } catch (innerErr) {
+          console.warn('[master_get_chats inner Warning]:', innerErr.message);
+        }
       }
 
       return res.status(200).json({ success: true, chats: allChats, allRequests: allReqs });
@@ -1332,8 +1511,9 @@ export default async function handler(req, res) {
         const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
         const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
         const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
-        const msg = `✅ Ваша заявка на даты ${data.checkIn} — ${data.checkOut} одобрена владельцем!\nДаты удержаны за вами на 24 часа.Пожалуйста, завершите онлайн - оплату в личном кабинете.`;
+        const msg = `✅ Ваша заявка на даты ${data.checkIn} - ${data.checkOut} одобрена владельцем!\nДаты удержаны за вами на 24 часа. Пожалуйста, завершите онлайн - оплату в личном кабинете.`;
 
+        await ensureStyledChatSheet(sheets, targetChatId, data.chatSheetName);
         await sheets.spreadsheets.values.append({
           spreadsheetId: targetChatId,
           range: `'${data.chatSheetName}'!A:G`,
@@ -1379,11 +1559,12 @@ export default async function handler(req, res) {
           requestBody: { values: [ruleRow] }
         });
 
-        const msg = `🎁 Для вас сформировано специальное предложение!\nДаты проживания: ${data.checkIn} — ${data.checkOut}\nОбновленная стоимость: ${data.price}\nПожалуйста, перейдите к оплате в карточке бронирования. Окно оплаты открыто до: ${deadlineStr}.`;
+        const msg = `🎁 Для вас сформировано специальное предложение!\nДаты проживания: ${data.checkIn} - ${data.checkOut}\nОбновленная стоимость: ${data.price}\nПожалуйста, перейдите к оплате в карточке бронирования. Окно оплаты открыто до: ${deadlineStr}.`;
         const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
         const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
         const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
 
+        await ensureStyledChatSheet(sheets, targetChatId, data.chatSheetName);
         await sheets.spreadsheets.values.append({
           spreadsheetId: targetChatId,
           range: `'${data.chatSheetName}'!A:G`,
@@ -1429,6 +1610,7 @@ export default async function handler(req, res) {
         const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
         const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
 
+        await ensureStyledChatSheet(sheets, targetChatId, data.chatSheetName);
         await sheets.spreadsheets.values.append({
           spreadsheetId: targetChatId,
           range: `'${data.chatSheetName}'!A:G`,
@@ -1460,11 +1642,12 @@ export default async function handler(req, res) {
         });
 
         const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
-        const msg = `❌ К сожалению, ваша заявка на даты ${data.checkIn} — ${data.checkOut} была отклонена. Пожалуйста, выберите другие доступные даты в календаре.`;
+        const msg = `❌ К сожалению, ваша заявка на даты ${data.checkIn} - ${data.checkOut} была отклонена. Пожалуйста, выберите другие доступные даты в календаре.`;
         const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
         const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
         const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
 
+        await ensureStyledChatSheet(sheets, targetChatId, data.chatSheetName);
         await sheets.spreadsheets.values.append({
           spreadsheetId: targetChatId,
           range: `'${data.chatSheetName}'!A:G`,
@@ -1560,6 +1743,7 @@ export default async function handler(req, res) {
 
         if (sheets && targetChatId) {
           try {
+            await ensureStyledChatSheet(sheets, targetChatId, sheetName);
             await sheets.spreadsheets.values.append({
               spreadsheetId: targetChatId,
               range: `'${sheetName}'!A:G`,
@@ -1699,19 +1883,10 @@ export default async function handler(req, res) {
         const chatSheetName = getChatSheetName(guestName, effectiveContact);
 
         try {
-          const chatDbMeta = await sheets.spreadsheets.get({ spreadsheetId: targetChatId });
-          const sheetExists = chatDbMeta.data.sheets.find(s => s.properties.title === chatSheetName);
-          if (!sheetExists) {
-            await sheets.spreadsheets.batchUpdate({
-              spreadsheetId: targetChatId,
-              requestBody: {
-                requests: [{ addSheet: { properties: { title: chatSheetName } } }]
-              }
-            });
-          }
+          await ensureStyledChatSheet(sheets, targetChatId, chatSheetName);
 
           // Системное сообщение с деталями заявки (канонические формулы с точкой с запятой)
-          const miniCard = `📋 Заявка отправлена на модерацию.\nДетали: ${data.checkIn} — ${data.checkOut}\nГостей: ${data.total_guests}\nСтоимость: ${data.totalPrice}\n\nОжидайте подтверждения от владельца.`;
+          const miniCard = `📋 Заявка отправлена на модерацию.\nДетали: ${data.checkIn} - ${data.checkOut}\nГостей: ${data.total_guests}\nСтоимость: ${data.totalPrice}\n\nОжидайте подтверждения от владельца.`;
           const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
           const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
           const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
@@ -1787,14 +1962,8 @@ export default async function handler(req, res) {
           const targetChatId = getChatSpreadsheetId();
           const chatSheetName = getChatSheetName(guestName, effectiveContact);
           try {
-            const chatDbMeta = await sheets.spreadsheets.get({ spreadsheetId: targetChatId });
-            if (!chatDbMeta.data.sheets.find(s => s.properties.title === chatSheetName)) {
-              await sheets.spreadsheets.batchUpdate({
-                spreadsheetId: targetChatId,
-                requestBody: { requests: [{ addSheet: { properties: { title: chatSheetName } } }] }
-              });
-            }
-            const miniCard = `✅ Заказ успешно оформлен!\nДетали: ${data.checkIn} — ${data.checkOut}\nГостей: ${data.total_guests}\nСумма: ${data.totalPrice}`;
+            await ensureStyledChatSheet(sheets, targetChatId, chatSheetName);
+            const miniCard = `✅ Заказ успешно оформлен!\nДетали: ${data.checkIn} - ${data.checkOut}\nГостей: ${data.total_guests}\nСумма: ${data.totalPrice}`;
             const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
             const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
             const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
@@ -1810,6 +1979,29 @@ export default async function handler(req, res) {
       }
 
       return res.status(200).json({ success: true, message: 'Бронирование оформлено!' });
+    } catch (e) {
+      return res.status(500).json({ success: false, error: e.message });
+    }
+  }
+
+  // --- API: Сервисное смарт-форматирование всех листов чатов ---
+  if (action === 'format_chat_sheets') {
+    try {
+      const targetChatId = getChatSpreadsheetId();
+      let formattedCount = 0;
+      if (sheets && targetChatId) {
+        const chatMetadata = await sheets.spreadsheets.get({ spreadsheetId: targetChatId });
+        const chatSheets = (chatMetadata.data.sheets || []).filter((s) => s.properties.title.startsWith('Chat_'));
+        for (const s of chatSheets) {
+          await ensureStyledChatSheet(sheets, targetChatId, s.properties.title);
+          formattedCount++;
+        }
+      }
+      return res.status(200).json({
+        success: true,
+        count: formattedCount,
+        message: `Успешно отформатировано листов чатов: ${formattedCount}`
+      });
     } catch (e) {
       return res.status(500).json({ success: false, error: e.message });
     }

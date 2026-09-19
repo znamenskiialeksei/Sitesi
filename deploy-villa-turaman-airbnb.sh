@@ -7,7 +7,7 @@
 # ==============================================================================
 # Назначение:
 # 1. Развертывание платформы в любой новой папке в 1 команду: bash deploy-villa-turaman-airbnb.sh [FOLDER]
-# 2. Авто-создание 14 листов Google Sheets CRM со смарт-форматированием (autoResizeDimensions, WRAP, MIDDLE, ';')
+# 2. Авто-создание 14 листов Google Sheets CRM и базы чатов со смарт-форматированием (autoResizeDimensions, WRAP, MIDDLE, ';')
 # 3. Развертывание расширения Google Apps Script (Code.js) с поддержкой Свойств скрипта (Script Properties)
 # 4. Настройка задач VS Code (.vscode/tasks.json) для среды PowerShell 7 (pwsh.exe)
 # ==============================================================================

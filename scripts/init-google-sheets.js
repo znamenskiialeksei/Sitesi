@@ -496,6 +496,121 @@ const initializeSpreadsheet = async () => {
       });
     }
 
+    // --- Инициализация и смарт-форматирование таблицы чатов GOOGLE_CHATS_SPREADSHEET_ID ---
+    const chatsSpreadsheetId = process.env.GOOGLE_CHATS_SPREADSHEET_ID;
+    if (chatsSpreadsheetId) {
+      console.log('💬 Проверка и смарт-форматирование таблицы чатов...');
+      try {
+        const chatMeta = await sheets.spreadsheets.get({ spreadsheetId: chatsSpreadsheetId });
+        const chatSheets = (chatMeta.data.sheets || []).filter((s) => s.properties.title.startsWith('Chat_'));
+
+        for (const s of chatSheets) {
+          const sheetTitle = s.properties.title;
+          const sheetId = s.properties.sheetId;
+
+          let firstRow = [];
+          try {
+            const checkRows = await sheets.spreadsheets.values.get({
+              spreadsheetId: chatsSpreadsheetId,
+              range: `'${sheetTitle}'!A1:G1`
+            });
+            firstRow = (checkRows.data.values && checkRows.data.values[0]) || [];
+          } catch (e) {
+            firstRow = [];
+          }
+
+          const requests = [];
+
+          // Если первой строки с заголовками нет, вставляем строку на позицию 0
+          if (!firstRow || firstRow[0] !== 'Дата и Время') {
+            requests.push({
+              insertDimension: {
+                range: {
+                  sheetId,
+                  dimension: 'ROWS',
+                  startIndex: 0,
+                  endIndex: 1
+                },
+                inheritFromBefore: false
+              }
+            });
+          }
+
+          // Закрепление первой строки
+          requests.push({
+            updateSheetProperties: {
+              properties: { sheetId, gridProperties: { frozenRowCount: 1 } },
+              fields: 'gridProperties.frozenRowCount'
+            }
+          });
+
+          // Стилизация шапки (темный фон, белый полужирный текст, центрирование)
+          requests.push({
+            updateCells: {
+              start: { sheetId, rowIndex: 0, columnIndex: 0 },
+              rows: [
+                {
+                  values: GOOGLE_CONFIG.chatHeaders.map((h) => ({
+                    userEnteredValue: { stringValue: h },
+                    userEnteredFormat: {
+                      backgroundColor: { red: 0.12, green: 0.16, blue: 0.23 },
+                      textFormat: { bold: true, fontSize: 10, foregroundColor: { red: 1, green: 1, blue: 1 } },
+                      horizontalAlignment: 'CENTER',
+                      verticalAlignment: 'MIDDLE',
+                      wrapStrategy: 'WRAP'
+                    }
+                  }))
+                }
+              ],
+              fields: 'userEnteredValue,userEnteredFormat'
+            }
+          });
+
+          // Настройка ячеек данных: перенос строк и вертикальное центрирование
+          requests.push({
+            repeatCell: {
+              range: {
+                sheetId,
+                startRowIndex: 1,
+                endRowIndex: 1000,
+                startColumnIndex: 0,
+                endColumnIndex: GOOGLE_CONFIG.chatHeaders.length
+              },
+              cell: {
+                userEnteredFormat: {
+                  wrapStrategy: 'WRAP',
+                  verticalAlignment: 'MIDDLE'
+                }
+              },
+              fields: 'userEnteredFormat(wrapStrategy,verticalAlignment)'
+            }
+          });
+
+          // Автоподгонка ширины столбцов под длину содержимого
+          requests.push({
+            autoResizeDimensions: {
+              dimensions: {
+                sheetId,
+                dimension: 'COLUMNS',
+                startIndex: 0,
+                endIndex: GOOGLE_CONFIG.chatHeaders.length
+              }
+            }
+          });
+
+          if (requests.length > 0) {
+            await sheets.spreadsheets.batchUpdate({
+              spreadsheetId: chatsSpreadsheetId,
+              requestBody: { requests }
+            });
+          }
+        }
+        console.log(`✅ Таблица чатов: успешно проверено и отформатировано листов: ${chatSheets.length}`);
+      } catch (chatInitErr) {
+        console.warn('⚠️ Предупреждение при форматировании таблицы чатов:', chatInitErr.message);
+      }
+    }
+
     console.log('✅ Инициализация структуры Google Sheets успешно завершена.');
   } catch (error) {
     console.error('❌ Ошибка инициализации Google Sheets:', error.message);

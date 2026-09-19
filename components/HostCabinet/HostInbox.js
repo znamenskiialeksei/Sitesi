@@ -5,7 +5,8 @@
 // ==============================================================================
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Paperclip, Users, Search, Sparkles, MessageSquare, Tag, PlayCircle, CheckSquare, Square, X, CheckCircle, XCircle, RotateCcw, Gift } from 'lucide-react';
+import axios from 'axios';
+import { Send, Paperclip, Users, Search, Sparkles, MessageSquare, Tag, PlayCircle, CheckSquare, Square, X, CheckCircle, XCircle, RotateCcw, Gift, RefreshCw } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../Toast';
 
@@ -18,6 +19,7 @@ export default function HostInbox({
   onSpecialOffer,
   onReject,
   onRevoke,
+  onRefreshChats,
   loading = false
 }) {
   const { t, lang } = useLanguage();
@@ -110,6 +112,25 @@ export default function HostInbox({
     else setSelectedMultiSheets(chats.map((c) => c.sheetName));
   };
 
+  const [formattingChats, setFormattingChats] = useState(false);
+
+  const handleFormatChats = async () => {
+    setFormattingChats(true);
+    try {
+      const res = await axios.post('/api/booking', { action: 'format_chat_sheets' });
+      if (res.data && res.data.success) {
+        toast.success(res.data.message || 'Таблица чатов успешно отформатирована');
+        if (onRefreshChats) onRefreshChats();
+      } else {
+        toast.error(res.data?.error || 'Ошибка форматирования таблицы чатов');
+      }
+    } catch (err) {
+      toast.error('Ошибка связи с сервером');
+    } finally {
+      setFormattingChats(false);
+    }
+  };
+
   return (
     <div className="bg-slate-900 border border-white/10 rounded-3xl overflow-hidden shadow-2xl h-[700px] flex flex-col fade-in">
 
@@ -123,17 +144,29 @@ export default function HostInbox({
           </span>
         </div>
 
-        <button
-          onClick={() => {
-            setIsBroadcastMode(!isBroadcastMode);
-            if (!isBroadcastMode) setSelectedMultiSheets(chats.map((c) => c.sheetName));
-          }}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${isBroadcastMode ? 'bg-amber-500 text-slate-950 shadow-md' : 'bg-slate-800 text-slate-300 hover:text-white border border-white/10'
-            }`}
-        >
-          <Users className="w-4 h-4" />
-          <span>{isBroadcastMode ? t('regularChatMode') : t('broadcastMode')}</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleFormatChats}
+            disabled={formattingChats}
+            title="Форматировать шапки и колонки всех листов чатов Google Таблиц"
+            className="px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:text-white border border-white/10 hover:border-emerald-500/50 disabled:opacity-50"
+          >
+            <Sparkles className={`w-3.5 h-3.5 text-emerald-400 ${formattingChats ? 'animate-spin' : ''}`} />
+            <span>{formattingChats ? 'Форматирование...' : 'Форматировать CRM чаты'}</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setIsBroadcastMode(!isBroadcastMode);
+              if (!isBroadcastMode) setSelectedMultiSheets(chats.map((c) => c.sheetName));
+            }}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${isBroadcastMode ? 'bg-amber-500 text-slate-950 shadow-md' : 'bg-slate-800 text-slate-300 hover:text-white border border-white/10'
+              }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>{isBroadcastMode ? t('regularChatMode') : t('broadcastMode')}</span>
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 flex-1 overflow-hidden">

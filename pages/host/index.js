@@ -462,6 +462,7 @@ export default function HostDashboardPage() {
                 onSpecialOffer={handleSpecialOffer}
                 onReject={handleRejectRequest}
                 onRevoke={handleRevokeRequest}
+                onRefreshChats={fetchMasterChats}
                 loading={loading}
               />
             )}
