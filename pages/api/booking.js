@@ -1086,9 +1086,14 @@ export default async function handler(req, res) {
         }
       }
 
+      const isEmailFormat = safeContact.includes('@');
       const userObj = {
         name: safeName,
         contact: safeContact,
+        email: isEmailFormat ? safeContact : '',
+        phone: !isEmailFormat ? safeContact : '',
+        emailVerified: false,
+        phoneVerified: false,
         isHost: false,
         blockChat: false,
         hasChat: true
@@ -1571,6 +1576,23 @@ export default async function handler(req, res) {
       const effectiveContact = (data.contact || (safePhone && safeEmail ? `${safePhone} | ${safeEmail}` : (safePhone || safeEmail || ''))).toString().trim();
       const guestName = (data.name || 'Гость').toString().trim();
 
+      // Обязательная проверка заполненности и валидности контактов
+      if (!safeEmail || !/\S+@\S+\.\S+/.test(safeEmail)) {
+        return res.status(400).json({ success: false, error: 'Укажите корректный адрес электронной почты для бронирования.' });
+      }
+      if (!safePhone || safePhone.replace(/\D/g, '').length < 6) {
+        return res.status(400).json({ success: false, error: 'Укажите действующий номер телефона для бронирования.' });
+      }
+
+      // Серверная проверка верификации Email через сессию или кэш проверок
+      const isEmailVerified = Boolean(data.emailVerified) || Boolean(await safeCacheGet(`verified_email_${safeEmail.toLowerCase()}`));
+      if (!isEmailVerified) {
+        return res.status(400).json({
+          success: false,
+          error: 'Адрес электронной почты не подтвержден. Пожалуйста, подтвердите email кодом из письма.'
+        });
+      }
+
       // Telegram-уведомление хозяину о новой заявке со статусами проверки
       if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
         const emailStatus = data.emailVerified ? '✅ Подтвержден' : '⏳ Не подтвержден';
@@ -1692,6 +1714,23 @@ export default async function handler(req, res) {
       const safePhone = (data.phone || '').toString().trim();
       const effectiveContact = (data.contact || (safePhone && safeEmail ? `${safePhone} | ${safeEmail}` : (safePhone || safeEmail || ''))).toString().trim();
       const guestName = (data.name || 'Гость').toString().trim();
+
+      // Обязательная проверка заполненности и валидности контактов
+      if (!safeEmail || !/\S+@\S+\.\S+/.test(safeEmail)) {
+        return res.status(400).json({ success: false, error: 'Укажите корректный адрес электронной почты для бронирования.' });
+      }
+      if (!safePhone || safePhone.replace(/\D/g, '').length < 6) {
+        return res.status(400).json({ success: false, error: 'Укажите действующий номер телефона для бронирования.' });
+      }
+
+      // Серверная проверка верификации Email через сессию или кэш проверок
+      const isEmailVerified = Boolean(data.emailVerified) || Boolean(await safeCacheGet(`verified_email_${safeEmail.toLowerCase()}`));
+      if (!isEmailVerified) {
+        return res.status(400).json({
+          success: false,
+          error: 'Адрес электронной почты не подтвержден. Пожалуйста, подтвердите email кодом из письма.'
+        });
+      }
 
       if (sheets && spreadsheetId) {
         await sheets.spreadsheets.values.append({

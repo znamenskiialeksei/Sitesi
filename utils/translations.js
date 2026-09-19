@@ -458,7 +458,9 @@ export const translations = {
     verifyAttemptsLeft: "Осталось попыток:",
     emailVerifiedBadge: "Email подтвержден",
     phoneVerifiedBadge: "Телефон подтвержден",
-    verifyPhonePrompt: "Подтвердить номер телефона"
+    verifyPhonePrompt: "Подтвердить номер телефона",
+    verifyEmailPrompt: "Email не подтвержден",
+    verifyRequired: "Код на email"
   },
 
   en: {
@@ -903,7 +905,9 @@ export const translations = {
     verifyAttemptsLeft: "Attempts left:",
     emailVerifiedBadge: "Email Verified",
     phoneVerifiedBadge: "Phone Verified",
-    verifyPhonePrompt: "Verify Phone Number"
+    verifyPhonePrompt: "Verify Phone Number",
+    verifyEmailPrompt: "Email not verified",
+    verifyRequired: "Code to email"
   },
 
   tr: {
@@ -1348,7 +1352,9 @@ export const translations = {
     verifyAttemptsLeft: "Kalan deneme:",
     emailVerifiedBadge: "E-posta Doğrulandı",
     phoneVerifiedBadge: "Telefon Doğrulandı",
-    verifyPhonePrompt: "Telefon Numarasını Doğrula"
+    verifyPhonePrompt: "Telefon Numarasını Doğrula",
+    verifyEmailPrompt: "E-posta doğrulanmadı",
+    verifyRequired: "E-postaya kod"
   }
 };
 

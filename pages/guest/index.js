@@ -195,10 +195,15 @@ export default function GuestCabinetPage() {
                 <span className="text-xs text-slate-300 font-medium">
                   {currentUser.name}
                 </span>
-                {currentUser.emailVerified && (
+                {currentUser.emailVerified ? (
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-semibold">
                     <CheckCircle2 className="w-3 h-3" />
                     {t('emailVerifiedBadge') || 'Email подтвержден'}
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] font-semibold">
+                    <Mail className="w-3 h-3" />
+                    {t('verifyEmailPrompt') || 'Email не подтвержден'}
                   </span>
                 )}
                 {currentUser.phoneVerified ? (

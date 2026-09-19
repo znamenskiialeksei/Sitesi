@@ -17,7 +17,7 @@ import { ru, enUS, tr } from 'date-fns/locale';
 import {
   Calendar, Users, Zap, Clock, ShieldCheck,
   ChevronDown, ChevronLeft, ChevronRight, Plus, Minus, AlertCircle,
-  Mail, Phone
+  Mail, Phone, CheckCircle2
 } from 'lucide-react';
 import { useLanguage } from '../utils/language';
 import { useAuth } from '../context/AuthContext';
@@ -71,7 +71,7 @@ export default function BookingWidget({
   onBookingSubmit
 }) {
   const { t, lang, currency, formatMoney, CURRENCY_SYMBOLS } = useLanguage();
-  const { currentUser, setAuthModalOpen } = useAuth();
+  const { currentUser, setAuthModalOpen, updateCurrentUser } = useAuth();
   const toast = useToast();
 
   // Выбранный диапазон дат гостем
@@ -90,6 +90,39 @@ export default function BookingWidget({
   const [guestPhone, setGuestPhone] = useState('');
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
   const [pendingPayload, setPendingPayload] = useState(null);
+
+  // Синхронизация полей гостя с профилем currentUser (включая неполные профили из быстрого чата)
+  useEffect(() => {
+    if (currentUser) {
+      if (currentUser.name && !guestName) setGuestName(currentUser.name);
+      if (currentUser.email && !guestEmail) setGuestEmail(currentUser.email);
+      if (currentUser.phone && !guestPhone) setGuestPhone(currentUser.phone);
+      if (!guestEmail && currentUser.contact && currentUser.contact.includes('@')) {
+        setGuestEmail(currentUser.contact);
+      }
+      if (!guestPhone && currentUser.contact && !currentUser.contact.includes('@')) {
+        setGuestPhone(currentUser.contact);
+      }
+    }
+  }, [currentUser]);
+
+  // Расчет статуса подтверждения контактов гостя
+  const verificationMode = dynamicRules.verificationMode || 'progressive';
+  const isEmailVerified = Boolean(
+    currentUser?.emailVerified &&
+    currentUser?.email &&
+    guestEmail &&
+    currentUser.email.trim().toLowerCase() === guestEmail.trim().toLowerCase()
+  );
+  const isPhoneVerified = Boolean(
+    currentUser?.phoneVerified &&
+    currentUser?.phone &&
+    guestPhone &&
+    currentUser.phone.replace(/\D/g, '') === guestPhone.replace(/\D/g, '')
+  );
+  const isFullyVerified = verificationMode === 'strict'
+    ? (isEmailVerified && isPhoneVerified)
+    : isEmailVerified;
 
   const { agreedKVKK, agreedContract, agreedPrivacy, allAgreed } = useLegalConsent();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -428,24 +461,23 @@ export default function BookingWidget({
       return;
     }
 
-    const finalName = currentUser?.name || guestName.trim() || 'Гость';
-    const finalEmail = currentUser?.email || guestEmail.trim() || '';
-    const finalPhone = currentUser?.phone || guestPhone.trim() || '';
+    const finalName = guestName.trim() || currentUser?.name || 'Гость';
+    const finalEmail = guestEmail.trim() || currentUser?.email || '';
+    const finalPhone = guestPhone.trim() || currentUser?.phone || '';
     const combinedContact = finalPhone && finalEmail ? `${finalPhone} | ${finalEmail}` : (finalPhone || finalEmail || currentUser?.contact || '');
 
-    if (!currentUser) {
-      if (!finalName) {
-        toast.warn(t('contactNamePlaceholder') || 'Пожалуйста, укажите ваше имя');
-        return;
-      }
-      if (!finalEmail || !/\S+@\S+\.\S+/.test(finalEmail)) {
-        toast.warn(t('guestEmailPlaceholder') || 'Пожалуйста, укажите корректный адрес электронной почты');
-        return;
-      }
-      if (!finalPhone || finalPhone.replace(/\D/g, '').length < 6) {
-        toast.warn(t('guestPhonePlaceholder') || 'Пожалуйста, укажите действующий номер телефона');
-        return;
-      }
+    // Обязательная проверка заполненности контактов для ВСЕХ пользователей
+    if (!finalName) {
+      toast.warn(t('contactNamePlaceholder') || 'Пожалуйста, укажите ваше имя');
+      return;
+    }
+    if (!finalEmail || !/\S+@\S+\.\S+/.test(finalEmail)) {
+      toast.warn(t('guestEmailPlaceholder') || 'Пожалуйста, укажите корректный адрес электронной почты');
+      return;
+    }
+    if (!finalPhone || finalPhone.replace(/\D/g, '').length < 6) {
+      toast.warn(t('guestPhonePlaceholder') || 'Пожалуйста, укажите действующий номер телефона');
+      return;
     }
 
     const payload = {
@@ -454,6 +486,8 @@ export default function BookingWidget({
       contact: combinedContact,
       email: finalEmail,
       phone: finalPhone,
+      emailVerified: isEmailVerified,
+      phoneVerified: isPhoneVerified,
       checkIn: formatDateRU(startDate),
       checkOut: formatDateRU(endDate),
       nights,
@@ -464,22 +498,23 @@ export default function BookingWidget({
       isRegistered: !!currentUser
     };
 
-    // Если гость уже авторизован — отправляем сразу
-    if (currentUser) {
-      setIsSubmitting(true);
-      try {
-        await onBookingSubmit(payload, effectiveMode);
-      } catch (err) {
-        toast.error(t('bookingError') || 'Произошла ошибка при отправке заявки.');
-      } finally {
-        setIsSubmitting(false);
-      }
+    // Если контакты НЕ подтверждены — обязательно запускаем модальное окно верификации
+    if (!isFullyVerified) {
+      setPendingPayload(payload);
+      setIsVerificationModalOpen(true);
       return;
     }
 
-    // Если гость не авторизован — запускаем модальное окно верификации
-    setPendingPayload(payload);
-    setIsVerificationModalOpen(true);
+    // Если гость уже полностью подтвержден — отправляем сразу
+    setIsSubmitting(true);
+    try {
+      await onBookingSubmit(payload, effectiveMode);
+    } catch (err) {
+      toast.error(t('bookingError') || 'Произошла ошибка при отправке заявки.');
+    } finally {
+      setIsSubmitting(false);
+    }
+    return;
   };
 
   // Коллбэк успешного прохождения верификации
@@ -487,14 +522,30 @@ export default function BookingWidget({
     setIsVerificationModalOpen(false);
     if (!pendingPayload) return;
 
+    const verifiedEmail = verificationResult.email || guestEmail.trim();
+    const verifiedPhone = verificationResult.phone || guestPhone.trim();
+    const verifiedEmailFlag = verificationResult.emailVerified ?? true;
+    const verifiedPhoneFlag = verificationResult.phoneVerified ?? false;
+
+    // Реактивно обновляем профиль в сессии
+    if (updateCurrentUser) {
+      updateCurrentUser({
+        name: pendingPayload.name,
+        email: verifiedEmail,
+        phone: verifiedPhone,
+        emailVerified: verifiedEmailFlag,
+        phoneVerified: verifiedPhoneFlag
+      });
+    }
+
     setIsSubmitting(true);
     try {
       const enrichedPayload = {
         ...pendingPayload,
-        email: verificationResult.email || guestEmail.trim(),
-        phone: verificationResult.phone || guestPhone.trim(),
-        emailVerified: verificationResult.emailVerified,
-        phoneVerified: verificationResult.phoneVerified
+        email: verifiedEmail,
+        phone: verifiedPhone,
+        emailVerified: verifiedEmailFlag,
+        phoneVerified: verifiedPhoneFlag
       };
       await onBookingSubmit(enrichedPayload, effectiveMode);
     } catch (err) {
@@ -695,8 +746,21 @@ export default function BookingWidget({
           )}
         </div>
 
-        {/* Данные неавторизованного гостя: раздельные поля Имя, Email и Телефон */}
-        {!currentUser && (
+        {/* Данные гостя: форма ввода для неподтвержденных пользователей или бейдж для подтвержденных */}
+        {isFullyVerified ? (
+          <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-between text-xs text-emerald-300 my-2">
+            <div className="flex items-center gap-2 truncate">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+              <div className="truncate">
+                <span className="font-bold text-white block truncate">{currentUser?.name || guestName}</span>
+                <span className="text-[11px] text-slate-300 truncate">{guestEmail || currentUser?.email}</span>
+              </div>
+            </div>
+            <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded-full font-bold flex items-center gap-1 shrink-0">
+              <CheckCircle2 className="w-3 h-3" /> {t('emailVerifiedBadge') || 'Подтвержден'}
+            </span>
+          </div>
+        ) : (
           <div className="space-y-3 pt-2">
             <div>
               <input
@@ -717,8 +781,19 @@ export default function BookingWidget({
                 value={guestEmail}
                 onChange={(e) => setGuestEmail(e.target.value)}
                 placeholder={t('guestEmailLabel') || 'Электронная почта (Email)'}
-                className="w-full bg-slate-900/80 border border-white/10 pl-10 pr-3.5 py-3.5 rounded-2xl text-xs sm:text-sm text-white focus:border-rose-500 outline-none transition-colors"
+                className={`w-full bg-slate-900/80 border ${isEmailVerified ? 'border-emerald-500/50' : 'border-white/10'} pl-10 pr-24 py-3.5 rounded-2xl text-xs sm:text-sm text-white focus:border-rose-500 outline-none transition-colors`}
               />
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-medium pointer-events-none">
+                {isEmailVerified ? (
+                  <span className="text-emerald-400 flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" /> {t('emailVerifiedBadge') || 'Подтвержден'}
+                  </span>
+                ) : (
+                  <span className="text-amber-400/90 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" /> {t('verifyRequired') || 'Код на email'}
+                  </span>
+                )}
+              </span>
             </div>
             <div className="relative">
               <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -729,8 +804,19 @@ export default function BookingWidget({
                 value={guestPhone}
                 onChange={(e) => setGuestPhone(e.target.value)}
                 placeholder={t('guestPhoneLabel') || 'Номер телефона (WhatsApp / Связь)'}
-                className="w-full bg-slate-900/80 border border-white/10 pl-10 pr-3.5 py-3.5 rounded-2xl text-xs sm:text-sm text-white focus:border-rose-500 outline-none transition-colors"
+                className={`w-full bg-slate-900/80 border ${isPhoneVerified ? 'border-emerald-500/50' : 'border-white/10'} pl-10 pr-24 py-3.5 rounded-2xl text-xs sm:text-sm text-white focus:border-rose-500 outline-none transition-colors`}
               />
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-medium pointer-events-none">
+                {isPhoneVerified ? (
+                  <span className="text-emerald-400 flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" /> {t('phoneVerifiedBadge') || 'Подтвержден'}
+                  </span>
+                ) : (
+                  <span className="text-slate-400/80 text-[10px]">
+                    {verificationMode === 'strict' ? 'SMS код' : 'Связь'}
+                  </span>
+                )}
+              </span>
             </div>
           </div>
         )}
