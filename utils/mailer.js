@@ -69,9 +69,37 @@ export const getEmailTemplateHtml = ({ code, name = 'Уважаемый Гост
 export const sendEmailVerificationCode = async ({ to, code, name }) => {
   const subject = `Код подтверждения Villa Turaman: ${code}`;
   const htmlContent = getEmailTemplateHtml({ code, name });
+  let emailSent = false;
+  let telegramSent = false;
+  let providerUsed = 'none';
 
-  // 1. Попытка отправки через Resend API если задан RESEND_API_KEY
-  if (process.env.RESEND_API_KEY) {
+  // 1. Отправка через Google Apps Script Gmail Relay при наличии GOOGLE_APPS_SCRIPT_URL
+  if (process.env.GOOGLE_APPS_SCRIPT_URL) {
+    try {
+      const gasRes = await fetch(process.env.GOOGLE_APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'send_verification_email',
+          to,
+          code,
+          name: name || 'Гость',
+          subject,
+          htmlBody: htmlContent
+        })
+      });
+      const gasData = await gasRes.json().catch(() => ({}));
+      if (gasRes.ok && (gasData.success !== false)) {
+        emailSent = true;
+        providerUsed = 'google_apps_script';
+      }
+    } catch (gasErr) {
+      console.warn('[Mailer Google Apps Script Warning]:', gasErr.message);
+    }
+  }
+
+  // 2. Отправка через Resend API если задан RESEND_API_KEY и письмо еще не ушло
+  if (!emailSent && process.env.RESEND_API_KEY) {
     try {
       const res = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -87,15 +115,16 @@ export const sendEmailVerificationCode = async ({ to, code, name }) => {
         })
       });
       if (res.ok) {
-        return { success: true, provider: 'resend' };
+        emailSent = true;
+        providerUsed = 'resend';
       }
     } catch (err) {
       console.warn('[Mailer Resend Warning]:', err.message);
     }
   }
 
-  // 2. Попытка отправки через Brevo / Sendinblue если задан BREVO_API_KEY
-  if (process.env.BREVO_API_KEY) {
+  // 3. Отправка через Brevo если задан BREVO_API_KEY и письмо еще не ушло
+  if (!emailSent && process.env.BREVO_API_KEY) {
     try {
       const res = await fetch('https://api.brevo.com/v3/smtp/email', {
         method: 'POST',
@@ -111,46 +140,80 @@ export const sendEmailVerificationCode = async ({ to, code, name }) => {
         })
       });
       if (res.ok) {
-        return { success: true, provider: 'brevo' };
+        emailSent = true;
+        providerUsed = 'brevo';
       }
     } catch (err) {
       console.warn('[Mailer Brevo Warning]:', err.message);
     }
   }
 
-  // 3. Автономный резервный канал: мгновенное дублирование в Telegram владельца
+  // 4. Мгновенное дублирование в Telegram владельца виллы
   if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
     try {
-      const tgMsg = `🔐 ВЕРИФИКАЦИЯ EMAIL (Код для гостя)\n👤 Гость: ${name || 'Гость'}\n📧 Email: ${to}\n🔢 КОД: ${code}\n⏱ Срок действия: 10 минут`;
-      await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      const guestLabel = name || 'Гость';
+      const tgMsg = `🔐 ВЕРИФИКАЦИЯ EMAIL: Код для гостя\n👤 Гость: ${guestLabel}\n📧 Email: ${to}\n🔢 КОД: ${code}\n⏱ Срок действия: 10 минут`;
+      const tgRes = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ chat_id: process.env.TELEGRAM_CHAT_ID, text: tgMsg })
       });
+      if (tgRes.ok) {
+        telegramSent = true;
+      }
     } catch (tgErr) {
       console.warn('[Mailer Telegram Warning]:', tgErr.message);
     }
   }
 
-  console.log(`[AUTH CODE EMAIL]: Для ${to} (${name}) сгенерирован код: ${code}`);
-  return { success: true, provider: 'telegram_fallback', code };
+  console.log(`[AUTH CODE EMAIL]: Для ${to} сгенерирован проверочный код: ${code}`);
+
+  const isDevMode = !emailSent && !telegramSent;
+  return {
+    success: true,
+    isDevMode,
+    provider: emailSent ? providerUsed : (telegramSent ? 'telegram' : 'dev_local'),
+    code,
+    emailSent,
+    telegramSent,
+    message: isDevMode
+      ? 'Почтовый шлюз и Telegram еще не настроены в .env.local'
+      : (emailSent ? 'Письмо с кодом успешно отправлено на email' : 'Код успешно отправлен в Telegram владельца')
+  };
 };
 
 export const sendPhoneVerificationCode = async ({ phone, code, name }) => {
+  let telegramSent = false;
+
   // Отправка SMS-сообщения или кода в Telegram владельца для тестирования
   if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
     try {
-      const tgMsg = `📱 ВЕРИФИКАЦИЯ ТЕЛЕФОНА (Код для гостя)\n👤 Гость: ${name || 'Гость'}\n📞 Телефон: ${phone}\n🔢 КОД: ${code}\n⏱ Срок действия: 10 минут`;
-      await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      const guestLabel = name || 'Гость';
+      const tgMsg = `📱 ВЕРИФИКАЦИЯ ТЕЛЕФОНА: Код для гостя\n👤 Гость: ${guestLabel}\n📞 Телефон: ${phone}\n🔢 КОД: ${code}\n⏱ Срок действия: 10 минут`;
+      const tgRes = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ chat_id: process.env.TELEGRAM_CHAT_ID, text: tgMsg })
       });
+      if (tgRes.ok) {
+        telegramSent = true;
+      }
     } catch (tgErr) {
       console.warn('[Phone SMS Telegram Warning]:', tgErr.message);
     }
   }
 
-  console.log(`[AUTH CODE PHONE]: Для ${phone} (${name}) сгенерирован код: ${code}`);
-  return { success: true, provider: 'sms_fallback', code };
+  console.log(`[AUTH CODE PHONE]: Для ${phone} сгенерирован проверочный код: ${code}`);
+
+  const isDevMode = !telegramSent;
+  return {
+    success: true,
+    isDevMode,
+    provider: telegramSent ? 'telegram' : 'dev_local',
+    code,
+    telegramSent,
+    message: isDevMode
+      ? 'SMS шлюз и Telegram еще не настроены в .env.local'
+      : 'Код для телефона успешно отправлен в Telegram владельца'
+  };
 };

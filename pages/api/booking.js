@@ -829,18 +829,24 @@ export default async function handler(req, res) {
       const otpCode = generateOtpCode();
       const cacheKey = `otp_${channel}_${cleanTarget}`;
 
-      // Сохраняем код в кэше с TTL 10 минут (600 секунд) и счетчиком попыток
+      // Сохраняем код в кэше с TTL 10 минут и счетчиком попыток
       await safeCacheSet(cacheKey, { code: otpCode, attempts: 0, createdAt: Date.now() }, { ex: 600 });
 
+      let sendResult = null;
       if (channel === 'email') {
-        await sendEmailVerificationCode({ to: target, code: otpCode, name: guestName });
+        sendResult = await sendEmailVerificationCode({ to: target, code: otpCode, name: guestName });
       } else {
-        await sendPhoneVerificationCode({ phone: target, code: otpCode, name: guestName });
+        sendResult = await sendPhoneVerificationCode({ phone: target, code: otpCode, name: guestName });
       }
 
       return res.status(200).json({
         success: true,
-        message: `Проверочный код успешно отправлен на ${target}`
+        message: sendResult?.message || `Проверочный код успешно отправлен на ${target}`,
+        isDevMode: sendResult?.isDevMode || false,
+        devCode: sendResult?.isDevMode ? otpCode : undefined,
+        provider: sendResult?.provider || 'default',
+        emailSent: sendResult?.emailSent || false,
+        telegramSent: sendResult?.telegramSent || false
       });
     } catch (e) {
       return res.status(500).json({ success: false, error: e.message });

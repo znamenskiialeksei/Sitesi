@@ -22,6 +22,9 @@ export default function VerificationModal({
   const [attemptsLeft, setAttemptsLeft] = useState(3);
   const [emailVerified, setEmailVerified] = useState(false);
   const [phoneVerified, setPhoneVerified] = useState(false);
+  const [devCode, setDevCode] = useState(null);
+  const [telegramSent, setTelegramSent] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
@@ -34,6 +37,9 @@ export default function VerificationModal({
       setAttemptsLeft(3);
       setEmailVerified(false);
       setPhoneVerified(false);
+      setDevCode(null);
+      setTelegramSent(false);
+      setEmailSent(false);
       sendCode('email');
     }
   }, [isOpen]);
@@ -87,11 +93,29 @@ export default function VerificationModal({
       const data = await res.json();
       if (!data.success) {
         setErrorMessage(data.error || 'Не удалось отправить проверочный код. Попробуйте снова.');
+      } else {
+        if (data.devCode) {
+          setDevCode(data.devCode);
+        } else {
+          setDevCode(null);
+        }
+        setTelegramSent(Boolean(data.telegramSent));
+        setEmailSent(Boolean(data.emailSent));
       }
     } catch (err) {
       setErrorMessage('Сетевой сбой при отправке кода. Проверьте соединение.');
     } finally {
       setIsSending(false);
+    }
+  };
+
+  // Быстрая вставка тестового проверочного кода при отладке
+  const handleInsertDevCode = () => {
+    if (!devCode) return;
+    const digits = devCode.toString().split('').slice(0, 4);
+    setOtpDigits(digits);
+    if (digits.length === 4) {
+      verifyCode(digits.join(''));
     }
   };
 
@@ -222,7 +246,7 @@ export default function VerificationModal({
         } else {
           setErrorMessage(
             data.error ||
-              `${t('verifyInvalidCode') || 'Неверный проверочный код.'} (${t('verifyAttemptsLeft') || 'Осталось:'} ${remaining})`
+              `${t('verifyInvalidCode') || 'Неверный проверочный код.'} - ${t('verifyAttemptsLeft') || 'Осталось:'} ${remaining}`
           );
         }
       }
@@ -321,6 +345,31 @@ export default function VerificationModal({
                 {currentStep === 'email' ? guestData.email : guestData.phone}
               </div>
             </div>
+
+            {/* Уведомление о дублировании кода в Telegram */}
+            {telegramSent && (
+              <div className="p-2.5 bg-sky-500/10 border border-sky-500/30 rounded-xl flex items-center gap-2 text-xs text-sky-300 mb-4">
+                <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
+                <span>Код также успешно отправлен владельцу виллы в Telegram</span>
+              </div>
+            )}
+
+            {/* Тестовый режим при отсутствии внешнего почтового шлюза */}
+            {devCode && (
+              <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex flex-col gap-2 text-xs text-amber-300 mb-5">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-amber-200">Тестовый режим : шлюз в .env.local еще не задан</span>
+                  <span className="font-mono font-bold text-amber-100 text-sm tracking-widest">{devCode}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleInsertDevCode}
+                  className="w-full py-2 px-3 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 rounded-xl text-amber-100 font-semibold text-xs transition-colors flex items-center justify-center gap-1.5"
+                >
+                  <span>Вставить проверочный код {devCode}</span>
+                </button>
+              </div>
+            )}
 
             {/* 4 раздельных инпута для OTP кода */}
             <div className="flex justify-center gap-3 sm:gap-4 mb-5" onPaste={handlePaste}>

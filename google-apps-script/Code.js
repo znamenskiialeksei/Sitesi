@@ -92,7 +92,9 @@ function onOpen() {
     .addSeparator()
     .addItem("🧪 4. Проверить стандарт точки с запятой (;) в формулах", "auditFormulasSemicolon")
     .addItem("📄 5. Просмотр паспорта и ID всех листов", "showSheetsPassportModal")
-    .addItem("🛠️ 6. Инициализировать недостающие листы", "ensureAllSystemSheets");
+    .addItem("🛠️ 6. Инициализировать недостающие листы", "ensureAllSystemSheets")
+    .addSeparator()
+    .addItem("📧 7. Инструкция по развертыванию Gmail Relay", "showGmailRelayDeployHelp");
 
   // Сборка главного меню верхнего уровня
   ui.createMenu("🏡 Villa Turaman Suite")
@@ -644,5 +646,64 @@ function setupDefaultScriptProperties() {
   }, false);
 
   SpreadsheetApp.getActive().toast("Установлены базовые локальные свойства: SITE_URL=http://localhost:3000", "⚡ Свойства скрипта", 5);
+}
+
+/**
+ * Обработчик входящих POST запросов : Веб-приложение Gmail Relay
+ * Позволяет отправлять проверочные коды гостям через MailApp.sendEmail без сторонних сервисов
+ */
+function doPost(e) {
+  try {
+    var data = {};
+    if (e && e.postData && e.postData.contents) {
+      data = JSON.parse(e.postData.contents);
+    }
+
+    if (data.action === 'send_verification_email') {
+      var to = data.to;
+      var code = data.code;
+      var name = data.name || 'Гость';
+      var subject = data.subject || 'Код подтверждения бронирования Villa Turaman: ' + code;
+      var htmlBody = data.htmlBody;
+
+      if (!to || !code) {
+        return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Отсутствует to или code' }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+
+      MailApp.sendEmail({
+        to: to,
+        subject: subject,
+        htmlBody: htmlBody || ('Здравствуйте, ' + name + '! Ваш проверочный код: ' + code)
+      });
+
+      return ContentService.createTextOutput(JSON.stringify({ success: true, message: 'Письмо с кодом успешно отправлено через Gmail Relay' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Неизвестное действие' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * Инструкция по развертыванию веб-приложения для Gmail Relay
+ */
+function showGmailRelayDeployHelp() {
+  var ui = SpreadsheetApp.getUi();
+  var message = "Инструкция по подключению бесплатной отправки писем через Gmail:\n\n" +
+    "1. В меню редактора Apps Script нажмите синюю кнопку: Развернуть -> Новое развертывание\n" +
+    "2. Выберите тип: Веб-приложение\n" +
+    "3. Описание: Villa Turaman Gmail Relay\n" +
+    "4. Запуск от имени: Меня\n" +
+    "5. У кого есть доступ: Все\n" +
+    "6. Нажмите Развернуть и скопируйте полученный URL веб-приложения\n" +
+    "7. Вставьте скопированный URL в файл .env.local как: GOOGLE_APPS_SCRIPT_URL=...\n\n" +
+    "После этого письма с кодами будут отправляться прямо с вашего Gmail аккаунта бесплатно и надежно.";
+
+  ui.alert("📧 Настройка Gmail Relay", message, ui.ButtonSet.OK);
 }
 
