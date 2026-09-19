@@ -10,7 +10,7 @@
  * Системная конфигурация листов с каноническими русскими названиями,
  * историческими алиасами и заголовками колонок.
  */
-export const SHEETS_REGISTRY = {
+const SHEETS_REGISTRY = {
   // --- КЛАСТЕР 1: ПУБЛИЧНАЯ ВИТРИНА ЛИСТИНГА ---
   HOME: {
     key: 'HOME',
@@ -131,12 +131,12 @@ export const SHEETS_REGISTRY = {
 // Локальный кэш структуры таблицы для снижения обращений к Google Sheets API
 let cachedSheetMap = null;
 let lastCacheTimestamp = 0;
-const CACHE_TTL_MS = 60 * 1000; // 1 минута
+const CACHE_TTL_MS = 60 * 1000;
 
 /**
- * Очистка кэша структуры листов (например, при принудительной синхронизации)
+ * Очистка кэша структуры листов: при принудительной синхронизации
  */
-export function clearSheetsCache() {
+function clearSheetsCache() {
   cachedSheetMap = null;
   lastCacheTimestamp = 0;
 }
@@ -146,11 +146,11 @@ export function clearSheetsCache() {
  * Анализирует все листы в таблице Google, сопоставляет их по псевдонимам и возвращает
  * гарантированно правильное имя.
  * 
- * @param {Object} sheets - Экземпляр google.sheets({ version: 'v4', auth })
+ * @param {Object} sheets - Экземпляр google.sheets
  * @param {string} spreadsheetId - ID целевой таблицы Google
- * @returns {Promise<Object>} Объект вида { HOME: "🏠 Главная витрина", BOOKINGS: "📋 Заявки и Бронирования", ... }
+ * @returns {Promise<Object>} Объект соответствия ключей и названий
  */
-export async function getLiveSheetMap(sheets, spreadsheetId) {
+async function getLiveSheetMap(sheets, spreadsheetId) {
   const now = Date.now();
   if (cachedSheetMap && now - lastCacheTimestamp < CACHE_TTL_MS) {
     return cachedSheetMap;
@@ -200,25 +200,23 @@ export async function getLiveSheetMap(sheets, spreadsheetId) {
 
 /**
  * Формирование экранированного диапазона для Google Sheets API по системному ключу.
- * Пример: resolveRange(map, 'HOME', 'A:E') -> "'🏠 Главная витрина'!A:E"
+ * Пример: resolveRange map, 'HOME', 'A:E' -> "'🏠 Главная витрина'!A:E"
  * 
  * @param {Object} sheetMap - Карта листов, полученная из getLiveSheetMap
- * @param {string} key - Системный ключ ('HOME', 'BOOKINGS', 'CALENDAR' и т.д.)
- * @param {string} rangeSuffix - Суффикс диапазона (например, 'A:G', 'K5')
+ * @param {string} key - Системный ключ
+ * @param {string} rangeSuffix - Суффикс диапазона
  * @returns {string} Безопасный строковый диапазон
  */
-export function resolveRange(sheetMap, key, rangeSuffix) {
+function resolveRange(sheetMap, key, rangeSuffix) {
   const sheetName = sheetMap[key] || SHEETS_REGISTRY[key]?.defaultName || key;
   return `'${sheetName}'!${rangeSuffix}`;
 }
 
-// Поддержка CommonJS окружения для скриптов (Node.js scripts/*.js)
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {
-    SHEETS_REGISTRY,
-    clearSheetsCache,
-    getLiveSheetMap,
-    resolveRange
-  };
-}
+// Универсальный экспорт CommonJS для Node.js скриптов и Next.js Webpack
+module.exports = {
+  SHEETS_REGISTRY,
+  clearSheetsCache,
+  getLiveSheetMap,
+  resolveRange
+};
 

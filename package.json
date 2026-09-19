@@ -5,7 +5,7 @@
   "description": "Премиальная платформа аренды виллы Villa Turaman в стиле AirBnB с разделением личных кабинетов хозяина и гостя",
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/init-google-sheets.js && node scripts/sync-content.js && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "init-db": "node scripts/init-google-sheets.js",
