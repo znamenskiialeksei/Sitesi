@@ -4,11 +4,13 @@
 // Назначение: Сплит-мессенджер, массовые рассылки с плейсхолдерами, шаблоны и LMS
 // ==============================================================================
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { Send, Paperclip, Users, Search, Sparkles, MessageSquare, Tag, PlayCircle, CheckSquare, Square, X, CheckCircle, XCircle, RotateCcw, Gift, RefreshCw } from 'lucide-react';
+import { Send, Paperclip, Users, Search, Sparkles, MessageSquare, Tag, PlayCircle, CheckSquare, Square, X, CheckCircle, XCircle, RotateCcw, Gift, RefreshCw, Bot, Languages, Check, ChevronDown, ChevronUp, Zap, FileText } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../Toast';
+import { SMART_TEMPLATES, TEMPLATE_STAGES } from '../../utils/templatesData';
+import { detectGuestLanguage, resolveTemplate, matchSuggestedTemplate } from '../../utils/templateResolver';
 
 export default function HostInbox({
   chats = [],
@@ -50,25 +52,67 @@ export default function HostInbox({
     );
   });
 
-  // Быстрые шаблоны ответов
-  const quickTemplates = [
-    { title: t('quickTemplateGreetingTitle'), text: t('quickTemplateGreetingText') },
-    { title: t('quickTemplateConfirmationTitle'), text: t('quickTemplateConfirmationText') },
-    { title: t('quickTemplateRulesTitle'), text: t('quickTemplateRulesText') }
-  ];
+  // Управление умными шаблонами и мультиязычным резолвером
+  const [isTemplatesOpen, setIsTemplatesOpen] = useState(false);
+  const [selectedStage, setSelectedStage] = useState('all');
+  const [templateLang, setTemplateLang] = useState('ru');
+  const [previewTemplateId, setPreviewTemplateId] = useState(null);
 
-  const handleInsertTemplate = (templateText) => {
-    let replaced = templateText;
-    if (activeChat) {
-      replaced = replaced.replace(/\[FIRST_NAME\]/g, activeChat.clientName || t('guestLabel'));
-      const curReq = activeChat.activeRequests?.[0];
-      if (curReq) {
-        replaced = replaced.replace(/\[CHECKIN_DATE\]/g, curReq.checkIn || '');
-        replaced = replaced.replace(/\[CHECKOUT_DATE\]/g, curReq.checkOut || '');
-      }
+  // Автоматическое определение языка гостя при смене активного чата
+  useEffect(() => {
+    if (activeChat?.messages && activeChat.messages.length > 0) {
+      const detected = detectGuestLanguage(activeChat.messages);
+      if (detected) setTemplateLang(detected);
     }
-    setMessageInput(replaced);
+  }, [activeChat?.sheetName]);
+
+  // Последнее сообщение гостя для анализа намерений ИИ-суфлером
+  const lastGuestMsg = useMemo(() => {
+    if (!activeChat?.messages || activeChat.messages.length === 0) return null;
+    return [...activeChat.messages].reverse().find((m) => m.sender !== 'Владелец' && m.sender !== 'Система');
+  }, [activeChat?.messages]);
+
+  // Рекомендация ИИ-суфлера на базе намерений гостя
+  const aiRecommendation = useMemo(() => {
+    if (!lastGuestMsg) return null;
+    const textToMatch = lastGuestMsg.original || lastGuestMsg.ru || lastGuestMsg.en || lastGuestMsg.tr || '';
+    return matchSuggestedTemplate(textToMatch);
+  }, [lastGuestMsg]);
+
+  // Функция резолва шаблона под контекст текущего гостя
+  const getResolvedTemplateText = (template, targetLang = templateLang) => {
+    if (!template) return '';
+    const raw = template.text?.[targetLang] || template.text?.ru || '';
+    const curReq = activeChat?.activeRequests?.[0] || {};
+    return resolveTemplate(raw, {
+      guestName: activeChat?.clientName,
+      contact: activeChat?.clientContact,
+      checkIn: curReq.checkIn,
+      checkOut: curReq.checkOut,
+      status: curReq.status,
+      totalPrice: curReq.price
+    });
   };
+
+  const handleApplyTemplate = (template, targetLang = templateLang) => {
+    const resolved = getResolvedTemplateText(template, targetLang);
+    setMessageInput(resolved);
+    toast.success('Шаблон вставлен в поле ввода');
+  };
+
+  const handleDirectSendTemplate = (template, targetLang = templateLang) => {
+    const resolved = getResolvedTemplateText(template, targetLang);
+    if (!activeChat || !resolved.trim()) return;
+    onSendMessage(activeChat.sheetName, resolved.trim(), null);
+    toast.success('Шаблон успешно отправлен гостю');
+    setIsTemplatesOpen(false);
+  };
+
+  // Фильтрация шаблонов по выбранному этапу
+  const displayedTemplates = useMemo(() => {
+    if (selectedStage === 'all') return SMART_TEMPLATES;
+    return SMART_TEMPLATES.filter((tmpl) => tmpl.stageId === selectedStage);
+  }, [selectedStage]);
 
   const handleSendLessonLink = (lesson) => {
     if (!lesson) return;
@@ -265,18 +309,228 @@ export default function HostInbox({
             <div ref={chatBottomRef} />
           </div>
 
-          {/* Быстрые шаблоны ответов (полоса над полем ввода) */}
-          <div className="p-2 bg-slate-850 border-t border-white/5 flex gap-1.5 overflow-x-auto">
-            {quickTemplates.map((tItem, tIdx) => (
-              <button
-                key={tIdx}
-                type="button"
-                onClick={() => handleInsertTemplate(tItem.text)}
-                className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 hover:text-white shrink-0 border border-white/5 transition-colors"
-              >
-                + {tItem.title}
-              </button>
-            ))}
+          {/* Рекомендация ИИ-суфлера: Фаза 1 Copilot */}
+          {aiRecommendation && (
+            <div className="px-3 py-2 bg-gradient-to-r from-rose-950/80 via-purple-950/70 to-slate-900 border-t border-rose-500/40 flex items-center justify-between gap-2 text-xs">
+              <div className="flex items-center gap-2 min-w-0">
+                <Sparkles className="w-4 h-4 text-amber-400 shrink-0 animate-pulse" />
+                <div className="truncate">
+                  <span className="font-bold text-amber-300">ИИ-Суфлер рекомендует: </span>
+                  <span className="text-white font-medium">
+                    {aiRecommendation.template.title?.[templateLang] || aiRecommendation.template.title?.ru}
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => handleApplyTemplate(aiRecommendation.template, templateLang)}
+                  className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-[11px] transition-colors flex items-center gap-1"
+                >
+                  <Zap className="w-3 h-3" />
+                  <span>Применить</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPreviewTemplateId(aiRecommendation.template.id);
+                    setSelectedStage(aiRecommendation.template.stageId);
+                    setIsTemplatesOpen(true);
+                  }}
+                  className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] transition-colors border border-white/10"
+                >
+                  Все 14 шаблонов
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Интерактивная выдвижная панель умных шаблонов */}
+          {isTemplatesOpen && (
+            <div className="bg-slate-950 border-t border-white/10 p-3 space-y-3 max-h-[340px] overflow-y-auto">
+              {/* Шапка селектора шаблонов: переключатель языков и закрытие */}
+              <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2">
+                <div className="flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-rose-500" />
+                  <span className="text-xs font-bold text-white uppercase tracking-wider">
+                    Умные шаблоны: 14 сценариев
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center bg-slate-850 rounded-xl p-0.5 border border-white/10">
+                    <span className="text-[10px] text-slate-400 px-2 flex items-center gap-1">
+                      <Languages className="w-3 h-3 text-slate-400" />
+                      <span>Язык:</span>
+                    </span>
+                    {['ru', 'en', 'tr'].map((l) => (
+                      <button
+                        key={l}
+                        type="button"
+                        onClick={() => setTemplateLang(l)}
+                        className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase transition-all ${
+                          templateLang === l
+                            ? 'bg-rose-600 text-white shadow-sm'
+                            : 'text-slate-400 hover:text-slate-200'
+                        }`}
+                      >
+                        {l}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsTemplatesOpen(false)}
+                    className="p-1 rounded-lg bg-slate-850 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Фильтр по этапам */}
+              <div className="flex gap-1.5 overflow-x-auto pb-1">
+                <button
+                  type="button"
+                  onClick={() => setSelectedStage('all')}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 transition-all ${
+                    selectedStage === 'all'
+                      ? 'bg-white/20 text-white border border-white/30'
+                      : 'bg-slate-900 text-slate-400 hover:text-white border border-white/5'
+                  }`}
+                >
+                  Все этапы
+                </button>
+                {TEMPLATE_STAGES.map((st) => (
+                  <button
+                    key={st.id}
+                    type="button"
+                    onClick={() => setSelectedStage(st.id)}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 transition-all ${
+                      selectedStage === st.id
+                        ? 'bg-rose-600 text-white shadow-sm'
+                        : 'bg-slate-900 text-slate-400 hover:text-white border border-white/5'
+                    }`}
+                  >
+                    {st.name}
+                  </button>
+                ))}
+              </div>
+
+              {/* Список шаблонов выбранного этапа */}
+              <div className="space-y-2">
+                {displayedTemplates.map((tItem) => {
+                  const resolvedText = getResolvedTemplateText(tItem, templateLang);
+                  const isAiMatched = aiRecommendation?.template?.id === tItem.id;
+
+                  return (
+                    <div
+                      key={tItem.id}
+                      className={`p-3 rounded-2xl border transition-all text-xs space-y-2 ${
+                        isAiMatched
+                          ? 'bg-rose-950/30 border-rose-500/50 shadow-md'
+                          : 'bg-slate-900/90 border-white/10 hover:border-white/20'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="px-2 py-0.5 rounded-md bg-slate-800 text-rose-400 font-mono text-[10px] font-bold border border-white/5">
+                            {tItem.id}
+                          </span>
+                          <span className="font-bold text-white truncate">
+                            {tItem.title?.[templateLang] || tItem.title?.ru}
+                          </span>
+                          {isAiMatched && (
+                            <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-500/30 flex items-center gap-1">
+                              <Sparkles className="w-2.5 h-2.5" />
+                              <span>Рекомендация ИИ</span>
+                            </span>
+                          )}
+                        </div>
+
+                        <span className="text-[10px] text-slate-400 shrink-0">
+                          {tItem.stageName}
+                        </span>
+                      </div>
+
+                      <div className="p-2.5 bg-slate-950/80 rounded-xl border border-white/5 text-slate-300 font-sans text-[11px] whitespace-pre-wrap line-clamp-3">
+                        {resolvedText}
+                      </div>
+
+                      <div className="flex items-center justify-end gap-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => handleApplyTemplate(tItem, templateLang)}
+                          className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-[11px] transition-colors border border-white/10 flex items-center gap-1"
+                        >
+                          <FileText className="w-3 h-3 text-slate-400" />
+                          <span>Вставить в поле</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDirectSendTemplate(tItem, templateLang)}
+                          className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-[11px] transition-colors shadow-sm flex items-center gap-1"
+                        >
+                          <Send className="w-3 h-3" />
+                          <span>Отправить сразу</span>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Компактная полоса шаблонов над полем ввода */}
+          <div className="p-2 bg-slate-850 border-t border-white/5 flex items-center gap-2 overflow-x-auto">
+            <button
+              type="button"
+              onClick={() => setIsTemplatesOpen(!isTemplatesOpen)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
+                isTemplatesOpen
+                  ? 'bg-rose-600 text-white shadow-md'
+                  : 'bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white border border-white/10'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5 text-rose-400" />
+              <span>14 умных шаблонов</span>
+              {isTemplatesOpen ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
+            </button>
+
+            {/* Быстрые переключатели языка шаблонов */}
+            <div className="flex items-center bg-slate-900 rounded-lg p-0.5 border border-white/10 shrink-0">
+              {['ru', 'en', 'tr'].map((l) => (
+                <button
+                  key={l}
+                  type="button"
+                  onClick={() => setTemplateLang(l)}
+                  className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-all ${
+                    templateLang === l
+                      ? 'bg-rose-600 text-white'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  {l}
+                </button>
+              ))}
+            </div>
+
+            {/* Быстрые чипы шаблонов для вставки в 1 клик */}
+            <div className="flex gap-1.5 shrink-0">
+              {SMART_TEMPLATES.slice(0, 5).map((tItem) => (
+                <button
+                  key={tItem.id}
+                  type="button"
+                  onClick={() => handleApplyTemplate(tItem, templateLang)}
+                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 hover:text-white shrink-0 border border-white/5 transition-colors truncate max-w-[170px]"
+                  title={tItem.title?.[templateLang] || tItem.title?.ru}
+                >
+                  + {tItem.id}: {tItem.title?.[templateLang] || tItem.title?.ru}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Поле ввода */}

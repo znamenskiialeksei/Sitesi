@@ -10,6 +10,8 @@
 
 import { google } from 'googleapis';
 import { getLiveSheetMap, resolveRange } from '../../utils/sheetsRegistry';
+import { SMART_TEMPLATES, TEMPLATE_STAGES } from '../../utils/templatesData';
+import { resolveTemplate, extractFirstName } from '../../utils/templateResolver';
 
 // Вспомогательный кэш сессий ответов в памяти
 const botSessions = global._tgBotSessions || (global._tgBotSessions = {});
@@ -18,8 +20,9 @@ const botSessions = global._tgBotSessions || (global._tgBotSessions = {});
 const MAIN_KEYBOARD = {
   keyboard: [
     [{ text: "📋 Заявки и брони" }, { text: "💬 CRM Чаты" }],
-    [{ text: "📅 Календарь дат" }, { text: "💳 Тарифы виллы" }],
-    [{ text: "📢 Массовая рассылка" }, { text: "⚙️ Статус и Webhook" }]
+    [{ text: "📑 Шаблоны ответов" }, { text: "📅 Календарь дат" }],
+    [{ text: "💳 Тарифы виллы" }, { text: "📢 Массовая рассылка" }],
+    [{ text: "⚙️ Статус и Webhook" }]
   ],
   resize_keyboard: true,
   persistent: true
@@ -355,12 +358,202 @@ export default async function handler(req, res) {
           text: historyText,
           reply_markup: {
             inline_keyboard: [
-              [{ text: `✍️ Ответить гостю (${contact})`, callback_data: `reply_${contact}` }]
+              [{ text: `✍️ Ответить гостю: ${contact}`, callback_data: `reply_${contact}` }],
+              [{ text: `📑 Шаблоны ответов для ${contact}`, callback_data: `tmpl_pick_${contact}` }]
             ]
           }
         });
       } catch (err) {
         await tgApi(token, 'sendMessage', { chat_id: chatId, text: `Ошибка загрузки истории: ${err.message}` });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Меню выбора шаблона для конкретного гостя ---
+    if (data.startsWith('tmpl_pick_')) {
+      const contact = data.replace('tmpl_pick_', '');
+      botSessions[`reply_${chatId}`] = contact;
+
+      await tgApi(token, 'answerCallbackQuery', {
+        callback_query_id: cqId,
+        text: `📑 Выбор шаблона для: ${contact}`,
+        show_alert: false
+      });
+
+      const stageButtons = TEMPLATE_STAGES.map((st) => [
+        { text: st.name, callback_data: `tmpl_st_for_${contact}_${st.id}` }
+      ]);
+
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: `📑 Выберите этап общения для гостя: ${contact}\nДоступно 14 сценариев на трех языках:`,
+        reply_markup: { inline_keyboard: stageButtons }
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Просмотр шаблонов этапа для гостя ---
+    if (data.startsWith('tmpl_st_for_')) {
+      const rest = data.replace('tmpl_st_for_', '');
+      const parts = rest.split('_stage_');
+      const contact = parts[0];
+      const stageId = `stage_${parts[1]}`;
+
+      const templatesInStage = SMART_TEMPLATES.filter((t) => t.stageId === stageId);
+      const buttons = templatesInStage.map((t) => [
+        { text: `${t.id}: ${t.title.ru}`, callback_data: `tmpl_view_for_${contact}_${t.id}` }
+      ]);
+
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId });
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: `📑 Шаблоны этапа ${stageId} для ${contact}:\nВыберите шаблон для просмотра и отправки:`,
+        reply_markup: { inline_keyboard: buttons }
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Просмотр шаблонов этапа в общем каталоге ---
+    if (data.startsWith('tmpl_stage_')) {
+      const stageId = data.replace('tmpl_stage_', '');
+      const templatesInStage = SMART_TEMPLATES.filter((t) => t.stageId === stageId);
+      const buttons = templatesInStage.map((t) => [
+        { text: `${t.id}: ${t.title.ru}`, callback_data: `tmpl_view_gen_${t.id}` }
+      ]);
+
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId });
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: `📑 Шаблоны этапа ${stageId}:\nНажмите на шаблон для просмотра полного текста:`,
+        reply_markup: { inline_keyboard: buttons }
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Просмотр текста шаблона в общем каталоге ---
+    if (data.startsWith('tmpl_view_gen_')) {
+      const tmplId = data.replace('tmpl_view_gen_', '');
+      const tmpl = SMART_TEMPLATES.find((t) => t.id === tmplId);
+      if (!tmpl) {
+        await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId, text: 'Шаблон не найден', show_alert: true });
+        return res.status(200).json({ ok: true });
+      }
+
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId });
+      const cardText = `📑 Шаблон ${tmpl.id}: ${tmpl.title.ru}\n\n` +
+        `🇷🇺 RU:\n${tmpl.text.ru}\n\n` +
+        `🇬🇧 EN:\n${tmpl.text.en}\n\n` +
+        `🇹🇷 TR:\n${tmpl.text.tr}`;
+
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: cardText,
+        reply_markup: MAIN_KEYBOARD
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Просмотр текста шаблона и кнопки отправки гостю ---
+    if (data.startsWith('tmpl_view_for_')) {
+      const rest = data.replace('tmpl_view_for_', '');
+      const parts = rest.split('_');
+      const tmplId = `${parts[parts.length - 2]}.${parts[parts.length - 1]}`;
+      const contact = parts.slice(0, parts.length - 2).join('_');
+
+      const tmpl = SMART_TEMPLATES.find((t) => t.id === tmplId);
+      if (!tmpl) {
+        await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId, text: 'Шаблон не найден', show_alert: true });
+        return res.status(200).json({ ok: true });
+      }
+
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId });
+
+      const cardText = `📑 Шаблон ${tmpl.id}: ${tmpl.title.ru}\n\n` +
+        `🇷🇺 RU:\n${tmpl.text.ru}\n\n` +
+        `🇬🇧 EN:\n${tmpl.text.en}\n\n` +
+        `🇹🇷 TR:\n${tmpl.text.tr}\n\n` +
+        `Выберите язык для автоматической подстановки данных и моментальной отправки гостю:`;
+
+      const sendButtons = [
+        [
+          { text: '📤 Отправить на RU', callback_data: `tmpl_send_${tmpl.id}_ru_${contact}` },
+          { text: '📤 Отправить на EN', callback_data: `tmpl_send_${tmpl.id}_en_${contact}` }
+        ],
+        [
+          { text: '📤 Отправить на TR', callback_data: `tmpl_send_${tmpl.id}_tr_${contact}` }
+        ]
+      ];
+
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: cardText,
+        reply_markup: { inline_keyboard: sendButtons }
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Моментальная отправка резолвленного шаблона гостю на сайт ---
+    if (data.startsWith('tmpl_send_')) {
+      const parts = data.replace('tmpl_send_', '').split('_');
+      const tmplId = parts[0];
+      const targetLang = parts[1] || 'ru';
+      const contact = parts.slice(2).join('_');
+
+      const tmpl = SMART_TEMPLATES.find((t) => t.id === tmplId);
+      if (!tmpl) {
+        await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId, text: 'Шаблон не найден', show_alert: true });
+        return res.status(200).json({ ok: true });
+      }
+
+      try {
+        const rawText = tmpl.text[targetLang] || tmpl.text.ru;
+        const resolvedText = resolveTemplate(rawText, {
+          guestName: contact,
+          contact: contact
+        });
+
+        const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
+        const cleanContact = contact.replace(/[\\/?*[\]]/g, '').trim();
+
+        if (sheets && chatsSpreadsheetId) {
+          const chatMeta = await sheets.spreadsheets.get({ spreadsheetId: chatsSpreadsheetId });
+          let targetSheetTitle = (chatMeta.data.sheets || []).find((s) => s.properties.title.toLowerCase().includes(cleanContact.toLowerCase()))?.properties?.title;
+
+          if (!targetSheetTitle) {
+            targetSheetTitle = `Chat_Гость_${cleanContact.substring(0, 30)}`;
+            await ensureStyledChatSheet(sheets, chatsSpreadsheetId, targetSheetTitle);
+          }
+
+          const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+          const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+          const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
+
+          await sheets.spreadsheets.values.append({
+            spreadsheetId: chatsSpreadsheetId,
+            range: `'${targetSheetTitle}'!A:G`,
+            valueInputOption: 'USER_ENTERED',
+            insertDataOption: 'INSERT_ROWS',
+            requestBody: { values: [[timestamp, "Владелец", resolvedText, fRU, fEN, fTR, ""]] }
+          });
+        }
+
+        await tgApi(token, 'answerCallbackQuery', {
+          callback_query_id: cqId,
+          text: `✅ Шаблон ${tmplId} отправлен гостю: ${contact}`,
+          show_alert: true
+        });
+
+        await tgApi(token, 'sendMessage', {
+          chat_id: chatId,
+          text: `✅ Шаблон ${tmplId} на языке ${targetLang.toUpperCase()} успешно доставлен гостю ${contact} на сайт!\n\nТекст сообщения:\n${resolvedText}`,
+          reply_markup: MAIN_KEYBOARD
+        });
+      } catch (sendErr) {
+        await tgApi(token, 'answerCallbackQuery', {
+          callback_query_id: cqId,
+          text: `❌ Ошибка отправки: ${sendErr.message}`,
+          show_alert: true
+        });
       }
       return res.status(200).json({ ok: true });
     }
@@ -524,7 +717,8 @@ export default async function handler(req, res) {
               { text: "❌ Отклонить", callback_data: `reject_${idx}_${contact}` }
             ],
             [
-              { text: `✍️ Написать в чат`, callback_data: `reply_${contact}` }
+              { text: `✍️ Написать в чат`, callback_data: `reply_${contact}` },
+              { text: `📑 Шаблоны ответов`, callback_data: `tmpl_pick_${contact}` }
             ]
           ];
 
@@ -572,6 +766,7 @@ export default async function handler(req, res) {
           summary += `• ${clientName} (${clientContact})\n`;
           buttons.push([
             { text: `✍️ ${clientName}`, callback_data: `reply_${clientContact}` },
+            { text: `📑 Шаблоны`, callback_data: `tmpl_pick_${clientContact}` },
             { text: `📜 Читать`, callback_data: `history_${clientContact}` }
           ]);
         }
@@ -584,6 +779,20 @@ export default async function handler(req, res) {
       } catch (err) {
         await tgApi(token, 'sendMessage', { chat_id: chatId, text: `Ошибка загрузки чатов: ${err.message}` });
       }
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Раздел: 📑 Шаблоны ответов ---
+    if (text === '📑 Шаблоны ответов' || text === '/templates') {
+      const stageButtons = TEMPLATE_STAGES.map((st) => [
+        { text: st.name, callback_data: `tmpl_stage_${st.id}` }
+      ]);
+
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: `📑 Единая база умных шаблонов Villa Turaman:\n14 готовых сценариев на 3 языках RU | EN | TR.\n\nВыберите этап для просмотра:`,
+        reply_markup: { inline_keyboard: stageButtons }
+      });
       return res.status(200).json({ ok: true });
     }
 

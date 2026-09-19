@@ -8,6 +8,7 @@
 require('dotenv').config({ path: '.env.local' });
 const { google } = require('googleapis');
 const { SHEETS_REGISTRY, getLiveSheetMap, resolveRange } = require('../utils/sheetsRegistry');
+const { SMART_TEMPLATES } = require('../utils/templatesData');
 
 // Конфигурация структуры базы данных Google Таблиц
 const GOOGLE_CONFIG = {
@@ -433,30 +434,41 @@ const initializeSpreadsheet = async () => {
             });
           }
 
-          // Добавление стандартного словаря переменных и плейсхолдеров
+          // Добавление полного словаря переменных и плейсхолдеров
           if (config.key === 'VARIABLES') {
             dataAppendRequests.push({
-              range: `'${actualTitle}'!A2:D8`,
+              range: `'${actualTitle}'!A2:D13`,
               values: [
                 ['[FIRST_NAME]', 'name', 'Имя гостя', 'Иван'],
-                ['[CHECKIN_DATE]', 'checkIn', 'Дата заезда', '01.05.2027'],
-                ['[CHECKOUT_DATE]', 'checkOut', 'Дата выезда', '10.05.2027'],
+                ['[CONFIRMATION_CODE]', 'code', 'Код бронирования', 'VT-7788'],
+                ['[CHECKIN_DATE]', 'checkIn', 'Дата заезда', '01.06.2026'],
+                ['[CHECKOUT_DATE]', 'checkOut', 'Дата выезда', '08.06.2026'],
                 ['[CHECKIN_TIME]', 'checkInTime', 'Стандартное время заезда', '16:00'],
                 ['[CHECKOUT_TIME]', 'checkOutTime', 'Стандартное время выезда', '10:00'],
-                ['[GUESTS]', 'total_guests', 'Общее количество гостей', '4'],
-                ['[PRICE]', 'totalPrice', 'Итоговая стоимость', '1500 USD']
+                ['[BOOKING_PLATFORM_NAME]', 'platform', 'Платформа бронирования', 'Villa Turaman Direct'],
+                ['[ADDRESS]', 'address', 'Точный адрес виллы', 'Дальян, Ортаджа, Мугла, Турция'],
+                ['[CHECKIN_METHOD]', 'checkinMethod', 'Способ передачи ключей', 'Мини-сейф с кодом / личная встреча владельцем'],
+                ['[WIFI_NAME]', 'wifiName', 'Имя сети Wi-Fi', 'VillaTuraman_5G'],
+                ['[WIFI_PASSWORD]', 'wifiPassword', 'Пароль сети Wi-Fi', 'DalyanTuramanGuest2026'],
+                ['[KEY_HANDOVER_INSTRUCTIONS]', 'keyHandover', 'Инструкции возврата ключей', 'Оставьте ключи в мини-сейфе с кодом у входной двери виллы']
               ]
             });
           }
 
-          // Добавление шаблонов сообщений по умолчанию
+          // Добавление полного сборника 14 умных шаблонов сообщений на трех языках
           if (config.key === 'TEMPLATES') {
+            const templateRows = SMART_TEMPLATES.map((tmpl) => [
+              tmpl.id,
+              tmpl.title.ru,
+              tmpl.title.en,
+              tmpl.title.tr,
+              tmpl.text.ru,
+              tmpl.text.en,
+              tmpl.text.tr
+            ]);
             dataAppendRequests.push({
-              range: `'${actualTitle}'!A2:E3`,
-              values: [
-                ['welcome', 'Приветствие', '', '', 'Здравствуйте, [FIRST_NAME]! Добро пожаловать. Я владелец Виллы Тураман.'],
-                ['confirmation', 'Подтверждение', '', '', 'Ваша заявка на бронирование [CHECKIN_DATE] — [CHECKOUT_DATE] принята.']
-              ]
+              range: `'${actualTitle}'!A2:G${templateRows.length + 1}`,
+              values: templateRows
             });
           }
         }
