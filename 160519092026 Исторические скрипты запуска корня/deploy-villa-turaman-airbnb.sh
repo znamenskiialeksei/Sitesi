@@ -210,6 +210,18 @@ cat << 'EOF' > .vscode/tasks.json
       "type": "shell",
       "command": "pwsh.exe -ExecutionPolicy Bypass -Command \"Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }\"",
       "problemMatcher": []
+    },
+    {
+      "label": "⏸️ 6. Перевести сайт в режим обслуживания - Vercel Pause",
+      "type": "shell",
+      "command": "bash \".\\160519092026 Исторические скрипты запуска корня\\pause-site.sh\"",
+      "problemMatcher": []
+    },
+    {
+      "label": "▶️ 7. Возобновить штатную работу сайта - Vercel Resume",
+      "type": "shell",
+      "command": "bash \".\\160519092026 Исторические скрипты запуска корня\\resume-site.sh\"",
+      "problemMatcher": []
     }
   ]
 }

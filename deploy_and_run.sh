@@ -156,9 +156,11 @@ interactive_menu() {
         echo -e "  ${GREEN}3)${RESET} Синхронизировать контент с Google Sheets (sync-content.js)"
         echo -e "  ${GREEN}4)${RESET} Инициализировать таблицы CRM Google Sheets (init-google-sheets.js)"
         echo -e "  ${GREEN}5)${RESET} Проверить и освободить порт 3000"
+        echo -e "  ${GREEN}6)${RESET} ⏸️ Перевести сайт в режим обслуживания (Vercel Pause)"
+        echo -e "  ${GREEN}7)${RESET} ▶️ Возобновить штатную работу сайта (Vercel Resume)"
         echo -e "  ${RED}0)${RESET} Выход"
         echo ""
-        read -r -p "Введите номер команды (0-5): " CHOICE
+        read -r -p "Введите номер команды (0-7): " CHOICE
 
         case "$CHOICE" in
             1)
@@ -185,12 +187,20 @@ interactive_menu() {
                 free_port 3000
                 read -r -p "Нажмите Enter для возврата в меню..."
                 ;;
+            6)
+                bash "160519092026 Исторические скрипты запуска корня/pause-site.sh"
+                read -r -p "Нажмите Enter для возврата в меню..."
+                ;;
+            7)
+                bash "160519092026 Исторические скрипты запуска корня/resume-site.sh"
+                read -r -p "Нажмите Enter для возврата в меню..."
+                ;;
             0)
                 echo -e "\n${GREEN}Работа завершена.${RESET}"
                 exit 0
                 ;;
             *)
-                log_warn "Неверный ввод. Пожалуйста, укажите цифру от 0 до 5."
+                log_warn "Неверный ввод. Пожалуйста, укажите цифру от 0 до 7."
                 sleep 1
                 ;;
         esac

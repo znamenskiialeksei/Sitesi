@@ -159,10 +159,12 @@ function Interactive-Menu {
         Write-Host "  [3] Синхронизировать контент с Google Sheets (sync-content.js)" -ForegroundColor Green
         Write-Host "  [4] Инициализировать таблицы CRM Google Sheets (init-google-sheets.js)" -ForegroundColor Green
         Write-Host "  [5] Проверить и освободить порт 3000" -ForegroundColor Cyan
+        Write-Host "  [6] ⏸️ Перевести сайт в режим обслуживания - Vercel Pause" -ForegroundColor Yellow
+        Write-Host "  [7] ▶️ Возобновить штатную работу сайта - Vercel Resume" -ForegroundColor Green
         Write-Host "  [0] Выход" -ForegroundColor Red
         Write-Host ""
         
-        $choice = Read-Host "Введите номер команды (0-5)"
+        $choice = Read-Host "Введите номер команды (0-7)"
         
         switch ($choice) {
             "1" {
@@ -198,12 +200,24 @@ function Interactive-Menu {
                 Write-Host "`nНажмите любую клавишу для возврата в меню..." -ForegroundColor DarkGray
                 $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
             }
+            "6" {
+                Write-Host "`nАктивация режима обслуживания на Vercel..." -ForegroundColor Yellow
+                bash "160519092026 Исторические скрипты запуска корня/pause-site.sh"
+                Write-Host "`nНажмите любую клавишу для возврата в меню..." -ForegroundColor DarkGray
+                $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+            }
+            "7" {
+                Write-Host "`nВозобновление штатной работы на Vercel..." -ForegroundColor Green
+                bash "160519092026 Исторические скрипты запуска корня/resume-site.sh"
+                Write-Host "`nНажмите любую клавишу для возврата в меню..." -ForegroundColor DarkGray
+                $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+            }
             "0" {
                 Write-Host "`nРабота завершена." -ForegroundColor Green
                 return
             }
             default {
-                Write-Host "`nНеверный ввод! Выберите цифру от 0 до 5." -ForegroundColor Yellow
+                Write-Host "`nНеверный ввод! Выберите цифру от 0 до 7." -ForegroundColor Yellow
                 Start-Sleep -Seconds 1
             }
         }
