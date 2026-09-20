@@ -1,9 +1,9 @@
 // ==============================================================================
 // АВТОМАТИЗАЦИЯ GOOGLE APPS SCRIPT ДЛЯ СИНХРОНИЗАЦИИ VILLA TURAMAN
 // Файл: google-apps-script/Code.js
-// Назначение: Скрипт устанавливается в редактор Google Таблицы (Расширения -> Apps Script).
-// 1. Создает 6 многоуровневых блоков меню в интерфейсе Google Таблиц ("🏡 Villa Turaman Suite").
-// 2. Включает 3-уровневый смарт-менеджер листов с 10+ пресетами умного скрытия/показа и сортировки.
+// Назначение: Скрипт устанавливается в редактор Google Таблицы: Расширения -> Apps Script.
+// 1. Создает 6 многоуровневых блоков меню в интерфейсе Google Таблиц: "🏡 Villa Turaman Suite".
+// 2. Включает смарт-навигатор листов в 1 клик, режим Всё открыто и 3 фокусных кластера.
 // 3. Обеспечивает мгновенную отправку вебхуков ревалидации Next.js при любых правках контента.
 // ==============================================================================
 
@@ -38,30 +38,42 @@ var VILLA_SHEETS_CONFIG = {
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
 
-  // 1. Блок 1: 3-уровневый Смарт-менеджер перегруппировки листов (10+ пресетов)
-  var presetsMenu = ui.createMenu("📂 Рабочие режимы (10 пресетов)")
-    .addItem("🌟 1. Всё открыто (Полный рабочий режим)", "applyPresetAllOpen")
-    .addItem("🏠 2. Публичная витрина (Контент & Медиа)", "applyPresetShowcase")
-    .addItem("📅 3. Центр бронирований (Заявки & Календарь)", "applyPresetBookings")
-    .addItem("🛍️ 4. Каталог & Продажи (Услуги & Гиды)", "applyPresetCatalog")
-    .addItem("💬 5. CRM & Гостевой сервис (Аккаунты & Чат)", "applyPresetCrm")
-    .addItem("⚖️ 6. Юридический блок (Реквизиты & KVKK)", "applyPresetLegal")
-    .addItem("🎯 7. Фокус бронирований (Только Заявки & Тарифы)", "applyPresetFocus")
-    .addItem("🎨 8. Редактор витрины (Главная & Фото/Видео)", "applyPresetMediaEditor")
-    .addItem("🧩 9. Системные справочники (Шаблоны & Переменные)", "applyPresetSystem")
-    .addItem("👑 10. Режим владельца (Мастер-аккаунт & Финансы)", "applyPresetOwner");
-
-  var quickActionsMenu = ui.createMenu("⚡ Быстрые действия")
-    .addItem("👁️ Раскрыть ВСЕ скрытые листы", "showAllSheets")
-    .addItem("🔒 Скрыть все листы кроме активного", "hideAllExceptActive")
-    .addItem("📑 Каноническая сортировка вкладок (Витрина ➔ Хозяин)", "sortSheetsCanonically")
-    .addItem("🏷️ Пакетное авто-переименование в русский стандарт", "renameSheetsToRussianStandard");
-
-  var sheetManagerMenu = ui.createMenu("👁️ 1. Смарт-менеджер листов")
-    .addSubMenu(presetsMenu)
-    .addSubMenu(quickActionsMenu)
+  // 1. Блок 1: Смарт-менеджер и Навигатор листов
+  var jumpMenu = ui.createMenu("🚀 2. Быстрый переход к листу")
+    .addItem("🏠 Главная витрина [ID: 101]", "jumpToSheet_HOME")
+    .addItem("📸 Фото и Видео Галерея [ID: 102]", "jumpToSheet_GALLERY")
+    .addItem("📖 О вилле и Правила [ID: 103]", "jumpToSheet_ABOUT")
+    .addItem("🛎️ Дополнительные услуги [ID: 104]", "jumpToSheet_SERVICES")
+    .addItem("🗺️ Видео-путеводители [ID: 105]", "jumpToSheet_GUIDES")
+    .addItem("⚖️ Юридические документы [ID: 106]", "jumpToSheet_LEGAL")
     .addSeparator()
-    .addItem("ℹ️ Справка по смарт-группировке листов", "showSheetManagerHelp");
+    .addItem("📋 Заявки и Бронирования [ID: 201]", "jumpToSheet_BOOKINGS")
+    .addItem("📅 Календарь и Тарифы [ID: 202]", "jumpToSheet_CALENDAR")
+    .addItem("👤 Гостевые аккаунты [ID: 203]", "jumpToSheet_ACCOUNTS")
+    .addItem("🔑 Управление доступом [ID: 204]", "jumpToSheet_MASTER")
+    .addItem("💳 Заказы услуг и гидов [ID: 205]", "jumpToSheet_ORDERS")
+    .addItem("🎟️ Доступы к путеводителям [ID: 206]", "jumpToSheet_ACCESS")
+    .addSeparator()
+    .addItem("💬 Шаблоны сообщений [ID: 207]", "jumpToSheet_TEMPLATES")
+    .addItem("🧩 Словарь переменных [ID: 208]", "jumpToSheet_VARIABLES")
+    .addItem("⚙️ Системные настройки ИИ [ID: 209]", "jumpToSheet_SETTINGS");
+
+  var focusMenu = ui.createMenu("🎯 3. Режимы фокуса по кластерам")
+    .addItem("🏠 1. Публичная витрина [6 листов]", "applyPresetShowcase")
+    .addItem("💼 2. Центр управления и CRM [6 листов]", "applyPresetOperations")
+    .addItem("🧩 3. Настройки и Шаблоны [3 листа]", "applyPresetSettings");
+
+  var sheetManagerMenu = ui.createMenu("👁️ 1. Менеджер и Навигатор листов")
+    .addItem("🌟 1. Раскрыть ВСЕ 15 листов", "applyPresetAllOpen")
+    .addSeparator()
+    .addSubMenu(jumpMenu)
+    .addSubMenu(focusMenu)
+    .addSeparator()
+    .addItem("📑 4. Каноническая сортировка вкладок", "sortSheetsCanonically")
+    .addItem("🏷️ 5. Пакетное авто-переименование в русский стандарт", "renameSheetsToRussianStandard")
+    .addItem("📊 6. Паспорт листов и проверка структуры", "showSheetsPassportModal")
+    .addSeparator()
+    .addItem("ℹ️ Справка по менеджеру листов", "showSheetManagerHelp");
 
   // 2. Блок 2: Синхронизация с платформой Next.js
   var syncMenu = ui.createMenu("🌐 2. Синхронизация с сайтом")
@@ -304,84 +316,68 @@ function applyVisibilityPreset(targetConfigKeys, presetTitle) {
 }
 
 // ==============================================================================
-// 10 ПРЕСЕТОВ СМАРТ-ПЕРЕГРУППИРОВКИ ЛИСТОВ
+// БЫСТРЫЙ ПЕРЕХОД К ЛИСТАМ В 1 КЛИК И РЕЖИМЫ ФОКУСА
 // ==============================================================================
 
-/** Пресет 1: Всё открыто (Полный рабочий доступ) */
-function applyPresetAllOpen() {
-  showAllSheets();
-  SpreadsheetApp.getActive().toast("Все 14 системных листов открыты для работы.", "🌟 Режим: Всё открыто", 4);
+/**
+ * Универсальный переход к листу в 1 клик по ключу конфигурации без скрытия соседних вкладок
+ */
+function jumpToConfigSheet(configKey) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = findSheetByConfigKey(ss, configKey);
+  if (sheet) {
+    sheet.showSheet();
+    ss.setActiveSheet(sheet);
+    SpreadsheetApp.getActive().toast(sheet.getName(), "🚀 Открыт лист", 2);
+  } else {
+    SpreadsheetApp.getUi().alert("Лист не найден в таблице: " + configKey);
+  }
 }
 
-/** Пресет 2: Публичная витрина (Главная, Галерея, О вилле, Услуги, Гиды, Юр. блок) */
+// 15 прямых функций быстрого перехода к листам для пунктов меню
+function jumpToSheet_HOME() { jumpToConfigSheet("HOME"); }
+function jumpToSheet_GALLERY() { jumpToConfigSheet("GALLERY"); }
+function jumpToSheet_ABOUT() { jumpToConfigSheet("ABOUT"); }
+function jumpToSheet_SERVICES() { jumpToConfigSheet("SERVICES"); }
+function jumpToSheet_GUIDES() { jumpToConfigSheet("GUIDES"); }
+function jumpToSheet_LEGAL() { jumpToConfigSheet("LEGAL"); }
+function jumpToSheet_BOOKINGS() { jumpToConfigSheet("BOOKINGS"); }
+function jumpToSheet_CALENDAR() { jumpToConfigSheet("CALENDAR"); }
+function jumpToSheet_ACCOUNTS() { jumpToConfigSheet("ACCOUNTS"); }
+function jumpToSheet_MASTER() { jumpToConfigSheet("MASTER"); }
+function jumpToSheet_ORDERS() { jumpToConfigSheet("ORDERS"); }
+function jumpToSheet_ACCESS() { jumpToConfigSheet("ACCESS"); }
+function jumpToSheet_TEMPLATES() { jumpToConfigSheet("TEMPLATES"); }
+function jumpToSheet_VARIABLES() { jumpToConfigSheet("VARIABLES"); }
+function jumpToSheet_SETTINGS() { jumpToConfigSheet("SETTINGS"); }
+
+/** Режим: Всё открыто [Основной рабочий режим: 15 системных листов] */
+function applyPresetAllOpen() {
+  showAllSheets();
+  SpreadsheetApp.getActive().toast("Все 15 системных листов открыты для работы.", "🌟 Режим: Всё открыто", 4);
+}
+
+/** Режим 1: Публичная витрина [6 листов: Главная, Галерея, О вилле, Услуги, Гиды, Юр. блок] */
 function applyPresetShowcase() {
   applyVisibilityPreset(
     ["HOME", "GALLERY", "ABOUT", "SERVICES", "GUIDES", "LEGAL"],
-    "Режим: Публичная витрина"
+    "Режим: Публичная витрина [6 листов]"
   );
 }
 
-/** Пресет 3: Центр бронирований (Заявки, Календарь/Тарифы, Аккаунты, Заказы) */
-function applyPresetBookings() {
+/** Режим 2: Центр управления и CRM [6 листов: Заявки, Календарь, Аккаунты, Заказы, Доступы, Мастер] */
+function applyPresetOperations() {
   applyVisibilityPreset(
-    ["BOOKINGS", "CALENDAR", "ACCOUNTS", "ORDERS"],
-    "Режим: Центр бронирований"
+    ["BOOKINGS", "CALENDAR", "ACCOUNTS", "ORDERS", "ACCESS", "MASTER"],
+    "Режим: Центр управления и CRM [6 листов]"
   );
 }
 
-/** Пресет 4: Каталог & Продажи (Доп. услуги, Видеогиды, Заказы, Доступы) */
-function applyPresetCatalog() {
+/** Режим 3: Настройки и Шаблоны [3 листа: Шаблоны, Переменные, Настройки] */
+function applyPresetSettings() {
   applyVisibilityPreset(
-    ["SERVICES", "GUIDES", "ORDERS", "ACCESS"],
-    "Режим: Каталог & Продажи"
-  );
-}
-
-/** Пресет 5: CRM & Гостевой сервис (Аккаунты, Шаблоны сообщений, Заявки, Переменные) */
-function applyPresetCrm() {
-  applyVisibilityPreset(
-    ["ACCOUNTS", "TEMPLATES", "BOOKINGS", "VARIABLES"],
-    "Режим: CRM & Гостевой сервис"
-  );
-}
-
-/** Пресет 6: Юридический блок (Реквизиты, Договор, KVKK, Правила, Мастер) */
-function applyPresetLegal() {
-  applyVisibilityPreset(
-    ["LEGAL", "ABOUT", "MASTER"],
-    "Режим: Юридический блок"
-  );
-}
-
-/** Пресет 7: Минималистичный фокус (Только Заявки и Календарь) */
-function applyPresetFocus() {
-  applyVisibilityPreset(
-    ["BOOKINGS", "CALENDAR"],
-    "Режим: Фокус бронирований"
-  );
-}
-
-/** Пресет 8: Редактор витрины (Главная страница и Фото/Видео галерея) */
-function applyPresetMediaEditor() {
-  applyVisibilityPreset(
-    ["HOME", "GALLERY"],
-    "Режим: Редактор медиа витрины"
-  );
-}
-
-/** Пресет 9: Системные справочники (Шаблоны, Переменные, Аккаунты, Доступы) */
-function applyPresetSystem() {
-  applyVisibilityPreset(
-    ["TEMPLATES", "VARIABLES", "ACCOUNTS", "ACCESS"],
-    "Режим: Справочники & Шаблоны"
-  );
-}
-
-/** Пресет 10: Режим владельца (Мастер-аккаунт, Календарь/Тарифы, Заказы) */
-function applyPresetOwner() {
-  applyVisibilityPreset(
-    ["MASTER", "CALENDAR", "ORDERS", "BOOKINGS"],
-    "Режим: Владелец / Финансы"
+    ["TEMPLATES", "VARIABLES", "SETTINGS"],
+    "Режим: Настройки и Шаблоны [3 листа]"
   );
 }
 
@@ -459,15 +455,15 @@ function renameSheetsToRussianStandard() {
   SpreadsheetApp.getActive().toast("Обновлено названий листов: " + renamedCount, "🏷️ Русская локализация", 5);
 }
 
-/** Справка по смарт-менеджеру */
+/** Справка по менеджеру и навигатору листов */
 function showSheetManagerHelp() {
   var ui = SpreadsheetApp.getUi();
-  var msg = "🌟 СМАРТ-МЕНЕДЖЕР ЛИСТОВ VILLA TURAMAN:\n\n" +
-    "1. Листы сгруппированы по 2 кластерам: 'Публичная витрина' и 'Центр управления хозяина'.\n" +
-    "2. Меню предлагает 10 готовых пресетов отображения под конкретные задачи.\n" +
-    "3. Код платформы Next.js динамически привязан по постоянным ID листов, поэтому вы можете переименовывать листы в любой момент.\n" +
-    "4. В любой момент вы можете вернуть все вкладки через 'Быстрые действия ➔ Раскрыть ВСЕ скрытые листы'.";
-  ui.alert("Справка по смарт-менеджеру листов", msg, ui.ButtonSet.OK);
+  var msg = "🌟 МЕНЕДЖЕР И НАВИГАТОР ЛИСТОВ VILLA TURAMAN:\n\n" +
+    "1. Навигация в 1 клик: раздел '🚀 Быстрый переход к листу' открывает любой из 15 листов без скрытия остальных вкладок.\n" +
+    "2. Режим по умолчанию: '🌟 Раскрыть ВСЕ 15 листов' отображает все вкладки таблицы.\n" +
+    "3. Фокус по кластерам: '🎯 Режимы фокуса' позволяют оставить видимыми только листы выбранной группы: Витрина [6], Центр управления и CRM [6], Настройки и Шаблоны [3].\n" +
+    "4. Постоянные ID листов: код платформы привязан к постоянным числовым sheetId, поэтому переименование листов на 100% безопасно.";
+  ui.alert("Справка по менеджеру листов", msg, ui.ButtonSet.OK);
 }
 
 // ==============================================================================

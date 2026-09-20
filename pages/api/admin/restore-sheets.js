@@ -115,30 +115,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // Очистка устаревших англоязычных листов дубликатов
-    const obsoleteEnglishNames = [
-      'bookingrequests', 'placeholders', 'homepage', 'calendarsettings',
-      'extraservices', 'videoguides'
-    ];
-    const deleteOldRequests = [];
-    for (const oldName of obsoleteEnglishNames) {
-      const match = existingSheets.find((s) => s.properties.title.trim().toLowerCase() === oldName);
-      if (match) {
-        deleteOldRequests.push({ deleteSheet: { sheetId: match.properties.sheetId } });
-      }
-    }
-
-    if (deleteOldRequests.length > 0) {
-      try {
-        await sheets.spreadsheets.batchUpdate({
-          spreadsheetId,
-          requestBody: { requests: deleteOldRequests }
-        });
-      } catch (delErr) {
-        console.warn('Предупреждение при удалении устаревших листов:', delErr.message);
-      }
-    }
-
     const updatedSs = await sheets.spreadsheets.get({ spreadsheetId });
     const formatRequests = [];
     const dataAppendRequests = [];
