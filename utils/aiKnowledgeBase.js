@@ -135,25 +135,26 @@ async function getAiKnowledgeBase(forceRefresh = false) {
       }
     };
 
-    // Параллельное чтение 5 листов базы знаний
+    // Параллельное чтение 3 ключевых листов базы знаний
     const [
       settingsRows,
       templatesRows,
-      variablesRows,
-      homeRows,
-      aboutRows
+      homeRows
     ] = await Promise.all([
       safeGet('SETTINGS', 'A:E'),
       safeGet('TEMPLATES', 'A:G'),
-      safeGet('VARIABLES', 'A:D'),
-      safeGet('HOME', 'A:E'),
-      safeGet('ABOUT', 'A:G')
+      safeGet('HOME', 'A:H')
     ]);
 
-    // 1. Разбор системных настроек ИИ Агентов [SETTINGS]
+    // 1. Разбор структурированных блоков системных настроек [SETTINGS]
     const settingsObj = {};
     const agentRoles = {};
     const sheetMatrix = {};
+    const variablesObj = {};
+    const hostInfo = {};
+    const villaInfo = {};
+    const kbsInfo = {};
+    const masterAccess = [];
 
     settingsRows.slice(1).forEach((r) => {
       const col0 = (r[0] || '').toString().trim();
@@ -164,6 +165,16 @@ async function getAiKnowledgeBase(forceRefresh = false) {
 
       if (col0 === 'СИСТЕМА') {
         if (col1) settingsObj[col1] = col2;
+      } else if (col0 === 'ПЕРЕМЕННАЯ') {
+        if (col1) variablesObj[col1] = col2;
+      } else if (col0 === 'О_ХОЗЯИНЕ') {
+        if (col1) hostInfo[col1] = col2;
+      } else if (col0 === 'О_ВИЛЛЕ') {
+        if (col1) villaInfo[col1] = col2;
+      } else if (col0 === 'KBS_ИНСТРУКЦИЯ') {
+        if (col1) kbsInfo[col1] = col2;
+      } else if (col0 === 'МАСТЕР_ДОСТУП') {
+        if (col1) masterAccess.push({ name: col1, auth: col2, desc: col3, note: col4 });
       } else if (col0 === 'РОЛЬ_АГЕНТА') {
         if (col1) {
           agentRoles[col1] = {
@@ -181,29 +192,17 @@ async function getAiKnowledgeBase(forceRefresh = false) {
           };
         }
       } else if (col0) {
-        // Поддержка старого формата параметров для обратной совместимости
         settingsObj[col0] = col1;
       }
     });
 
-    const aiMode = (settingsObj['AI_MODE'] || 'copilot').toLowerCase();
-    const aiEnabled = (settingsObj['AI_ENABLED'] || 'TRUE').toUpperCase() === 'TRUE';
-    const geminiModel = settingsObj['GEMINI_MODEL'] || process.env.GEMINI_MODEL || 'gemini-3.6-flash';
-    const minPriceUsd = parseInt(settingsObj['MIN_NIGHTLY_PRICE_USD'] || '180', 10);
+    const aiMode = (settingsObj['ai_mode'] || settingsObj['AI_MODE'] || 'copilot').toLowerCase();
+    const aiEnabled = (settingsObj['AI_ENABLED'] || 'TRUE').toUpperCase() !== 'FALSE' && aiMode !== 'off';
+    const geminiModel = settingsObj['ai_model'] || settingsObj['GEMINI_MODEL'] || process.env.GEMINI_MODEL || 'gemini-3.6-flash';
+    const minPriceUsd = parseInt(settingsObj['min_night_price'] || settingsObj['MIN_NIGHTLY_PRICE_USD'] || '180', 10);
     const systemPrompt = settingsObj['SYSTEM_PROMPT'] || '';
 
-    // 2. Разбор словаря переменных [VARIABLES]
-    const variablesObj = {};
-    variablesRows.slice(1).forEach((r) => {
-      if (r[1]) {
-        variablesObj[r[1].toString().trim()] = (r[3] || '').toString().trim();
-      }
-      if (r[0]) {
-        variablesObj[r[0].toString().trim()] = (r[3] || '').toString().trim();
-      }
-    });
-
-    // 3. Разбор шаблонов [TEMPLATES]
+    // 2. Разбор шаблонов [TEMPLATES]
     let loadedTemplates = [];
     if (templatesRows.length > 1) {
       loadedTemplates = templatesRows.slice(1).map((r) => ({
@@ -216,26 +215,16 @@ async function getAiKnowledgeBase(forceRefresh = false) {
       loadedTemplates = SMART_TEMPLATES;
     }
 
-    // 4. Разбор витрины [HOME]
+    // 3. Разбор витрины [HOME]
     const homeObj = {};
     homeRows.slice(1).forEach((r) => {
-      if (r[0]) {
-        homeObj[r[0].toString().trim()] = {
-          ru: r[1] || '',
-          en: r[2] || '',
-          tr: r[3] || '',
-          media: r[4] || ''
-        };
-      }
-    });
-
-    // 5. Разбор описания и удобств [ABOUT]
-    const aboutObj = {};
-    aboutRows.slice(1).forEach((r) => {
-      if (r[0]) {
-        aboutObj[r[0].toString().trim()] = {
-          title: { ru: r[1] || '', en: r[2] || '', tr: r[3] || '' },
-          text: { ru: r[4] || '', en: r[5] || '', tr: r[6] || '' }
+      const key = r[1] || r[0];
+      if (key) {
+        homeObj[key.toString().trim()] = {
+          ru: r[3] || r[1] || '',
+          en: r[4] || r[2] || '',
+          tr: r[5] || r[3] || '',
+          media: r[6] || r[4] || ''
         };
       }
     });
@@ -250,9 +239,12 @@ async function getAiKnowledgeBase(forceRefresh = false) {
       agentRoles,
       sheetMatrix,
       variables: variablesObj,
+      host: hostInfo,
+      villa: villaInfo,
+      kbs: kbsInfo,
+      masterAccess,
       templates: loadedTemplates,
-      home: homeObj,
-      about: aboutObj
+      home: homeObj
     };
 
     cache.data = knowledgeBase;

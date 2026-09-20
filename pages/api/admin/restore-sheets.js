@@ -1,14 +1,13 @@
 // ==============================================================================
 // СЕРВЕРНЫЙ ЭНДПОИНТ САМОИСЦЕЛЕНИЯ И ВОССТАНОВЛЕНИЯ GOOGLE SHEETS
 // Файл: pages/api/admin/restore-sheets.js
-// Назначение: Обеспечивает вызов восстановления структуры и данных всех 15 листов
+// Назначение: Обеспечивает вызов восстановления структуры и данных 11 канонических листов
 // Google Таблицы из Кабинета Хозяина [/host] или по системному запросу.
 // ==============================================================================
 
 import { google } from 'googleapis';
 import { SHEETS_REGISTRY } from '../../../utils/sheetsRegistry';
-import { SMART_TEMPLATES } from '../../../utils/templatesData';
-import { MASTER_ABOUT_SECTIONS, MASTER_SETTINGS_ROWS, MASTER_HOME_MAP, MASTER_HOME_ROWS } from '../../../utils/masterSeedContent';
+import { MASTER_SETTINGS_ROWS, MASTER_HOME_MAP, MASTER_HOME_ROWS, MASTER_TEMPLATES_ROWS } from '../../../utils/masterSeedContent';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -45,29 +44,31 @@ export default async function handler(req, res) {
     const ss = await sheets.spreadsheets.get({ spreadsheetId });
     let existingSheets = ss.data.sheets || [];
 
-    // Очистка устаревших англоязычных листов-дубликатов
-    const obsoleteEnglishNames = [
+    // Очистка устаревших и архивных листов: дубликаты, старые русские имена и удаленные листы
+    const obsoleteNames = [
       'home', 'homepage', 'showcase',
       'gallery', 'photos',
-      'about', 'houserules',
+      'about', 'houserules', 'о вилле и правила', 'о вилле',
       'services', 'extraservices',
       'guides', 'videoguides',
       'legal', 'documents',
       'bookings', 'bookingrequests',
       'calendar', 'calendarsettings', 'pricing',
       'accounts', 'guestaccounts', 'guests',
-      'master', 'permissions', 'accesscontrol',
+      'master', 'permissions', 'accesscontrol', 'управление доступом',
       'orders', 'serviceorders',
       'access', 'guideaccess',
       'templates', 'messagetemplates',
-      'variables', 'dictionary', 'placeholders',
-      'settings', 'aisettings'
+      'variables', 'dictionary', 'placeholders', 'словарь переменных',
+      'settings', 'aisettings', 'сводная база', 'настройки экосистемы'
     ];
+    const obsoleteSheetIds = [103, 204, 208];
     const deleteOldRequests = [];
-    for (const oldName of obsoleteEnglishNames) {
-      const match = existingSheets.find((s) => s.properties.title.trim().toLowerCase() === oldName);
-      if (match) {
-        deleteOldRequests.push({ deleteSheet: { sheetId: match.properties.sheetId } });
+    for (const sheet of existingSheets) {
+      const titleLower = sheet.properties.title.trim().toLowerCase();
+      const sId = sheet.properties.sheetId;
+      if (obsoleteNames.includes(titleLower) || obsoleteSheetIds.includes(sId)) {
+        deleteOldRequests.push({ deleteSheet: { sheetId: sId } });
       }
     }
     if (deleteOldRequests.length > 0) {
@@ -222,27 +223,6 @@ export default async function handler(req, res) {
           });
         }
 
-        if (config.key === 'ABOUT') {
-          safeFormulasToInject.push({ range: `'${actualTitle}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-
-          const aboutRows = MASTER_ABOUT_SECTIONS.map((sec) => [
-            sec.id,
-            sec.title.ru,
-            sec.title.en,
-            sec.title.tr,
-            sec.text.ru,
-            sec.text.en,
-            sec.text.tr
-          ]);
-          dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:G${aboutRows.length + 1}`,
-            values: aboutRows
-          });
-        }
-
         if (config.key === 'SERVICES') {
           safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
@@ -310,47 +290,9 @@ export default async function handler(req, res) {
           safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
 
-          const templateRows = SMART_TEMPLATES.map((tmpl) => [
-            tmpl.id,
-            tmpl.title.ru,
-            tmpl.title.en,
-            tmpl.title.tr,
-            tmpl.text.ru,
-            tmpl.text.en,
-            tmpl.text.tr
-          ]);
           dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:G${templateRows.length + 1}`,
-            values: templateRows
-          });
-        }
-
-        if (config.key === 'VARIABLES') {
-          dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:D13`,
-            values: [
-              ['[FIRST_NAME]', 'name', 'Имя гостя', 'Иван'],
-              ['[CONFIRMATION_CODE]', 'code', 'Код бронирования', 'VT-7788'],
-              ['[CHECKIN_DATE]', 'checkIn', 'Дата заезда', '01.06.2026'],
-              ['[CHECKOUT_DATE]', 'checkOut', 'Дата выезда', '08.06.2026'],
-              ['[CHECKIN_TIME]', 'checkInTime', 'Стандартное время заезда', '16:00'],
-              ['[CHECKOUT_TIME]', 'checkOutTime', 'Стандартное время выезда', '10:00'],
-              ['[BOOKING_PLATFORM_NAME]', 'platform', 'Платформа бронирования', 'Villa Turaman Direct'],
-              ['[ADDRESS]', 'address', 'Точный адрес виллы', 'Дальян, Ортаджа, Мугла, Турция'],
-              ['[CHECKIN_METHOD]', 'checkinMethod', 'Способ передачи ключей', 'Мини-сейф с кодом / личная встреча владельцем'],
-              ['[WIFI_NAME]', 'wifiName', 'Имя сети Wi-Fi', 'VillaTuraman_5G'],
-              ['[WIFI_PASSWORD]', 'wifiPassword', 'Пароль сети Wi-Fi', 'DalyanTuramanGuest2026'],
-              ['[KEY_HANDOVER_INSTRUCTIONS]', 'keyHandover', 'Инструкции возврата ключей', 'Оставьте ключи в мини-сейфе с кодом у входной двери виллы']
-            ]
-          });
-        }
-
-        if (config.key === 'MASTER') {
-          dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:M2`,
-            values: [
-              ['Aleksei Znamenskii', '', '', '', 'admin@villaturaman.com', 'admin', 'admin123', 'Главный', 'Да', 'Да', 'Да', 'Да', 'Да']
-            ]
+            range: `'${actualTitle}'!A2:G${MASTER_TEMPLATES_ROWS.length + 1}`,
+            values: MASTER_TEMPLATES_ROWS
           });
         }
 

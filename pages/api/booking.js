@@ -934,9 +934,41 @@ export default async function handler(req, res) {
       const safeContact = (data.contact || '').toString().trim().toLowerCase();
       const safePassword = (data.password || '').toString().trim();
 
-      // Проверка MasterAccount (Владелец)
+      // Проверка MasterAccount (Владелец) - сначала из листа SETTINGS (категория МАСТЕР_ДОСТУП), затем фоллбэк на MASTER
       if (sheets && spreadsheetId) {
         try {
+          // 1. Проверяем категорию МАСТЕР_ДОСТУП в листе SETTINGS
+          const settingsDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'SETTINGS', 'A:E') });
+          const settingsRows = settingsDb.data.values || [];
+          for (const r of settingsRows) {
+            const cat = (r[0] || '').toString().trim();
+            if (cat === 'МАСТЕР_ДОСТУП') {
+              const name = (r[1] || 'Aleksei Znamenskii').toString().trim();
+              const authPair = (r[2] || '').toString().trim(); // 'admin / admin123'
+              const desc = (r[3] || '').toString().trim();
+              const parts = authPair.split('/').map((s) => s.trim());
+              const login = (parts[0] || '').toLowerCase();
+              const pwd = parts[1] || '';
+              const email = (desc.split('|')[0] || '').replace('email:', '').trim().toLowerCase();
+
+              if ((email === safeContact || login === safeContact) && pwd === safePassword) {
+                return res.status(200).json({
+                  success: true,
+                  user: {
+                    name,
+                    contact: safeContact,
+                    isHost: true,
+                    role: desc.includes('Владелец') ? 'Owner' : 'Manager',
+                    permissions: { finance: true, periods: true, blocks: true, bookingWindow: true, chats: true }
+                  }
+                });
+              }
+            }
+          }
+        } catch (e) { }
+
+        try {
+          // 2. Фоллбэк на старый лист MASTER, если он еще существует
           const masterDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'MASTER', 'A:M') });
           const masterUser = (masterDb.data.values || []).find((r) => {
             const email = (r[4] || '').toString().trim().toLowerCase();

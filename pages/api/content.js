@@ -11,6 +11,7 @@ import fs from 'fs';
 import path from 'path';
 import { getLiveSheetMap, resolveRange } from '../../utils/sheetsRegistry';
 import { MASTER_ABOUT_SECTIONS, MASTER_HOME_MAP } from '../../utils/masterSeedContent';
+import { resolveTemplate } from '../../utils/templateResolver';
 
 // Очистка от битых формул Google Таблиц [#REF!, #VALUE!, #ERROR!, #N/A]
 const sanitizeText = (val, fallback = '') => {
@@ -116,10 +117,10 @@ export default async function handler(req, res) {
       }
     };
 
-    // Параллельное скачивание всех листов базы данных через динамический маппинг
+    // Параллельное скачивание всех 7 активных листов контента через динамический маппинг
     const [
       homeRows,
-      aboutRows,
+      settingsRows,
       legalRows,
       templatesRows,
       productsRows,
@@ -127,13 +128,69 @@ export default async function handler(req, res) {
       galleryRows
     ] = await Promise.all([
       safeGet('HOME', 'A:H'),
-      safeGet('ABOUT', 'A:G'),
+      safeGet('SETTINGS', 'A:E'),
       safeGet('LEGAL', 'A:G'),
       safeGet('TEMPLATES', 'A:G'),
       safeGet('SERVICES', 'A:Q'),
       safeGet('GUIDES', 'A:Q'),
       safeGet('GALLERY', 'A:L')
     ]);
+
+    // 0. Извлечение словаря переменных из листа SETTINGS для авто-резолвинга плейсхолдеров
+    const ssotContext = {
+      address: 'Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla',
+      mapsUrl: 'https://maps.app.goo.gl/tPgCjCwz4pzq28pE9',
+      wifiName: 'Guest',
+      wifiPassword: 'villa2026',
+      checkInTime: '16:00',
+      checkOutTime: '10:00',
+      checkinMethod: 'Электронный смарт-замок и мини-сейф с кодом / личная встреча владельцем',
+      keyHandoverInstructions: 'Оставьте ключи в мини-сейфе с кодом у входной двери виллы или на кухонном столе',
+      hostName: 'Aleksei Znamenskii',
+      hostStatus: 'Суперхозяин на Airbnb • Более 5 лет приема гостей',
+      hostLanguages: 'Русский, English, Türkçe',
+      villaCapacity: '10 гостей',
+      poolSpecs: 'Приватный бассейн с соленой водой 36 кв.м и уличное джакузи',
+      poolSeason: 'с 1 мая по 1 ноября',
+      jacuzziSchedule: 'Работает с 09:00 до 18:00. Включается автоматически на 15 минут с интервалом каждые 45 минут.',
+      poolLighting: 'Освещение в бассейне и джакузи включается автоматически с 20:00 до 01:00.',
+      streetLighting: 'Уличное освещение включается автоматически с 20:00 до 01:00 и с 04:00 до 06:00.',
+      poolMaintenance: 'Профилактические работы и чистка бассейна производятся в день заселения и далее по необходимости : как правило каждые 7 дней.',
+      outdoorZones: 'Парковка перед виллой, дворик-сад, зона барбекю, крыльцо с кофейными столиками и обеденной зоной на открытом воздухе, зона для загара с шезлонгами.',
+      villaFloors: '2 этажа: кухня со Smart TV 55", гостевой туалет, 2 стиральные машины, 4 большие спальни с ванными комнатами и кондиционерами.'
+    };
+
+    if (settingsRows.length > 1) {
+      settingsRows.slice(1).forEach((r) => {
+        const cat = (r[0] || '').toString().trim();
+        const param = (r[1] || '').toString().trim();
+        const val = (r[2] || '').toString().trim();
+        if (cat === 'ПЕРЕМЕННАЯ') {
+          if (param === 'wifi_name') ssotContext.wifiName = val;
+          if (param === 'wifi_password') ssotContext.wifiPassword = val;
+          if (param === 'address') ssotContext.address = val;
+          if (param === 'maps_url') ssotContext.mapsUrl = val;
+          if (param === 'checkin_time') ssotContext.checkInTime = val;
+          if (param === 'checkout_time') ssotContext.checkOutTime = val;
+          if (param === 'checkin_method') ssotContext.checkinMethod = val;
+          if (param === 'key_handover') ssotContext.keyHandoverInstructions = val;
+        } else if (cat === 'О_ХОЗЯИНЕ') {
+          if (param === 'host_name') ssotContext.hostName = val;
+          if (param === 'host_status') ssotContext.hostStatus = val;
+          if (param === 'host_languages') ssotContext.hostLanguages = val;
+        } else if (cat === 'О_ВИЛЛЕ') {
+          if (param === 'villa_capacity') ssotContext.villaCapacity = val;
+          if (param === 'villa_floors') ssotContext.villaFloors = val;
+          if (param === 'pool_specs') ssotContext.poolSpecs = val;
+          if (param === 'pool_season') ssotContext.poolSeason = val;
+          if (param === 'jacuzzi_schedule') ssotContext.jacuzziSchedule = val;
+          if (param === 'pool_lighting') ssotContext.poolLighting = val;
+          if (param === 'street_lighting') ssotContext.streetLighting = val;
+          if (param === 'pool_maintenance') ssotContext.poolMaintenance = val;
+          if (param === 'outdoor_zones') ssotContext.outdoorZones = val;
+        }
+      });
+    }
 
     const content = {
       home: {},
@@ -176,13 +233,17 @@ export default async function handler(req, res) {
 
         const isEnabled = !status.toLowerCase().startsWith('выкл') && status.toLowerCase() !== 'off' && status.toLowerCase() !== 'false';
 
+        const rawRu = sanitizeText(ru, fallbackData.home?.[key]?.ru || MASTER_HOME_MAP[key]?.ru || '');
+        const rawEn = sanitizeText(en, fallbackData.home?.[key]?.en || MASTER_HOME_MAP[key]?.en || '');
+        const rawTr = sanitizeText(tr, fallbackData.home?.[key]?.tr || MASTER_HOME_MAP[key]?.tr || '');
+
         const rowObj = {
           block,
           key,
           desc,
-          ru: sanitizeText(ru, fallbackData.home?.[key]?.ru || MASTER_HOME_MAP[key]?.ru || ''),
-          en: sanitizeText(en, fallbackData.home?.[key]?.en || MASTER_HOME_MAP[key]?.en || ''),
-          tr: sanitizeText(tr, fallbackData.home?.[key]?.tr || MASTER_HOME_MAP[key]?.tr || ''),
+          ru: resolveTemplate(rawRu, ssotContext),
+          en: resolveTemplate(rawEn, ssotContext),
+          tr: resolveTemplate(rawTr, ssotContext),
           media: sanitizeText(media, fallbackData.home?.[key]?.media || MASTER_HOME_MAP[key]?.media || ''),
           status: isEnabled ? 'Вкл' : 'Выкл',
           enabled: isEnabled
@@ -346,23 +407,10 @@ export default async function handler(req, res) {
     }
     content.home.aboutSections = aboutSectionsList;
 
-    // 2. Описание виллы [ABOUT] с защитой от пустоты
-    if (aboutRows.length > 1) {
-      aboutRows.slice(1).forEach((r) => {
-        if (r[0]) {
-          content.about[r[0]] = {
-            title: {
-              ru: sanitizeText(r[1], fallbackData.about?.[r[0]]?.title?.ru || ''),
-              en: sanitizeText(r[2], fallbackData.about?.[r[0]]?.title?.en || ''),
-              tr: sanitizeText(r[3], fallbackData.about?.[r[0]]?.title?.tr || '')
-            },
-            text: {
-              ru: sanitizeText(r[4], fallbackData.about?.[r[0]]?.text?.ru || ''),
-              en: sanitizeText(r[5], fallbackData.about?.[r[0]]?.text?.en || ''),
-              tr: sanitizeText(r[6], fallbackData.about?.[r[0]]?.text?.tr || '')
-            }
-          };
-        }
+    // 2. Описание виллы [ABOUT] наполняется напрямую из Блока 4 витрины [aboutSections]
+    if (content.home.aboutSections && content.home.aboutSections.length > 0) {
+      content.home.aboutSections.forEach((sec) => {
+        content.about[sec.id] = { title: sec.title, text: sec.text };
       });
     }
     if (Object.keys(content.about).length === 0) {

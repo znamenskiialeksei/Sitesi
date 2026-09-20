@@ -1,7 +1,7 @@
 // ==============================================================================
 // УНИВЕРСАЛЬНЫЙ СКРИПТ САМОИСЦЕЛЕНИЯ И ВОССТАНОВЛЕНИЯ GOOGLE SHEETS CRM
 // Файл: scripts/restore-sheets.js
-// Назначение: Автоматически проверяет наличие всех 15 листов CRM в Google Таблице.
+// Назначение: Автоматически проверяет наличие 11 канонических листов CRM в Google Таблице.
 // Если лист был удален: воссоздает его, применяет каноническое смарт-форматирование,
 // наполняет эталонным контентом из masterSeedContent.js и внедряет формулы перевода со строгой ';'.
 // ==============================================================================
@@ -9,12 +9,11 @@
 require('dotenv').config({ path: '.env.local' });
 const { google } = require('googleapis');
 const { SHEETS_REGISTRY, getLiveSheetMap, resolveRange } = require('../utils/sheetsRegistry');
-const { SMART_TEMPLATES } = require('../utils/templatesData');
-const { MASTER_ABOUT_SECTIONS, MASTER_SETTINGS_ROWS, MASTER_HOME_MAP, MASTER_HOME_ROWS } = require('../utils/masterSeedContent');
+const { MASTER_SETTINGS_ROWS, MASTER_HOME_MAP, MASTER_HOME_ROWS, MASTER_TEMPLATES_ROWS } = require('../utils/masterSeedContent');
 
 async function restoreAllSheets() {
   console.log('================================================================================');
-  console.log('🚀 ЗАПУСК САМОИСЦЕЛЕНИЯ И ВОССТАНОВЛЕНИЯ ВСЕХ 15 ЛИСТОВ GOOGLE SHEETS');
+  console.log('🚀 ЗАПУСК САМОИСЦЕЛЕНИЯ И ВОССТАНОВЛЕНИЯ 11 КАНОНИЧЕСКИХ ЛИСТОВ GOOGLE SHEETS');
   console.log('================================================================================');
 
   const clientEmail = (process.env.GOOGLE_CLIENT_EMAIL || '').trim();
@@ -60,35 +59,36 @@ async function restoreAllSheets() {
 
     // Считываем текущие листы
     const ss = await sheets.spreadsheets.get({ spreadsheetId });
-    const existingSheets = ss.data.sheets || [];
-    const existingTitles = existingSheets.map((s) => s.properties.title.trim());
+    let existingSheets = ss.data.sheets || [];
 
     console.log(`Обнаружено существующих листов: ${existingSheets.length}`);
 
-    // Очистка устаревших англоязычных листов-дубликатов
-    const obsoleteEnglishNames = [
+    // Очистка устаревших и архивных листов: дубликаты, старые русские имена и удаленные листы
+    const obsoleteNames = [
       'home', 'homepage', 'showcase',
       'gallery', 'photos',
-      'about', 'houserules',
+      'about', 'houserules', 'о вилле и правила', 'о вилле',
       'services', 'extraservices',
       'guides', 'videoguides',
       'legal', 'documents',
       'bookings', 'bookingrequests',
       'calendar', 'calendarsettings', 'pricing',
       'accounts', 'guestaccounts', 'guests',
-      'master', 'permissions', 'accesscontrol',
+      'master', 'permissions', 'accesscontrol', 'управление доступом',
       'orders', 'serviceorders',
       'access', 'guideaccess',
       'templates', 'messagetemplates',
-      'variables', 'dictionary', 'placeholders',
-      'settings', 'aisettings'
+      'variables', 'dictionary', 'placeholders', 'словарь переменных',
+      'settings', 'aisettings', 'сводная база', 'настройки экосистемы'
     ];
+    const obsoleteSheetIds = [103, 204, 208];
     const deleteOldRequests = [];
-    for (const oldName of obsoleteEnglishNames) {
-      const match = existingSheets.find((s) => s.properties.title.trim().toLowerCase() === oldName);
-      if (match) {
-        console.log(`Обнаружен устаревший лист [${match.properties.title}]. Удаляем...`);
-        deleteOldRequests.push({ deleteSheet: { sheetId: match.properties.sheetId } });
+    for (const sheet of existingSheets) {
+      const titleLower = sheet.properties.title.trim().toLowerCase();
+      const sId = sheet.properties.sheetId;
+      if (obsoleteNames.includes(titleLower) || obsoleteSheetIds.includes(sId)) {
+        console.log(`Обнаружен устаревший лист [${sheet.properties.title}] (ID: ${sId}). Удаляем...`);
+        deleteOldRequests.push({ deleteSheet: { sheetId: sId } });
       }
     }
 
@@ -99,6 +99,8 @@ async function restoreAllSheets() {
           requestBody: { requests: deleteOldRequests }
         });
         console.log(`✅ Ликвидировано устаревших листов-дубликатов: ${deleteOldRequests.length}`);
+        const refetch = await sheets.spreadsheets.get({ spreadsheetId });
+        existingSheets = refetch.data.sheets || [];
       } catch (delErr) {
         console.warn('Предупреждение при удалении устаревших листов:', delErr.message);
       }
@@ -137,7 +139,7 @@ async function restoreAllSheets() {
       });
       console.log(`✅ Создано недостающих листов: ${sheetsToCreate.length}`);
     } else {
-      console.log('✅ Все 15 листов присутствуют в таблице.');
+      console.log('✅ Все 11 листов присутствуют в таблице.');
     }
 
     // 2. Повторное считывание обновленного списка листов
@@ -255,28 +257,6 @@ async function restoreAllSheets() {
           });
         }
 
-        if (config.key === 'ABOUT') {
-          safeFormulasToInject.push({ range: `'${actualTitle}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-
-          const aboutRows = MASTER_ABOUT_SECTIONS.map((sec) => [
-            sec.id,
-            sec.title.ru,
-            sec.title.en,
-            sec.title.tr,
-            sec.text.ru,
-            sec.text.en,
-            sec.text.tr
-          ]);
-
-          dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:G${aboutRows.length + 1}`,
-            values: aboutRows
-          });
-        }
-
         if (config.key === 'SERVICES') {
           safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
@@ -367,38 +347,9 @@ async function restoreAllSheets() {
           safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
 
-          const templateRows = SMART_TEMPLATES.map((tmpl) => [
-            tmpl.id,
-            tmpl.title.ru,
-            tmpl.title.en,
-            tmpl.title.tr,
-            tmpl.text.ru,
-            tmpl.text.en,
-            tmpl.text.tr
-          ]);
           dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:G${templateRows.length + 1}`,
-            values: templateRows
-          });
-        }
-
-        if (config.key === 'VARIABLES') {
-          dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:D13`,
-            values: [
-              ['[FIRST_NAME]', 'name', 'Имя гостя', 'Иван'],
-              ['[CONFIRMATION_CODE]', 'code', 'Код бронирования', 'VT-7788'],
-              ['[CHECKIN_DATE]', 'checkIn', 'Дата заезда', '01.06.2026'],
-              ['[CHECKOUT_DATE]', 'checkOut', 'Дата выезда', '08.06.2026'],
-              ['[CHECKIN_TIME]', 'checkInTime', 'Стандартное время заезда', '16:00'],
-              ['[CHECKOUT_TIME]', 'checkOutTime', 'Стандартное время выезда', '10:00'],
-              ['[BOOKING_PLATFORM_NAME]', 'platform', 'Платформа бронирования', 'Villa Turaman Direct'],
-              ['[ADDRESS]', 'address', 'Точный адрес виллы', 'Дальян, Ортаджа, Мугла, Турция'],
-              ['[CHECKIN_METHOD]', 'checkinMethod', 'Способ передачи ключей', 'Мини-сейф с кодом / личная встреча владельцем'],
-              ['[WIFI_NAME]', 'wifiName', 'Имя сети Wi-Fi', 'VillaTuraman_5G'],
-              ['[WIFI_PASSWORD]', 'wifiPassword', 'Пароль сети Wi-Fi', 'DalyanTuramanGuest2026'],
-              ['[KEY_HANDOVER_INSTRUCTIONS]', 'keyHandover', 'Инструкции возврата ключей', 'Оставьте ключи в мини-сейфе с кодом у входной двери виллы']
-            ]
+            range: `'${actualTitle}'!A2:G${MASTER_TEMPLATES_ROWS.length + 1}`,
+            values: MASTER_TEMPLATES_ROWS
           });
         }
 
@@ -406,15 +357,6 @@ async function restoreAllSheets() {
           dataAppendRequests.push({
             range: `'${actualTitle}'!A2:E${MASTER_SETTINGS_ROWS.length + 1}`,
             values: MASTER_SETTINGS_ROWS
-          });
-        }
-
-        if (config.key === 'MASTER') {
-          dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:M2`,
-            values: [
-              ['Aleksei Z', '', '', '', 'admin@villaturaman.com', 'admin', 'admin123', 'Главный', 'Да', 'Да', 'Да', 'Да', 'Да']
-            ]
           });
         }
       }
@@ -445,7 +387,7 @@ async function restoreAllSheets() {
     }
 
     console.log('================================================================================');
-    console.log('✅ САМОИСЦЕЛЕНИЕ ЗАВЕРШЕНО: ВСЕ 15 ЛИСТОВ ВОССТАНОВЛЕНЫ И СИНХРОНИЗИРОВАНЫ');
+    console.log('✅ САМОИСЦЕЛЕНИЕ ЗАВЕРШЕНО: ВСЕ 11 ЛИСТОВ ВОССТАНОВЛЕНЫ И СИНХРОНИЗИРОВАНЫ');
     console.log('================================================================================');
   } catch (error) {
     console.error('❌ Ошибка при восстановлении Google Sheets:', error.message);

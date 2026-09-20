@@ -100,9 +100,30 @@ export default async function handler(req, res) {
       }
     }
 
+    // Добавление технических характеристик виллы (бассейн, джакузи, спальни, вместимость)
+    if (kb.villa && Object.keys(kb.villa).length > 0) {
+      systemInstruction += `\n\nТЕХНИЧЕСКИЕ ПАРАМЕТРЫ ВИЛЛЫ И УДОБСТВ:`;
+      for (const [k, v] of Object.entries(kb.villa)) {
+        if (v && typeof v === 'string') {
+          systemInstruction += `\n- ${k}: ${v}`;
+        }
+      }
+    }
+
+    // Добавление инструкций обработки данных гостей для турецкой жандармерии KBS
+    if (kb.kbs && Object.keys(kb.kbs).length > 0) {
+      systemInstruction += `\n\nСПЕЦИАЛЬНЫЙ РЕЖИМ ОБРАБОТКИ KBS ЖАНДАРМЕРИИ:`;
+      for (const [k, v] of Object.entries(kb.kbs)) {
+        if (v && typeof v === 'string') {
+          systemInstruction += `\n- ${k}: ${v}`;
+        }
+      }
+    }
+
     // Добавление инструкций роли Консьержа и матрицы листов
-    if (kb.agentRoles?.КОНСЬЕРЖ_МАСТЕР?.prompt) {
-      systemInstruction += `\n\nСПЕЦИАЛИЗАЦИЯ РОЛИ КОНСЬЕРЖА:\n${kb.agentRoles.КОНСЬЕРЖ_МАСТЕР.prompt}`;
+    const conciergeRole = kb.agentRoles?.['Консьерж-Мастер'] || kb.agentRoles?.КОНСЬЕРЖ_МАСТЕР;
+    if (conciergeRole?.prompt) {
+      systemInstruction += `\n\nСПЕЦИАЛИЗАЦИЯ РОЛИ КОНСЬЕРЖА:\n${conciergeRole.prompt}`;
     }
 
     if (kb.sheetMatrix && Object.keys(kb.sheetMatrix).length > 0) {

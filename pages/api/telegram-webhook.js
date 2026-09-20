@@ -160,6 +160,155 @@ export default async function handler(req, res) {
   const sheetMap = sheets ? await getLiveSheetMap(sheets, spreadsheetId) : {};
 
   // ==============================================================================
+  // 0. ОБРАБОТКА СЛУЖЕБНЫХ РЕЛЕЙ-КОМАНД ИЗ GOOGLE APPS SCRIPT
+  // ==============================================================================
+  if (update.action && ownerChatId) {
+    const act = update.action;
+
+    // Релей: Отправка Главного меню на телефон хозяина
+    if (act === 'send_menu_to_owner') {
+      const welcomeText = `🏡 Главный пульт управления Villa Turaman активирован из Google Таблиц!\n\n` +
+        `👤 Хозяин: Алексей Знаменский\n` +
+        `📍 Объект: Villa Turaman [Дальян]\n` +
+        `📱 Ниже доступна постоянная клавиатура быстрого доступа.`;
+      const sent = await tgApi(token, 'sendMessage', {
+        chat_id: ownerChatId,
+        text: welcomeText,
+        reply_markup: MAIN_KEYBOARD
+      });
+      return res.status(200).json({ success: Boolean(sent?.ok), result: sent });
+    }
+
+    // Релей: Тестовый пинг в Telegram
+    if (act === 'test_ping') {
+      const nowStr = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
+      const pingText = `🧪 ТЕСТОВЫЙ ПИНГ ИЗ GOOGLE APPS SCRIPT:\n\n` +
+        `• Время: ${nowStr}\n` +
+        `• Сервер Vercel: Онлайн 🟢\n` +
+        `• Telegram Bot: Связь установлена успешно!`;
+      const sent = await tgApi(token, 'sendMessage', {
+        chat_id: ownerChatId,
+        text: pingText,
+        reply_markup: MAIN_KEYBOARD
+      });
+      return res.status(200).json({ success: Boolean(sent?.ok), result: sent });
+    }
+
+    // Релей: Отправка списка активных заявок
+    if (act === 'send_pending_requests') {
+      try {
+        if (!sheets || !spreadsheetId) {
+          return res.status(200).json({ success: false, error: 'Таблица не подключена' });
+        }
+        const bookingDb = await sheets.spreadsheets.values.get({
+          spreadsheetId,
+          range: resolveRange(sheetMap, 'BOOKINGS', 'A:K')
+        });
+        const rows = (bookingDb.data.values || []).slice(1);
+        const pending = rows
+          .map((r, i) => ({ rowIndex: i + 1, r }))
+          .filter(({ r }) => {
+            const status = (r[10] || '').toUpperCase();
+            return status.includes('ЗАПРОС') || status.includes('ОЖИДАЕТ') || status.includes('СПЕЦПРЕДЛОЖЕНИЕ');
+          });
+
+        if (pending.length === 0) {
+          await tgApi(token, 'sendMessage', {
+            chat_id: ownerChatId,
+            text: '🎉 В данный момент нет активных заявок, ожидающих модерации. Все заявки обработаны!',
+            reply_markup: MAIN_KEYBOARD
+          });
+          return res.status(200).json({ success: true, count: 0 });
+        }
+
+        await tgApi(token, 'sendMessage', {
+          chat_id: ownerChatId,
+          text: `📋 Найдено активных заявок: ${pending.length}. Отправляю карточки для модерации:`
+        });
+
+        for (const item of pending) {
+          const r = item.r;
+          const idx = item.rowIndex;
+          const guestName = r[1] || 'Гость';
+          const contact = r[2] || 'Без контакта';
+          const checkIn = r[3] || '-';
+          const checkOut = r[4] || '-';
+          const nights = r[5] || '1';
+          const guests = r[8] || '2';
+          const price = r[9] || '-';
+          const status = r[10] || 'ЗАПРОС';
+
+          const cardText = `📋 Заявка #${idx}\n` +
+            `👤 Имя: ${guestName}\n` +
+            `📞 Контакт: ${contact}\n` +
+            `📅 Даты: ${checkIn} - ${checkOut} [${nights} ночей]\n` +
+            `👥 Гостей: ${guests}\n` +
+            `💰 Стоимость: ${price}\n` +
+            `🏷️ Текущий статус: ${status}`;
+
+          const inlineKeyboard = [
+            [
+              { text: "✅ Одобрить 24ч HOLD", callback_data: `approve_${idx}_${contact}` },
+              { text: "❌ Отклонить", callback_data: `reject_${idx}_${contact}` }
+            ],
+            [
+              { text: `✍️ Написать в чат`, callback_data: `reply_${contact}` },
+              { text: `📑 Шаблоны ответов`, callback_data: `tmpl_pick_${contact}` }
+            ]
+          ];
+
+          await tgApi(token, 'sendMessage', {
+            chat_id: ownerChatId,
+            text: cardText,
+            reply_markup: { inline_keyboard: inlineKeyboard }
+          });
+        }
+        return res.status(200).json({ success: true, count: pending.length });
+      } catch (err) {
+        return res.status(500).json({ success: false, error: err.message });
+      }
+    }
+
+    // Релей: Отправка сводки последних чатов
+    if (act === 'send_recent_chats') {
+      try {
+        if (!sheets || !chatsSpreadsheetId) {
+          return res.status(200).json({ success: false, error: 'База чатов не подключена' });
+        }
+        const meta = await sheets.spreadsheets.get({ spreadsheetId: chatsSpreadsheetId });
+        const chatSheets = (meta.data.sheets || [])
+          .filter((s) => (s.properties.title || '').startsWith('Chat_'))
+          .slice(-5);
+
+        if (chatSheets.length === 0) {
+          await tgApi(token, 'sendMessage', {
+            chat_id: ownerChatId,
+            text: '💬 Диалогов с гостями пока нет.',
+            reply_markup: MAIN_KEYBOARD
+          });
+          return res.status(200).json({ success: true, count: 0 });
+        }
+
+        let report = `💬 Последние активные диалоги [${chatSheets.length}]:\n\n`;
+        for (const cs of chatSheets) {
+          const title = cs.properties.title;
+          const cleanName = title.replace('Chat_', '').replace(/_/g, ' ');
+          report += `• 👤 ${cleanName}\n`;
+        }
+
+        await tgApi(token, 'sendMessage', {
+          chat_id: ownerChatId,
+          text: report,
+          reply_markup: MAIN_KEYBOARD
+        });
+        return res.status(200).json({ success: true, count: chatSheets.length });
+      } catch (err) {
+        return res.status(500).json({ success: false, error: err.message });
+      }
+    }
+  }
+
+  // ==============================================================================
   // 1. ОБРАБОТКА CALLBACK QUERY: НАЖАТИЯ НА INLINE-КНОПКИ
   // ==============================================================================
   if (update.callback_query) {
