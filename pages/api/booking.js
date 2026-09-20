@@ -10,6 +10,7 @@ import { createClient } from '@vercel/kv';
 import { generateVoucher } from '../../utils/pdf';
 import { getLiveSheetMap, resolveRange, SHEETS_REGISTRY } from '../../utils/sheetsRegistry';
 import { generateOtpCode, sendEmailVerificationCode, sendPhoneVerificationCode } from '../../utils/mailer';
+import { SMART_TEMPLATES } from '../../utils/templatesData';
 
 let memoryCache = {};
 
@@ -686,17 +687,24 @@ export default async function handler(req, res) {
       if ((varsDb.data.values || []).length <= 1) {
         await sheets.spreadsheets.values.update({
           spreadsheetId,
-          range: resolveRange(sheetMap, 'VARIABLES', 'A2:D8'),
+          range: resolveRange(sheetMap, 'VARIABLES', 'A2:D15'),
           valueInputOption: 'USER_ENTERED',
           requestBody: {
             values: [
-              ["[FIRST_NAME]", "name", "Имя гостя", "Иван"],
-              ["[CHECKIN_DATE]", "checkIn", "Дата заезда", "01.05.2027"],
-              ["[CHECKOUT_DATE]", "checkOut", "Дата выезда", "10.05.2027"],
+              ["[FIRST_NAME]", "firstName", "Имя гостя для персонализации", "Алексей"],
+              ["[CONFIRMATION_CODE]", "confirmationCode", "Номер бронирования", "VT-7701"],
+              ["[CHECKIN_DATE]", "checkIn", "Дата заезда гостя", "01.07.2026"],
+              ["[CHECKOUT_DATE]", "checkOut", "Дата выезда гостя", "10.07.2026"],
               ["[CHECKIN_TIME]", "checkInTime", "Стандартное время заезда", "16:00"],
               ["[CHECKOUT_TIME]", "checkOutTime", "Стандартное время выезда", "10:00"],
-              ["[GUESTS]", "total_guests", "Общее количество гостей", "4"],
-              ["[PRICE]", "totalPrice", "Итоговая стоимость", "1500 USD"]
+              ["[BOOKING_PLATFORM_NAME]", "bookingPlatform", "Канал бронирования", "Villa Turaman Direct"],
+              ["[ADDRESS]", "address", "Точный адрес и геопозиция", "Дальян, Ортаджа, Мугла, Турция: https://maps.app.goo.gl/villaturaman"],
+              ["[CHECKIN_METHOD]", "checkinMethod", "Способ передачи ключей", "Мини-сейф с кодом у главного входа / Личная встреча"],
+              ["[WIFI_NAME]", "wifiName", "Название гостевой сети Wi-Fi", "VillaTuraman_5G"],
+              ["[WIFI_PASSWORD]", "wifiPassword", "Пароль от сети Wi-Fi", "DalyanTuramanGuest2026"],
+              ["[KEY_HANDOVER_INSTRUCTIONS]", "keyHandoverInstructions", "Инструкция при выезде", "Оставьте ключи в мини-сейфе с кодом у входной двери виллы"],
+              ["[TRANSFER_PRICE]", "transferPrice", "Стоимость трансфера Даламан", "50 EUR"],
+              ["[MIN_PRICE_USD]", "minNightlyPriceUsd", "Минимальный тариф ночь", "180 USD"]
             ]
           }
         });
@@ -714,30 +722,48 @@ export default async function handler(req, res) {
               ["heroTitle", "Villa Turaman", "", "", ""],
               ["heroSubtitle", "Ваш идеальный отдых в Дальяне. Бронирование виллы, премиальный сервис и авторские видео-путеводители от Алексея Знаменского.", "", "", ""],
               ["aboutTitle", "О Вилле", "", "", ""],
-              ["aboutText", "Villa Turaman — это гармоничное сочетание уединения, современного комфорта и первоклассного сервиса для незабываемого отпуска в сердце Дальяна.", "", "", ""],
+              ["aboutText", "Villa Turaman : это гармоничное сочетание уединения, современного комфорта и первоклассного сервиса для незабываемого отпуска в сердце Дальяна.", "", "", ""],
               ["heroImage", "", "", "", "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600"]
             ]
           }
         });
       }
 
-      // Шаблоны сообщений
+      // 14 умных шаблонов сообщений
       const templatesDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'TEMPLATES', 'A:A') });
-      if ((templatesDb.data.values || []).length <= 1) {
+      if ((templatesDb.data.values || []).length <= 1 && Array.isArray(SMART_TEMPLATES)) {
+        const tmplRows = SMART_TEMPLATES.map((tmpl) => [
+          tmpl.id,
+          tmpl.title?.ru || '',
+          tmpl.title?.en || '',
+          tmpl.title?.tr || '',
+          tmpl.content?.ru || '',
+          tmpl.content?.en || '',
+          tmpl.content?.tr || ''
+        ]);
         await sheets.spreadsheets.values.update({
           spreadsheetId,
-          range: resolveRange(sheetMap, 'TEMPLATES', 'A2:B3'),
+          range: resolveRange(sheetMap, 'TEMPLATES', `A2:G${tmplRows.length + 1}`),
           valueInputOption: 'USER_ENTERED',
-          requestBody: { values: [["welcome", "Приветствие"], ["confirmation", "Подтверждение"]] }
+          requestBody: { values: tmplRows }
         });
+      }
+
+      // Лист системных настроек и ИИ
+      const settingsDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'SETTINGS', 'A:A') });
+      if ((settingsDb.data.values || []).length <= 1) {
         await sheets.spreadsheets.values.update({
           spreadsheetId,
-          range: resolveRange(sheetMap, 'TEMPLATES', 'E2:E3'),
+          range: resolveRange(sheetMap, 'SETTINGS', 'A2:D7'),
           valueInputOption: 'USER_ENTERED',
           requestBody: {
             values: [
-              ["Здравствуйте, [FIRST_NAME]! Добро пожаловать. Я владелец Виллы Тураман."],
-              ["Ваша заявка на бронирование [CHECKIN_DATE] — [CHECKOUT_DATE] принята."]
+              ["GEMINI_MODEL", "gemini-3.6-flash", "Модель Google Gemini для ИИ-консьержа", "ACTIVE"],
+              ["AI_ENABLED", "TRUE", "Флаг активности ИИ-агента на платформе", "ENABLED"],
+              ["AI_MODE", "copilot", "Режим работы: copilot [суфлер] или auto [автоответ]", "COPILOT"],
+              ["MIN_NIGHTLY_PRICE_USD", "180", "Минимально допустимый тариф за ночь в долларах", "ENFORCED"],
+              ["SITE_URL", "https://sitesi-5y3x2v6w4-znamenskiialekseis-projects.vercel.app", "Адрес веб-платформы на Vercel", "LIVE"],
+              ["SYSTEM_PROMPT", "Ты профессиональный ИИ-консьерж виллы Villa Turaman в Дальяне. Отвечай вежливо и гостеприимно на языке гостя. Запрещено давать скидки ниже 180 USD.", "Глобальный системный промпт ИИ", "ACTIVE"]
             ]
           }
         });

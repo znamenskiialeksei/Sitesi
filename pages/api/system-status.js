@@ -28,10 +28,13 @@ export default async function handler(req, res) {
   const telegramChatId = Boolean(process.env.TELEGRAM_CHAT_ID);
   const revalidateSecretToken = Boolean(process.env.REVALIDATE_SECRET_TOKEN);
   const kvConfigured = Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+  const geminiApiKey = Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.length > 10);
+  const geminiModel = (process.env.GEMINI_MODEL || 'gemini-3.6-flash').trim();
 
   // Общий статус готовности к работе
   const coreReady = googleSpreadsheetId && googleClientEmail && googlePrivateKey;
   const telegramReady = telegramBotToken && telegramChatId;
+  const aiReady = geminiApiKey;
 
   return res.status(200).json({
     ok: true,
@@ -51,15 +54,18 @@ export default async function handler(req, res) {
       TELEGRAM_BOT_TOKEN: telegramBotToken,
       TELEGRAM_CHAT_ID: telegramChatId,
       REVALIDATE_SECRET_TOKEN: revalidateSecretToken,
-      KV_DATABASE: kvConfigured
+      KV_DATABASE: kvConfigured,
+      GEMINI_API_KEY: geminiApiKey,
+      GEMINI_MODEL: geminiModel
     },
     readiness: {
       coreDatabase: coreReady ? 'READY' : 'CONFIG_REQUIRED',
       telegramBot: telegramReady ? 'READY' : 'CONFIG_REQUIRED',
+      aiConcierge: aiReady ? 'READY' : 'CONFIG_REQUIRED',
       overallStatus: coreReady && telegramReady ? 'ALL_SYSTEMS_OPERATIONAL' : 'PARTIAL_CONFIG'
     },
     message: coreReady && telegramReady
-      ? 'Все системные ключи на Vercel (https://vercel.com/) успешно настроены и активны.'
-      : 'Некоторые ключи требуют настройки на Vercel (https://vercel.com/ ➔ Settings ➔ Environment Variables) или в Script Properties.'
+      ? 'Все системные ключи на Vercel https://vercel.com/ успешно настроены и активны.'
+      : 'Некоторые ключи требуют настройки на Vercel https://vercel.com/ Settings: Environment Variables или в Script Properties.'
   });
 }

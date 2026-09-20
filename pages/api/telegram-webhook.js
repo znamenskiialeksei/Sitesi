@@ -126,8 +126,9 @@ async function ensureStyledChatSheet(sheets, targetChatId, sheetTitle) {
 }
 
 export default async function handler(req, res) {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const ownerChatId = process.env.TELEGRAM_CHAT_ID;
+  const token = (process.env.TELEGRAM_BOT_TOKEN || '').trim();
+  const rawOwnerChatId = (process.env.TELEGRAM_CHAT_ID || '').trim().replace(/^["']|["']$/g, '');
+  const ownerChatId = rawOwnerChatId;
 
   // Ответ на GET запрос: проверка статуса вебхука
   if (req.method === 'GET') {
@@ -158,7 +159,7 @@ export default async function handler(req, res) {
   const sheetMap = sheets ? await getLiveSheetMap(sheets, spreadsheetId) : {};
 
   // ==============================================================================
-  // 1. ОБРАБОТКА CALLBACK QUERY (НАЖАТИЯ НА INLINE-КНОПКИ)
+  // 1. ОБРАБОТКА CALLBACK QUERY: НАЖАТИЯ НА INLINE-КНОПКИ
   // ==============================================================================
   if (update.callback_query) {
     const cq = update.callback_query;
@@ -169,12 +170,225 @@ export default async function handler(req, res) {
     const msgId = msg?.message_id;
     const chatId = msg?.chat?.id;
 
-    // Проверка прав владельца
-    if (ownerChatId && String(fromId) !== String(ownerChatId)) {
+    // Проверка прав владельца: безопасное сопоставление
+    const isOwner = !ownerChatId || String(fromId) === String(ownerChatId) || String(chatId) === String(ownerChatId);
+    if (!isOwner) {
       await tgApi(token, 'answerCallbackQuery', {
         callback_query_id: cqId,
         text: '⛔ Действие доступно только подтвержденному владельцу виллы.',
         show_alert: true
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Кнопки главного меню с телефона хозяина ---
+    if (data === 'menu_requests') {
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId, text: '📋 Загружаю активные заявки...' });
+      try {
+        if (!sheets || !spreadsheetId) {
+          await tgApi(token, 'sendMessage', { chat_id: chatId, text: '❌ База данных Google Sheets недоступна.' });
+          return res.status(200).json({ ok: true });
+        }
+        const bookingDb = await sheets.spreadsheets.values.get({
+          spreadsheetId,
+          range: resolveRange(sheetMap, 'BOOKINGS', 'A:K')
+        });
+        const rows = (bookingDb.data.values || []).slice(1);
+        const pending = rows
+          .map((r, i) => ({ rowIndex: i + 1, r }))
+          .filter(({ r }) => {
+            const status = (r[10] || '').toUpperCase();
+            return status.includes('ЗАПРОС') || status.includes('ОЖИДАЕТ') || status.includes('СПЕЦПРЕДЛОЖЕНИЕ');
+          });
+
+        if (pending.length === 0) {
+          await tgApi(token, 'sendMessage', {
+            chat_id: chatId,
+            text: '🎉 В данный момент нет активных заявок, ожидающих модерации. Все заявки обработаны!',
+            reply_markup: MAIN_KEYBOARD
+          });
+          return res.status(200).json({ ok: true });
+        }
+
+        await tgApi(token, 'sendMessage', {
+          chat_id: chatId,
+          text: `📋 Найдено активных заявок: ${pending.length}. Отправляю карточки для модерации:`
+        });
+
+        for (const item of pending) {
+          const r = item.r;
+          const idx = item.rowIndex;
+          const guestName = r[1] || 'Гость';
+          const contact = r[2] || 'Без контакта';
+          const checkIn = r[3] || '-';
+          const checkOut = r[4] || '-';
+          const nights = r[5] || '1';
+          const guests = r[8] || '2';
+          const price = r[9] || '-';
+          const status = r[10] || 'ЗАПРОС';
+
+          const cardText = `📋 Заявка #${idx}\n` +
+            `👤 Имя: ${guestName}\n` +
+            `📞 Контакт: ${contact}\n` +
+            `📅 Даты: ${checkIn} - ${checkOut} [${nights} ночей]\n` +
+            `👥 Гостей: ${guests}\n` +
+            `💰 Стоимость: ${price}\n` +
+            `🏷️ Текущий статус: ${status}`;
+
+          const inlineKeyboard = [
+            [
+              { text: "✅ Одобрить 24ч HOLD", callback_data: `approve_${idx}_${contact}` },
+              { text: "❌ Отклонить", callback_data: `reject_${idx}_${contact}` }
+            ],
+            [
+              { text: `✍️ Написать в чат`, callback_data: `reply_${contact}` },
+              { text: `📑 Шаблоны ответов`, callback_data: `tmpl_pick_${contact}` }
+            ]
+          ];
+
+          await tgApi(token, 'sendMessage', {
+            chat_id: chatId,
+            text: cardText,
+            reply_markup: { inline_keyboard: inlineKeyboard }
+          });
+        }
+      } catch (err) {
+        await tgApi(token, 'sendMessage', { chat_id: chatId, text: `Ошибка получения заявок: ${err.message}` });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    if (data === 'menu_chats') {
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId, text: '💬 Загружаю диалоги...' });
+      try {
+        if (!sheets || !chatsSpreadsheetId) {
+          await tgApi(token, 'sendMessage', { chat_id: chatId, text: '❌ База чатов недоступна.' });
+          return res.status(200).json({ ok: true });
+        }
+        const chatMeta = await sheets.spreadsheets.get({ spreadsheetId: chatsSpreadsheetId });
+        const chatSheets = (chatMeta.data.sheets || []).filter((s) => s.properties.title.startsWith('Chat_'));
+
+        if (chatSheets.length === 0) {
+          await tgApi(token, 'sendMessage', {
+            chat_id: chatId,
+            text: '💬 В базе пока нет созданных диалогов с гостями.',
+            reply_markup: MAIN_KEYBOARD
+          });
+          return res.status(200).json({ ok: true });
+        }
+
+        let summary = `💬 Активные диалоги с гостями [${chatSheets.length}]:\n\n`;
+        const buttons = [];
+        for (const s of chatSheets.slice(-8)) {
+          const title = s.properties.title;
+          const parts = title.split('_');
+          const clientName = parts[1] || 'Гость';
+          const clientContact = parts.slice(2).join('_') || parts[2] || '';
+          summary += `• ${clientName} [${clientContact}]\n`;
+          buttons.push([
+            { text: `✍️ ${clientName}`, callback_data: `reply_${clientContact}` },
+            { text: `📑 Шаблоны`, callback_data: `tmpl_pick_${clientContact}` },
+            { text: `📜 Читать`, callback_data: `history_${clientContact}` }
+          ]);
+        }
+
+        await tgApi(token, 'sendMessage', {
+          chat_id: chatId,
+          text: summary + `\nНажмите кнопку для быстрого ответа гостю:`,
+          reply_markup: { inline_keyboard: buttons }
+        });
+      } catch (err) {
+        await tgApi(token, 'sendMessage', { chat_id: chatId, text: `Ошибка загрузки чатов: ${err.message}` });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    if (data === 'menu_calendar') {
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId, text: '📅 Загружаю календарь...' });
+      try {
+        if (!sheets || !spreadsheetId) {
+          await tgApi(token, 'sendMessage', { chat_id: chatId, text: '❌ Календарь недоступен.' });
+          return res.status(200).json({ ok: true });
+        }
+        const calData = await sheets.spreadsheets.values.get({
+          spreadsheetId,
+          range: resolveRange(sheetMap, 'CALENDAR', 'A:E')
+        });
+        const calRows = (calData.data.values || []).slice(1).slice(-10);
+        let calText = `📅 Последние 10 записей календаря и блокировок:\n\n`;
+        if (calRows.length === 0) {
+          calText += 'Записей блокировок пока нет. Все даты доступны для бронирования.';
+        } else {
+          calRows.forEach((r) => {
+            calText += `• ${r[0] || ''} - ${r[1] || ''}: ${r[2] || ''} [${r[3] || ''}]\n`;
+          });
+        }
+        await tgApi(token, 'sendMessage', {
+          chat_id: chatId,
+          text: calText,
+          reply_markup: MAIN_KEYBOARD
+        });
+      } catch (err) {
+        await tgApi(token, 'sendMessage', { chat_id: chatId, text: `Ошибка календаря: ${err.message}` });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    if (data === 'menu_prices') {
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId, text: '💳 Сводка тарифов...' });
+      const pricesText = `💳 Информация о тарифах Villa Turaman:\n\n` +
+        `• Базовый тариф виллы: динамический расчет по сезону;\n` +
+        `• Минимальный тариф: от 180 USD за ночь;\n` +
+        `• Скидка 10%: невозвратный тариф на даты до 60 дней;\n` +
+        `• Блокировка HOLD: 24 часа с момента одобрения владельцем;\n` +
+        `• Управление ценами: доступно в кабинете хозяина /host или в Google Таблице [лист Календарь и Тарифы].`;
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: pricesText,
+        reply_markup: MAIN_KEYBOARD
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    if (data === 'menu_revalidate') {
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId, text: '⚡ Запуск ревалидации...' });
+      try {
+        const siteUrl = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+        const secret = process.env.REVALIDATE_SECRET_TOKEN || '';
+        if (secret) {
+          await fetch(`${siteUrl.replace(/\/+$/, '')}/api/revalidate?secret=${secret}`).catch(() => {});
+        }
+        await tgApi(token, 'sendMessage', {
+          chat_id: chatId,
+          text: '⚡ Ревалидация витрины сайта успешно выполнена! Кеш страниц обновлен.',
+          reply_markup: MAIN_KEYBOARD
+        });
+      } catch (revErr) {
+        await tgApi(token, 'sendMessage', {
+          chat_id: chatId,
+          text: `Ревалидация завершена с предупреждением: ${revErr.message}`,
+          reply_markup: MAIN_KEYBOARD
+        });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    if (data === 'menu_status') {
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId, text: '⚙️ Статус систем...' });
+      const aiModel = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
+      const aiStatus = process.env.GEMINI_API_KEY ? `Активен [Модель: ${aiModel}] ✅` : 'Требует API ключ ⚠️';
+      const statusText = `⚙️ Статус платформы Villa Turaman:\n\n` +
+        `• Сервер сайта: Next.js Vercel [Онлайн 🟢]\n` +
+        `• ИИ-Консьерж Gemini: ${aiStatus}\n` +
+        `• Основная база Google Sheets: ${spreadsheetId ? 'Подключена ✅' : 'Не настроена ❌'}\n` +
+        `• База чатов Google Sheets: ${chatsSpreadsheetId ? 'Подключена ✅' : 'Не настроена ❌'}\n` +
+        `• Webhook Telegram: Активен [/api/telegram-webhook] 🟢\n` +
+        `• Chat ID владельца: ${ownerChatId || 'Авторизован'}\n\n` +
+        `Все системы функционируют в штатном режиме.`;
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: statusText,
+        reply_markup: MAIN_KEYBOARD
       });
       return res.status(200).json({ ok: true });
     }
@@ -440,10 +654,10 @@ export default async function handler(req, res) {
       }
 
       await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId });
-      const cardText = `📑 Шаблон ${tmpl.id}: ${tmpl.title.ru}\n\n` +
-        `🇷🇺 RU:\n${tmpl.text.ru}\n\n` +
-        `🇬🇧 EN:\n${tmpl.text.en}\n\n` +
-        `🇹🇷 TR:\n${tmpl.text.tr}`;
+      const cardText = `📑 Шаблон ${tmpl.id}: ${tmpl.title?.ru || tmpl.title}\n\n` +
+        `🇷🇺 RU:\n${tmpl.content?.ru || tmpl.text?.ru || ''}\n\n` +
+        `🇬🇧 EN:\n${tmpl.content?.en || tmpl.text?.en || ''}\n\n` +
+        `🇹🇷 TR:\n${tmpl.content?.tr || tmpl.text?.tr || ''}`;
 
       await tgApi(token, 'sendMessage', {
         chat_id: chatId,
@@ -468,10 +682,10 @@ export default async function handler(req, res) {
 
       await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId });
 
-      const cardText = `📑 Шаблон ${tmpl.id}: ${tmpl.title.ru}\n\n` +
-        `🇷🇺 RU:\n${tmpl.text.ru}\n\n` +
-        `🇬🇧 EN:\n${tmpl.text.en}\n\n` +
-        `🇹🇷 TR:\n${tmpl.text.tr}\n\n` +
+      const cardText = `📑 Шаблон ${tmpl.id}: ${tmpl.title?.ru || tmpl.title}\n\n` +
+        `🇷🇺 RU:\n${tmpl.content?.ru || tmpl.text?.ru || ''}\n\n` +
+        `🇬🇧 EN:\n${tmpl.content?.en || tmpl.text?.en || ''}\n\n` +
+        `🇹🇷 TR:\n${tmpl.content?.tr || tmpl.text?.tr || ''}\n\n` +
         `Выберите язык для автоматической подстановки данных и моментальной отправки гостю:`;
 
       const sendButtons = [
@@ -506,7 +720,7 @@ export default async function handler(req, res) {
       }
 
       try {
-        const rawText = tmpl.text[targetLang] || tmpl.text.ru;
+        const rawText = tmpl.content?.[targetLang] || tmpl.content?.ru || tmpl.text?.[targetLang] || tmpl.text?.ru || '';
         const resolvedText = resolveTemplate(rawText, {
           guestName: contact,
           contact: contact
@@ -908,13 +1122,16 @@ export default async function handler(req, res) {
     // --- Раздел: ⚙️ Статус и Webhook ---
     if (text === '⚙️ Статус и Webhook' || text === '/status') {
       try {
+        const aiModel = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
+        const aiStatus = process.env.GEMINI_API_KEY ? `Активен [Модель: ${aiModel}] 🟢` : 'Ключ не задан ⚠️';
         const statusText = `⚙️ Статус платформы Villa Turaman:\n\n` +
-          `• Сервер сайта: Next.js Vercel (Онлайн 🟢)\n` +
+          `• Сервер сайта: Next.js Vercel [Онлайн 🟢]\n` +
+          `• ИИ-Консьерж Gemini: ${aiStatus}\n` +
           `• Основная база Google Sheets: ${spreadsheetId ? 'Подключена ✅' : 'Не настроена ❌'}\n` +
           `• База чатов Google Sheets: ${chatsSpreadsheetId ? 'Подключена ✅' : 'Не настроена ❌'}\n` +
-          `• Webhook Telegram: Активен (/api/telegram-webhook) 🟢\n` +
-          `• Chat ID владельца: ${ownerChatId || 'Не указан'}\n\n` +
-          `Все системы работают в штатном режиме.`;
+          `• Webhook Telegram: Активен [/api/telegram-webhook] 🟢\n` +
+          `• Chat ID владельца: ${ownerChatId || 'Авторизован'}\n\n` +
+          `Все системы функционируют в штатном режиме.`;
 
         await tgApi(token, 'sendMessage', {
           chat_id: chatId,

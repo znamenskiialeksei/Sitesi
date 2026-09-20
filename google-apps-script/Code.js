@@ -84,18 +84,25 @@ function onOpen() {
     .addItem("📨 Проверить новые чаты с гостями", "checkGuestChatsStatus")
     .addItem("📝 Проверить корректность шаблонов ответов", "auditTemplatesFormat");
 
-  // 6. Блок 6: Системный аудит, формулы и Свойства скрипта (Script Properties)
+  // 6. Блок 6: Системный аудит, формулы и Свойства скрипта
   var auditMenu = ui.createMenu("⚙️ 6. Системный аудит & Свойства")
-    .addItem("🔑 1. Настроить Свойства скрипта (Script Properties)", "setupScriptPropertiesInteractive")
+    .addItem("🔑 1. Настроить Свойства скрипта: Script Properties", "setupScriptPropertiesInteractive")
     .addItem("🌐 2. Проверить статус ключей на Vercel: https://vercel.com/", "checkVercelEnvStatusInteractive")
     .addItem("📋 3. Показать текущие Свойства скрипта", "viewCurrentScriptProperties")
     .addItem("⚡ 4. Установить типовые свойства по умолчанию", "setupDefaultScriptProperties")
     .addSeparator()
-    .addItem("🧪 5. Проверить стандарт точки с запятой (;) в формулах", "auditFormulasSemicolon")
+    .addItem("🧪 5. Проверить стандарт точки с запятой в формулах", "auditFormulasSemicolon")
     .addItem("📄 6. Просмотр паспорта и ID всех листов", "showSheetsPassportModal")
     .addItem("🛠️ 7. Инициализировать недостающие листы", "ensureAllSystemSheets")
     .addSeparator()
     .addItem("📧 8. Инструкция по развертыванию Gmail Relay", "showGmailRelayDeployHelp");
+
+  // 7. Блок 7: ИИ-Консьерж и Gemini API
+  var aiMenu = ui.createMenu("🧠 7. ИИ-Консьерж & Gemini")
+    .addItem("🛠️ 1. Создать и наполнить Базу Знаний ИИ: 3 листа", "initAiKnowledgeBaseSheets")
+    .addItem("🤖 2. Проверить статус Gemini API на Vercel", "checkGeminiVercelStatusInteractive")
+    .addItem("⚙️ 3. Настроить параметры ИИ в Свойствах скрипта", "setupAiPropertiesInteractive")
+    .addItem("💬 4. Тестовый диалог с ИИ-Консьержем", "testAiConciergeInteractive");
 
   // Сборка первого главного меню верхнего уровня: 🏡 Villa Turaman Suite
   ui.createMenu("🏡 Villa Turaman Suite")
@@ -106,6 +113,7 @@ function onOpen() {
     .addSubMenu(catalogMenu)
     .addSubMenu(crmMenu)
     .addSubMenu(auditMenu)
+    .addSubMenu(aiMenu)
     .addToUi();
 
   // ВТОРОЕ ГЛАВНОЕ МЕНЮ ВЕРХНЕГО УРОВНЯ: 🤖 Telegram Бот
@@ -651,7 +659,9 @@ function checkVercelEnvStatusInteractive() {
       (k.GOOGLE_PRIVATE_KEY ? '  ✅' : '  ❌') + ' GOOGLE_PRIVATE_KEY: ' + (k.GOOGLE_PRIVATE_KEY ? 'Валиден' : 'Не задан') + '\n' +
       (k.TELEGRAM_BOT_TOKEN ? '  ✅' : '  ❌') + ' TELEGRAM_BOT_TOKEN: ' + (k.TELEGRAM_BOT_TOKEN ? 'Активен' : 'Не задан') + '\n' +
       (k.TELEGRAM_CHAT_ID ? '  ✅' : '  ❌') + ' TELEGRAM_CHAT_ID: ' + (k.TELEGRAM_CHAT_ID ? 'Активен' : 'Не задан') + '\n' +
-      (k.REVALIDATE_SECRET_TOKEN ? '  ✅' : '  ❌') + ' REVALIDATE_SECRET_TOKEN: ' + (k.REVALIDATE_SECRET_TOKEN ? 'Активен' : 'Не задан') + '\n\n' +
+      (k.REVALIDATE_SECRET_TOKEN ? '  ✅' : '  ❌') + ' REVALIDATE_SECRET_TOKEN: ' + (k.REVALIDATE_SECRET_TOKEN ? 'Активен' : 'Не задан') + '\n' +
+      (k.GEMINI_API_KEY ? '  ✅' : '  ❌') + ' GEMINI_API_KEY: ' + (k.GEMINI_API_KEY ? 'Активен' : 'Не задан') + '\n' +
+      '  🤖 GEMINI_MODEL: ' + (k.GEMINI_MODEL || 'gemini-3.6-flash') + '\n\n' +
       'Общий статус: ' + (data.readiness && data.readiness.overallStatus ? data.readiness.overallStatus : 'OK') + '\n\n' +
       'Все ключи могут быть заданы непосредственно в панели управления Vercel:\nhttps://vercel.com/ ➔ Settings ➔ Environment Variables';
 
@@ -659,6 +669,343 @@ function checkVercelEnvStatusInteractive() {
   } catch (err) {
     ui.alert('Сбой связи с Vercel', 'Не удалось связаться с ' + siteUrl + ':\n' + err.message, ui.ButtonSet.OK);
   }
+}
+
+/**
+ * 2. Проверка статуса Gemini API на Vercel
+ */
+function checkGeminiVercelStatusInteractive() {
+  checkVercelEnvStatusInteractive();
+}
+
+/**
+ * 3. Интерактивная настройка параметров ИИ в Свойствах скрипта таблицы
+ */
+function setupAiPropertiesInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var props = PropertiesService.getScriptProperties();
+
+  var currentModel = props.getProperty('GEMINI_MODEL') || 'gemini-3.6-flash';
+  var resModel = ui.prompt(
+    'Модель Google Gemini',
+    'Введите название рабочей модели Gemini [по умолчанию gemini-3.6-flash]:',
+    ui.ButtonSet.OK_CANCEL
+  );
+  if (resModel.getSelectedButton() !== ui.Button.OK) return;
+  var model = resModel.getResponseText().trim() || currentModel;
+
+  var currentKey = props.getProperty('GEMINI_API_KEY') || '';
+  var resKey = ui.prompt(
+    'Ключ Gemini API',
+    'Введите GEMINI_API_KEY [или оставьте пустым, если ключ уже указан на https://vercel.com/]:',
+    ui.ButtonSet.OK_CANCEL
+  );
+  if (resKey.getSelectedButton() !== ui.Button.OK) return;
+  var key = resKey.getResponseText().trim() || currentKey;
+
+  var currentMode = props.getProperty('AI_MODE') || 'copilot';
+  var resMode = ui.prompt(
+    'Режим работы ИИ',
+    'Введите режим работы ИИ [copilot : суфлер с ручной отправкой хозяином, auto : авто-ответ]:',
+    ui.ButtonSet.OK_CANCEL
+  );
+  if (resMode.getSelectedButton() !== ui.Button.OK) return;
+  var mode = resMode.getResponseText().trim() || currentMode;
+
+  props.setProperty('GEMINI_MODEL', model);
+  if (key) props.setProperty('GEMINI_API_KEY', key);
+  props.setProperty('AI_MODE', mode);
+
+  ui.alert(
+    '✅ Настройки ИИ сохранены!',
+    'Параметры ИИ зафиксированы:\n• Модель: ' + model + '\n• Режим: ' + mode + '\n• Ключ: ' + (key ? 'Сохранен в таблице' : 'Используется с Vercel') + '\n\nКлюч также можно настроить на https://vercel.com/ Settings: Environment Variables.',
+    ui.ButtonSet.OK
+  );
+}
+
+/**
+ * 4. Тестовый диалог с ИИ-Консьержем
+ */
+function testAiConciergeInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var props = PropertiesService.getScriptProperties();
+  var siteUrl = (props.getProperty('SITE_URL') || '').trim();
+
+  var qRes = ui.prompt(
+    'Тест ИИ-Консьержа',
+    'Введите вопрос гостя для проверки генерации ответа [например: Какая цена на июль и есть ли скидка?]:',
+    ui.ButtonSet.OK_CANCEL
+  );
+  if (qRes.getSelectedButton() !== ui.Button.OK) return;
+  var userQ = qRes.getResponseText().trim();
+  if (!userQ) return;
+
+  if (!siteUrl) {
+    ui.alert('Внимание', 'Сначала укажите SITE_URL в Свойствах скрипта.', ui.ButtonSet.OK);
+    return;
+  }
+
+  try {
+    var endpoint = siteUrl.replace(/\/+$/, '') + '/api/ai-concierge';
+    var payload = {
+      guestMessage: userQ,
+      guestName: 'Алексей',
+      contact: '+90 532 000 0000',
+      lang: 'ru'
+    };
+    var response = UrlFetchApp.fetch(endpoint, {
+      method: 'post',
+      contentType: 'application/json',
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    });
+    var resData = JSON.parse(response.getContentText());
+    if (resData.success) {
+      ui.alert(
+        '🤖 Ответ ИИ-Консьержа [Модель: ' + (resData.model || 'Gemini') + ']',
+        'Вопрос гостя: ' + userQ + '\n\n' +
+        'Сгенерированный ответ:\n' + resData.reply + '\n\n' +
+        (resData.suggestedTemplateId ? 'Рекомендованный шаблон: ' + resData.suggestedTemplateId : ''),
+        ui.ButtonSet.OK
+      );
+    } else {
+      ui.alert('Ошибка ответа ИИ', resData.error || 'Не удалось получить ответ', ui.ButtonSet.OK);
+    }
+  } catch (err) {
+    ui.alert('Сбой связи с ИИ', err.message, ui.ButtonSet.OK);
+  }
+}
+
+/**
+ * Вспомогательное смарт-форматирование созданного листа
+ */
+function styleSheetHeader_(sheet, headers, frozenRows) {
+  if (!sheet || !headers) return;
+  var range = sheet.getRange(1, 1, 1, headers.length);
+  range.setValues([headers]);
+  range.setBackground('#1e293b');
+  range.setFontColor('#ffffff');
+  range.setFontWeight('bold');
+  range.setFontSize(10);
+  range.setHorizontalAlignment('center');
+  range.setVerticalAlignment('middle');
+  range.setWrapStrategy(SpreadsheetApp.WrapStrategy.WRAP);
+  sheet.setRowHeight(1, 35);
+  if (frozenRows) sheet.setFrozenRows(frozenRows);
+  for (var c = 1; c <= headers.length; c++) {
+    sheet.autoResizeColumn(c);
+  }
+}
+
+/**
+ * 1. Инициализация и наполнение Базы Знаний ИИ: 3 листа
+ * Создает листы:
+ * - 💬 Шаблоны сообщений [14 эталонных сценариев]
+ * - 🧩 Словарь переменных [актуальные реквизиты, Wi-Fi, адрес]
+ * - ⚙️ Системные настройки [флаги активности, gemini-3.6-flash, минимальные цены]
+ */
+function initAiKnowledgeBaseSheets() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ui = SpreadsheetApp.getUi();
+
+  // 1. Лист 💬 Шаблоны сообщений
+  var tmplSheetName = '💬 Шаблоны сообщений';
+  var tmplSheet = ss.getSheetByName(tmplSheetName);
+  if (!tmplSheet) {
+    tmplSheet = ss.insertSheet(tmplSheetName);
+  }
+  var tmplHeaders = ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'];
+  styleSheetHeader_(tmplSheet, tmplHeaders, 1);
+
+  var templatesData = [
+    [
+      '1.1_discount_10',
+      '1.1. Скидка 10% за невозвратный тариф',
+      '1.1. 10% Non-refundable rate discount',
+      '1.1. %10 İade Edilemez Tarife İndirimi',
+      'Здравствуйте, [FIRST_NAME]! Рад вашему интересу к Villa Turaman! Для поездок на ближайшие даты активирована опция: Бронирование без возврата со скидкой 10%. Скидка действует, если дата выезда в пределах 60 дней. С уважением, Алексей Знаменский.',
+      'Hello [FIRST_NAME]! Thank you for your interest in Villa Turaman! We have a special 10% non-refundable discount for stays within 60 days. Best regards, Aleksei Znamenskii.',
+      'Merhaba [FIRST_NAME]! Villa Turaman ile ilgilendiğiniz için teşekkürler! 60 gün içindeki konaklamalar için %10 iade edilemez indirim seçeneğimiz mevcuttur. Saygılarımla, Aleksei Znamenskii.'
+    ],
+    [
+      '1.2_budget_price',
+      '1.2. Работа с ценой и вопросы по бюджету',
+      '1.2. Budget & Pricing inquiries',
+      '1.2. Bütçe ve Fiyat Görüşmeleri',
+      'Здравствуйте, [FIRST_NAME]! Понимаю ваше желание оптимизировать бюджет. Стоимость вилы включает приватную территорию, бассейн, скоростной Wi-Fi и чистоту. Минимальный допустимый тариф составляет 180 USD за ночь. С удовольствием отвечу на ваши вопросы!',
+      'Hello [FIRST_NAME]! We understand budget considerations. Our villa rate includes private pool, garden, high-speed Wi-Fi and full privacy. Minimum rate is 180 USD per night. Best regards!',
+      'Merhaba [FIRST_NAME]! Bütçenizi anlıyoruz. Villamız özel havuz, bahçe ve tam gizlilik sunmaktadır. Gecelik taban fiyatımız 180 USD dir. Saygılarımla!'
+    ],
+    [
+      '1.3_early_bird_expiration',
+      '1.3. Напоминание об истечении скидки',
+      '1.3. Early bird discount reminder',
+      '1.3. Erken Rezervasyon İndirimi Hatırlatması',
+      'Здравствуйте, [FIRST_NAME]! Напоминаю, что специальный тариф на выбранные вами даты действует ограниченное время. Если ваши даты подтверждены, рекомендую зафиксировать бронь прямо сейчас.',
+      'Hello [FIRST_NAME]! Just a friendly reminder that special rates for your selected dates are valid for a limited time. Feel free to complete your booking to secure your stay!',
+      'Merhaba [FIRST_NAME]! Seçtiğiniz tarihler için özel fiyatın sınırlı süreli olduğunu hatırlatmak isteriz. Rezervasyonunuzu kesinleştirmek için tamamlayabilirsiniz.'
+    ],
+    [
+      '2.1_confirmation_initial_info',
+      '2.1. Подтверждение и вводная информация',
+      '2.1. Booking confirmation & general info',
+      '2.1. Rezervasyon Onayı ve Genel Bilgiler',
+      'Здравствуйте, [FIRST_NAME]! Поздравляю с успешным бронированием Villa Turaman [код: [CONFIRMATION_CODE]]! Ваши даты: [CHECKIN_DATE] - [CHECKOUT_DATE]. Заезд с [CHECKIN_TIME], выезд до [CHECKOUT_TIME]. Наш адрес: [ADDRESS].',
+      'Hello [FIRST_NAME]! Congratulations on your confirmed booking at Villa Turaman [Code: [CONFIRMATION_CODE]]! Dates: [CHECKIN_DATE] - [CHECKOUT_DATE]. Check-in: [CHECKIN_TIME], check-out: [CHECKOUT_TIME]. Address: [ADDRESS].',
+      'Merhaba [FIRST_NAME]! Villa Turaman rezervasyonunuz onaylandı [Kod: [CONFIRMATION_CODE]]! Tarihler: [CHECKIN_DATE] - [CHECKOUT_DATE]. Giriş: [CHECKIN_TIME], çıkış: [CHECKOUT_TIME]. Adres: [ADDRESS].'
+    ],
+    [
+      '2.2_top_floor_clarification',
+      '2.2. Разъяснение по верхнему этажу',
+      '2.2. Top floor clarification',
+      '2.2. Üst Kat Hakkında Bilgilendirme',
+      'Здравствуйте, [FIRST_NAME]! Хочу подтвердить: вся вилла, сад и бассейн находятся в вашем исключительном приватном пользовании. Верхний этаж закрыт на ключ и никто посторонний там не проживает.',
+      'Hello [FIRST_NAME]! We want to assure you that the entire villa, garden and private pool are exclusively yours. The top floor is securely locked and unoccupied during your stay.',
+      'Merhaba [FIRST_NAME]! Villanın tamamı, havuz ve bahçe yalnızca size aittir. Üst kat kilitlidir ve konaklamanız boyunca tamamen boştur.'
+    ],
+    [
+      '2.3_transfer_assistance',
+      '2.3. Помощь с организацией трансфера',
+      '2.3. Airport transfer assistance',
+      '2.3. Havalimanı Transfer Desteği',
+      'Здравствуйте, [FIRST_NAME]! Мы с радостью поможем организовать комфортный трансфер из аэропорта Даламан [DLM] прямо к вилле. Стоимость трансфера составляет [TRANSFER_PRICE]. Сообщите номер рейса и время прилета.',
+      'Hello [FIRST_NAME]! We can gladly arrange a private transfer from Dalaman Airport [DLM] directly to the villa. Rate: [TRANSFER_PRICE]. Please provide flight details.',
+      'Merhaba [FIRST_NAME]! Dalaman Havalimanı ndan [DLM] villamıza özel transfer ayarlayabiliriz. Ücret: [TRANSFER_PRICE]. Uçuş bilgilerinizi paylaşabilirsiniz.'
+    ],
+    [
+      '3.1_kbs_registration',
+      '3.1. Регистрация гостей в системе KBS',
+      '3.1. Official KBS guest registration',
+      '3.1. Resmi KBS Misafir Kaydı',
+      'Здравствуйте, [FIRST_NAME]! Согласно законодательству Турции, все гости обязаны пройти регистрацию в системе KBS жандармерии до заселения. Пожалуйста, пришлите фото главных страниц паспортов всех гостей.',
+      'Hello [FIRST_NAME]! Turkish law requires all staying guests to be registered with the official KBS system prior to check-in. Please share passport copies for all guests.',
+      'Merhaba [FIRST_NAME]! Türkiye mevzuatı gereği tüm misafirlerimizin KBS sistemine kaydı zorunludur. Lütfen kimlik veya pasaport kopyalarını iletiniz.'
+    ],
+    [
+      '3.2_address_geolocation',
+      '3.2. Точный адрес и геолокация виллы',
+      '3.2. Address & Geolocation directions',
+      '3.2. Konum ve Yol Tarifi',
+      'Здравствуйте, [FIRST_NAME]! Наш точный адрес: [ADDRESS]. Вилла расположена в тихом живописном районе Дальяна. Прикладываю точку Google Maps для навигатора.',
+      'Hello [FIRST_NAME]! Here is our exact location: [ADDRESS]. Villa Turaman is situated in a peaceful area of Dalyan with mountain views.',
+      'Merhaba [FIRST_NAME]! Kesin adresimiz: [ADDRESS]. Dalyan da huzurlu ve manzaralı bir konumdayız.'
+    ],
+    [
+      '3.3_checkin_time_coordination',
+      '3.3. Согласование точного времени заезда',
+      '3.3. Check-in time coordination',
+      '3.3. Giriş Saati Koordinasyonu',
+      'Здравствуйте, [FIRST_NAME]! Стандартное время заезда: [CHECKIN_TIME]. Подскажите, во сколько ориентировочно вы планируете прибыть, чтобы мы идеально подготовили виллу к вашему приезду.',
+      'Hello [FIRST_NAME]! Our standard check-in time is [CHECKIN_TIME]. What time do you expect to arrive so we can ensure everything is spotless and ready for you?',
+      'Merhaba [FIRST_NAME]! Standart giriş saatimiz [CHECKIN_TIME] dir. Villayı hazır etmek için tahmini varış saatinizi bildirir misiniz?'
+    ],
+    [
+      '3.4_checkin_instructions',
+      '3.4. Инструкция по заселению и Wi-Fi',
+      '3.4. Self check-in & Wi-Fi details',
+      '3.4. Giriş ve Wi-Fi Bilgileri',
+      'Здравствуйте, [FIRST_NAME]! Добро пожаловать! Способ заселения: [CHECKIN_METHOD]. Скоростной интернет: Сеть [WIFI_NAME], Пароль: [WIFI_PASSWORD]. Приятного отдыха!',
+      'Hello [FIRST_NAME]! Welcome! Check-in method: [CHECKIN_METHOD]. High-speed Wi-Fi: Network [WIFI_NAME], Password: [WIFI_PASSWORD]. Enjoy your stay!',
+      'Merhaba [FIRST_NAME]! Hoş geldiniz! Giriş yöntemi: [CHECKIN_METHOD]. Hızlı Wi-Fi: Ağ [WIFI_NAME], Şifre: [WIFI_PASSWORD]. İyi tatiller!'
+    ],
+    [
+      '3.5_welcome_guide_dalyan',
+      '3.5. Приветственный путеводитель по Дальяну',
+      '3.5. Welcome Dalyan local guide',
+      '3.5. Hoş Geldiniz Dalyan Rehberi',
+      'Здравствуйте, [FIRST_NAME]! Мы подготовили авторский путеводитель по Дальяну: лучшие рестораны у реки, прогулки на лодке к Ликийским гробницам и пляж Изтузу. Смотрите раздел путеводителей в личном кабинете!',
+      'Hello [FIRST_NAME]! We have prepared a curated local guide for Dalyan: top riverside dining, boat tours to Lycian rock tombs and turtle beach. Check your guest portal!',
+      'Merhaba [FIRST_NAME]! Size özel Dalyan rehberimizi hazırladık: nehir kenarı restoranlar, tekne turları ve İztuzu plajı. Misafir panelinizden inceleyebilirsiniz!'
+    ],
+    [
+      '4.1_mid_stay_satisfaction',
+      '4.1. Контроль комфорта во время отдыха',
+      '4.1. Mid-stay satisfaction check',
+      '4.1. Konaklama Memnuniyet Kontrolü',
+      'Здравствуйте, [FIRST_NAME]! Как проходит ваш отдых на Villa Turaman? Все ли комфортно, есть ли какие-либо пожелания по вилле, бассейну или окрестностям?',
+      'Hello [FIRST_NAME]! How is your stay going at Villa Turaman? Is everything comfortable, and do you need any assistance with anything?',
+      'Merhaba [FIRST_NAME]! Tatiliniz nasıl gidiyor? Her şey yolunda mı, yardımcı olabileceğimiz bir konu var mı?'
+    ],
+    [
+      '4.2_pool_maintenance_notice',
+      '4.2. Уведомление об обслуживании бассейна',
+      '4.2. Pool maintenance notice',
+      '4.2. Havuz Bakım Bildirimi',
+      'Здравствуйте, [FIRST_NAME]! Информируем, что завтра утром с 07:00 до 08:00 запланирована регулярная чистка бассейна. Специалист выполнит работу тихо и быстро, не потревожив ваш отдых.',
+      'Hello [FIRST_NAME]! Gentle notice that regular pool maintenance is scheduled for tomorrow morning [07:00 - 08:00]. It will be brief and silent.',
+      'Merhaba [FIRST_NAME]! Yarın sabah [07:00 - 08:00] arasında havuz bakımı yapılacaktır. Rahatsızlık vermeden kısa sürede tamamlanacaktır.'
+    ],
+    [
+      '5.1_checkout_reminder',
+      '5.1. Напоминание о правилах выезда',
+      '5.1. Check-out reminder & rules',
+      '5.1. Çıkış Hatırlatması ve Kurallar',
+      'Здравствуйте, [FIRST_NAME]! Напоминаем, что выезд запланирован на [CHECKOUT_DATE] до [CHECKOUT_TIME]. Инструкция по ключам: [KEY_HANDOVER_INSTRUCTIONS]. Благодарим за выбор Villa Turaman!',
+      'Hello [FIRST_NAME]! Friendly reminder that check-out is on [CHECKOUT_DATE] by [CHECKOUT_TIME]. Key instructions: [KEY_HANDOVER_INSTRUCTIONS]. Thank you!',
+      'Merhaba [FIRST_NAME]! Çıkışınız [CHECKOUT_DATE] saat [CHECKOUT_TIME] ye kadardır. Anahtar talimatı: [KEY_HANDOVER_INSTRUCTIONS]. Teşekkür ederiz!'
+    ]
+  ];
+
+  tmplSheet.getRange(2, 1, templatesData.length, tmplHeaders.length).setValues(templatesData);
+
+  // 2. Лист 🧩 Словарь переменных
+  var varsSheetName = '🧩 Словарь переменных';
+  var varsSheet = ss.getSheetByName(varsSheetName);
+  if (!varsSheet) {
+    varsSheet = ss.insertSheet(varsSheetName);
+  }
+  var varsHeaders = ['Плейсхолдер', 'Системный ключ', 'Описание переменной', 'Значение по умолчанию [Тест]'];
+  styleSheetHeader_(varsSheet, varsHeaders, 1);
+
+  var variablesData = [
+    ['[FIRST_NAME]', 'firstName', 'Имя гостя для персонализации', 'Алексей'],
+    ['[CONFIRMATION_CODE]', 'confirmationCode', 'Номер бронирования', 'VT-7701'],
+    ['[CHECKIN_DATE]', 'checkIn', 'Дата заезда гостя', '01.07.2026'],
+    ['[CHECKOUT_DATE]', 'checkOut', 'Дата выезда гостя', '10.07.2026'],
+    ['[CHECKIN_TIME]', 'checkInTime', 'Стандартное время заезда', '16:00'],
+    ['[CHECKOUT_TIME]', 'checkOutTime', 'Стандартное время выезда', '10:00'],
+    ['[BOOKING_PLATFORM_NAME]', 'bookingPlatform', 'Канал бронирования', 'Villa Turaman Direct'],
+    ['[ADDRESS]', 'address', 'Точный адрес и геопозиция', 'Дальян, Ортаджа, Мугла, Турция: https://maps.app.goo.gl/villaturaman'],
+    ['[CHECKIN_METHOD]', 'checkinMethod', 'Способ передачи ключей', 'Мини-сейф с кодом у главного входа / Личная встреча'],
+    ['[WIFI_NAME]', 'wifiName', 'Название гостевой сети Wi-Fi', 'VillaTuraman_5G'],
+    ['[WIFI_PASSWORD]', 'wifiPassword', 'Пароль от сети Wi-Fi', 'DalyanTuramanGuest2026'],
+    ['[KEY_HANDOVER_INSTRUCTIONS]', 'keyHandoverInstructions', 'Инструкция при выезде', 'Оставьте ключи в мини-сейфе с кодом у входной двери виллы'],
+    ['[TRANSFER_PRICE]', 'transferPrice', 'Стоимость трансфера Даламан', '50 EUR'],
+    ['[MIN_PRICE_USD]', 'minNightlyPriceUsd', 'Минимальный тариф ночь', '180 USD']
+  ];
+  varsSheet.getRange(2, 1, variablesData.length, varsHeaders.length).setValues(variablesData);
+
+  // 3. Лист ⚙️ Системные настройки
+  var settingsSheetName = '⚙️ Системные настройки';
+  var settingsSheet = ss.getSheetByName(settingsSheetName);
+  if (!settingsSheet) {
+    settingsSheet = ss.insertSheet(settingsSheetName);
+  }
+  var settingsHeaders = ['Параметр', 'Значение', 'Описание', 'Статус'];
+  styleSheetHeader_(settingsSheet, settingsHeaders, 1);
+
+  var settingsData = [
+    ['GEMINI_MODEL', 'gemini-3.6-flash', 'Модель Google Gemini для ИИ-консьержа на Vercel', 'ACTIVE'],
+    ['GEMINI_API_KEY', 'Указан на https://vercel.com/', 'Ключ Gemini API в Environment Variables на Vercel', 'CONFIGURED_ON_VERCEL'],
+    ['AI_ENABLED', 'TRUE', 'Флаг активности ИИ-агента на платформе', 'ENABLED'],
+    ['AI_MODE', 'copilot', 'Режим работы: copilot [суфлер] или auto [автоответ]', 'COPILOT'],
+    ['AI_CONFIDENCE_THRESHOLD', '0.85', 'Порог уверенности ИИ для автоответа', 'STRICT'],
+    ['MIN_NIGHTLY_PRICE_USD', '180', 'Минимально допустимый тариф за ночь в долларах', 'ENFORCED'],
+    ['SITE_URL', 'https://sitesi-5y3x2v6w4-znamenskiialekseis-projects.vercel.app', 'Адрес веб-платформы на Vercel', 'LIVE'],
+    ['SYSTEM_PROMPT', 'Ты профессиональный ИИ-консьерж виллы Villa Turaman в Дальяне. Отвечай вежливо и гостеприимно на языке гостя. Запрещено давать скидки ниже 180 USD за ночь.', 'Глобальный системный промпт ИИ', 'ACTIVE']
+  ];
+  settingsSheet.getRange(2, 1, settingsData.length, settingsHeaders.length).setValues(settingsData);
+
+  SpreadsheetApp.getActive().toast('База Знаний ИИ успешно создана и наполнена: 3 листа готовы.', '✅ Завершено', 7);
+  ui.alert(
+    '✅ База Знаний ИИ успешно сформирована!',
+    'В вашей Google Таблице созданы и наполнены 3 листа:\n\n' +
+    '1. 💬 Шаблоны сообщений : 14 эталонных сценариев на RU, EN, TR\n' +
+    '2. 🧩 Словарь переменных : 14 параметров виллы, Wi-Fi, адрес, цены\n' +
+    '3. ⚙️ Системные настройки : модель gemini-3.6-flash, статус и промпт\n\n' +
+    'Вы можете свободно редактировать их в любой момент.',
+    ui.ButtonSet.OK
+  );
 }
 
 /**

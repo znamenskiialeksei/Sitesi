@@ -57,6 +57,7 @@ export default function HostInbox({
   const [selectedStage, setSelectedStage] = useState('all');
   const [templateLang, setTemplateLang] = useState('ru');
   const [previewTemplateId, setPreviewTemplateId] = useState(null);
+  const [isAiLoading, setIsAiLoading] = useState(false);
 
   // Автоматическое определение языка гостя при смене активного чата
   useEffect(() => {
@@ -82,7 +83,7 @@ export default function HostInbox({
   // Функция резолва шаблона под контекст текущего гостя
   const getResolvedTemplateText = (template, targetLang = templateLang) => {
     if (!template) return '';
-    const raw = template.text?.[targetLang] || template.text?.ru || '';
+    const raw = template.content?.[targetLang] || template.content?.ru || template.text?.[targetLang] || template.text?.ru || '';
     const curReq = activeChat?.activeRequests?.[0] || {};
     return resolveTemplate(raw, {
       guestName: activeChat?.clientName,
@@ -106,6 +107,38 @@ export default function HostInbox({
     onSendMessage(activeChat.sheetName, resolved.trim(), null);
     toast.success('Шаблон успешно отправлен гостю');
     setIsTemplatesOpen(false);
+  };
+
+  // Помощь ИИ-агента Gemini: интеллектуальная генерация проекта ответа в поле ввода
+  const handleAskAiHelp = async () => {
+    if (!activeChat) return;
+    setIsAiLoading(true);
+    try {
+      const curReq = activeChat?.activeRequests?.[0] || {};
+      const lastMsgText = lastGuestMsg?.original || lastGuestMsg?.ru || lastGuestMsg?.en || lastGuestMsg?.tr || messageInput || '';
+      const res = await axios.post('/api/ai-concierge', {
+        guestMessage: lastMsgText,
+        guestName: activeChat.clientName,
+        contact: activeChat.clientContact,
+        lang: templateLang,
+        chatHistory: activeChat.messages || [],
+        context: {
+          checkIn: curReq.checkIn,
+          checkOut: curReq.checkOut,
+          price: curReq.price
+        }
+      });
+      if (res.data?.success && res.data.reply) {
+        setMessageInput(res.data.reply);
+        toast.success(`ИИ-Помощник [${res.data.model || 'Gemini'}]: ответ подготовлен`);
+      } else {
+        toast.warn('ИИ не смог сгенерировать ответ, проверьте ключ Gemini');
+      }
+    } catch (err) {
+      toast.error(`Ошибка ИИ: ${err.message}`);
+    } finally {
+      setIsAiLoading(false);
+    }
   };
 
   // Фильтрация шаблонов по выбранному этапу
@@ -309,231 +342,7 @@ export default function HostInbox({
             <div ref={chatBottomRef} />
           </div>
 
-          {/* Рекомендация ИИ-суфлера: Фаза 1 Copilot */}
-          {aiRecommendation && (
-            <div className="px-3 py-2 bg-gradient-to-r from-rose-950/80 via-purple-950/70 to-slate-900 border-t border-rose-500/40 flex items-center justify-between gap-2 text-xs">
-              <div className="flex items-center gap-2 min-w-0">
-                <Sparkles className="w-4 h-4 text-amber-400 shrink-0 animate-pulse" />
-                <div className="truncate">
-                  <span className="font-bold text-amber-300">ИИ-Суфлер рекомендует: </span>
-                  <span className="text-white font-medium">
-                    {aiRecommendation.template.title?.[templateLang] || aiRecommendation.template.title?.ru}
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => handleApplyTemplate(aiRecommendation.template, templateLang)}
-                  className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-[11px] transition-colors flex items-center gap-1"
-                >
-                  <Zap className="w-3 h-3" />
-                  <span>Применить</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPreviewTemplateId(aiRecommendation.template.id);
-                    setSelectedStage(aiRecommendation.template.stageId);
-                    setIsTemplatesOpen(true);
-                  }}
-                  className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] transition-colors border border-white/10"
-                >
-                  Все 14 шаблонов
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Интерактивная выдвижная панель умных шаблонов */}
-          {isTemplatesOpen && (
-            <div className="bg-slate-950 border-t border-white/10 p-3 space-y-3 max-h-[340px] overflow-y-auto">
-              {/* Шапка селектора шаблонов: переключатель языков и закрытие */}
-              <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2">
-                <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-rose-500" />
-                  <span className="text-xs font-bold text-white uppercase tracking-wider">
-                    Умные шаблоны: 14 сценариев
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center bg-slate-850 rounded-xl p-0.5 border border-white/10">
-                    <span className="text-[10px] text-slate-400 px-2 flex items-center gap-1">
-                      <Languages className="w-3 h-3 text-slate-400" />
-                      <span>Язык:</span>
-                    </span>
-                    {['ru', 'en', 'tr'].map((l) => (
-                      <button
-                        key={l}
-                        type="button"
-                        onClick={() => setTemplateLang(l)}
-                        className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase transition-all ${
-                          templateLang === l
-                            ? 'bg-rose-600 text-white shadow-sm'
-                            : 'text-slate-400 hover:text-slate-200'
-                        }`}
-                      >
-                        {l}
-                      </button>
-                    ))}
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => setIsTemplatesOpen(false)}
-                    className="p-1 rounded-lg bg-slate-850 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Фильтр по этапам */}
-              <div className="flex gap-1.5 overflow-x-auto pb-1">
-                <button
-                  type="button"
-                  onClick={() => setSelectedStage('all')}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 transition-all ${
-                    selectedStage === 'all'
-                      ? 'bg-white/20 text-white border border-white/30'
-                      : 'bg-slate-900 text-slate-400 hover:text-white border border-white/5'
-                  }`}
-                >
-                  Все этапы
-                </button>
-                {TEMPLATE_STAGES.map((st) => (
-                  <button
-                    key={st.id}
-                    type="button"
-                    onClick={() => setSelectedStage(st.id)}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 transition-all ${
-                      selectedStage === st.id
-                        ? 'bg-rose-600 text-white shadow-sm'
-                        : 'bg-slate-900 text-slate-400 hover:text-white border border-white/5'
-                    }`}
-                  >
-                    {st.name}
-                  </button>
-                ))}
-              </div>
-
-              {/* Список шаблонов выбранного этапа */}
-              <div className="space-y-2">
-                {displayedTemplates.map((tItem) => {
-                  const resolvedText = getResolvedTemplateText(tItem, templateLang);
-                  const isAiMatched = aiRecommendation?.template?.id === tItem.id;
-
-                  return (
-                    <div
-                      key={tItem.id}
-                      className={`p-3 rounded-2xl border transition-all text-xs space-y-2 ${
-                        isAiMatched
-                          ? 'bg-rose-950/30 border-rose-500/50 shadow-md'
-                          : 'bg-slate-900/90 border-white/10 hover:border-white/20'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span className="px-2 py-0.5 rounded-md bg-slate-800 text-rose-400 font-mono text-[10px] font-bold border border-white/5">
-                            {tItem.id}
-                          </span>
-                          <span className="font-bold text-white truncate">
-                            {tItem.title?.[templateLang] || tItem.title?.ru}
-                          </span>
-                          {isAiMatched && (
-                            <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-500/30 flex items-center gap-1">
-                              <Sparkles className="w-2.5 h-2.5" />
-                              <span>Рекомендация ИИ</span>
-                            </span>
-                          )}
-                        </div>
-
-                        <span className="text-[10px] text-slate-400 shrink-0">
-                          {tItem.stageName}
-                        </span>
-                      </div>
-
-                      <div className="p-2.5 bg-slate-950/80 rounded-xl border border-white/5 text-slate-300 font-sans text-[11px] whitespace-pre-wrap line-clamp-3">
-                        {resolvedText}
-                      </div>
-
-                      <div className="flex items-center justify-end gap-2 pt-1">
-                        <button
-                          type="button"
-                          onClick={() => handleApplyTemplate(tItem, templateLang)}
-                          className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-[11px] transition-colors border border-white/10 flex items-center gap-1"
-                        >
-                          <FileText className="w-3 h-3 text-slate-400" />
-                          <span>Вставить в поле</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDirectSendTemplate(tItem, templateLang)}
-                          className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-[11px] transition-colors shadow-sm flex items-center gap-1"
-                        >
-                          <Send className="w-3 h-3" />
-                          <span>Отправить сразу</span>
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Компактная полоса шаблонов над полем ввода */}
-          <div className="p-2 bg-slate-850 border-t border-white/5 flex items-center gap-2 overflow-x-auto">
-            <button
-              type="button"
-              onClick={() => setIsTemplatesOpen(!isTemplatesOpen)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
-                isTemplatesOpen
-                  ? 'bg-rose-600 text-white shadow-md'
-                  : 'bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white border border-white/10'
-              }`}
-            >
-              <FileText className="w-3.5 h-3.5 text-rose-400" />
-              <span>14 умных шаблонов</span>
-              {isTemplatesOpen ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
-            </button>
-
-            {/* Быстрые переключатели языка шаблонов */}
-            <div className="flex items-center bg-slate-900 rounded-lg p-0.5 border border-white/10 shrink-0">
-              {['ru', 'en', 'tr'].map((l) => (
-                <button
-                  key={l}
-                  type="button"
-                  onClick={() => setTemplateLang(l)}
-                  className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-all ${
-                    templateLang === l
-                      ? 'bg-rose-600 text-white'
-                      : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  {l}
-                </button>
-              ))}
-            </div>
-
-            {/* Быстрые чипы шаблонов для вставки в 1 клик */}
-            <div className="flex gap-1.5 shrink-0">
-              {SMART_TEMPLATES.slice(0, 5).map((tItem) => (
-                <button
-                  key={tItem.id}
-                  type="button"
-                  onClick={() => handleApplyTemplate(tItem, templateLang)}
-                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 hover:text-white shrink-0 border border-white/5 transition-colors truncate max-w-[170px]"
-                  title={tItem.title?.[templateLang] || tItem.title?.ru}
-                >
-                  + {tItem.id}: {tItem.title?.[templateLang] || tItem.title?.ru}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Поле ввода */}
+          {/* Форма ввода сообщения хозяина : всегда на виду над блоком шаблонов */}
           <form onSubmit={handleSend} className="p-3 bg-slate-900 border-t border-white/10 flex items-center gap-2">
             <input
               type="text"
@@ -543,13 +352,172 @@ export default function HostInbox({
               className="flex-1 bg-slate-800 border border-white/10 px-3.5 py-2.5 rounded-xl text-xs text-white outline-none focus:border-rose-500"
             />
             <button
+              type="button"
+              onClick={handleAskAiHelp}
+              disabled={isAiLoading}
+              title="Помощь ИИ-агента Gemini: составить ответ на языке гостя"
+              className="px-3 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-sm disabled:opacity-50 shrink-0"
+            >
+              <Sparkles className={`w-3.5 h-3.5 ${isAiLoading ? 'animate-spin' : 'text-amber-300'}`} />
+              <span className="hidden sm:inline">{isAiLoading ? 'ИИ думает...' : 'ИИ-Помощник'}</span>
+            </button>
+            <button
               type="submit"
               disabled={loading || !messageInput.trim()}
-              className="p-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white transition-colors disabled:opacity-40"
+              className="p-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white transition-colors disabled:opacity-40 shrink-0"
             >
               <Send className="w-4 h-4" />
             </button>
           </form>
+
+          {/* ПАНЕЛЬ СНИЗУ ПОЛЯ ВВОДА: 14 УМНЫХ ОТВЕТОВ И ИИ-РЕКОМЕНДАЦИИ */}
+          <div className="bg-slate-950 border-t border-white/10 p-2.5 space-y-2">
+            <div className="flex items-center justify-between gap-2 overflow-x-auto">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsTemplatesOpen(!isTemplatesOpen)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
+                    isTemplatesOpen
+                      ? 'bg-rose-600 text-white shadow-md'
+                      : 'bg-slate-850 text-slate-200 hover:bg-slate-800 hover:text-white border border-white/10'
+                  }`}
+                >
+                  <FileText className="w-3.5 h-3.5 text-rose-400" />
+                  <span>14 умных ответов</span>
+                  {isTemplatesOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                </button>
+
+                {/* Быстрые переключатели языка шаблонов */}
+                <div className="flex items-center bg-slate-900 rounded-lg p-0.5 border border-white/10 shrink-0">
+                  {['ru', 'en', 'tr'].map((l) => (
+                    <button
+                      key={l}
+                      type="button"
+                      onClick={() => setTemplateLang(l)}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-all ${
+                        templateLang === l
+                          ? 'bg-rose-600 text-white shadow-sm'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      {l}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Быстрая подсказка ИИ-суфлера рядом с селектором */}
+              {aiRecommendation && (
+                <div className="flex items-center gap-1.5 bg-rose-950/40 border border-rose-500/30 px-2.5 py-1 rounded-xl text-[11px] shrink-0">
+                  <Sparkles className="w-3 h-3 text-amber-400 animate-pulse shrink-0" />
+                  <span className="text-slate-300 truncate max-w-[180px]">
+                    {aiRecommendation.template.title?.[templateLang] || aiRecommendation.template.title?.ru}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleApplyTemplate(aiRecommendation.template, templateLang)}
+                    className="px-2 py-0.5 rounded bg-rose-600 hover:bg-rose-500 text-white font-bold text-[10px] transition-colors"
+                  >
+                    Вставить
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* РАСКРЫВАЮЩИЙСЯ ВНИЗ БЛОК 14 ШАБЛОНОВ : СТРОГО СНИЗУ ВВОДА */}
+            {isTemplatesOpen && (
+              <div className="pt-2 border-t border-white/10 space-y-2.5 max-h-[280px] overflow-y-auto">
+                {/* Фильтр по этапам */}
+                <div className="flex gap-1.5 overflow-x-auto pb-1">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedStage('all')}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 transition-all ${
+                      selectedStage === 'all'
+                        ? 'bg-white/20 text-white border border-white/30'
+                        : 'bg-slate-900 text-slate-400 hover:text-white border border-white/5'
+                    }`}
+                  >
+                    Все 14 сценариев
+                  </button>
+                  {TEMPLATE_STAGES.map((st) => (
+                    <button
+                      key={st.id}
+                      type="button"
+                      onClick={() => setSelectedStage(st.id)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 transition-all ${
+                        selectedStage === st.id
+                          ? 'bg-rose-600 text-white shadow-sm'
+                          : 'bg-slate-900 text-slate-400 hover:text-white border border-white/5'
+                      }`}
+                    >
+                      {st.title?.[lang] || st.title?.ru || st.name}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Список шаблонов выбранного этапа */}
+                <div className="space-y-2">
+                  {displayedTemplates.map((tItem) => {
+                    const resolvedText = getResolvedTemplateText(tItem, templateLang);
+                    const isAiMatched = aiRecommendation?.template?.id === tItem.id;
+
+                    return (
+                      <div
+                        key={tItem.id}
+                        className={`p-2.5 rounded-xl border transition-all text-xs space-y-1.5 ${
+                          isAiMatched
+                            ? 'bg-rose-950/30 border-rose-500/50 shadow-md'
+                            : 'bg-slate-900/90 border-white/10 hover:border-white/20'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="px-1.5 py-0.5 rounded bg-slate-800 text-rose-400 font-mono text-[10px] font-bold border border-white/5">
+                              {tItem.id}
+                            </span>
+                            <span className="font-bold text-white truncate">
+                              {tItem.title?.[templateLang] || tItem.title?.ru}
+                            </span>
+                            {isAiMatched && (
+                              <span className="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[9px] font-bold border border-amber-500/30 flex items-center gap-1">
+                                <Sparkles className="w-2.5 h-2.5" />
+                                <span>Рекомендация ИИ</span>
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="p-2 bg-slate-950/80 rounded-lg border border-white/5 text-slate-300 font-sans text-[11px] whitespace-pre-wrap line-clamp-3">
+                          {resolvedText}
+                        </div>
+
+                        <div className="flex items-center justify-end gap-2 pt-0.5">
+                          <button
+                            type="button"
+                            onClick={() => handleApplyTemplate(tItem, templateLang)}
+                            className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-[10px] transition-colors border border-white/10 flex items-center gap-1"
+                          >
+                            <FileText className="w-3 h-3 text-slate-400" />
+                            <span>Вставить в поле</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDirectSendTemplate(tItem, templateLang)}
+                            className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-[10px] transition-colors shadow-sm flex items-center gap-1"
+                          >
+                            <Send className="w-3 h-3" />
+                            <span>Отправить сразу</span>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
 
         </div>
 
