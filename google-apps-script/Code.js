@@ -94,7 +94,7 @@ function onOpen() {
     .addSeparator()
     .addItem("🧪 5. Проверить стандарт точки с запятой в формулах", "auditFormulasSemicolon")
     .addItem("📄 6. Просмотр паспорта и ID всех листов", "showSheetsPassportModal")
-    .addItem("🛠️ 7. Инициализировать недостающие листы", "ensureAllSystemSheets")
+    .addItem("🛠️ 7. Восстановить все удаленные листы и наполнить контентом", "ensureAllSystemSheets")
     .addSeparator()
     .addItem("📧 8. Инструкция по развертыванию Gmail Relay", "showGmailRelayDeployHelp");
 
@@ -606,11 +606,131 @@ function showSheetsPassportModal() {
   SpreadsheetApp.getUi().alert("Паспорт листов", info, SpreadsheetApp.getUi().ButtonSet.OK);
 }
 
-/** Инициализация структуры листов */
+/** 
+ * Интерактивное восстановление и самоисцеление всех 15 листов системы Villa Turaman
+ */
 function ensureAllSystemSheets() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ui = SpreadsheetApp.getUi();
+  var existingSheets = ss.getSheets();
+
+  var createdCount = 0;
+  var keys = Object.keys(VILLA_SHEETS_CONFIG);
+
+  for (var k = 0; k < keys.length; k++) {
+    var key = keys[k];
+    var cfg = VILLA_SHEETS_CONFIG[key];
+    var targetSheet = null;
+
+    for (var i = 0; i < existingSheets.length; i++) {
+      var name = existingSheets[i].getName().trim();
+      for (var a = 0; a < cfg.aliases.length; a++) {
+        if (cfg.aliases[a].toLowerCase() === name.toLowerCase()) {
+          targetSheet = existingSheets[i];
+          break;
+        }
+      }
+      if (targetSheet) break;
+    }
+
+    if (!targetSheet) {
+      targetSheet = ss.insertSheet(cfg.name);
+      createdCount++;
+    }
+
+    if (targetSheet.getLastRow() <= 1) {
+      initSingleSheetByKey_(targetSheet, key);
+    }
+  }
+
   renameSheetsToRussianStandard();
   sortSheetsCanonically();
-  SpreadsheetApp.getActive().toast("Структура системы Villa Turaman Suite проверена и синхронизирована.", "✅ Завершено", 5);
+
+  if (createdCount > 0) {
+    ui.alert("Самоисцеление листов завершено", "Успешно восстановлено отсутствующих листов: " + createdCount + ". Все данные, заголовки и формулы актуализированы.", ui.ButtonSet.OK);
+  } else {
+    SpreadsheetApp.getActive().toast("Все 15 листов проверены и наполнены эталонным контентом.", "✅ Завершено", 5);
+  }
+}
+
+/**
+ * Инициализация шапки, смарт-форматирования и эталонных строк для конкретного листа
+ */
+function initSingleSheetByKey_(sheet, key) {
+  if (!sheet || !key) return;
+
+  if (key === 'ABOUT') {
+    var aboutHeaders = ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'];
+    styleSheetHeader_(sheet, aboutHeaders, 1);
+    var aboutRows = [
+      ['1', 'О вилле и о нас', 'About the villa and about us', 'Villa hakkında ve biz hakkında', 'Вилла Turaman расположена в живописном маленьком городке Дальян в провинции Мугла [Турция] на берегу реки Дальян и озера Кёйджегиз. Готова принять 10 гостей путешественников. Приватный бассейн 36 квадратных метров и роскошная придомовая территория с террасой и садом. Адрес виллы: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla. Локация: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9', 'Villa Turaman is located in the picturesque small town of Dalyan in the Muğla Province of Turkey, on the banks of the Dalyan River and Lake Köyceğiz. It can accommodate up to 10 guests. It features a private 36-square-meter pool and a luxurious courtyard with a terrace and garden. Address: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla. Location: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9', "Villa Turaman, Türkiye'nin Muğla ilinin pitoresk Dalyan kasabasında, Dalyan Nehri ve Köyceğiz Gölü kıyısında yer almaktadır. 10 kişiye kadar konaklama imkanı sunan villada, 36 metrekarelik özel bir havuz ve teraslı ve bahçeli lüks bir avlu bulunmaktadır. Adres: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla. Konum: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9"],
+      ['2', 'Вместимость', 'Capacity', 'Kapasite', 'Вилла рассчитана максимум на 10 гостей [включая детей].', 'The villa can accommodate a maximum of 10 guests [including children].', 'Villa en fazla 10 kişiyi [çocuklar dahil] ağırlayabilir.'],
+      ['3', 'Описание виллы', 'Description of the villa', 'Villanın Tanımı', 'Вилла находится в самом центре Дальяна. Вся компания оценит близость к достопримечательностям. Приватный бассейн. Полноценная кухня и гостиная комната. 4 большие спальни. Спальня на 1 этаже: рассчитана на 3 спальных места, располагает собственной ванной комнатой [душевая кабина] и кондиционером. Спальни на 2 этаже: три отдельные спальные комнаты по 2 спальных места, каждая со своей ванной комнатой и кондиционером. В одной из этих спален дополнительно установлена односпальная кровать [до 10 гостей].', 'The villa is located in the heart of Dalyan. The whole group will appreciate the proximity to attractions. It features a private pool, a full kitchen, and a living room. Four large bedrooms. The bedroom on the first floor sleeps three and has an en-suite bathroom [shower] and air conditioning. The bedrooms on the second floor include three separate bedrooms, each with its own bathroom and air conditioning. One of these bedrooms can accommodate an additional single bed [sleeps up to 10 guests].', 'Villa, Dalyan merkezinde yer almaktadır. Tüm grup, turistik yerlere yakınlığı takdir edecektir. Villada özel havuz, tam donanımlı mutfak ve oturma odası bulunmaktadır. Dört geniş yatak odası mevcuttur. Birinci kattaki yatak odasında üç kişi konaklayabilir ve özel banyo [duş] ve klima bulunmaktadır. İkinci kattaki yatak odaları ise her biri kendi banyosuna ve klimasına sahip üç ayrı yatak odasından oluşmaktadır. Bu yatak odalarından birine ilave bir tek kişilik yatak eklenebilir [10 kişiye kadar konaklama imkanı].'],
+      ['4', 'Что доступно гостю', 'What is available to the guest?', 'Misafirlerin kullanımına sunulan olanaklar nelerdir?', 'Первый этаж:\nПолноценная кухня и гостиная комната.\n55-дюймовый смарт-телевизор.\nТуалет для гостей, стиральная машина, гладильная доска и утюг.\nСпальня на 3 спальных места с собственной ванной комнатой [душевая кабина].\nПрихожая со шкафом для уличной одежды.\nЛестница на второй этаж.\n\nВторой этаж:\n3 спальные комнаты, каждая из которых имеет собственную ванную комнату.\nДополнительное спальное место в виде односпальной кровати в одной из спален второго этажа.\nСтиральная машина в одной из ванных комнат.', 'First floor:\nFull kitchen and living room.\n55-inch smart TV.\nGuest toilet, washing machine, ironing board, and iron.\nTriple bedroom with en-suite bathroom [shower].\nEntrance hall with closet for outdoor clothing.\nStairs to the second floor.\n\nSecond floor:\nThree bedrooms, each with its own bathroom.\nAn additional single bed can be added in one of the second-floor bedrooms.\nWashing machine in one of the bathrooms.', 'Birinci Kat:\nTam donanımlı mutfak ve oturma odası.\n55 inç akıllı TV.\nMisafir tuvaleti, çamaşır makinesi, ütü masası ve ütü.\nEn-suite banyolu [duşlu] üç kişilik yatak odası.\nDış giyim için dolaplı giriş holü.\nİkinci kata çıkan merdivenler.\n\nİkinci Kat:\nHer biri kendi banyosuna sahip üç yatak odası.\nİkinci kattaki yatak odalarından birine ilave tek kişilik yatak eklenebilir.\nBanyolardan birinde çamaşır makinesi.'],
+      ['5', 'Бассейн и Сад', 'Pool and Garden', 'Havuz ve Bahçe', 'Очистка бассейна и уход за садом проводятся рано утром с 8 до 10 часов.', 'Pool cleaning and garden maintenance are carried out early in the morning from 8 am to 10 am.', 'Havuz temizliği ve bahçe bakımı sabah erken saatlerde, 08:00 ile 10:00 arasında yapılmaktadır.'],
+      ['6', 'Правила проживания', 'House Rules', 'Ev Kuralları', 'Заезд после 16:00, выезд до 10:00. Курение в помещениях виллы строго запрещено.', 'Check-in after 4:00 PM, check-out before 10:00 AM. Smoking is strictly prohibited in the villa.', "Giriş saati 16:00'dan sonra, çıkış saati 10:00'dan öncedir. Villada sigara içmek kesinlikle yasaktır."],
+      ['7', 'Регистрация [KBS/KVKK]', 'Registration [KBS/KVKK]', 'Kayıt [KBS/KVKK]', 'Ваши данные защищены и используются исключительно для регистрации гостей в системе KBS согласно законам Турции.', 'Your data is protected and used solely for the purpose of registering guests in the KBS system in accordance with Turkish law.', 'Verileriniz korunmaktadır ve Türk kanunlarına uygun olarak yalnızca KBS sistemine misafir kaydı amacıyla kullanılmaktadır.']
+    ];
+    sheet.getRange(2, 1, aboutRows.length, 7).setValues(aboutRows);
+    sheet.getRange('C2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('D2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange('F2').setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('G2').setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+  } else if (key === 'HOME') {
+    var homeHeaders = ['Ключ [ID]', 'RU', 'EN', 'TR', 'Медиа/Картинка'];
+    styleSheetHeader_(sheet, homeHeaders, 1);
+    var homeRows = [
+      ['heroTitle', 'Villa Turaman', 'Villa Turaman', 'Villa Turaman', ''],
+      ['heroSubtitle', 'Ваш идеальный отдых в Дальяне. Бронирование виллы, премиальный сервис и авторские видео-путеводители от Алексея Знаменского.', 'Your perfect Dalyan vacation. Villa reservations, premium service, and personalized video guides from Alexey Znamensky.', "Mükemmel Dalyan tatiliniz. Alexey Znamensky'den villa rezervasyonları, birinci sınıf hizmet ve kişiselleştirilmiş video rehberleri.", ''],
+      ['aboutTitle', 'О Вилле', 'About Villa', 'Villa Hakkında', ''],
+      ['aboutText', 'Villa Turaman: это гармоничное сочетание уединения, современного комфорта и первоклассного сервиса для незабываемого отпуска в сердце Дальяна.', 'Villa Turaman offers a harmonious combination of privacy, modern comfort and first-class service for an unforgettable holiday in the heart of Dalyan.', "Villa Turaman, Dalyan'ın kalbinde unutulmaz bir tatil için mahremiyet, modern konfor ve birinci sınıf hizmetin uyumlu bir kombinasyonunu sunmaktadır.", ''],
+      ['heroImage', 'Главные фото фасада и бассейна', '', '', 'https://drive.google.com/file/d/1NjSHRDa5eJpQTzO9268e8LMRzDVmYtX7/view?usp=sharing,https://drive.google.com/file/d/1IZMH6wtfLHZ6ibKHfmBhPGMFntZ_fXKU/view?usp=drive_link'],
+      ['hostHeader', 'Отдельная вилла целиком • Хозяин: Алексей Знаменский', '', '', ''],
+      ['hostName', 'Алексей Знаменский', '', '', ''],
+      ['hostAvatar', 'Аватар владельца виллы', '', '', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160'],
+      ['highlightSuperhostTitle', 'Опытный Суперхозяин [Superhost]', '', '', ''],
+      ['highlightSuperhostDesc', 'Алексей имеет рейтинг 4.98★ и стремится предоставить первоклассный сервис каждому гостю.', '', '', ''],
+      ['highlightCheckinTitle', 'Бесконтактное прибытие [Self check-in]', '', '', ''],
+      ['highlightCheckinDesc', 'Удобный электронный замок и персональный код доступа для заселения в любое удобное время с 16:00.', '', '', ''],
+      ['highlightCancellationTitle', 'Бесплатная отмена за 14 дней', '', '', ''],
+      ['highlightCancellationDesc', 'Полный возврат средств при отмене не позднее чем за 14 суток до даты заезда.', '', '', ''],
+      ['locationTitle', 'Расположение: Дальян, Ортаджа, Мугла, Турция', '', '', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200'],
+      ['locationDesc', 'Вилла расположена в тихом зеленом районе в 5 минутах ходьбы от набережной реки Дальян. В пешей доступности рестораны традиционной эгейской кухни, лодочные причалы для поездок на пляж Изтузу и термальные грязевые источники Султание.', '', '', ''],
+      ['bedroom_1', 'Спальня 1 • King Bed', 'Большая двуспальная кровать King Size, панорамные окна с видом на бассейн и сад, кондиционер', 'King Bed', 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600'],
+      ['bedroom_2', 'Спальня 2 • Queen Bed', 'Уютная двуспальная кровать Queen Size, балкон с видом на горы, кондиционер', 'Queen Bed', 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=600'],
+      ['bedroom_3', 'Спальня 3 • 2 Односпальные', 'Две раздельные комфортные кровати, рабочий стол, вид на сад', '2 Single Beds', 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=600'],
+      ['bedroom_4', 'Спальня 4 • Диван-кровать', 'Раскладной ортопедический диван-кровать в лаундж-зоне, кондиционер', 'Sofa Bed', 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600']
+    ];
+    sheet.getRange(2, 1, homeRows.length, 5).setValues(homeRows);
+    sheet.getRange('C2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('D2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+  } else if (key === 'SETTINGS') {
+    var setHeaders = ['Параметр', 'Значение', 'Описание', 'Статус'];
+    styleSheetHeader_(sheet, setHeaders, 1);
+    var setRows = [
+      ['ai_mode', 'autopilot', 'Режим работы ИИ: autopilot, copilot, off', 'Активен'],
+      ['system_prompt', 'Ты: персональный ИИ-консьерж суперхозяина Алексея Знаменского на вилле Villa Turaman в Дальяне. Отвечай вежливо, дружелюбно и точно. Всегда предлагай помощь в бронировании.', 'Базовые директивы общения ИИ-агента', 'Активен'],
+      ['min_night_price', '180', 'Минимально допустимая цена за сутки бронирования в USD', 'Строгий лимит'],
+      ['gemini_model', 'gemini-3.6-flash', 'Целевая модель Google Gemini для генерации ответов', 'По умолчанию']
+    ];
+    sheet.getRange(2, 1, setRows.length, 4).setValues(setRows);
+  } else if (key === 'LEGAL') {
+    var legHeaders = ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'];
+    styleSheetHeader_(sheet, legHeaders, 1);
+    var legRows = [
+      ['company_name', 'Организация', '', '', 'ALEKSEI ZNAMENSKII - Villa Turaman'],
+      ['tax_info', 'Налоговый номер', '', '', 'Ortaca Vergi Dairesi, VKN: 9991120181'],
+      ['contact_email', 'Email', '', '', 'villaturaman@gmail.com'],
+      ['contract', 'Договор аренды', '', '', 'Договор краткосрочной аренды Villa Turaman [Дальян, Мугла, Турция]. Владелец: Aleksei Znamenskii [VKN: 9991120181].'],
+      ['footerDesc', 'О Villa Turaman', '', '', 'Премиальная частная вилла в Дальяне [Турция]. Прямое бронирование от владельца Алексея Знаменского без скрытых комиссий сторонних агрегаторов.'],
+      ['footerLocation', 'Адрес', '', '', 'Дальян, Ортаджа, Мугла, Турция'],
+      ['etbis_placeholder', 'QR-код ETBIS', '', '', 'ETBIS QR CODE\nVKN: 9991120181'],
+      ['etbis_text', 'Госреестр ETBIS', '', '', "ETBİS'e Kayıtlıdır"],
+      ['kvkk', 'Политика KVKK', '', '', 'Полный текст политики защиты персональных данных [KVKK Aydınlatma Metni]...'],
+      ['privacy', 'Конфиденциальность', '', '', 'Политика конфиденциальности персональных данных гостей виллы...']
+    ];
+    sheet.getRange(2, 1, legRows.length, 5).setValues(legRows);
+  }
 }
 
 // ==============================================================================

@@ -29,6 +29,89 @@
       "en": "",
       "tr": "",
       "media": "https://drive.google.com/file/d/1NjSHRDa5eJpQTzO9268e8LMRzDVmYtX7/view?usp=sharing,https://drive.google.com/file/d/1IZMH6wtfLHZ6ibKHfmBhPGMFntZ_fXKU/view?usp=drive_link"
+    },
+    "hostHeader": {
+      "ru": "Отдельная вилла целиком • Хозяин: Алексей Знаменский",
+      "en": "Entire villa • Host: Aleksei Znamenskii",
+      "tr": "Müstakil villa tamamı • Ev Sahibi: Aleksei Znamenskii",
+      "media": ""
+    },
+    "hostName": {
+      "ru": "Алексей Знаменский",
+      "en": "Aleksei Znamenskii",
+      "tr": "Aleksei Znamenskii",
+      "media": ""
+    },
+    "hostAvatar": {
+      "ru": "Аватар владельца виллы",
+      "en": "Host profile avatar",
+      "tr": "Ev sahibi profil avatarı",
+      "media": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160"
+    },
+    "highlightSuperhostTitle": {
+      "ru": "Опытный Суперхозяин [Superhost]",
+      "en": "Experienced Superhost",
+      "tr": "Deneyimli Süper Ev Sahibi"
+    },
+    "highlightSuperhostDesc": {
+      "ru": "Алексей имеет рейтинг 4.98★ и стремится предоставить первоклассный сервис каждому гостю.",
+      "en": "Aleksei has a 4.98★ rating and strives to provide top-notch service to every guest.",
+      "tr": "Aleksei 4.98★ puana sahiptir ve her misafire birinci sınıf hizmet sunmayı hedefler."
+    },
+    "highlightCheckinTitle": {
+      "ru": "Бесконтактное прибытие [Self check-in]",
+      "en": "Self check-in",
+      "tr": "Kendi Kendine Giriş"
+    },
+    "highlightCheckinDesc": {
+      "ru": "Удобный электронный замок и персональный код доступа для заселения в любое удобное время с 16:00.",
+      "en": "Convenient electronic lock and personal code for check-in at any time after 4:00 PM.",
+      "tr": "Saat 16:00'dan sonra dilediğiniz zaman giriş için pratik elektronik kilit ve kişisel şifre."
+    },
+    "highlightCancellationTitle": {
+      "ru": "Бесплатная отмена за 14 дней",
+      "en": "Free cancellation 14 days prior",
+      "tr": "14 gün öncesine kadar ücretsiz iptal"
+    },
+    "highlightCancellationDesc": {
+      "ru": "Полный возврат средств при отмене не позднее чем за 14 суток до даты заезда.",
+      "en": "Full refund if cancelled at least 14 days before arrival date.",
+      "tr": "Giriş tarihinden en az 14 gün önce yapılan iptallerde tam iade."
+    },
+    "locationTitle": {
+      "ru": "Расположение: Дальян, Ортаджа, Мугла, Турция",
+      "en": "Location: Dalyan, Ortaca, Mugla, Turkey",
+      "tr": "Konum: Dalyan, Ortaca, Muğla, Türkiye",
+      "media": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200"
+    },
+    "locationDesc": {
+      "ru": "Вилла расположена в тихом зеленом районе в 5 минутах ходьбы от набережной реки Дальян. В пешей доступности рестораны традиционной эгейской кухни, лодочные причалы для поездок на пляж Изтузу и термальные грязевые источники Султание.",
+      "en": "The villa is located in a quiet green area just a 5-minute walk from the Dalyan River promenade. Traditional Aegean restaurants, boat docks for trips to Iztuzu Beach, and Sultaniye mud springs are all within easy walking distance.",
+      "tr": "Villa, Dalyan Nehri kordonuna 5 dakikalık yürüme mesafesinde, sessiz ve yeşil bir bölgede yer almaktadır. Geleneksel Ege restoranları, İztuzu Plajı tekne iskeleleri ve Sultaniye kaplıcaları yürüme mesafesindedir."
+    },
+    "bedroom_1": {
+      "ru": "Спальня 1 • King Bed",
+      "en": "Большая двуспальная кровать King Size, панорамные окна с видом на бассейн и сад, кондиционер",
+      "tr": "King Bed",
+      "media": "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600"
+    },
+    "bedroom_2": {
+      "ru": "Спальня 2 • Queen Bed",
+      "en": "Уютная двуспальная кровать Queen Size, балкон с видом на горы, кондиционер",
+      "tr": "Queen Bed",
+      "media": "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=600"
+    },
+    "bedroom_3": {
+      "ru": "Спальня 3 • 2 Односпальные",
+      "en": "Две раздельные комфортные кровати, рабочий стол, вид на сад",
+      "tr": "2 Single Beds",
+      "media": "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=600"
+    },
+    "bedroom_4": {
+      "ru": "Спальня 4 • Диван-кровать",
+      "en": "Раскладной ортопедический диван-кровать в лаундж-зоне, кондиционер",
+      "tr": "Sofa Bed",
+      "media": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600"
     }
   },
   "about": {
@@ -121,13 +204,13 @@
     "legal_info_title": {
       "title": {
         "ru": "Юридическая информация",
-        "en": "#REF!",
-        "tr": "#REF!"
+        "en": "Legal Information",
+        "tr": "Yasal Bilgiler"
       },
       "text": {
-        "ru": "",
-        "en": "#REF!",
-        "tr": "#REF!"
+        "ru": "Реквизиты и правовые документы",
+        "en": "Requisites and legal documents",
+        "tr": "Kurumsal ve yasal belgeler"
       }
     },
     "company_name": {

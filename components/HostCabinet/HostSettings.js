@@ -20,6 +20,27 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
     systemPrompt: ''
   });
   const [isAiSaving, setIsAiSaving] = useState(false);
+  const [isRestoringSheets, setIsRestoringSheets] = useState(false);
+
+  const handleRestoreSheets = async () => {
+    setIsRestoringSheets(true);
+    try {
+      const res = await fetch('/api/admin/restore-sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(`Самоисцеление завершено! Восстановлено листов: ${data.restoredCount}`);
+      } else {
+        toast.error(`Ошибка: ${data.error}`);
+      }
+    } catch (err) {
+      toast.error(`Сбой связи: ${err.message}`);
+    } finally {
+      setIsRestoringSheets(false);
+    }
+  };
 
   // Загрузка актуальных настроек ИИ из базы Google Sheets
   const fetchAiSettings = async () => {
@@ -199,6 +220,29 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
             <span className="text-[10px] text-slate-400 block uppercase">База Знаний:</span>
             <span className="font-semibold text-blue-300">14 шаблонов + 5 листов Таблицы</span>
           </div>
+        </div>
+      </div>
+
+      {/* Карточка самоисцеления и восстановления листов Google Sheets */}
+      <div className="bg-slate-900/70 border border-emerald-500/30 rounded-3xl p-6 shadow-xl space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+              <Shield className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-white">Самоисцеление Google Sheets: 15 листов</h3>
+              <p className="text-xs text-slate-400 mt-0.5">Восстановить любые удаленные вкладки, структуру, формулы и эталонные данные</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleRestoreSheets}
+            disabled={isRestoringSheets}
+            className="px-5 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 shrink-0"
+          >
+            {isRestoringSheets ? 'Восстановление...' : '🛠️ Восстановить листы в 1 клик'}
+          </button>
         </div>
       </div>
 

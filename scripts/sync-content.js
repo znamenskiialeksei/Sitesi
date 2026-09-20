@@ -10,6 +10,17 @@ const { google } = require('googleapis');
 const fs = require('fs');
 const path = require('path');
 const { getLiveSheetMap, resolveRange } = require('../utils/sheetsRegistry');
+const { MASTER_ABOUT_SECTIONS, MASTER_HOME_MAP } = require('../utils/masterSeedContent');
+
+// Очистка от битых формул Google Таблиц [#REF!, #VALUE!, #ERROR!, #N/A]
+const sanitizeText = (val, fallback = '') => {
+  if (!val) return fallback;
+  const s = String(val).trim();
+  if (s.startsWith('#REF!') || s.startsWith('#VALUE!') || s.startsWith('#ERROR!') || s.startsWith('#N/A')) {
+    return fallback;
+  }
+  return s;
+};
 
 const GOOGLE_SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID;
 const contentFilePath = path.join(__dirname, '../utils/content.json');
@@ -107,46 +118,97 @@ async function syncContent() {
 
     console.log('Синхронизация контента (Главная, О вилле, Юридический блок, Шаблоны)...');
 
-    // 1. Главная страница (Hero и базовые заголовки)
+    // 1. Главная страница [Hero и базовые заголовки]
     const homeData = await safeGet(resolveRange(sheetMap, 'HOME', 'A:E'));
-    (homeData.data.values || []).slice(1).forEach((r) => {
-      if (r[0]) {
-        content.home[r[0]] = { ru: r[1] || '', en: r[2] || '', tr: r[3] || '', media: r[4] || '' };
-      }
-    });
+    if (homeData.data.values && homeData.data.values.length > 1) {
+      homeData.data.values.slice(1).forEach((r) => {
+        if (r[0]) {
+          content.home[r[0]] = {
+            ru: sanitizeText(r[1], existingContent.home?.[r[0]]?.ru || MASTER_HOME_MAP[r[0]]?.ru || ''),
+            en: sanitizeText(r[2], existingContent.home?.[r[0]]?.en || MASTER_HOME_MAP[r[0]]?.en || ''),
+            tr: sanitizeText(r[3], existingContent.home?.[r[0]]?.tr || MASTER_HOME_MAP[r[0]]?.tr || ''),
+            media: sanitizeText(r[4], existingContent.home?.[r[0]]?.media || MASTER_HOME_MAP[r[0]]?.media || '')
+          };
+        }
+      });
+    }
+    if (Object.keys(content.home).length === 0) {
+      content.home = existingContent.home && Object.keys(existingContent.home).length > 0
+        ? existingContent.home
+        : { ...MASTER_HOME_MAP };
+    }
 
     // 2. Описание виллы, юридические документы, шаблоны CRM
     const aboutData = await safeGet(resolveRange(sheetMap, 'ABOUT', 'A:G'));
     const legalData = await safeGet(resolveRange(sheetMap, 'LEGAL', 'A:G'));
     const templatesData = await safeGet(resolveRange(sheetMap, 'TEMPLATES', 'A:G'));
 
-(aboutData.data.values || []).slice(1).forEach((r) => {
-  if (r[0]) {
-    content.about[r[0]] = {
-      title: { ru: r[1] || '', en: r[2] || '', tr: r[3] || '' },
-      text: { ru: r[4] || '', en: r[5] || '', tr: r[6] || '' }
-    };
-  }
-});
+    if (aboutData.data.values && aboutData.data.values.length > 1) {
+      aboutData.data.values.slice(1).forEach((r) => {
+        if (r[0]) {
+          content.about[r[0]] = {
+            title: {
+              ru: sanitizeText(r[1], existingContent.about?.[r[0]]?.title?.ru || ''),
+              en: sanitizeText(r[2], existingContent.about?.[r[0]]?.title?.en || ''),
+              tr: sanitizeText(r[3], existingContent.about?.[r[0]]?.title?.tr || '')
+            },
+            text: {
+              ru: sanitizeText(r[4], existingContent.about?.[r[0]]?.text?.ru || ''),
+              en: sanitizeText(r[5], existingContent.about?.[r[0]]?.text?.en || ''),
+              tr: sanitizeText(r[6], existingContent.about?.[r[0]]?.text?.tr || '')
+            }
+          };
+        }
+      });
+    }
+    if (Object.keys(content.about).length === 0) {
+      if (existingContent.about && Object.keys(existingContent.about).length > 0) {
+        content.about = existingContent.about;
+      } else {
+        MASTER_ABOUT_SECTIONS.forEach((sec) => {
+          content.about[sec.id] = { title: sec.title, text: sec.text };
+        });
+      }
+    }
 
-(legalData.data.values || []).slice(1).forEach((r) => {
-  if (r[0]) {
-    content.legal[r[0]] = {
-      title: { ru: r[1] || '', en: r[2] || '', tr: r[3] || '' },
-      text: { ru: r[4] || '', en: r[5] || '', tr: r[6] || '' }
-    };
-  }
-});
+    if (legalData.data.values && legalData.data.values.length > 1) {
+      legalData.data.values.slice(1).forEach((r) => {
+        if (r[0]) {
+          content.legal[r[0]] = {
+            title: {
+              ru: sanitizeText(r[1], existingContent.legal?.[r[0]]?.title?.ru || ''),
+              en: sanitizeText(r[2], existingContent.legal?.[r[0]]?.title?.en || ''),
+              tr: sanitizeText(r[3], existingContent.legal?.[r[0]]?.title?.tr || '')
+            },
+            text: {
+              ru: sanitizeText(r[4], existingContent.legal?.[r[0]]?.text?.ru || ''),
+              en: sanitizeText(r[5], existingContent.legal?.[r[0]]?.text?.en || ''),
+              tr: sanitizeText(r[6], existingContent.legal?.[r[0]]?.text?.tr || '')
+            }
+          };
+        }
+      });
+    }
 
-(templatesData.data.values || []).slice(1).forEach((r) => {
-  if (r[0]) {
-    if (!content.templates[r[0]]) content.templates[r[0]] = [];
-    content.templates[r[0]].push({
-      name: { ru: r[1] || '', en: r[2] || '', tr: r[3] || '' },
-      text: { ru: r[4] || '', en: r[5] || '', tr: r[6] || '' }
-    });
-  }
-});
+    if (templatesData.data.values && templatesData.data.values.length > 1) {
+      templatesData.data.values.slice(1).forEach((r) => {
+        if (r[0]) {
+          if (!content.templates[r[0]]) content.templates[r[0]] = [];
+          content.templates[r[0]].push({
+            name: {
+              ru: sanitizeText(r[1], ''),
+              en: sanitizeText(r[2], ''),
+              tr: sanitizeText(r[3], '')
+            },
+            text: {
+              ru: sanitizeText(r[4], ''),
+              en: sanitizeText(r[5], ''),
+              tr: sanitizeText(r[6], '')
+            }
+          });
+        }
+      });
+    }
 
     // 3. Каталог дополнительных услуг (трансферы, аренда яхт, шеф-повар)
     console.log('Синхронизация услуг и видео-гидов...');
@@ -201,12 +263,12 @@ async function syncContent() {
       }))
       .filter((g) => g.id && g.media.length > 0);
 
-// Сохранение обновленного JSON файла только при успешном получении данных
-if (fetchSuccessCount > 0) {
-  fs.writeFileSync(contentFilePath, JSON.stringify(content, null, 2));
-  console.log(`✅ Контент успешно синхронизирован (${fetchSuccessCount} листов) и сохранен в utils/content.json`);
+// Сохранение обновленного JSON файла только при успешном получении данных и валидном контенте
+if (fetchSuccessCount > 0 && Object.keys(content.home).length > 0 && Object.keys(content.about).length > 0) {
+  fs.writeFileSync(contentFilePath, JSON.stringify(content, null, 2), 'utf8');
+  console.log(`✅ Контент успешно синхронизирован [${fetchSuccessCount} листов] и сохранен в utils/content.json`);
 } else {
-  console.warn('⚠️ Не удалось прочитать ни один лист Google Sheets. Локальный кэш utils/content.json сохранен без изменений.');
+  console.warn('⚠️ Не удалось прочитать данные с Google Sheets либо контент пуст. Локальный кэш сохранен.');
 }
   } catch (err) {
   console.error('Ошибка синхронизации контента:', err.message);

@@ -167,6 +167,16 @@
         "panel": "new",
         "clear": true
       }
+    },
+    {
+      "label": "🛠️ 15. SPARK: Восстановить все удаленные листы и контент из эталона",
+      "type": "shell",
+      "command": "node scripts/restore-sheets.js",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
     }
   ]
 }

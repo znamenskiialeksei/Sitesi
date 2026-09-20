@@ -9,6 +9,7 @@ require('dotenv').config({ path: '.env.local' });
 const { google } = require('googleapis');
 const { SHEETS_REGISTRY, getLiveSheetMap, resolveRange } = require('../utils/sheetsRegistry');
 const { SMART_TEMPLATES } = require('../utils/templatesData');
+const { MASTER_ABOUT_SECTIONS, MASTER_SETTINGS_ROWS, MASTER_HOME_MAP } = require('../utils/masterSeedContent');
 
 // Конфигурация структуры базы данных Google Таблиц
 const GOOGLE_CONFIG = {
@@ -234,9 +235,12 @@ const initializeSpreadsheet = async () => {
           range: `'${actualTitle}'!A:A`
         });
 
-        if (!db.data.values || db.data.values.length === 0) {
-          // Форматирование закрепленной темной шапки таблицы
-          formatRequests.push({
+        const rowCount = (db.data.values || []).length;
+
+        if (rowCount <= 1) {
+          if (rowCount === 0) {
+            // Форматирование закрепленной темной шапки таблицы
+            formatRequests.push({
             updateCells: {
               range: {
                 sheetId,
@@ -302,6 +306,7 @@ const initializeSpreadsheet = async () => {
               }
             }
           });
+        }
 
           // ВАЖНО: Канонический синтаксис формул Google Sheets со СТРОГОЙ ТОЧКОЙ С ЗАПЯТОЙ (;)
           // В русскоязычной локали Google Таблиц разделителем аргументов ВСЕГДА является точка с запятой (;).
@@ -409,6 +414,22 @@ const initializeSpreadsheet = async () => {
             safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
             safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
 
+            if (config.key === 'ABOUT') {
+              const aboutRows = MASTER_ABOUT_SECTIONS.map((sec) => [
+                sec.id,
+                sec.title.ru,
+                sec.title.en,
+                sec.title.tr,
+                sec.text.ru,
+                sec.text.en,
+                sec.text.tr
+              ]);
+              dataAppendRequests.push({
+                range: `'${actualTitle}'!A2:G${aboutRows.length + 1}`,
+                values: aboutRows
+              });
+            }
+
             if (config.key === 'LEGAL') {
               dataAppendRequests.push({
                 range: `'${actualTitle}'!A2:E11`,
@@ -416,16 +437,23 @@ const initializeSpreadsheet = async () => {
                   ['company_name', 'Организация', '', '', 'ALEKSEI ZNAMENSKII - Villa Turaman'],
                   ['tax_info', 'Налоговый номер', '', '', 'Ortaca Vergi Dairesi, VKN: 9991120181'],
                   ['contact_email', 'Email', '', '', 'villaturaman@gmail.com'],
-                  ['contract', 'Договор аренды', '', '', 'Договор краткосрочной аренды Villa Turaman (Дальян, Мугла, Турция). Владелец: Aleksei Znamenskii (VKN: 9991120181).'],
-                  ['footerDesc', 'О Villa Turaman', '', '', 'Премиальная частная вилла в Дальяне (Турция). Прямое бронирование от владельца Алексея Знаменского без скрытых комиссий сторонних агрегаторов.'],
+                  ['contract', 'Договор аренды', '', '', 'Договор краткосрочной аренды Villa Turaman [Дальян, Мугла, Турция]. Владелец: Aleksei Znamenskii [VKN: 9991120181].'],
+                  ['footerDesc', 'О Villa Turaman', '', '', 'Премиальная частная вилла в Дальяне [Турция]. Прямое бронирование от владельца Алексея Знаменского без скрытых комиссий сторонних агрегаторов.'],
                   ['footerLocation', 'Адрес', '', '', 'Дальян, Ортаджа, Мугла, Турция'],
                   ['etbis_placeholder', 'QR-код ETBIS', '', '', 'ETBIS QR CODE\nVKN: 9991120181'],
                   ['etbis_text', 'Госреестр ETBIS', '', '', "ETBİS'e Kayıtlıdır"],
-                  ['kvkk', 'Политика KVKK', '', '', 'Полный текст политики защиты персональных данных (KVKK Aydınlatma Metni)...'],
+                  ['kvkk', 'Политика KVKK', '', '', 'Полный текст политики защиты персональных данных [KVKK Aydınlatma Metni]...'],
                   ['privacy', 'Конфиденциальность', '', '', 'Политика конфиденциальности персональных данных гостей виллы...']
                 ]
               });
             }
+          }
+
+          if (config.key === 'SETTINGS') {
+            dataAppendRequests.push({
+              range: `'${actualTitle}'!A2:D${MASTER_SETTINGS_ROWS.length + 1}`,
+              values: MASTER_SETTINGS_ROWS
+            });
           }
 
           // Добавление учетной записи суперадмина по умолчанию

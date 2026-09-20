@@ -218,6 +218,12 @@ cat << 'EOF' > .vscode/tasks.json
       "type": "shell",
       "command": "bash \".\\160519092026 Исторические скрипты запуска корня\\resume-site.sh\"",
       "problemMatcher": []
+    },
+    {
+      "label": "🛠️ 8. Восстановить все удаленные листы и контент из эталона",
+      "type": "shell",
+      "command": "node scripts/restore-sheets.js",
+      "problemMatcher": []
     }
   ]
 }
