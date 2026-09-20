@@ -99,121 +99,188 @@ const MASTER_ABOUT_SECTIONS = [
   }
 ];
 
-const MASTER_HOME_MAP = {
-  heroTitle: {
-    ru: 'Villa Turaman',
-    en: 'Villa Turaman',
-    tr: 'Villa Turaman',
-    media: ''
-  },
-  heroSubtitle: {
-    ru: 'Ваш идеальный отдых в Дальяне. Бронирование виллы, премиальный сервис и авторские видео-путеводители от Алексея Знаменского.',
-    en: 'Your perfect Dalyan vacation. Villa reservations, premium service, and personalized video guides from Alexey Znamensky.',
-    tr: "Mükemmel Dalyan tatiliniz. Alexey Znamensky'den villa rezervasyonları, birinci sınıf hizmet ve kişiselleştirilmiş video rehberleri.",
-    media: ''
-  },
-  aboutTitle: {
-    ru: 'О Вилле',
-    en: 'About Villa',
-    tr: 'Villa Hakkında',
-    media: ''
-  },
-  aboutText: {
-    ru: 'Villa Turaman: это гармоничное сочетание уединения, современного комфорта и первоклассного сервиса для незабываемого отпуска в сердце Дальяна.',
-    en: 'Villa Turaman offers a harmonious combination of privacy, modern comfort and first-class service for an unforgettable holiday in the heart of Dalyan.',
-    tr: "Villa Turaman, Dalyan'ın kalbinde unutulmaz bir tatil için mahremiyet, modern konfor ve birinci sınıf hizmetin uyumlu bir kombinasyonunu sunmaktadır.",
-    media: ''
-  },
-  heroImage: {
-    ru: 'Главные фотографии фасада и бассейна',
-    en: 'Main facade and pool photos',
-    tr: 'Ana cephe ve havuz fotoğrafları',
-    media: 'https://drive.google.com/file/d/1NjSHRDa5eJpQTzO9268e8LMRzDVmYtX7/view?usp=sharing,https://drive.google.com/file/d/1IZMH6wtfLHZ6ibKHfmBhPGMFntZ_fXKU/view?usp=drive_link'
-  },
-  hostHeader: {
-    ru: 'Отдельная вилла целиком • Хозяин: Алексей Знаменский',
-    en: 'Entire villa • Host: Aleksei Znamenskii',
-    tr: 'Müstakil villa tamamı • Ev Sahibi: Aleksei Znamenskii',
-    media: ''
-  },
-  hostName: {
-    ru: 'Алексей Знаменский',
-    en: 'Aleksei Znamenskii',
-    tr: 'Aleksei Znamenskii',
-    media: ''
-  },
-  hostAvatar: {
-    ru: 'Аватар владельца виллы',
-    en: 'Host profile avatar',
-    tr: 'Ev sahibi profil avatarı',
-    media: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160'
-  },
-  highlightSuperhostTitle: {
-    ru: 'Опытный Суперхозяин [Superhost]',
-    en: 'Experienced Superhost',
-    tr: 'Deneyimli Süper Ev Sahibi'
-  },
-  highlightSuperhostDesc: {
-    ru: 'Алексей имеет рейтинг 4.98★ и стремится предоставить первоклассный сервис каждому гостю.',
-    en: 'Aleksei has a 4.98★ rating and strives to provide top-notch service to every guest.',
-    tr: 'Aleksei 4.98★ puana sahiptir ve her misafire birinci sınıf hizmet sunmayı hedefler.'
-  },
-  highlightCheckinTitle: {
-    ru: 'Бесконтактное прибытие [Self check-in]',
-    en: 'Self check-in',
-    tr: 'Kendi Kendine Giriş'
-  },
-  highlightCheckinDesc: {
-    ru: 'Удобный электронный замок и персональный код доступа для заселения в любое удобное время с 16:00.',
-    en: 'Convenient electronic lock and personal code for check-in at any time after 4:00 PM.',
-    tr: "Saat 16:00'dan sonra dilediğiniz zaman giriş için pratik elektronik kilit ve kişisel şifre."
-  },
-  highlightCancellationTitle: {
-    ru: 'Бесплатная отмена за 14 дней',
-    en: 'Free cancellation 14 days prior',
-    tr: '14 gün öncesine kadar ücretsiz iptal'
-  },
-  highlightCancellationDesc: {
-    ru: 'Полный возврат средств при отмене не позднее чем за 14 суток до даты заезда.',
-    en: 'Full refund if cancelled at least 14 days before arrival date.',
-    tr: 'Giriş tarihinden en az 14 gün önce yapılan iptallerde tam iade.'
-  },
-  locationTitle: {
-    ru: 'Расположение: Дальян, Ортаджа, Мугла, Турция',
-    en: 'Location: Dalyan, Ortaca, Mugla, Turkey',
-    tr: 'Konum: Dalyan, Ortaca, Muğla, Türkiye',
-    media: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200'
-  },
-  locationDesc: {
-    ru: 'Вилла расположена в тихом зеленом районе в 5 минутах ходьбы от набережной реки Дальян. В пешей доступности рестораны традиционной эгейской кухни, лодочные причалы для поездок на пляж Изтузу и термальные грязевые источники Султание.',
-    en: 'The villa is located in a quiet green area just a 5-minute walk from the Dalyan River promenade. Traditional Aegean restaurants, boat docks for trips to Iztuzu Beach, and Sultaniye mud springs are all within easy walking distance.',
-    tr: 'Villa, Dalyan Nehri kordonuna 5 dakikalık yürüme mesafesinde, sessiz ve yeşil bir bölgede yer almaktadır. Geleneksel Ege restoranları, İztuzu Plajı tekne iskeleleri ve Sultaniye kaplıcaları yürüme mesafesindedir.'
-  },
-  bedroom_1: {
-    ru: 'Спальня 1 • King Bed',
-    en: 'Большая двуспальная кровать King Size, панорамные окна с видом на бассейн и сад, кондиционер',
-    tr: 'King Bed',
-    media: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600'
-  },
-  bedroom_2: {
-    ru: 'Спальня 2 • Queen Bed',
-    en: 'Уютная двуспальная кровать Queen Size, балкон с видом на горы, кондиционер',
-    tr: 'Queen Bed',
-    media: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=600'
-  },
-  bedroom_3: {
-    ru: 'Спальня 3 • 2 Односпальные',
-    en: 'Две раздельные комфортные кровати, рабочий стол, вид на сад',
-    tr: '2 Single Beds',
-    media: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=600'
-  },
-  bedroom_4: {
-    ru: 'Спальня 4 • Диван-кровать',
-    en: 'Раскладной ортопедический диван-кровать в лаундж-зоне, кондиционер',
-    tr: 'Sofa Bed',
-    media: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600'
-  }
-};
+// ==============================================================================
+// ПОЛНЫЙ МАСТЕР-ЭТАЛОН 9 БЛОКОВ КОНСТРУКТОРА ВИТРИНЫ
+// ==============================================================================
+
+const MASTER_HOME_ROWS = [
+  // --- БЛОК 1: ГЛАВНЫЙ ЭКРАН ЛИСТИНГА [HERO] ---
+  ['1. Главный экран', 'hero_title', 'Главный заголовок листинга в шапке', 'Villa Turaman Luxury Waterfront', 'Villa Turaman Luxury Waterfront', 'Villa Turaman Luxury Waterfront', '', 'Вкл'],
+  ['1. Главный экран', 'hero_subtitle', 'Подзаголовок виллы под главным заголовком', 'Ваш идеальный отдых в Дальяне. Бронирование виллы, премиальный сервис и авторские видео-путеводители от Алексея Знаменского.', 'Your perfect Dalyan vacation. Villa reservations, premium service, and personalized video guides from Alexey Znamensky.', 'Mükemmel Dalyan tatiliniz. Alexey Znamensky\'den villa rezervasyonları, birinci sınıf hizmet ve kişiselleştirilmiş video rehberleri.', '', 'Вкл'],
+  ['1. Главный экран', 'hero_rating', 'Числовой рейтинг виллы', '4.98', '4.98', '4.98', 'Star', 'Вкл'],
+  ['1. Главный экран', 'hero_reviews_count', 'Количество отзывов рядом с рейтингом', '48 отзывов', '48 reviews', '48 değerlendirme', '', 'Вкл'],
+  ['1. Главный экран', 'hero_superhost_badge', 'Бейдж статуса суперхозяина', 'Суперхозяин', 'Superhost', 'Süper Ev Sahibi', 'Award', 'Вкл'],
+  ['1. Главный экран', 'hero_location', 'Текст кликабельной локации объекта', 'Дальян, Ортаджа, Мугла, Турция', 'Dalyan, Ortaca, Mugla, Turkey', 'Dalyan, Ortaca, Muğla, Türkiye', 'MapPin', 'Вкл'],
+  ['1. Главный экран', 'hero_share_btn', 'Текст кнопки Поделиться', 'Поделиться', 'Share', 'Paylaş', 'Share2', 'Вкл'],
+  ['1. Главный экран', 'hero_favorite_btn', 'Текст кнопки В избранное', 'В избранное', 'Save', 'Kaydet', 'Heart', 'Вкл'],
+  ['1. Главный экран', 'hero_image', 'Главное фоновое фото объекта', 'Главные фотографии фасада и бассейна', 'Main facade and pool photos', 'Ana cephe ve havuz fotoğrafları', 'https://drive.google.com/file/d/1NjSHRDa5eJpQTzO9268e8LMRzDVmYtX7/view?usp=sharing,https://drive.google.com/file/d/1IZMH6wtfLHZ6ibKHfmBhPGMFntZ_fXKU/view?usp=drive_link', 'Вкл'],
+
+  // --- БЛОК 2: ОСНОВНЫЕ ХАРАКТЕРИСТИКИ ОБЪЕКТА [HOST SPECS] ---
+  ['2. Характеристики', 'host_specs_header', 'Заголовок типа жилья и владельца', 'Отдельная вилла целиком • Хозяин: Алексей Знаменский', 'Entire villa • Host: Aleksei Znamenskii', 'Müstakil villa tamamı • Ev Sahibi: Aleksei Znamenskii', '', 'Вкл'],
+  ['2. Характеристики', 'host_specs_name', 'Отображаемое имя владельца виллы', 'Алексей Знаменский', 'Aleksei Znamenskii', 'Aleksei Znamenskii', '', 'Вкл'],
+  ['2. Характеристики', 'host_specs_avatar', 'Аватар владельца виллы в карточке характеристик', 'Аватар владельца виллы', 'Host profile avatar', 'Ev sahibi profil avatarı', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160', 'Вкл'],
+  ['2. Характеристики', 'spec_guests', 'Счетчик гостей в строке параметров', '10 гостей', '10 guests', '10 misafir', 'Users', 'Вкл'],
+  ['2. Характеристики', 'spec_bedrooms', 'Счетчик спален в строке параметров', '4 спальни', '4 bedrooms', '4 yatak odası', 'Bed', 'Вкл'],
+  ['2. Характеристики', 'spec_beds', 'Счетчик спальных мест [кроватей]', '5 кроватей', '5 beds', '5 yatak', 'Bed', 'Вкл'],
+  ['2. Характеристики', 'spec_baths', 'Счетчик ванных комнат', '4 ванные комнаты', '4 bathrooms', '4 banyo', 'Bath', 'Вкл'],
+
+  // --- БЛОК 3: КЛЮЧЕВЫЕ ПРЕИМУЩЕСТВА ВИЛЛЫ [HIGHLIGHTS] ---
+  ['3. Преимущества', 'highlight_1_title', 'Заголовок первого преимущества', 'Опытный Суперхозяин [Superhost]', 'Experienced Superhost', 'Deneyimli Süper Ev Sahibi', 'Sparkles', 'Вкл'],
+  ['3. Преимущества', 'highlight_1_desc', 'Описание первого преимущества', 'Алексей имеет рейтинг 4.98★ и стремится предоставить первоклассный сервис каждому гостю.', 'Aleksei has a 4.98★ rating and strives to provide top-notch service to every guest.', 'Aleksei 4.98★ puana sahiptir ve her misafire birinci sınıf hizmet sunmayı hedefler.', '', 'Вкл'],
+  ['3. Преимущества', 'highlight_2_title', 'Заголовок второго преимущества', 'Бесконтактное прибытие [Self check-in]', 'Self check-in', 'Kendi Kendine Giriş', 'Key', 'Вкл'],
+  ['3. Преимущества', 'highlight_2_desc', 'Описание второго преимущества', 'Удобный электронный замок и персональный код доступа для заселения в любое удобное время с 16:00.', 'Convenient electronic lock and personal code for check-in at any time after 4:00 PM.', 'Saat 16:00\'dan sonra dilediğiniz zaman giriş için pratik elektronik kilit ve kişisel şifre.', '', 'Вкл'],
+  ['3. Преимущества', 'highlight_3_title', 'Заголовок третьего преимущества', 'Бесплатная отмена за 14 дней', 'Free cancellation 14 days prior', '14 gün öncesine kadar ücretsiz iptal', 'ShieldCheck', 'Вкл'],
+  ['3. Преимущества', 'highlight_3_desc', 'Описание третьего преимущества', 'Полный возврат средств при отмене не позднее чем за 14 суток до даты заезда.', 'Full refund if cancelled at least 14 days before arrival date.', 'Giriş tarihinden en az 14 gün önce yapılan iptallerde tam iade.', '', 'Вкл'],
+
+  // --- БЛОК 4: О ВИЛЛЕ И ПРАВИЛА ДОМА [ABOUT & RULES] ---
+  ['4. О вилле', 'about_title', 'Заголовок раздела описания', 'О Вилле', 'About Villa', 'Villa Hakkında', '', 'Вкл'],
+  ['4. О вилле', 'about_text', 'Краткое описание виллы на главной странице', 'Villa Turaman: это гармоничное сочетание уединения, современного комфорта и первоклассного сервиса для незабываемого отпуска в сердце Дальяна.', 'Villa Turaman offers a harmonious combination of privacy, modern comfort and first-class service for an unforgettable holiday in the heart of Dalyan.', 'Villa Turaman, Dalyan\'ın kalbinde unutulmaz bir tatil için mahremiyet, modern konfor ve birinci sınıf hizmetin uyumlu bir kombinasyonunu sunmaktadır.', '', 'Вкл'],
+  ['4. О вилле', 'about_btn_more', 'Текст ссылки открытия полного описания', 'Показать больше об объекте', 'Show more about property', 'Tesis hakkında daha fazla göster', 'ChevronRight', 'Вкл'],
+  ['4. О вилле', 'about_modal_title', 'Заголовок всплывающего окна подробностей', 'Об этой вилле', 'About this villa', 'Bu villa hakkında', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_1_title', 'Модальное окно: Раздел 1 Заголовок', 'О вилле и о нас', 'About the villa and about us', 'Villa hakkında ve biz hakkında', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_1_text', 'Модальное окно: Раздел 1 Текст', 'Вилла Turaman расположена в живописном маленьком городке Дальян в провинции Мугла [Турция] на берегу реки Дальян и озера Кёйджегиз. Готова принять 10 гостей путешественников. Приватный бассейн 36 квадратных метров и роскошная придомовая территория с террасой и садом. Адрес виллы: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla.', 'Villa Turaman is located in the picturesque small town of Dalyan in the Muğla Province of Turkey, on the banks of the Dalyan River and Lake Köyceğiz. It can accommodate up to 10 guests. It features a private 36-square-meter pool and a luxurious courtyard with a terrace and garden. Address: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla.', 'Villa Turaman, Türkiye\'nin Muğla ilinin pitoresk Dalyan kasabasında, Dalyan Nehri ve Köyceğiz Gölü kıyısında yer almaktadır. 10 kişiye kadar konaklama imkanı sunan villada, 36 metrekarelik özel bir havuz ve teraslı ve bahçeli lüks bir avlu bulunmaktadır. Adres: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla.', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_2_title', 'Модальное окно: Раздел 2 Заголовок', 'Вместимость', 'Capacity', 'Kapasite', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_2_text', 'Модальное окно: Раздел 2 Текст', 'Вилла рассчитана максимум на 10 гостей [включая детей].', 'The villa can accommodate a maximum of 10 guests [including children].', 'Villa en fazla 10 kişiyi [çocuklar dahil] ağırlayabilir.', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_3_title', 'Модальное окно: Раздел 3 Заголовок', 'Описание комнат и планировка', 'Description of the villa', 'Villanın Tanımı', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_3_text', 'Модальное окно: Раздел 3 Текст', 'В самом центре Дальяна. Приватный бассейн. Полноценная кухня и гостиная. 4 большие спальни. Спальня на 1 этаже: 3 спальных места, ванная комната и кондиционер. Спальни на 2 этаже: 3 отдельные спальные комнаты, каждая со своей ванной комнатой и кондиционером.', 'The villa is located in the heart of Dalyan. Private pool, full kitchen and living room. 4 large bedrooms with en-suite bathrooms and air conditioning.', 'Villa Dalyan merkezinde yer almaktadır. Özel havuz, tam donanımlı mutfak ve oturma odası. Özel banyolu ve klimalı 4 geniş yatak odası.', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_4_title', 'Модальное окно: Раздел 4 Заголовок', 'Что доступно гостю: 1 и 2 этажи', 'What is available to the guest', 'Misafirlerin kullanımına sunulan olanaklar', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_4_text', 'Модальное окно: Раздел 4 Текст', 'Первый этаж: кухня, гостиная, Smart TV 55", спальня с ванной. Второй этаж: 3 спальни с собственными санузлами, стиральная машина.', 'First floor: kitchen, living room, Smart TV 55", bedroom with bathroom. Second floor: 3 bedrooms each with en-suite bathroom, washing machine.', 'Birinci kat: mutfak, oturma odası, 55 inç Smart TV, banyolu yatak odası. İkinci kat: özel banyolu 3 yatak odası, çamaşır makinesi.', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_5_title', 'Модальное окно: Раздел 5 Заголовок', 'Бассейн и Сад', 'Pool and Garden', 'Havuz ve Bahçe', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_5_text', 'Модальное окно: Раздел 5 Текст', 'Очистка бассейна и уход за садом проводятся рано утром с 8 до 10 часов.', 'Pool cleaning and garden maintenance are carried out early in the morning from 8 am to 10 am.', 'Havuz temizliği ve bahçe bakımı sabah erken saatlerde 08:00 ile 10:00 arasında yapılmaktadır.', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_6_title', 'Модальное окно: Раздел 6 Заголовок', 'Правила проживания', 'House Rules', 'Ev Kuralları', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_6_text', 'Модальное окно: Раздел 6 Текст', 'Заезд после 16:00, выезд до 10:00. Курение в помещениях виллы строго запрещено.', 'Check-in after 4:00 PM, check-out before 10:00 AM. Smoking is strictly prohibited in the villa.', 'Giriş saati 16:00 sonrası, çıkış saati 10:00 öncesidir. Villada sigara içmek kesinlikle yasaktır.', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_7_title', 'Модальное окно: Раздел 7 Заголовок', 'Регистрация KBS и KVKK', 'Registration [KBS/KVKK]', 'Kayıt [KBS/KVKK]', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_7_text', 'Модальное окно: Раздел 7 Текст', 'Ваши данные защищены и используются исключительно для регистрации гостей в системе KBS согласно законам Турции.', 'Your data is protected and used solely for the purpose of registering guests in the KBS system in accordance with Turkish law.', 'Verileriniz korunmaktadır ve Türk kanunlarına uygun olarak yalnızca KBS sistemine misafir kaydı amacıyla kullanılmaktadır.', '', 'Вкл'],
+
+  // --- БЛОК 5: СПАЛЬНЫЕ МЕСТА [SLEEPING ARRANGEMENTS] ---
+  ['5. Спальни', 'sleeping_title', 'Заголовок секции спальных мест', 'Где вы будете спать', 'Where you will sleep', 'Nerede uyuyacaksınız', '', 'Вкл'],
+  ['5. Спальни', 'bedroom_1', 'Спальня 1 • King Bed', 'Спальня 1 • King Bed', 'Bedroom 1 • King Bed', 'Yatak Odası 1 • King Bed', 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600', 'Вкл'],
+  ['5. Спальни', 'bedroom_1_desc', 'Описание спальни 1', 'Большая двуспальная кровать King Size, панорамные окна с видом на бассейн и сад, кондиционер', 'Large King Size double bed, panoramic windows overlooking the pool and garden, air conditioning', 'Geniş King Size çift kişilik yatak, havuz ve bahçe manzaralı panoramik pencereler, klima', 'BedDouble', 'Вкл'],
+  ['5. Спальни', 'bedroom_1_badge', 'Бейдж кровати спальни 1', 'King Bed', 'King Bed', 'King Bed', '', 'Вкл'],
+  ['5. Спальни', 'bedroom_2', 'Спальня 2 • Queen Bed', 'Спальня 2 • Queen Bed', 'Bedroom 2 • Queen Bed', 'Yatak Odası 2 • Queen Bed', 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=600', 'Вкл'],
+  ['5. Спальни', 'bedroom_2_desc', 'Описание спальни 2', 'Уютная двуспальная кровать Queen Size, балкон с видом на горы, кондиционер', 'Cozy Queen Size double bed, balcony with mountain view, air conditioning', 'Konforlu Queen Size çift kişilik yatak, dağ manzaralı balkon, klima', 'BedDouble', 'Вкл'],
+  ['5. Спальни', 'bedroom_2_badge', 'Бейдж кровати спальни 2', 'Queen Bed', 'Queen Bed', 'Queen Bed', '', 'Вкл'],
+  ['5. Спальни', 'bedroom_3', 'Спальня 3 • 2 Односпальные', 'Спальня 3 • 2 Односпальные', 'Bedroom 3 • 2 Single Beds', 'Yatak Odası 3 • 2 Tek Kişilik', 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=600', 'Вкл'],
+  ['5. Спальни', 'bedroom_3_desc', 'Описание спальни 3', 'Две раздельные комфортные кровати, рабочий стол, вид на сад', 'Two separate comfortable beds, work desk, garden view', 'İki ayrı konforlu yatak, çalışma masası, bahçe manzarası', 'Bed', 'Вкл'],
+  ['5. Спальни', 'bedroom_3_badge', 'Бейдж кроватей спальни 3', '2 Single Beds', '2 Single Beds', '2 Tek Kişilik Yatak', '', 'Вкл'],
+  ['5. Спальни', 'bedroom_4', 'Спальня 4 • Диван-кровать', 'Спальня 4 • Диван-кровать', 'Bedroom 4 • Sofa Bed', 'Yatak Odası 4 • Çekyat', 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600', 'Вкл'],
+  ['5. Спальни', 'bedroom_4_desc', 'Описание спальни 4', 'Раскладной ортопедический диван-кровать в лаундж-зоне, кондиционер', 'Convertible orthopedic sofa bed in the lounge area, air conditioning', 'Oturma alanında açılır ortopedik çekyat, klima', 'Sofa', 'Вкл'],
+  ['5. Спальни', 'bedroom_4_badge', 'Бейдж дивана спальни 4', 'Sofa Bed', 'Sofa Bed', 'Çekyat', '', 'Вкл'],
+
+  // --- БЛОК 6: УДОБСТВА ВИЛЛЫ [AMENITIES] ---
+  ['6. Удобства', 'amenities_title', 'Заголовок секции удобств', 'Что есть в этом жилье', 'What this place offers', 'Bu mekanın sundukları', '', 'Вкл'],
+  ['6. Удобства', 'amenities_btn_all', 'Кнопка открытия модального окна всех удобств', 'Показать все удобства', 'Show all amenities', 'Tüm olanakları göster', '', 'Вкл'],
+  ['6. Удобства', 'amenity_main_1', 'Основное удобство 1 на главной', 'Приватный открытый бассейн', 'Private outdoor pool', 'Özel açık yüzme havuzu', 'Waves', 'Вкл'],
+  ['6. Удобства', 'amenity_main_2', 'Основное удобство 2 на главной', 'Панорамный вид на горы', 'Scenic mountain view', 'Panoramik dağ manzarası', 'Mountain', 'Вкл'],
+  ['6. Удобства', 'amenity_main_3', 'Основное удобство 3 на главной', 'Скоростной Wi-Fi 100 Мбит/с', 'High-speed Wi-Fi 100 Mbps', 'Yüksek hızlı Wi-Fi 100 Mbps', 'Wifi', 'Вкл'],
+  ['6. Удобства', 'amenity_main_4', 'Основное удобство 4 на главной', 'Кондиционеры во всех комнатах', 'Air conditioning in all rooms', 'Tüm odalarda klima', 'Wind', 'Вкл'],
+  ['6. Удобства', 'amenity_main_5', 'Основное удобство 5 на главной', 'Полноценная кухня и посуда', 'Fully equipped kitchen', 'Tam donanımlı mutfak', 'Utensils', 'Вкл'],
+  ['6. Удобства', 'amenity_main_6', 'Основное удобство 6 на главной', 'Бесплатная парковка на территории', 'Free on-site parking', 'Tesis içi ücretsiz otopark', 'Car', 'Вкл'],
+  ['6. Удобства', 'amenity_main_7', 'Основное удобство 7 на главной', 'Зона BBQ и мангал в саду', 'Garden BBQ grill area', 'Bahçe barbekü alanı', 'Flame', 'Вкл'],
+  ['6. Удобства', 'amenity_main_8', 'Основное удобство 8 на главной', 'Стиральная машина', 'Washing machine', 'Çamaşır makinesi', 'WashingMachine', 'Вкл'],
+  ['6. Удобства', 'amenity_main_9', 'Основное удобство 9 на главной', 'Выделенное рабочее место', 'Dedicated workspace', 'Özel çalışma alanı', 'Laptop', 'Вкл'],
+  ['6. Удобства', 'amenity_main_10', 'Основное удобство 10 на главной', 'Охраняемая территория', 'Secure gated territory', 'Güvenli özel alan', 'Shield', 'Вкл'],
+  ['6. Удобства', 'amenity_cat1_title', 'Модальное окно: Категория 1 Заголовок', 'Виды и природа', 'Scenic Views & Nature', 'Manzara ve Doğa', 'Mountain', 'Вкл'],
+  ['6. Удобства', 'amenity_cat1_item1', 'Модальное окно: Категория 1 Пункт 1', 'Панорамный вид на горы Дальяна', 'Panoramic view of Dalyan rock mountains', 'Dalyan dağlarının panoramik manzarası', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat1_item2', 'Модальное окно: Категория 1 Пункт 2', 'Вид на реку и сад', 'Direct river and lush garden view', 'Nehir ve yemyeşil bahçe manzarası', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat1_item3', 'Модальное окно: Категория 1 Пункт 3', 'Прямой выход к причалу', 'Private waterfront jetty access', 'Özel iskeleye doğrudan erişim', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat2_title', 'Модальное окно: Категория 2 Заголовок', 'Бассейн и спа', 'Pool & Spa', 'Havuz ve Spa', 'Waves', 'Вкл'],
+  ['6. Удобства', 'amenity_cat2_item1', 'Модальное окно: Категория 2 Пункт 1', 'Приватный открытый бассейн глубина 1.5м', 'Private outdoor pool depth 1.5m', 'Özel açık yüzme havuzu derinlik 1.5m', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat2_item2', 'Модальное окно: Категория 2 Пункт 2', 'Шезлонги и зонты от солнца', 'Comfortable sun loungers and umbrellas', 'Konforlu şezlonglar ve şemsiyeler', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat2_item3', 'Модальное окно: Категория 2 Пункт 3', 'Летний душ у бассейна', 'Poolside outdoor summer shower', 'Havuz başı açık yaz duşu', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat2_item4', 'Модальное окно: Категория 2 Пункт 4', 'Вечерняя гидроподсветка бассейна', 'Evening pool hydro-lighting', 'Akşam havuz su altı aydınlatması', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat3_title', 'Модальное окно: Категория 3 Заголовок', 'Кухня и столовая', 'Kitchen & Dining', 'Mutfak ve Yemek', 'Utensils', 'Вкл'],
+  ['6. Удобства', 'amenity_cat3_item1', 'Модальное окно: Категория 3 Пункт 1', 'Большой двухкамерный холодильник', 'Large double-door refrigerator', 'Geniş çift kapılı buzdolabı', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat3_item2', 'Модальное окно: Категория 3 Пункт 2', 'Посудомоечная машина', 'Modern dishwasher', 'Modern bulaşık makinesi', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat3_item3', 'Модальное окно: Категория 3 Пункт 3', 'Духовой шкаф и индукционная варочная панель', 'Oven and induction cooktop', 'Fırın ve indüksiyonlu ocak', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat3_item4', 'Модальное окно: Категория 3 Пункт 4', 'Кофемашина эспрессо и чайник', 'Espresso coffee machine and kettle', 'Espresso kahve makinesi ve su ısıtıcısı', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat3_item5', 'Модальное окно: Категория 3 Пункт 5', 'Полный комплект посуды и бокалов', 'Full set of cookware, dishes and wine glasses', 'Eksiksiz tencere, tabak ve kadeh takımı', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat4_title', 'Модальное окно: Категория 4 Заголовок', 'Комфорт и связь', 'Comfort & Tech', 'Konfor ve Teknoloji', 'Wifi', 'Вкл'],
+  ['6. Удобства', 'amenity_cat4_item1', 'Модальное окно: Категория 4 Пункт 1', 'Скоростной оптоволоконный Wi-Fi 100 Мбит/с', 'High-speed fiber-optic Wi-Fi 100 Mbps', 'Yüksek hızlı fiber optik Wi-Fi 100 Mbps', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat4_item2', 'Модальное окно: Категория 4 Пункт 2', 'Сплит-системы кондиционирования в каждой комнате', 'Individual split AC units in all rooms', 'Her odada bağımsız split klima', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat4_item3', 'Модальное окно: Категория 4 Пункт 3', 'Smart TV 55 дюймов с Netflix и YouTube', 'Smart TV 55 inch with Netflix and YouTube', 'Netflix ve YouTube özellikli 55 inch Smart TV', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat4_item4', 'Модальное окно: Категория 4 Пункт 4', 'Выделенная рабочая зона с эргономичным креслом', 'Dedicated workspace with ergonomic chair', 'Ergonomik sandalyeli özel çalışma alanı', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat5_title', 'Модальное окно: Категория 5 Заголовок', 'Безопасность дома', 'Home Safety', 'Ev Güvenliği', 'Shield', 'Вкл'],
+  ['6. Удобства', 'amenity_cat5_item1', 'Модальное окно: Категория 5 Пункт 1', 'Огороженная приватная территория', 'Gated private enclosed territory', 'Çevrili özel korunaklı mülk alanı', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat5_item2', 'Модальное окно: Категория 5 Пункт 2', 'Система видеонаблюдения по внешнему периметру', 'External perimeter CCTV security', 'Dış çevre güvenlik kamerası sistemi', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat5_item3', 'Модальное окно: Категория 5 Пункт 3', 'Датчики дыма и аптечка первой помощи', 'Smoke detectors and first aid kit', 'Duman dedektörleri ve ilk yardım kiti', 'Check', 'Вкл'],
+  ['6. Удобства', 'amenity_cat5_item4', 'Модальное окно: Категория 5 Пункт 4', 'Огнетушитель', 'Fire extinguisher', 'Yangın söndürücü', 'Check', 'Вкл'],
+
+  // --- БЛОК 7: ОТЗЫВЫ И КРИТЕРИИ ОЦЕНОК [REVIEWS] ---
+  ['7. Отзывы', 'reviews_score_header', 'Заголовок рейтинга в блоке отзывов', '4.98 • Рейтинг гостей на основе 48 отзывов', '4.98 • Guest rating based on 48 reviews', '4.98 • 48 değerlendirmeye göre misafir puanı', 'Star', 'Вкл'],
+  ['7. Отзывы', 'review_cat_1', 'Критерий 1: Чистота', 'Чистота', 'Cleanliness', 'Temizlik', '5.0|100', 'Вкл'],
+  ['7. Отзывы', 'review_cat_2', 'Критерий 2: Точность описания', 'Точность описания', 'Accuracy', 'Doğruluk', '4.9|98', 'Вкл'],
+  ['7. Отзывы', 'review_cat_3', 'Критерий 3: Общение с хозяином', 'Общение с хозяином', 'Communication', 'İletişim', '5.0|100', 'Вкл'],
+  ['7. Отзывы', 'review_cat_4', 'Критерий 4: Расположение', 'Расположение', 'Location', 'Konum', '4.9|98', 'Вкл'],
+  ['7. Отзывы', 'review_cat_5', 'Критерий 5: Прибытие и заезд', 'Прибытие и заезд', 'Check-in', 'Giriş', '5.0|100', 'Вкл'],
+  ['7. Отзывы', 'review_cat_6', 'Критерий 6: Цена / качество', 'Соотношение цена/качество', 'Value', 'Fiyat/performans', '4.9|98', 'Вкл'],
+  ['7. Отзывы', 'review_1_author', 'Отзыв 1: Автор и дата', 'Елена Смирнова • Август 2026', 'Elena Smirnova • August 2026', 'Elena Smirnova • Ağustos 2026', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120', 'Вкл'],
+  ['7. Отзывы', 'review_1_text', 'Отзыв 1: Текст отзыва', 'Потрясающая вилла! Вид на горы просто захватывает дух, бассейн чистейший. Алексей был на связи 24/7, помог организовать незабываемый круиз на яхте по озеру Кёйджегиз. Обязательно вернемся!', 'Stunning villa! Mountain views are breathtaking, pool is pristine. Aleksei was available 24/7 and helped organize an unforgettable cruise on Lake Koycegiz. We will definitely return!', 'Harika villa! Dağ manzarası nefes kesici, havuz tertemiz. Aleksei 7/24 iletişimdeydi ve Köyceğiz Gölü\'nde unutulmaz bir tekne turu düzenlememize yardımcı oldu. Kesinlikle tekrar geleceğiz!', '', 'Вкл'],
+  ['7. Отзывы', 'review_2_author', 'Отзыв 2: Автор и дата', 'Markus Webber • Июль 2026', 'Markus Webber • July 2026', 'Markus Webber • Temmuz 2026', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120', 'Вкл'],
+  ['7. Отзывы', 'review_2_text', 'Отзыв 2: Текст отзыва', 'Outstanding hospitality and pristine villa. Fast Wi-Fi for remote work, peaceful neighborhood, and fully equipped kitchen. Aleksei is truly a top Superhost!', 'Outstanding hospitality and pristine villa. Fast Wi-Fi for remote work, peaceful neighborhood, and fully equipped kitchen. Aleksei is truly a top Superhost!', 'Olağanüstü misafirperverlik ve kusursuz villa. Uzaktan çalışma için hızlı Wi-Fi, huzurlu bir çevre ve tam donanımlı mutfak. Aleksei gerçekten harika bir Süper Ev Sahibi!', '', 'Вкл'],
+  ['7. Отзывы', 'review_3_author', 'Отзыв 3: Автор и дата', 'Ahmet Yılmaz • Июнь 2026', 'Ahmet Yilmaz • June 2026', 'Ahmet Yılmaz • Haziran 2026', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120', 'Вкл'],
+  ['7. Отзывы', 'review_3_text', 'Отзыв 3: Текст отзыва', 'Dalyan\'da kaldığımız en konforlu villa. Bahçe ve havuz bakımı mükemmeldi. Ailemizle birlikte çok huzurlu bir hafta geçirdik, teşekkürler Aleksei!', 'The most comfortable villa we stayed in Dalyan. Garden and pool maintenance were excellent. We had a peaceful week with our family, thank you Aleksei!', 'Dalyan\'da kaldığımız en konforlu villa. Bahçe ve havuz bakımı mükemmeldi. Ailemizle birlikte çok huzurlu bir hafta geçirdik, teşekkürler Aleksei!', '', 'Вкл'],
+  ['7. Отзывы', 'review_4_author', 'Отзыв 4: Автор и дата', 'Дмитрий и Анна • Май 2026', 'Dmitry and Anna • May 2026', 'Dmitry ve Anna • Mayıs 2026', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120', 'Вкл'],
+  ['7. Отзывы', 'review_4_text', 'Отзыв 4: Текст отзыва', 'Идеально для семейного отдыха с детьми. Закрытая территория, просторные спальни, тишина. Видео-гид от Алексея открыл нам секретные пляжи Дальяна, где нет толп туристов.', 'Perfect for a family vacation with kids. Gated territory, spacious bedrooms, quiet surroundings. Aleksei\'s video guide revealed secret Dalyan beaches without crowds.', 'Çocuklu aile tatili için ideal. Çevrili özel alan, ferah yatak odaları, sessizlik. Aleksei\'nin video rehberi bize turist kalabalığından uzak gizli Dalyan plajlarını keşfettirdi.', '', 'Вкл'],
+
+  // --- БЛОК 8: ЛОКАЦИЯ И ОКРЕСТНОСТИ ДАЛЬЯНА [LOCATION] ---
+  ['8. Локация', 'location_title', 'Заголовок секции локации', 'Расположение: Дальян, Ортаджа, Мугла, Турция', 'Location: Dalyan, Ortaca, Mugla, Turkey', 'Konum: Dalyan, Ortaca, Muğla, Türkiye', 'MapPin', 'Вкл'],
+  ['8. Локация', 'location_desc', 'Подробный текст об окрестностях Дальяна', 'Вилла расположена в тихом зеленом районе в 5 минутах ходьбы от набережной реки Дальян. В пешей доступности рестораны традиционной эгейской кухни, лодочные причалы для поездок на пляж Изтузу и термальные грязевые источники Султание.', 'The villa is located in a quiet green area just a 5-minute walk from the Dalyan River promenade. Traditional Aegean restaurants, boat docks for trips to Iztuzu Beach, and Sultaniye mud springs are all within easy walking distance.', 'Villa, Dalyan Nehri kordonuna 5 dakikalık yürüme mesafesinde, sessiz ve yeşil bir bölgede yer almaktadır. Geleneksel Ege restoranları, İztuzu Plajı tekne iskeleleri ve Sultaniye kaplıcaları yürüme mesafesindedir.', '', 'Вкл'],
+  ['8. Локация', 'location_badge', 'Текст плашки GPS и расстояния до аэропорта', 'GPS: 36.8336° N, 28.6439° E • 25 минут от аэропорта Даламан [DLM]', 'GPS: 36.8336° N, 28.6439° E • 25 min from Dalaman Airport [DLM]', 'GPS: 36.8336° N, 28.6439° E • Dalaman Havalimanı 25 dakika', 'Navigation', 'Вкл'],
+  ['8. Локация', 'location_image', 'Панорамная фотография окрестностей', 'Фото природы Дальяна', 'Dalyan nature photo', 'Dalyan doğa fotoğrafı', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200', 'Вкл'],
+
+  // --- БЛОК 9: КАРТОЧКА ВЛАДЕЛЬЦА [HOST PROFILE] ---
+  ['9. Хозяин', 'host_card_title', 'Заголовок карточки владельца', 'Хозяин: Алексей Знаменский', 'Host: Aleksei Znamenskii', 'Ev Sahibi: Aleksei Znamenskii', '', 'Вкл'],
+  ['9. Хозяин', 'host_card_subtitle', 'Подзаголовок статуса суперхозяина', 'Суперхозяин на Airbnb • Более 5 лет приема гостей', 'Superhost on Airbnb • 5+ years hosting', 'Airbnb Süper Ev Sahibi • 5+ yıldır ev sahibi', 'Award', 'Вкл'],
+  ['9. Хозяин', 'host_card_verified', 'Бейдж подтверждения личности', 'Личность подтверждена', 'Identity verified', 'Kimlik doğrulandı', 'ShieldCheck', 'Вкл'],
+  ['9. Хозяин', 'host_card_response_time', 'Бейдж времени ответа на сообщения', 'Время ответа: в течение часа', 'Response time: within an hour', 'Yanıt süresi: bir saat içinde', 'Clock', 'Вкл'],
+  ['9. Хозяин', 'host_card_languages', 'Заголовок языков общения', 'Языки: Русский, English, Türkçe', 'Languages: Russian, English, Turkish', 'Diller: Rusça, İngilizce, Türkçe', 'Globe2', 'Вкл'],
+  ['9. Хозяин', 'host_card_help_text', 'Описание помощи гостям', 'Помощь в организации трансфера, персональных туров по озеру Кёйджегиз и бронирования ресторанов', 'Assistance with airport transfers, private tours on Lake Koycegiz and restaurant reservations', 'Havalimanı transferi, Köyceğiz Gölü özel tekne turları ve restoran rezervasyonlarında destek', '', 'Вкл'],
+  ['9. Хозяин', 'host_card_btn', 'Текст кнопки связи с хозяином', 'Написать хозяину', 'Message host', 'Ev sahibine mesaj gönder', 'MessageCircle', 'Вкл']
+];
+
+// Динамическое построение объекта MASTER_HOME_MAP из строк MASTER_HOME_ROWS
+const MASTER_HOME_MAP = {};
+
+MASTER_HOME_ROWS.forEach(function (row) {
+  var block = row[0];
+  var key = row[1];
+  var desc = row[2];
+  var ru = row[3];
+  var en = row[4];
+  var tr = row[5];
+  var media = row[6];
+  var status = row[7];
+
+  MASTER_HOME_MAP[key] = {
+    block: block,
+    key: key,
+    desc: desc,
+    ru: ru,
+    en: en,
+    tr: tr,
+    media: media,
+    status: status
+  };
+});
+
+// Дополнительные алиасы для 100% обратной совместимости с camelCase ключами
+MASTER_HOME_MAP.heroTitle = MASTER_HOME_MAP.hero_title;
+MASTER_HOME_MAP.heroSubtitle = MASTER_HOME_MAP.hero_subtitle;
+MASTER_HOME_MAP.heroImage = MASTER_HOME_MAP.hero_image;
+MASTER_HOME_MAP.aboutTitle = MASTER_HOME_MAP.about_title;
+MASTER_HOME_MAP.aboutText = MASTER_HOME_MAP.about_text;
+MASTER_HOME_MAP.hostHeader = MASTER_HOME_MAP.host_specs_header;
+MASTER_HOME_MAP.hostName = MASTER_HOME_MAP.host_specs_name;
+MASTER_HOME_MAP.hostAvatar = MASTER_HOME_MAP.host_specs_avatar;
+MASTER_HOME_MAP.highlightSuperhostTitle = MASTER_HOME_MAP.highlight_1_title;
+MASTER_HOME_MAP.highlightSuperhostDesc = MASTER_HOME_MAP.highlight_1_desc;
+MASTER_HOME_MAP.highlightCheckinTitle = MASTER_HOME_MAP.highlight_2_title;
+MASTER_HOME_MAP.highlightCheckinDesc = MASTER_HOME_MAP.highlight_2_desc;
+MASTER_HOME_MAP.highlightCancellationTitle = MASTER_HOME_MAP.highlight_3_title;
+MASTER_HOME_MAP.highlightCancellationDesc = MASTER_HOME_MAP.highlight_3_desc;
+MASTER_HOME_MAP.locationTitle = MASTER_HOME_MAP.location_title;
+MASTER_HOME_MAP.locationDesc = MASTER_HOME_MAP.location_desc;
 
 const MASTER_SETTINGS_ROWS = [
   // --- БЛОК 1: СИСТЕМНЫЕ ПАРАМЕТРЫ ЭКОСИСТЕМЫ ---
@@ -250,5 +317,6 @@ const MASTER_SETTINGS_ROWS = [
 module.exports = {
   MASTER_ABOUT_SECTIONS,
   MASTER_HOME_MAP,
+  MASTER_HOME_ROWS,
   MASTER_SETTINGS_ROWS
 };

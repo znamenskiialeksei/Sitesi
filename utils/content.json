@@ -112,7 +112,29 @@
       "en": "Раскладной ортопедический диван-кровать в лаундж-зоне, кондиционер",
       "tr": "Sofa Bed",
       "media": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600"
-    }
+    },
+    "hero_rating": { "ru": "4.98", "en": "4.98", "tr": "4.98", "media": "Star" },
+    "hero_reviews_count": { "ru": "48 отзывов", "en": "48 reviews", "tr": "48 degerlendirme", "media": "" },
+    "hero_superhost_badge": { "ru": "Суперхозяин", "en": "Superhost", "tr": "Super Ev Sahibi", "media": "Award" },
+    "hero_location": { "ru": "Дальян, Ортаджа, Мугла, Турция", "en": "Dalyan, Ortaca, Mugla, Turkey", "tr": "Dalyan, Ortaca, Mugla, Turkiye", "media": "MapPin" },
+    "hero_share_btn": { "ru": "Поделиться", "en": "Share", "tr": "Paylas", "media": "Share2" },
+    "hero_favorite_btn": { "ru": "В избранное", "en": "Save", "tr": "Kaydet", "media": "Heart" },
+    "spec_guests": { "ru": "10 гостей", "en": "10 guests", "tr": "10 misafir", "media": "Users" },
+    "spec_bedrooms": { "ru": "4 спальни", "en": "4 bedrooms", "tr": "4 yatak odasi", "media": "Bed" },
+    "spec_beds": { "ru": "5 кроватей", "en": "5 beds", "tr": "5 yatak", "media": "Bed" },
+    "spec_baths": { "ru": "4 ванные комнаты", "en": "4 bathrooms", "tr": "4 banyo", "media": "Bath" },
+    "about_btn_more": { "ru": "Показать больше об объекте", "en": "Show more about property", "tr": "Tesis hakkinda daha fazla goster", "media": "ChevronRight" },
+    "sleeping_title": { "ru": "Где вы будете спать", "en": "Where you will sleep", "tr": "Nerede uyuyacaksiniz", "media": "" },
+    "amenities_title": { "ru": "Что есть в этом жилье", "en": "What this place offers", "tr": "Bu mekanin sunduklari", "media": "" },
+    "amenities_btn_all": { "ru": "Показать все удобства", "en": "Show all amenities", "tr": "Tum olanaklari goster", "media": "" },
+    "location_badge": { "ru": "GPS: 36.8336° N, 28.6439° E • 25 минут от аэропорта Даламан [DLM]", "en": "GPS: 36.8336° N, 28.6439° E • 25 min from Dalaman Airport [DLM]", "tr": "GPS: 36.8336° N, 28.6439° E • Dalaman Havalimani 25 dakika", "media": "Navigation" },
+    "host_card_title": { "ru": "Хозяин: Алексей Знаменский", "en": "Host: Aleksei Znamenskii", "tr": "Ev Sahibi: Aleksei Znamenskii", "media": "" },
+    "host_card_subtitle": { "ru": "Суперхозяин на Airbnb • Более 5 лет приема гостей", "en": "Superhost on Airbnb • 5+ years hosting", "tr": "Airbnb Super Ev Sahibi • 5+ yildir ev sahibi", "media": "Award" },
+    "host_card_verified": { "ru": "Личность подтверждена", "en": "Identity verified", "tr": "Kimlik dogrulandi", "media": "ShieldCheck" },
+    "host_card_response_time": { "ru": "Время ответа: в течение часа", "en": "Response time: within an hour", "tr": "Yanit suresi: bir saat icinde", "media": "Clock" },
+    "host_card_languages": { "ru": "Языки: Русский, English, Türkçe", "en": "Languages: Russian, English, Turkish", "tr": "Diller: Rusca, Ingilizce, Turkce", "media": "Globe2" },
+    "host_card_help_text": { "ru": "Помощь в организации трансфера, персональных туров по озеру Кёйджегиз и бронирования ресторанов", "en": "Assistance with airport transfers, private tours on Lake Koycegiz and restaurant reservations", "tr": "Havalimani transferi, Koycegiz Golu ozel tekne turlari ve restoran rezervasyonlarinda destek", "media": "" },
+    "host_card_btn": { "ru": "Написать хозяину", "en": "Message host", "tr": "Ev sahibine mesaj gonder", "media": "MessageCircle" }
   },
   "about": {
     "1": {

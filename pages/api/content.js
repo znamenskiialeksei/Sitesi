@@ -126,7 +126,7 @@ export default async function handler(req, res) {
       coursesRows,
       galleryRows
     ] = await Promise.all([
-      safeGet('HOME', 'A:E'),
+      safeGet('HOME', 'A:H'),
       safeGet('ABOUT', 'A:G'),
       safeGet('LEGAL', 'A:G'),
       safeGet('TEMPLATES', 'A:G'),
@@ -147,24 +147,204 @@ export default async function handler(req, res) {
 
     const fallbackData = readFallbackFile();
 
-    // 1. Главная страница [HOME] с защитой от пустоты
+    // 1. Главная страница [HOME] : Парсер конструктора витрины [8 колонок] с поддержкой устаревшего формата [5 колонок]
     if (homeRows.length > 1) {
+      const headerRow = homeRows[0] || [];
+      const isConstructorFormat = headerRow.length >= 7 || String(headerRow[0] || '').toLowerCase().includes('блок');
+
       homeRows.slice(1).forEach((r) => {
-        if (r[0]) {
-          content.home[r[0]] = {
-            ru: sanitizeText(r[1], fallbackData.home?.[r[0]]?.ru || MASTER_HOME_MAP[r[0]]?.ru || ''),
-            en: sanitizeText(r[2], fallbackData.home?.[r[0]]?.en || MASTER_HOME_MAP[r[0]]?.en || ''),
-            tr: sanitizeText(r[3], fallbackData.home?.[r[0]]?.tr || MASTER_HOME_MAP[r[0]]?.tr || ''),
-            media: sanitizeText(r[4], fallbackData.home?.[r[0]]?.media || MASTER_HOME_MAP[r[0]]?.media || '')
-          };
+        let block = '', key = '', desc = '', ru = '', en = '', tr = '', media = '', status = 'Вкл';
+        if (isConstructorFormat) {
+          block = r[0] ? String(r[0]).trim() : '';
+          key = r[1] ? String(r[1]).trim() : '';
+          desc = r[2] ? String(r[2]).trim() : '';
+          ru = r[3] || '';
+          en = r[4] || '';
+          tr = r[5] || '';
+          media = r[6] || '';
+          status = r[7] ? String(r[7]).trim() : 'Вкл';
+        } else {
+          key = r[0] ? String(r[0]).trim() : '';
+          ru = r[1] || '';
+          en = r[2] || '';
+          tr = r[3] || '';
+          media = r[4] || '';
+          status = 'Вкл';
         }
+
+        if (!key) return;
+
+        const isEnabled = !status.toLowerCase().startsWith('выкл') && status.toLowerCase() !== 'off' && status.toLowerCase() !== 'false';
+
+        const rowObj = {
+          block,
+          key,
+          desc,
+          ru: sanitizeText(ru, fallbackData.home?.[key]?.ru || MASTER_HOME_MAP[key]?.ru || ''),
+          en: sanitizeText(en, fallbackData.home?.[key]?.en || MASTER_HOME_MAP[key]?.en || ''),
+          tr: sanitizeText(tr, fallbackData.home?.[key]?.tr || MASTER_HOME_MAP[key]?.tr || ''),
+          media: sanitizeText(media, fallbackData.home?.[key]?.media || MASTER_HOME_MAP[key]?.media || ''),
+          status: isEnabled ? 'Вкл' : 'Выкл',
+          enabled: isEnabled
+        };
+
+        content.home[key] = rowObj;
       });
     }
+
     if (Object.keys(content.home).length === 0) {
       content.home = fallbackData.home && Object.keys(fallbackData.home).length > 0
         ? fallbackData.home
         : { ...MASTER_HOME_MAP };
     }
+
+    // Синхронизация алиасов для совместимости
+    const aliasPairs = [
+      ['heroTitle', 'hero_title'],
+      ['heroSubtitle', 'hero_subtitle'],
+      ['heroImage', 'hero_image'],
+      ['hostHeader', 'host_specs_header'],
+      ['hostName', 'host_specs_name'],
+      ['hostAvatar', 'host_specs_avatar'],
+      ['highlightSuperhostTitle', 'highlight_1_title'],
+      ['highlightSuperhostDesc', 'highlight_1_desc'],
+      ['highlightCheckinTitle', 'highlight_2_title'],
+      ['highlightCheckinDesc', 'highlight_2_desc'],
+      ['highlightCancellationTitle', 'highlight_3_title'],
+      ['highlightCancellationDesc', 'highlight_3_desc'],
+      ['aboutTitle', 'about_title'],
+      ['aboutText', 'about_text'],
+      ['locationTitle', 'location_title'],
+      ['locationDesc', 'location_desc'],
+      ['locationImage', 'location_image']
+    ];
+    aliasPairs.forEach(([camelKey, snakeKey]) => {
+      if (!content.home[camelKey] && content.home[snakeKey]) {
+        content.home[camelKey] = content.home[snakeKey];
+      }
+      if (!content.home[snakeKey] && content.home[camelKey]) {
+        content.home[snakeKey] = content.home[camelKey];
+      }
+    });
+
+    // Формирование структурированных коллекций для динамического рендеринга витрины
+    // 1. Спальни
+    const bedroomsList = [];
+    [1, 2, 3, 4].forEach((i) => {
+      const item = content.home[`bedroom_${i}`];
+      if (item && item.enabled !== false) {
+        const descItem = content.home[`bedroom_${i}_desc`];
+        const badgeItem = content.home[`bedroom_${i}_badge`];
+        bedroomsList.push({
+          id: i,
+          title: { ru: item.ru, en: item.en, tr: item.tr },
+          desc: {
+            ru: descItem?.ru || item.ru,
+            en: descItem?.en || item.en,
+            tr: descItem?.tr || item.tr
+          },
+          badge: {
+            ru: badgeItem?.ru || `Спальня ${i}`,
+            en: badgeItem?.en || `Bedroom ${i}`,
+            tr: badgeItem?.tr || `Yatak Odası ${i}`
+          },
+          image: item.media || '',
+          iconName: descItem?.media || 'BedDouble'
+        });
+      }
+    });
+    content.home.bedrooms = bedroomsList;
+
+    // 2. Удобства основные [Main Amenities]
+    const mainAmenitiesList = [];
+    for (let i = 1; i <= 20; i++) {
+      const item = content.home[`amenity_main_${i}`];
+      if (item && item.enabled !== false) {
+        mainAmenitiesList.push({
+          key: `amenity_main_${i}`,
+          label: { ru: item.ru, en: item.en, tr: item.tr },
+          icon: item.media || 'Check'
+        });
+      }
+    }
+    content.home.mainAmenities = mainAmenitiesList;
+
+    // 3. Удобства сгруппированные для модального окна [Grouped Amenities]
+    const groupedAmenitiesList = [];
+    for (let c = 1; c <= 10; c++) {
+      const catTitleItem = content.home[`amenity_cat${c}_title`];
+      if (catTitleItem && catTitleItem.enabled !== false) {
+        const items = [];
+        for (let it = 1; it <= 20; it++) {
+          const item = content.home[`amenity_cat${c}_item${it}`];
+          if (item && item.enabled !== false) {
+            items.push({
+              ru: item.ru,
+              en: item.en,
+              tr: item.tr
+            });
+          }
+        }
+        groupedAmenitiesList.push({
+          category: {
+            ru: catTitleItem.ru,
+            en: catTitleItem.en,
+            tr: catTitleItem.tr
+          },
+          icon: catTitleItem.media || 'Check',
+          items
+        });
+      }
+    }
+    content.home.amenitiesGrouped = groupedAmenitiesList;
+
+    // 4. Отзывы и критерии оценок [Reviews]
+    const reviewCatsList = [];
+    for (let c = 1; c <= 10; c++) {
+      const item = content.home[`review_cat_${c}`];
+      if (item && item.enabled !== false) {
+        const parts = (item.media || '5.0|100').split('|');
+        const score = parts[0] || '5.0';
+        const percent = parseInt(parts[1], 10) || 100;
+        reviewCatsList.push({
+          label: { ru: item.ru, en: item.en, tr: item.tr },
+          score,
+          percent
+        });
+      }
+    }
+    const reviewCardsList = [];
+    for (let r = 1; r <= 10; r++) {
+      const authItem = content.home[`review_${r}_author`];
+      const textItem = content.home[`review_${r}_text`];
+      if (authItem && authItem.enabled !== false) {
+        reviewCardsList.push({
+          author: { ru: authItem.ru, en: authItem.en, tr: authItem.tr },
+          avatar: authItem.media || '',
+          comment: { ru: textItem?.ru || '', en: textItem?.en || '', tr: textItem?.tr || '' }
+        });
+      }
+    }
+    content.home.reviewsData = {
+      header: content.home.reviews_score_header,
+      categories: reviewCatsList,
+      reviews: reviewCardsList
+    };
+
+    // 5. Описание виллы и правила [About & Rules]
+    const aboutSectionsList = [];
+    for (let s = 1; s <= 10; s++) {
+      const titleItem = content.home[`about_sec_${s}_title`];
+      const textItem = content.home[`about_sec_${s}_text`];
+      if (titleItem && titleItem.enabled !== false) {
+        aboutSectionsList.push({
+          id: String(s),
+          title: { ru: titleItem.ru, en: titleItem.en, tr: titleItem.tr },
+          text: { ru: textItem?.ru || '', en: textItem?.en || '', tr: textItem?.tr || '' }
+        });
+      }
+    }
+    content.home.aboutSections = aboutSectionsList;
 
     // 2. Описание виллы [ABOUT] с защитой от пустоты
     if (aboutRows.length > 1) {
@@ -186,7 +366,11 @@ export default async function handler(req, res) {
       });
     }
     if (Object.keys(content.about).length === 0) {
-      if (fallbackData.about && Object.keys(fallbackData.about).length > 0) {
+      if (content.home.aboutSections && content.home.aboutSections.length > 0) {
+        content.home.aboutSections.forEach((sec) => {
+          content.about[sec.id] = { title: sec.title, text: sec.text };
+        });
+      } else if (fallbackData.about && Object.keys(fallbackData.about).length > 0) {
         content.about = fallbackData.about;
       } else {
         MASTER_ABOUT_SECTIONS.forEach((sec) => {

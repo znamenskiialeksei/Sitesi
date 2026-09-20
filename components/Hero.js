@@ -1,12 +1,12 @@
 // ==============================================================================
-// ЗАГОЛОВОК И БЕЙДЖИ ОБЪЕКТА В СТИЛЕ AIRBNB (HERO)
+// ЗАГОЛОВОК И БЕЙДЖИ ОБЪЕКТА В СТИЛЕ AIRBNB: HERO
 // Файл: components/Hero.js
-// Назначение: Название виллы, подзаголовок, рейтинг 4.98, бейдж Superhost,
-// локация и интерактивные кнопки (поделиться, добавить в избранное) без блокирующих модалок.
+// Назначение: Название виллы, подзаголовок, рейтинг, бейдж Superhost,
+// локация и интерактивные кнопки поделиться и в избранное.
 // ==============================================================================
 
 import React from 'react';
-import { Star, MapPin, Award, Share2, Heart, Sparkles } from 'lucide-react';
+import { Star, MapPin, Award, Share2, Heart } from 'lucide-react';
 import { useLanguage } from '../utils/language';
 import { useToast } from './Toast';
 
@@ -14,9 +14,14 @@ export default function Hero({ homeData }) {
   const { t } = useLanguage();
   const toast = useToast();
 
-  const title = homeData?.title || t('heroTitle') || 'Villa Turaman Luxury Waterfront';
-  const subtitle = homeData?.subtitle || t('heroSubtitle') || '';
-  const location = t('locationText') || 'Дальян, Ортаджа, Мугла, Турция';
+  const title = homeData?.title || 'Villa Turaman Luxury Waterfront';
+  const subtitle = homeData?.subtitle || '';
+  const rating = homeData?.rating || '4.98';
+  const reviewsCount = homeData?.reviewsCount || '48 отзывов';
+  const superhostBadge = homeData?.superhostBadge || 'Суперхозяин';
+  const location = homeData?.location || 'Дальян, Ортаджа, Мугла, Турция';
+  const shareBtnText = homeData?.shareBtn || 'Поделиться';
+  const favoriteBtnText = homeData?.favoriteBtn || 'В избранное';
 
   const handleShare = () => {
     if (typeof navigator !== 'undefined' && navigator.share) {
@@ -39,7 +44,7 @@ export default function Hero({ homeData }) {
         {title}
       </h1>
 
-      {/* Подзаголовок виллы из Google Sheets (таблица HomePage) */}
+      {/* Подзаголовок виллы из Google Sheets */}
       {subtitle && (
         <p className="text-xs sm:text-sm text-slate-300 mb-3 max-w-4xl leading-relaxed">
           {subtitle}
@@ -53,8 +58,8 @@ export default function Hero({ homeData }) {
           {/* Рейтинг */}
           <div className="flex items-center gap-1 font-bold text-white">
             <Star className="w-4 h-4 text-rose-500 fill-rose-500" />
-            <span>4.98</span>
-            <span className="text-slate-400 font-normal">({t('reviewsCountText') || '48 отзывов'})</span>
+            <span>{rating}</span>
+            <span className="text-slate-400 font-normal">[{reviewsCount}]</span>
           </div>
 
           <span className="text-slate-600 hidden sm:inline">•</span>
@@ -62,7 +67,7 @@ export default function Hero({ homeData }) {
           {/* Бейдж Суперхозяин */}
           <div className="flex items-center gap-1 text-amber-300 font-semibold">
             <Award className="w-4 h-4 text-amber-400" />
-            <span>{t('superhostBadge') || 'Суперхозяин'}</span>
+            <span>{superhostBadge}</span>
           </div>
 
           <span className="text-slate-600 hidden sm:inline">•</span>
@@ -74,7 +79,7 @@ export default function Hero({ homeData }) {
           </div>
         </div>
 
-        {/* Кнопки "Поделиться" и "Сохранить" */}
+        {/* Кнопки Поделиться и В избранное */}
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -82,7 +87,7 @@ export default function Hero({ homeData }) {
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-slate-800 text-xs font-semibold text-slate-300 hover:text-white transition-colors"
           >
             <Share2 className="w-4 h-4" />
-            <span className="hidden sm:inline">{t('shareBtn') || 'Поделиться'}</span>
+            <span className="hidden sm:inline">{shareBtnText}</span>
           </button>
 
           <button
@@ -91,7 +96,7 @@ export default function Hero({ homeData }) {
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-slate-800 text-xs font-semibold text-slate-300 hover:text-white transition-colors"
           >
             <Heart className="w-4 h-4" />
-            <span className="hidden sm:inline">{t('saveFavoriteBtn') || 'В избранное'}</span>
+            <span className="hidden sm:inline">{favoriteBtnText}</span>
           </button>
         </div>
       </div>

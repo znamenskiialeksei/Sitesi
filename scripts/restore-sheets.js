@@ -10,7 +10,7 @@ require('dotenv').config({ path: '.env.local' });
 const { google } = require('googleapis');
 const { SHEETS_REGISTRY, getLiveSheetMap, resolveRange } = require('../utils/sheetsRegistry');
 const { SMART_TEMPLATES } = require('../utils/templatesData');
-const { MASTER_ABOUT_SECTIONS, MASTER_SETTINGS_ROWS, MASTER_HOME_MAP } = require('../utils/masterSeedContent');
+const { MASTER_ABOUT_SECTIONS, MASTER_SETTINGS_ROWS, MASTER_HOME_MAP, MASTER_HOME_ROWS } = require('../utils/masterSeedContent');
 
 async function restoreAllSheets() {
   console.log('================================================================================');
@@ -246,20 +246,12 @@ async function restoreAllSheets() {
 
         // Посев данных по ключам
         if (config.key === 'HOME') {
-          safeFormulasToInject.push({ range: `'${actualTitle}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-
-          const homeRows = Object.entries(MASTER_HOME_MAP).map(([key, item]) => [
-            key,
-            item.ru || '',
-            item.en || '',
-            item.tr || '',
-            item.media || ''
-          ]);
+          safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
 
           dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:E${homeRows.length + 1}`,
-            values: homeRows
+            range: `'${actualTitle}'!A2:H${MASTER_HOME_ROWS.length + 1}`,
+            values: MASTER_HOME_ROWS
           });
         }
 

@@ -1,142 +1,118 @@
 // ==============================================================================
-// КАТАЛОГ УДОБСТВ ВИЛЛЫ В СТИЛЕ AIRBNB (AMENITIES)
+// КАТАЛОГ УДОБСТВ ВИЛЛЫ В СТИЛЕ AIRBNB: AMENITIES
 // Файл: components/Amenities.js
 // Назначение: Сетка ключевых удобств с иконками и модальное окно полного списка
 // ==============================================================================
 
 import React, { useState } from 'react';
-import { Waves, Mountain, Wifi, Wind, Utensils, Car, Flame, WashingMachine, Laptop, Shield, Tv, Coffee, Sparkles, X } from 'lucide-react';
+import { Waves, Mountain, Wifi, Wind, Utensils, Car, Flame, WashingMachine, Laptop, Shield, Tv, Coffee, Sparkles, X, Check } from 'lucide-react';
 import { useLanguage } from '../utils/language';
 
-export default function Amenities({ customAmenitiesGrouped = null }) {
+const ICON_MAP = {
+  Waves,
+  Mountain,
+  Wifi,
+  Wind,
+  Utensils,
+  Car,
+  Flame,
+  WashingMachine,
+  Laptop,
+  Shield,
+  Tv,
+  Coffee,
+  Sparkles,
+  Check
+};
+
+export default function Amenities({ homeData = null, customAmenitiesGrouped = null, customMainAmenities = null }) {
   const { t, lang } = useLanguage();
   const [modalOpen, setModalOpen] = useState(false);
 
-  const mainAmenities = [
-    { icon: Waves, label: t('amenityPool') },
-    { icon: Mountain, label: t('amenityMountain') },
-    { icon: Wifi, label: t('amenityWifi') },
-    { icon: Wind, label: t('amenityAC') },
-    { icon: Utensils, label: t('amenityKitchen') },
-    { icon: Car, label: t('amenityParking') },
-    { icon: Flame, label: t('amenityBBQ') },
-    { icon: WashingMachine, label: t('amenityWasher') },
-    { icon: Laptop, label: t('amenityWorkspace') },
-    { icon: Shield, label: t('amenitySecurity') }
+  const title = homeData?.amenitiesTitle || t('amenitiesTitle') || 'Что есть в этом жилье';
+  const btnAllText = homeData?.amenitiesBtnAll || t('showAllAmenities') || 'Показать все удобства';
+
+  // Динамические основные удобства из Google Sheets
+  const effectiveMainAmenities = (customMainAmenities || homeData?.mainAmenities || []).map((item) => {
+    const IconComponent = typeof item.icon === 'string' ? (ICON_MAP[item.icon] || Sparkles) : (item.icon || Sparkles);
+    const label = item.label?.[lang] || item.label?.ru || (typeof item.label === 'string' ? item.label : '');
+    return {
+      icon: IconComponent,
+      label
+    };
+  });
+
+  // Запасной эталон при отсутствии данных в таблице
+  const defaultMainAmenities = [
+    { icon: Waves, label: t('amenityPool') || 'Приватный открытый бассейн' },
+    { icon: Mountain, label: t('amenityMountain') || 'Панорамный вид на горы' },
+    { icon: Wifi, label: t('amenityWifi') || 'Скоростной Wi-Fi 100 Мбит/с' },
+    { icon: Wind, label: t('amenityAC') || 'Кондиционеры во всех комнатах' },
+    { icon: Utensils, label: t('amenityKitchen') || 'Полноценная кухня и посуда' },
+    { icon: Car, label: t('amenityParking') || 'Бесплатная парковка на территории' },
+    { icon: Flame, label: t('amenityBBQ') || 'Зона BBQ и мангал в саду' },
+    { icon: WashingMachine, label: t('amenityWasher') || 'Стиральная машина' },
+    { icon: Laptop, label: t('amenityWorkspace') || 'Выделенное рабочее место' },
+    { icon: Shield, label: t('amenitySecurity') || 'Охраняемая территория' }
   ];
 
-  const allAmenitiesGrouped = [
-    {
-      category: lang === 'en' ? 'Scenic Views & Nature' : (lang === 'tr' ? 'Manzara ve Doğa' : 'Виды и природа'),
-      items: lang === 'en' ? [
-        'Panoramic view of Dalyan rock mountains',
-        'Direct river and lush garden view',
-        'Private waterfront jetty access'
-      ] : (lang === 'tr' ? [
-        'Dalyan dağlarının panoramik manzarası',
-        'Nehir ve yemyeşil bahçe manzarası',
-        'Özel iskeleye doğrudan erişim'
-      ] : [
-        'Панорамный вид на горы Дальяна',
-        'Вид на реку и сад',
-        'Прямой выход к причалу'
-      ])
-    },
-    {
-      category: lang === 'en' ? 'Pool & Spa' : (lang === 'tr' ? 'Havuz ve Spa' : 'Бассейн и спа'),
-      items: lang === 'en' ? [
-        'Private outdoor pool (depth 1.5m)',
-        'Comfortable sun loungers and umbrellas',
-        'Poolside outdoor summer shower',
-        'Evening pool hydro-lighting'
-      ] : (lang === 'tr' ? [
-        'Özel açık yüzme havuzu (derinlik 1.5m)',
-        'Konforlu şezlonglar ve şemsiyeler',
-        'Havuz başı açık yaz duşu',
-        'Akşam havuz su altı aydınlatması'
-      ] : [
-        'Приватный открытый бассейн (глубина 1.5м)',
-        'Шезлонги и зонты от солнца',
-        'Летний душ у бассейна',
-        'Вечерняя гидроподсветка бассейна'
-      ])
-    },
-    {
-      category: lang === 'en' ? 'Kitchen & Dining' : (lang === 'tr' ? 'Mutfak ve Yemek' : 'Кухня и столовая'),
-      items: lang === 'en' ? [
-        'Large double-door refrigerator',
-        'Modern dishwasher',
-        'Oven and induction cooktop',
-        'Espresso coffee machine and kettle',
-        'Full set of cookware, dishes and wine glasses'
-      ] : (lang === 'tr' ? [
-        'Geniş çift kapılı buzdolabı',
-        'Modern bulaşık makinesi',
-        'Fırın ve indüksiyonlu ocak',
-        'Espresso kahve makinesi ve su ısıtıcısı',
-        'Eksiksiz tencere, tabak ve kadeh takımı'
-      ] : [
-        'Большой двухкамерный холодильник',
-        'Посудомоечная машина',
-        'Духовой шкаф и индукционная варочная панель',
-        'Кофемашина эспрессо и чайник',
-        'Полный комплект посуды и бокалов'
-      ])
-    },
-    {
-      category: lang === 'en' ? 'Comfort & Tech' : (lang === 'tr' ? 'Konfor ve Teknoloji' : 'Комфорт и связь'),
-      items: lang === 'en' ? [
-        'High-speed fiber-optic Wi-Fi (100 Mbps)',
-        'Individual split AC units in all rooms',
-        'Smart TV 55" with Netflix & YouTube',
-        'Dedicated workspace with ergonomic chair'
-      ] : (lang === 'tr' ? [
-        'Yüksek hızlı fiber optik Wi-Fi (100 Mbps)',
-        'Her odada bağımsız split klima',
-        'Netflix ve YouTube özellikli 55" Smart TV',
-        'Ergonomik sandalyeli özel çalışma alanı'
-      ] : [
-        'Скоростной оптоволоконный Wi-Fi (100 Мбит/с)',
-        'Сплит-системы кондиционирования в каждой комнате',
-        'Smart TV 55 дюймов с Netflix и YouTube',
-        'Выделенная рабочая зона с эргономичным креслом'
-      ])
-    },
-    {
-      category: lang === 'en' ? 'Home Safety' : (lang === 'tr' ? 'Ev Güvenliği' : 'Безопасность дома'),
-      items: lang === 'en' ? [
-        'Gated private enclosed territory',
-        'External perimeter CCTV security',
-        'Smoke detectors and first aid kit',
-        'Fire extinguisher'
-      ] : (lang === 'tr' ? [
-        'Çevrili özel korunaklı mülk alanı',
-        'Dış çevre güvenlik kamerası sistemi',
-        'Duman dedektörleri ve ilk yardım kiti',
-        'Yangın söndürücü'
-      ] : [
-        'Огороженная приватная территория',
-        'Система видеонаблюдения по внешнему периметру',
-        'Датчики дыма и аптечка первой помощи',
-        'Огнетушитель'
-      ])
-    }
-  ];
+  const mainAmenitiesToRender = effectiveMainAmenities.length > 0 ? effectiveMainAmenities : defaultMainAmenities;
 
-  const effectiveAmenitiesGrouped = (customAmenitiesGrouped && customAmenitiesGrouped.length > 0)
-    ? customAmenitiesGrouped
-    : allAmenitiesGrouped;
+  // Динамические сгруппированные удобства для модального окна
+  const rawGrouped = customAmenitiesGrouped || homeData?.amenitiesGrouped;
+  const effectiveAmenitiesGrouped = (rawGrouped && rawGrouped.length > 0)
+    ? rawGrouped.map((grp) => ({
+        category: grp.category?.[lang] || grp.category?.ru || (typeof grp.category === 'string' ? grp.category : ''),
+        items: (grp.items || []).map((it) => (typeof it === 'object' ? (it[lang] || it.ru || '') : it))
+      }))
+    : [
+        {
+          category: lang === 'en' ? 'Scenic Views and Nature' : (lang === 'tr' ? 'Manzara ve Doga' : 'Виды и природа'),
+          items: lang === 'en' ? [
+            'Panoramic view of Dalyan rock mountains',
+            'Direct river and lush garden view',
+            'Private waterfront jetty access'
+          ] : (lang === 'tr' ? [
+            'Dalyan daglarinin panoramik manzarasi',
+            'Nehir ve yemyesil bahce manzarasi',
+            'Ozel iskeleye dogrudan erisim'
+          ] : [
+            'Панорамный вид на горы Дальяна',
+            'Вид на реку и сад',
+            'Прямой выход к причалу'
+          ])
+        },
+        {
+          category: lang === 'en' ? 'Pool and Spa' : (lang === 'tr' ? 'Havuz ve Spa' : 'Бассейн и спа'),
+          items: lang === 'en' ? [
+            'Private outdoor pool: depth 1.5m',
+            'Comfortable sun loungers and umbrellas',
+            'Poolside outdoor summer shower',
+            'Evening pool hydro-lighting'
+          ] : (lang === 'tr' ? [
+            'Ozel acik yuzme havuzu: derinlik 1.5m',
+            'Konforlu sezlonglar ve semsiyeler',
+            'Havuz basi acik yaz dusu',
+            'Aksam havuz su alti aydinlatmasi'
+          ] : [
+            'Приватный открытый бассейн: глубина 1.5м',
+            'Шезлонги и зонты от солнца',
+            'Летний душ у бассейна',
+            'Вечерняя гидроподсветка бассейна'
+          ])
+        }
+      ];
 
   return (
     <div id="amenities" className="py-8 border-t border-white/10">
       <h2 className="text-xl sm:text-2xl font-bold text-white mb-6">
-        {t('amenitiesTitle')}
+        {title}
       </h2>
 
-      {/* Сетка удобств */}
+      {/* Сетка основных удобств */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        {mainAmenities.map((item, idx) => {
-          const IconComponent = item.icon;
+        {mainAmenitiesToRender.map((item, idx) => {
+          const IconComponent = item.icon || Sparkles;
           return (
             <div key={idx} className="flex items-center gap-3.5 text-slate-300">
               <IconComponent className="w-6 h-6 text-rose-400 shrink-0" />
@@ -148,10 +124,11 @@ export default function Amenities({ customAmenitiesGrouped = null }) {
 
       {/* Кнопка показа всех удобств */}
       <button
+        type="button"
         onClick={() => setModalOpen(true)}
         className="px-6 py-3 rounded-2xl border border-white/20 bg-slate-800 hover:bg-slate-700 text-xs sm:text-sm font-bold text-white transition-all hover:scale-105"
       >
-        {t('showAllAmenities')}
+        {btnAllText}
       </button>
 
       {/* Модальное окно полного каталога удобств */}
@@ -161,9 +138,10 @@ export default function Amenities({ customAmenitiesGrouped = null }) {
 
             <div className="p-5 border-b border-white/10 flex items-center justify-between">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-rose-400" /> {lang === 'en' ? 'All Villa Amenities' : (lang === 'tr' ? 'Tüm Villa Olanakları' : 'Все удобства виллы')}
+                <Sparkles className="w-5 h-5 text-rose-400" /> {lang === 'en' ? 'All Villa Amenities' : (lang === 'tr' ? 'Tum Villa Olanaklari' : 'Все удобства виллы')}
               </h3>
               <button
+                type="button"
                 onClick={() => setModalOpen(false)}
                 className="p-2 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
               >

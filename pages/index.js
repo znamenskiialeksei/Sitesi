@@ -250,95 +250,215 @@ export default function HomeListing({ publicData, contentData }) {
   // Подготовка локализованных данных виллы из динамического состояния
   const homeData = {
     title:
+      currentContentData.home?.hero_title?.[lang] ||
+      currentContentData.home?.hero_title?.ru ||
       currentContentData.home?.heroTitle?.[lang] ||
       currentContentData.home?.heroTitle?.ru ||
       'Villa Turaman Luxury Waterfront',
     subtitle:
+      currentContentData.home?.hero_subtitle?.[lang] ||
+      currentContentData.home?.hero_subtitle?.ru ||
       currentContentData.home?.heroSubtitle?.[lang] ||
       currentContentData.home?.heroSubtitle?.ru ||
-      t('heroSubtitle') ||
-      'Ваш идеальный отдых в Дальяне',
+      '',
+    rating:
+      currentContentData.home?.hero_rating?.[lang] ||
+      currentContentData.home?.hero_rating?.ru ||
+      '4.98',
+    reviewsCount:
+      currentContentData.home?.hero_reviews_count?.[lang] ||
+      currentContentData.home?.hero_reviews_count?.ru ||
+      '48 отзывов',
+    superhostBadge:
+      currentContentData.home?.hero_superhost_badge?.[lang] ||
+      currentContentData.home?.hero_superhost_badge?.ru ||
+      'Суперхозяин',
+    location:
+      currentContentData.home?.hero_location?.[lang] ||
+      currentContentData.home?.hero_location?.ru ||
+      'Дальян, Ортаджа, Мугла, Турция',
+    shareBtn:
+      currentContentData.home?.hero_share_btn?.[lang] ||
+      currentContentData.home?.hero_share_btn?.ru ||
+      'Поделиться',
+    favoriteBtn:
+      currentContentData.home?.hero_favorite_btn?.[lang] ||
+      currentContentData.home?.hero_favorite_btn?.ru ||
+      'В избранное',
+    specGuests:
+      currentContentData.home?.spec_guests?.[lang] ||
+      currentContentData.home?.spec_guests?.ru ||
+      '10 гостей',
+    specBedrooms:
+      currentContentData.home?.spec_bedrooms?.[lang] ||
+      currentContentData.home?.spec_bedrooms?.ru ||
+      '4 спальни',
+    specBeds:
+      currentContentData.home?.spec_beds?.[lang] ||
+      currentContentData.home?.spec_beds?.ru ||
+      '5 кроватей',
+    specBaths:
+      currentContentData.home?.spec_baths?.[lang] ||
+      currentContentData.home?.spec_baths?.ru ||
+      '4 ванные комнаты',
     aboutTitle:
+      currentContentData.home?.about_title?.[lang] ||
+      currentContentData.home?.about_title?.ru ||
       currentContentData.home?.aboutTitle?.[lang] ||
       currentContentData.home?.aboutTitle?.ru ||
-      t('aboutVillaTitle') ||
       'О Вилле',
     aboutText:
+      currentContentData.home?.about_text?.[lang] ||
+      currentContentData.home?.about_text?.ru ||
       currentContentData.home?.aboutText?.[lang] ||
       currentContentData.home?.aboutText?.ru ||
-      t('aboutVillaText') ||
-      'Роскошная приватная вилла в живописном Дальяне с собственным бассейном, просторным садом и панорамным видом на Ликийские скальные гробницы.',
+      'Villa Turaman: это гармоничное сочетание уединения, современного комфорта и первоклассного сервиса для незабываемого отпуска в сердце Дальяна.',
+    aboutBtnMore:
+      currentContentData.home?.about_btn_more?.[lang] ||
+      currentContentData.home?.about_btn_more?.ru ||
+      'Показать больше об объекте',
     heroImage: parseDriveLink(
+      currentContentData.home?.hero_image?.media ||
       currentContentData.home?.heroImage?.media ||
       currentContentData.home?.heroTitle?.media ||
       'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600',
       'image'
     ),
     hostHeader:
+      currentContentData.home?.host_specs_header?.[lang] ||
+      currentContentData.home?.host_specs_header?.ru ||
       currentContentData.home?.hostHeader?.[lang] ||
       currentContentData.home?.hostHeader?.ru ||
-      t('hostHeader'),
+      'Отдельная вилла целиком • Хозяин: Алексей Знаменский',
     hostName:
+      currentContentData.home?.host_specs_name?.[lang] ||
+      currentContentData.home?.host_specs_name?.ru ||
       currentContentData.home?.hostName?.[lang] ||
       currentContentData.home?.hostName?.ru ||
-      t('hostName'),
+      'Алексей Знаменский',
     hostAvatar:
       parseDriveLink(
+        currentContentData.home?.host_specs_avatar?.media ||
         currentContentData.home?.hostAvatar?.media ||
         currentContentData.home?.hostAvatar?.ru ||
         currentContentData.home?.hostAvatar?.[lang],
         'image'
       ) || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160',
     highlightSuperhostTitle:
+      currentContentData.home?.highlight_1_title?.[lang] ||
+      currentContentData.home?.highlight_1_title?.ru ||
       currentContentData.home?.highlightSuperhostTitle?.[lang] ||
       currentContentData.home?.highlightSuperhostTitle?.ru ||
-      t('highlightSuperhostTitle'),
+      'Опытный Суперхозяин [Superhost]',
     highlightSuperhostDesc:
+      currentContentData.home?.highlight_1_desc?.[lang] ||
+      currentContentData.home?.highlight_1_desc?.ru ||
       currentContentData.home?.highlightSuperhostDesc?.[lang] ||
       currentContentData.home?.highlightSuperhostDesc?.ru ||
-      t('highlightSuperhostDesc'),
+      'Алексей имеет рейтинг 4.98★ и стремится предоставить первоклассный сервис каждому гостю.',
     highlightCheckinTitle:
+      currentContentData.home?.highlight_2_title?.[lang] ||
+      currentContentData.home?.highlight_2_title?.ru ||
       currentContentData.home?.highlightCheckinTitle?.[lang] ||
       currentContentData.home?.highlightCheckinTitle?.ru ||
-      t('highlightCheckinTitle'),
+      'Бесконтактное прибытие [Self check-in]',
     highlightCheckinDesc:
+      currentContentData.home?.highlight_2_desc?.[lang] ||
+      currentContentData.home?.highlight_2_desc?.ru ||
       currentContentData.home?.highlightCheckinDesc?.[lang] ||
       currentContentData.home?.highlightCheckinDesc?.ru ||
-      t('highlightCheckinDesc'),
+      'Удобный электронный замок и персональный код доступа для заселения в любое удобное время с 16:00.',
     highlightCancellationTitle:
+      currentContentData.home?.highlight_3_title?.[lang] ||
+      currentContentData.home?.highlight_3_title?.ru ||
       currentContentData.home?.highlightCancellationTitle?.[lang] ||
       currentContentData.home?.highlightCancellationTitle?.ru ||
-      t('highlightCancellationTitle'),
+      'Бесплатная отмена за 14 дней',
     highlightCancellationDesc:
+      currentContentData.home?.highlight_3_desc?.[lang] ||
+      currentContentData.home?.highlight_3_desc?.ru ||
       currentContentData.home?.highlightCancellationDesc?.[lang] ||
       currentContentData.home?.highlightCancellationDesc?.ru ||
-      t('highlightCancellationDesc'),
+      'Полный возврат средств при отмене не позднее чем за 14 суток до даты заезда.',
+    sleepingTitle:
+      currentContentData.home?.sleeping_title?.[lang] ||
+      currentContentData.home?.sleeping_title?.ru ||
+      'Где вы будете спать',
+    amenitiesTitle:
+      currentContentData.home?.amenities_title?.[lang] ||
+      currentContentData.home?.amenities_title?.ru ||
+      'Что есть в этом жилье',
+    amenitiesBtnAll:
+      currentContentData.home?.amenities_btn_all?.[lang] ||
+      currentContentData.home?.amenities_btn_all?.ru ||
+      'Показать все удобства',
+    mainAmenities: currentContentData.home?.mainAmenities || [],
+    amenitiesGrouped: currentContentData.home?.amenitiesGrouped || [],
+    reviewsData: currentContentData.home?.reviewsData || null,
     locationTitle:
+      currentContentData.home?.location_title?.[lang] ||
+      currentContentData.home?.location_title?.ru ||
       currentContentData.home?.locationTitle?.[lang] ||
       currentContentData.home?.locationTitle?.ru ||
-      t('locationSectionTitle'),
+      'Расположение: Дальян, Ортаджа, Мугла, Турция',
     locationDesc:
+      currentContentData.home?.location_desc?.[lang] ||
+      currentContentData.home?.location_desc?.ru ||
       currentContentData.home?.locationDesc?.[lang] ||
       currentContentData.home?.locationDesc?.ru ||
-      t('locationDefaultDesc'),
+      'Вилла расположена в тихом зеленом районе в 5 минутах ходьбы от набережной реки Дальян.',
+    locationBadge:
+      currentContentData.home?.location_badge?.[lang] ||
+      currentContentData.home?.location_badge?.ru ||
+      'GPS: 36.8336° N, 28.6439° E • 25 минут от аэропорта Даламан [DLM]',
     locationImage:
       parseDriveLink(
+        currentContentData.home?.location_image?.media ||
         currentContentData.home?.locationImage?.media ||
         currentContentData.home?.locationTitle?.media,
         'image'
       ) || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200',
-    bedrooms: [1, 2, 3, 4].map((num) => {
-      const key = `bedroom_${num}`;
-      const item = currentContentData.home?.[key];
-      if (!item) return null;
-      return {
-        title: item[lang] || item.ru || '',
-        desc: item.en || item[lang] || item.ru || '',
-        badge: item.tr || `Спальня ${num}`,
-        image: parseDriveLink(item.media, 'image') || ''
-      };
-    }).filter(Boolean),
-    amenitiesGrouped: null
+    hostCardTitle:
+      currentContentData.home?.host_card_title?.[lang] ||
+      currentContentData.home?.host_card_title?.ru ||
+      'Хозяин: Алексей Знаменский',
+    hostCardSubtitle:
+      currentContentData.home?.host_card_subtitle?.[lang] ||
+      currentContentData.home?.host_card_subtitle?.ru ||
+      'Суперхозяин на Airbnb • Более 5 лет приема гостей',
+    hostCardVerified:
+      currentContentData.home?.host_card_verified?.[lang] ||
+      currentContentData.home?.host_card_verified?.ru ||
+      'Личность подтверждена',
+    hostCardResponseTime:
+      currentContentData.home?.host_card_response_time?.[lang] ||
+      currentContentData.home?.host_card_response_time?.ru ||
+      'Время ответа: в течение часа',
+    hostCardLanguages:
+      currentContentData.home?.host_card_languages?.[lang] ||
+      currentContentData.home?.host_card_languages?.ru ||
+      'Языки: Русский, English, Türkçe',
+    hostCardHelpText:
+      currentContentData.home?.host_card_help_text?.[lang] ||
+      currentContentData.home?.host_card_help_text?.ru ||
+      'Помощь в организации трансфера, персональных туров по озеру Кёйджегиз и бронирования ресторанов',
+    hostCardBtn:
+      currentContentData.home?.host_card_btn?.[lang] ||
+      currentContentData.home?.host_card_btn?.ru ||
+      'Написать хозяину',
+    bedrooms: currentContentData.home?.bedrooms && currentContentData.home.bedrooms.length > 0
+      ? currentContentData.home.bedrooms
+      : [1, 2, 3, 4].map((num) => {
+          const key = `bedroom_${num}`;
+          const item = currentContentData.home?.[key];
+          if (!item) return null;
+          return {
+            title: item[lang] || item.ru || '',
+            desc: item.en || item[lang] || item.ru || '',
+            badge: item.tr || `Спальня ${num}`,
+            image: parseDriveLink(item.media, 'image') || ''
+          };
+        }).filter(Boolean)
   };
 
   const fullDescriptionSections = Object.values(currentContentData.about || {}).map((item) => ({
@@ -477,19 +597,19 @@ export default function HomeListing({ publicData, contentData }) {
                 </h2>
                 <div className="flex flex-wrap items-center gap-4 text-sm text-slate-300">
                   <span className="flex items-center gap-1.5">
-                    <Users className="w-4 h-4 text-rose-400" /> {t('hostSpecsGuests', { count: dynamicRules.maxTotalGuests || 10 })}
+                    <Users className="w-4 h-4 text-rose-400" /> {homeData.specGuests}
                   </span>
                   <span>•</span>
                   <span className="flex items-center gap-1.5">
-                    <Bed className="w-4 h-4 text-rose-400" /> {t('hostSpecsBedrooms', { count: 4 })}
+                    <Bed className="w-4 h-4 text-rose-400" /> {homeData.specBedrooms}
                   </span>
                   <span>•</span>
                   <span className="flex items-center gap-1.5">
-                    <Bed className="w-4 h-4 text-rose-400" /> {t('hostSpecsBeds', { count: 5 })}
+                    <Bed className="w-4 h-4 text-rose-400" /> {homeData.specBeds}
                   </span>
                   <span>•</span>
                   <span className="flex items-center gap-1.5">
-                    <Bath className="w-4 h-4 text-rose-400" /> {t('hostSpecsBaths', { count: 4 })}
+                    <Bath className="w-4 h-4 text-rose-400" /> {homeData.specBaths}
                   </span>
                 </div>
               </div>
@@ -550,18 +670,19 @@ export default function HomeListing({ publicData, contentData }) {
                 {homeData.aboutText}
               </p>
               <button
+                type="button"
                 onClick={() => setAboutModalOpen(true)}
                 className="inline-flex items-center gap-1.5 text-sm font-semibold text-rose-400 hover:text-rose-300 underline underline-offset-4 transition-colors"
               >
-                {t('showMoreAboutProperty')} <ChevronRight className="w-4 h-4" />
+                {homeData.aboutBtnMore} <ChevronRight className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Спальные места (Sleeping Arrangements) */}
-            <SleepingArrangements customBedrooms={homeData.bedrooms} />
+            {/* Спальные места: Sleeping Arrangements */}
+            <SleepingArrangements homeData={homeData} customBedrooms={homeData.bedrooms} />
 
-            {/* Удобства виллы (Amenities) */}
-            <Amenities customAmenitiesGrouped={homeData.amenitiesGrouped} />
+            {/* Удобства виллы: Amenities */}
+            <Amenities homeData={homeData} customAmenitiesGrouped={homeData.amenitiesGrouped} customMainAmenities={homeData.mainAmenities} />
 
             {/* Дополнительные услуги и видео-путеводители из Google Sheets */}
             <CatalogSection
@@ -579,7 +700,7 @@ export default function HomeListing({ publicData, contentData }) {
             />
 
             {/* Отзывы и оценки гостей по категориям */}
-            <ReviewsSection />
+            <ReviewsSection homeData={homeData} />
 
             {/* Локация и окрестности Дальяна */}
             <div className="space-y-4 pt-4 border-t border-white/10">
@@ -597,14 +718,14 @@ export default function HomeListing({ publicData, contentData }) {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-6">
                   <div className="bg-slate-900/90 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/10 text-xs font-medium text-slate-200">
-                    GPS: 36.8336° N, 28.6439° E • 25 минут от аэропорта Даламан (DLM)
+                    {homeData.locationBadge}
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Карточка хоста (Aleksei Znamenskii) */}
-            <HostProfileCard />
+            {/* Карточка хоста: Aleksei Znamenskii */}
+            <HostProfileCard homeData={homeData} />
 
           </div>
 

@@ -18,7 +18,7 @@ const SHEETS_REGISTRY = {
     defaultName: '🏠 Главная витрина',
     cluster: 'showcase',
     aliases: ['🏠 Главная витрина', 'Главная витрина', 'Главная'],
-    headers: ['Ключ [ID]', 'RU', 'EN', 'TR', 'Медиа / Ссылка'],
+    headers: ['Блок / Раздел', 'Ключ [ID]', 'Место размещения / Описание [RU]', 'RU', 'EN', 'TR', 'Медиа / Иконка / Ссылка', 'Статус [Вкл/Выкл]'],
     suggestedSheetId: 101
   },
   GALLERY: {
