@@ -237,6 +237,117 @@ export default async function handler(req, res) {
           });
         }
 
+        if (config.key === 'SERVICES') {
+          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!P2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:O7`,
+            values: [
+              ['prod-1', 'Индивидуальный VIP-трансфер из аэропорта Даламан [DLM]', 'Mercedes Vito с кондиционером и напитками', '', '', '', '', '50', '5000', '1800', 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1200', 'Да', 'Услуга', '', 'Встреча в зоне прилета аэропорта Даламан [25 минут до виллы]. В салоне Wi-Fi.'],
+              ['prod-2', 'Приватный круиз на яхте по реке Дальян и пляжу Изтузу', 'Традиционная деревянная лодка: Ликийские гробницы и черепахи', '', '', '', '', '250', '25000', '9000', 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200', 'Да', 'Пакет', '', 'Эксклюзивный маршрут на весь день со свежеприготовленным обедом от капитана.'],
+              ['prod-3', 'Ужин от персонального шеф-повара на вилле', '4-курсовой ужин у бассейна: турецкие мезе и морепродукты', '', '', '', '', '120', '12000', '4300', 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200', 'Да', 'Услуга', '', 'Шеф лично закупает фермерские продукты на рынке Дальяна и сервирует стол.'],
+              ['prod-4', 'Премиальный BBQ-вечер на углях в саду', 'Стейки рибай, каре ягненка и овощи гриль', '', '', '', '', '160', '16000', '5800', 'https://images.unsplash.com/photo-1544025162-d76694265947?w=1200', 'Да', 'Пакет', '', 'Включает угли, розжиг, маринованное фермерское мясо и мастера на 3 часа.'],
+              ['prod-5', 'СПА-тур и грязевые источники Султание', 'Омолаживающие минеральные термы озера Кёйджегиз', '', '', '', '', '70', '7000', '2500', 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200', 'Да', 'Услуга', '', 'Трансфер на моторной лодке от причала виллы. Входные билеты включены.'],
+              ['prod-6', 'Аренда сапбордов [SUP] и каяков', '2 устойчивых SUP-борда и двухместный каяк', '', '', '', '', '80', '8000', '2900', 'https://images.unsplash.com/photo-1517404215738-15263e9f9178?w=1200', 'Да', 'Услуга', '', 'Доставка прямо к вилле на весь период проживания для утренних заплывов.']
+            ]
+          });
+        }
+
+        if (config.key === 'GUIDES') {
+          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!P2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:O5`,
+            values: [
+              ['guide-1', 'Секретные маршруты реки Дальян и черепаший пляж Изтузу', 'Эксклюзивный 40-минутный 4K видео-гид от Алексея Знаменского', '', '', '', '', 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200', 'Локации', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '20', '2000', '700', '', 'Где встретить гигантских черепах Caretta Caretta и как арендовать лодку со скидкой.'],
+              ['guide-2', 'Ликийские скальные гробницы и древний город Каунос', 'Историческое погружение в тайны Ликийского царства и акрополя', '', '', '', '', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200', 'История', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '25', '2500', '900', '', 'Маршрут подъема к Кауносу, расшифровка надписей и лучшие видовые точки на закате.'],
+              ['guide-3', 'Гастрономический гид: топ ресторанов и гранатовые сады', 'Где попробовать настоящую турецкую кухню и свежую рыбу', '', '', '', '', 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200', 'Гастрономия', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '15', '1500', '550', '', 'Список 10 проверенных ресторанов со специальными привилегиями для гостей виллы.'],
+              ['guide-4', 'Термальные источники Султание и озеро Кёйджегиз', 'Как получить максимум от целебных минеральных источников', '', '', '', '', 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200', 'Здоровье', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '20', '2000', '700', '', 'Секретные часы посещения без туристических групп и рекомендации врачей.']
+            ]
+          });
+        }
+
+        if (config.key === 'GALLERY') {
+          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!K2`, values: [['=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!L2`, values: [['=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:J7`,
+            values: [
+              ['gal-1', 'Бассейн и лаунж-терраса', 'Кристально чистый бассейн глубиной 1.5м с шезлонгами', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1572120360610-d971b9d7767c?w=1600,https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=1600', 'Приватный бассейн виллы с удобными шезлонгами'],
+              ['gal-2', 'Бассейн и лаунж-терраса', 'Кристально чистый бассейн глубиной 1.5м с шезлонгами', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=1600', 'Затененная пергола для послеобеденного отдыха'],
+              ['gal-3', 'Интерьер виллы и спальни', '4 просторные мастер-спальни с индивидуальными ванными', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=1600,https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=1600', 'Мастер-спальня 1 с кроватью King-Size и террасой'],
+              ['gal-4', 'Интерьер виллы и спальни', '4 просторные мастер-спальни с индивидуальными ванными', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600', 'Светлая гостиная со Smart TV 65'],
+              ['gal-5', 'Кухня и зона BBQ', 'Полностью оборудованная кухня со всей бытовой техникой', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1600', 'Кухня шеф-повара с посудомоечной машиной и кофемашиной'],
+              ['gal-6', 'Окрестности Дальяна и река', 'Уникальная природа: Ликийские гробницы и пляж Изтузу', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1600', 'Ликийские скальные гробницы IV века до н.э. с подсветкой']
+            ]
+          });
+        }
+
+        if (config.key === 'TEMPLATES') {
+          safeFormulasToInject.push({ range: `'${actualTitle}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+
+          const templateRows = SMART_TEMPLATES.map((tmpl) => [
+            tmpl.id,
+            tmpl.title.ru,
+            tmpl.title.en,
+            tmpl.title.tr,
+            tmpl.text.ru,
+            tmpl.text.en,
+            tmpl.text.tr
+          ]);
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:G${templateRows.length + 1}`,
+            values: templateRows
+          });
+        }
+
+        if (config.key === 'VARIABLES') {
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:D13`,
+            values: [
+              ['[FIRST_NAME]', 'name', 'Имя гостя', 'Иван'],
+              ['[CONFIRMATION_CODE]', 'code', 'Код бронирования', 'VT-7788'],
+              ['[CHECKIN_DATE]', 'checkIn', 'Дата заезда', '01.06.2026'],
+              ['[CHECKOUT_DATE]', 'checkOut', 'Дата выезда', '08.06.2026'],
+              ['[CHECKIN_TIME]', 'checkInTime', 'Стандартное время заезда', '16:00'],
+              ['[CHECKOUT_TIME]', 'checkOutTime', 'Стандартное время выезда', '10:00'],
+              ['[BOOKING_PLATFORM_NAME]', 'platform', 'Платформа бронирования', 'Villa Turaman Direct'],
+              ['[ADDRESS]', 'address', 'Точный адрес виллы', 'Дальян, Ортаджа, Мугла, Турция'],
+              ['[CHECKIN_METHOD]', 'checkinMethod', 'Способ передачи ключей', 'Мини-сейф с кодом / личная встреча владельцем'],
+              ['[WIFI_NAME]', 'wifiName', 'Имя сети Wi-Fi', 'VillaTuraman_5G'],
+              ['[WIFI_PASSWORD]', 'wifiPassword', 'Пароль сети Wi-Fi', 'DalyanTuramanGuest2026'],
+              ['[KEY_HANDOVER_INSTRUCTIONS]', 'keyHandover', 'Инструкции возврата ключей', 'Оставьте ключи в мини-сейфе с кодом у входной двери виллы']
+            ]
+          });
+        }
+
+        if (config.key === 'MASTER') {
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:M2`,
+            values: [
+              ['Aleksei Znamenskii', '', '', '', 'admin@villaturaman.com', 'admin', 'admin123', 'Главный', 'Да', 'Да', 'Да', 'Да', 'Да']
+            ]
+          });
+        }
+
         if (config.key === 'SETTINGS') {
           dataAppendRequests.push({
             range: `'${actualTitle}'!A2:E${MASTER_SETTINGS_ROWS.length + 1}`,

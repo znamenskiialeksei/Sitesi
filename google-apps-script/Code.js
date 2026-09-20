@@ -12,24 +12,24 @@
  * смысловые кластеры и исторические технические алиасы.
  */
 var VILLA_SHEETS_CONFIG = {
-  // Кластер 1: Публичная витрина листинга
-  HOME: { name: "🏠 Главная витрина", suggestedSheetId: 101, aliases: ["🏠 Главная витрина", "Главная витрина", "Главная"], cluster: "showcase" },
-  ABOUT: { name: "📖 О вилле и Правила", suggestedSheetId: 102, aliases: ["📖 О вилле и Правила", "О вилле и Правила", "О вилле"], cluster: "showcase" },
-  GALLERY: { name: "📸 Фотогалерея", suggestedSheetId: 103, aliases: ["📸 Фотогалерея", "Фотогалерея", "📸 Фото и Видео Галерея", "Фото и Видео Галерея", "Галерея"], cluster: "showcase" },
-  REVIEWS: { name: "⭐ Отзывы гостей", suggestedSheetId: 104, aliases: ["⭐ Отзывы гостей", "Отзывы гостей", "Отзывы"], cluster: "showcase" },
-  BLOG: { name: "📰 Статьи и Блог", suggestedSheetId: 105, aliases: ["📰 Статьи и Блог", "Статьи и Блог", "Блог", "Статьи"], cluster: "showcase" },
-  LEGAL: { name: "⚖️ Юридическая информация", suggestedSheetId: 106, aliases: ["⚖️ Юридическая информация", "Юридическая информация", "Юридические документы", "Юридический блок", "Реквизиты"], cluster: "showcase" },
-  FAQS: { name: "❓ Частые вопросы", suggestedSheetId: 107, aliases: ["❓ Частые вопросы", "Частые вопросы", "Вопросы и ответы", "FAQ"], cluster: "showcase" },
+  // Кластер 1: Публичная витрина и презентация листинга
+  HOME: { name: "🏠 Главная витрина", suggestedSheetId: 101, aliases: ["🏠 Главная витрина", "Главная витрина", "Главная", "Витрина", "Home", "Showcase"], cluster: "showcase" },
+  GALLERY: { name: "📸 Фото и Видео Галерея", suggestedSheetId: 102, aliases: ["📸 Фото и Видео Галерея", "Фото и Видео Галерея", "Фотогалерея", "Галерея", "Медиа", "Gallery", "Photos"], cluster: "showcase" },
+  ABOUT: { name: "📖 О вилле и Правила", suggestedSheetId: 103, aliases: ["📖 О вилле и Правила", "О вилле и Правила", "О вилле", "Правила дома", "About", "HouseRules"], cluster: "showcase" },
+  SERVICES: { name: "🛎️ Дополнительные услуги", suggestedSheetId: 104, aliases: ["🛎️ Дополнительные услуги", "Дополнительные услуги", "Услуги", "Сервисы", "Платные услуги", "Services", "ExtraServices"], cluster: "showcase" },
+  GUIDES: { name: "🗺️ Видео-путеводители", suggestedSheetId: 105, aliases: ["🗺️ Видео-путеводители", "Видео-путеводители", "Видеопутеводители", "Путеводители", "Гиды", "Guides", "VideoGuides"], cluster: "showcase" },
+  LEGAL: { name: "⚖️ Юридические документы", suggestedSheetId: 106, aliases: ["⚖️ Юридические документы", "Юридические документы", "Юридическая информация", "Реквизиты", "Legal", "Documents"], cluster: "showcase" },
 
-  // Кластер 2: Кабинет хозяина, CRM и бэк-офис
-  BOOKINGS: { name: "📋 Заявки на бронирование", suggestedSheetId: 108, aliases: ["📋 Заявки на бронирование", "Заявки на бронирование", "Заявки и Бронирования", "📋 Заявки и Бронирования", "Бронирования", "Заявки", "Вилла"], cluster: "host" },
-  CALENDAR: { name: "📅 Календарь и Занятость", suggestedSheetId: 109, aliases: ["📅 Календарь и Занятость", "Календарь и Занятость", "Календарь и Тарифы", "📅 Календарь и Тарифы", "Календарь", "Настройки календаря"], cluster: "host" },
-  EXPENSES: { name: "💰 Учет расходов", suggestedSheetId: 110, aliases: ["💰 Учет расходов", "Учет расходов", "Расходы", "Финансы виллы"], cluster: "host" },
-  CLEANING: { name: "🧹 График клининга", suggestedSheetId: 111, aliases: ["🧹 График клининга", "График клининга", "Клининг", "Уборка"], cluster: "host" },
-  GUESTS: { name: "👥 База гостей", suggestedSheetId: 112, aliases: ["👥 База гостей", "База гостей", "Гости", "Гостевая база"], cluster: "host" },
-  TEMPLATES: { name: "💬 Шаблоны сообщений", suggestedSheetId: 113, aliases: ["💬 Шаблоны сообщений", "Шаблоны сообщений", "Шаблоны", "Быстрые ответы"], cluster: "host" },
-  VARIABLES: { name: "🧩 Словарь переменных", suggestedSheetId: 114, aliases: ["🧩 Словарь переменных", "Словарь переменных", "Переменные", "Справочник реквизитов"], cluster: "host" },
-  SETTINGS: { name: "⚙️ Системные настройки ИИ Агентов", suggestedSheetId: 115, aliases: ["⚙️ Системные настройки ИИ Агентов", "Системные настройки ИИ Агентов", "⚙️ Системные настройки", "Системные настройки", "Настройки ИИ"], cluster: "system" }
+  // Кластер 2: Бронирования, Кабинет Хозяина, Продажи и CRM
+  BOOKINGS: { name: "📋 Заявки и Бронирования", suggestedSheetId: 107, aliases: ["📋 Заявки и Бронирования", "Заявки и Бронирования", "Заявки на бронирование", "Бронирования", "Заявки", "Вилла", "Bookings", "BookingRequests"], cluster: "host" },
+  CALENDAR: { name: "📅 Календарь и Тарифы", suggestedSheetId: 108, aliases: ["📅 Календарь и Тарифы", "Календарь и Тарифы", "Календарь и Занятость", "Календарь", "Тарифы", "Настройки календаря", "Calendar", "Pricing"], cluster: "host" },
+  ACCOUNTS: { name: "👤 Гостевые аккаунты", suggestedSheetId: 109, aliases: ["👤 Гостевые аккаунты", "Гостевые аккаунты", "Аккаунты гостей", "Гости", "Accounts", "GuestAccounts", "Guests"], cluster: "host" },
+  MASTER: { name: "🔑 Управление доступом", suggestedSheetId: 110, aliases: ["🔑 Управление доступом", "Управление доступом", "Мастер аккаунты", "Права доступа", "Master", "Permissions", "AccessControl"], cluster: "host" },
+  ORDERS: { name: "💳 Заказы услуг и гидов", suggestedSheetId: 111, aliases: ["💳 Заказы услуг и гидов", "Заказы услуг и гидов", "Заказы", "Заказы услуг", "Orders", "ServiceOrders"], cluster: "host" },
+  ACCESS: { name: "🎟️ Доступы к путеводителям", suggestedSheetId: 112, aliases: ["🎟️ Доступы к путеводителям", "Доступы к путеводителям", "Доступы к гидам", "Доступы", "Access", "GuideAccess"], cluster: "host" },
+  TEMPLATES: { name: "💬 Шаблоны сообщений", suggestedSheetId: 113, aliases: ["💬 Шаблоны сообщений", "Шаблоны сообщений", "Шаблоны", "Быстрые ответы", "Templates", "MessageTemplates"], cluster: "host" },
+  VARIABLES: { name: "🧩 Словарь переменных", suggestedSheetId: 114, aliases: ["🧩 Словарь переменных", "Словарь переменных", "Переменные", "Справочник реквизитов", "Variables", "Dictionary"], cluster: "host" },
+  SETTINGS: { name: "⚙️ Системные настройки ИИ Агентов", suggestedSheetId: 115, aliases: ["⚙️ Системные настройки ИИ Агентов", "Системные настройки ИИ Агентов", "Системные настройки", "Настройки ИИ", "Settings", "AiSettings"], cluster: "system" }
 };
 
 /**
@@ -419,10 +419,10 @@ function hideAllExceptActive() {
 function sortSheetsCanonically() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var canonicalOrder = [
-    // 1. Публичная витрина
-    "HOME", "ABOUT", "GALLERY", "REVIEWS", "BLOG", "LEGAL", "FAQS",
-    // 2. Кабинет хозяина, CRM и бэк-офис
-    "BOOKINGS", "CALENDAR", "EXPENSES", "CLEANING", "GUESTS", "TEMPLATES", "VARIABLES", "SETTINGS"
+    // 1. Публичная витрина и презентация листинга
+    "HOME", "GALLERY", "ABOUT", "SERVICES", "GUIDES", "LEGAL",
+    // 2. Бронирования, Кабинет Хозяина, Продажи и CRM
+    "BOOKINGS", "CALENDAR", "ACCOUNTS", "MASTER", "ORDERS", "ACCESS", "TEMPLATES", "VARIABLES", "SETTINGS"
   ];
 
   var currentIndex = 1;
@@ -707,25 +707,8 @@ function ensureAllSystemSheets() {
 function initSingleSheetByKey_(sheet, key) {
   if (!sheet || !key) return;
 
-  if (key === 'ABOUT') {
-    var aboutHeaders = ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'];
-    styleSheetHeader_(sheet, aboutHeaders, 1);
-    var aboutRows = [
-      ['1', 'О вилле и о нас', 'About the villa and about us', 'Villa hakkında ve biz hakkında', 'Вилла Turaman расположена в живописном маленьком городке Дальян в провинции Мугла [Турция] на берегу реки Дальян и озера Кёйджегиз. Готова принять 10 гостей путешественников. Приватный бассейн 36 квадратных метров и роскошная придомовая территория с террасой и садом. Адрес виллы: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla. Локация: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9', 'Villa Turaman is located in the picturesque small town of Dalyan in the Muğla Province of Turkey, on the banks of the Dalyan River and Lake Köyceğiz. It can accommodate up to 10 guests. It features a private 36-square-meter pool and a luxurious courtyard with a terrace and garden. Address: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla. Location: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9', "Villa Turaman, Türkiye'nin Muğla ilinin pitoresk Dalyan kasabasında, Dalyan Nehri ve Köyceğiz Gölü kıyısında yer almaktadır. 10 kişiye kadar konaklama imkanı sunan villada, 36 metrekarelik özel bir havuz ve teraslı ve bahçeli lüks bir avlu bulunmaktadır. Adres: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla. Konum: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9"],
-      ['2', 'Вместимость', 'Capacity', 'Kapasite', 'Вилла рассчитана максимум на 10 гостей [включая детей].', 'The villa can accommodate a maximum of 10 guests [including children].', 'Villa en fazla 10 kişiyi [çocuklar dahil] ağırlayabilir.'],
-      ['3', 'Описание виллы', 'Description of the villa', 'Villanın Tanımı', 'Вилла находится в самом центре Дальяна. Вся компания оценит близость к достопримечательностям. Приватный бассейн. Полноценная кухня и гостиная комната. 4 большие спальни. Спальня на 1 этаже: рассчитана на 3 спальных места, располагает собственной ванной комнатой [душевая кабина] и кондиционером. Спальни на 2 этаже: три отдельные спальные комнаты по 2 спальных места, каждая со своей ванной комнатой и кондиционером. В одной из этих спален дополнительно установлена односпальная кровать [до 10 гостей].', 'The villa is located in the heart of Dalyan. The whole group will appreciate the proximity to attractions. It features a private pool, a full kitchen, and a living room. Four large bedrooms. The bedroom on the first floor sleeps three and has an en-suite bathroom [shower] and air conditioning. The bedrooms on the second floor include three separate bedrooms, each with its own bathroom and air conditioning. One of these bedrooms can accommodate an additional single bed [sleeps up to 10 guests].', 'Villa, Dalyan merkezinde yer almaktadır. Tüm grup, turistik yerlere yakınlığı takdir edecektir. Villada özel havuz, tam donanımlı mutfak ve oturma odası bulunmaktadır. Dört geniş yatak odası mevcuttur. Birinci kattaki yatak odasında üç kişi konaklayabilir ve özel banyo [duş] ve klima bulunmaktadır. İkinci kattaki yatak odaları ise her biri kendi banyosuna ve klimasına sahip üç ayrı yatak odasından oluşmaktadır. Bu yatak odalarından birine ilave bir tek kişilik yatak eklenebilir [10 kişiye kadar konaklama imkanı].'],
-      ['4', 'Что доступно гостю', 'What is available to the guest?', 'Misafirlerin kullanımına sunulan olanaklar nelerdir?', 'Первый этаж:\nПолноценная кухня и гостиная комната.\n55-дюймовый смарт-телевизор.\nТуалет для гостей, стиральная машина, гладильная доска и утюг.\nСпальня на 3 спальных места с собственной ванной комнатой [душевая кабина].\nПрихожая со шкафом для уличной одежды.\nЛестница на второй этаж.\n\nВторой этаж:\n3 спальные комнаты, каждая из которых имеет собственную ванную комнату.\nДополнительное спальное место в виде односпальной кровати в одной из спален второго этажа.\nСтиральная машина в одной из ванных комнат.', 'First floor:\nFull kitchen and living room.\n55-inch smart TV.\nGuest toilet, washing machine, ironing board, and iron.\nTriple bedroom with en-suite bathroom [shower].\nEntrance hall with closet for outdoor clothing.\nStairs to the second floor.\n\nSecond floor:\nThree bedrooms, each with its own bathroom.\nAn additional single bed can be added in one of the second-floor bedrooms.\nWashing machine in one of the bathrooms.', 'Birinci Kat:\nTam donanımlı mutfak ve oturma odası.\n55 inç akıllı TV.\nMisafir tuvaleti, çamaşır makinesi, ütü masası ve ütü.\nEn-suite banyolu [duşlu] üç kişilik yatak odası.\nDış giyim için dolaplı giriş holü.\nİkinci kata çıkan merdivenler.\n\nİkinci Kat:\nHer biri kendi banyosuna sahip üç yatak odası.\nİkinci kattaki yatak odalarından birine ilave tek kişilik yatak eklenebilir.\nBanyolardan birinde çamaşır makinesi.'],
-      ['5', 'Бассейн и Сад', 'Pool and Garden', 'Havuz ve Bahçe', 'Очистка бассейна и уход за садом проводятся рано утром с 8 до 10 часов.', 'Pool cleaning and garden maintenance are carried out early in the morning from 8 am to 10 am.', 'Havuz temizliği ve bahçe bakımı sabah erken saatlerde, 08:00 ile 10:00 arasında yapılmaktadır.'],
-      ['6', 'Правила проживания', 'House Rules', 'Ev Kuralları', 'Заезд после 16:00, выезд до 10:00. Курение в помещениях виллы строго запрещено.', 'Check-in after 4:00 PM, check-out before 10:00 AM. Smoking is strictly prohibited in the villa.', "Giriş saati 16:00'dan sonra, çıkış saati 10:00'dan öncedir. Villada sigara içmek kesinlikle yasaktır."],
-      ['7', 'Регистрация [KBS/KVKK]', 'Registration [KBS/KVKK]', 'Kayıt [KBS/KVKK]', 'Ваши данные защищены и используются исключительно для регистрации гостей в системе KBS согласно законам Турции.', 'Your data is protected and used solely for the purpose of registering guests in the KBS system in accordance with Turkish law.', 'Verileriniz korunmaktadır ve Türk kanunlarına uygun olarak yalnızca KBS sistemine misafir kaydı amacıyla kullanılmaktadır.']
-    ];
-    sheet.getRange(2, 1, aboutRows.length, 7).setValues(aboutRows);
-    sheet.getRange('C2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange('D2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-    sheet.getRange('F2').setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange('G2').setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-  } else if (key === 'HOME') {
-    var homeHeaders = ['Ключ [ID]', 'RU', 'EN', 'TR', 'Медиа/Картинка'];
+  if (key === 'HOME') {
+    var homeHeaders = ['Ключ [ID]', 'RU', 'EN', 'TR', 'Медиа / Ссылка'];
     styleSheetHeader_(sheet, homeHeaders, 1);
     var homeRows = [
       ['heroTitle', 'Villa Turaman', 'Villa Turaman', 'Villa Turaman', ''],
@@ -752,6 +735,148 @@ function initSingleSheetByKey_(sheet, key) {
     sheet.getRange(2, 1, homeRows.length, 5).setValues(homeRows);
     sheet.getRange('C2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
     sheet.getRange('D2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+  } else if (key === 'GALLERY') {
+    var galHeaders = ['ID', 'Группа [RU]', 'Описание [RU]', 'Группа [EN]', 'Описание [EN]', 'Группа [TR]', 'Описание [TR]', 'Тип', 'Медиа ссылки', 'Подпись [RU]', 'Подпись [EN]', 'Подпись [TR]'];
+    styleSheetHeader_(sheet, galHeaders, 1);
+    var galRows = [
+      ['gal-1', 'Бассейн и лаунж-терраса', 'Кристально чистый бассейн глубиной 1.5м с шезлонгами', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1572120360610-d971b9d7767c?w=1600,https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=1600', 'Приватный бассейн виллы с удобными шезлонгами', '', ''],
+      ['gal-2', 'Бассейн и лаунж-терраса', 'Кристально чистый бассейн глубиной 1.5м с шезлонгами', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=1600', 'Затененная пергола для послеобеденного отдыха', '', ''],
+      ['gal-3', 'Интерьер виллы и спальни', '4 просторные мастер-спальни с индивидуальными ванными', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=1600,https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=1600', 'Мастер-спальня 1 с кроватью King-Size и террасой', '', ''],
+      ['gal-4', 'Интерьер виллы и спальни', '4 просторные мастер-спальни с индивидуальными ванными', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600', 'Светлая гостиная со Smart TV 65', '', ''],
+      ['gal-5', 'Кухня и зона BBQ', 'Полностью оборудованная кухня со всей бытовой техникой', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1600', 'Кухня шеф-повара с посудомоечной машиной и кофемашиной', '', ''],
+      ['gal-6', 'Окрестности Дальяна и река', 'Уникальная природа: Ликийские гробницы и пляж Изтузу', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1600', 'Ликийские скальные гробницы IV века до н.э. с подсветкой', '', '']
+    ];
+    sheet.getRange(2, 1, galRows.length, 12).setValues(galRows);
+    sheet.getRange('D2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('F2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange('E2').setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('G2').setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange('K2').setFormula('=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('L2').setFormula('=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+  } else if (key === 'ABOUT') {
+    var aboutHeaders = ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'];
+    styleSheetHeader_(sheet, aboutHeaders, 1);
+    var aboutRows = [
+      ['1', 'О вилле и о нас', 'About the villa and about us', 'Villa hakkında ve biz hakkında', 'Вилла Turaman расположена в живописном маленьком городке Дальян в провинции Мугла [Турция] на берегу реки Дальян и озера Кёйджегиз. Готова принять 10 гостей путешественников. Приватный бассейн 36 квадратных метров и роскошная придомовая территория с террасой и садом. Адрес виллы: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla. Локация: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9', 'Villa Turaman is located in the picturesque small town of Dalyan in the Muğla Province of Turkey, on the banks of the Dalyan River and Lake Köyceğiz. It can accommodate up to 10 guests. It features a private 36-square-meter pool and a luxurious courtyard with a terrace and garden. Address: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla. Location: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9', "Villa Turaman, Türkiye'nin Muğla ilinin pitoresk Dalyan kasabasında, Dalyan Nehri ve Köyceğiz Gölü kıyısında yer almaktadır. 10 kişiye kadar konaklama imkanı sunan villada, 36 metrekarelik özel bir havuz ve teraslı ve bahçeli lüks bir avlu bulunmaktadır. Adres: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla. Konum: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9"],
+      ['2', 'Вместимость', 'Capacity', 'Kapasite', 'Вилла рассчитана максимум на 10 гостей [включая детей].', 'The villa can accommodate a maximum of 10 guests [including children].', 'Villa en fazla 10 kişiyi [çocuklar dahil] ağırlayabilir.'],
+      ['3', 'Описание виллы', 'Description of the villa', 'Villanın Tanımı', 'Вилла находится в самом центре Дальяна. Вся компания оценит близость к достопримечательностям. Приватный бассейн. Полноценная кухня и гостиная комната. 4 большие спальни. Спальня на 1 этаже: рассчитана на 3 спальных места, располагает собственной ванной комнатой [душевая кабина] и кондиционером. Спальни на 2 этаже: три отдельные спальные комнаты по 2 спальных места, каждая со своей ванной комнатой и кондиционером. В одной из этих спален дополнительно установлена односпальная кровать [до 10 гостей].', 'The villa is located in the heart of Dalyan. The whole group will appreciate the proximity to attractions. It features a private pool, a full kitchen, and a living room. Four large bedrooms. The bedroom on the first floor sleeps three and has an en-suite bathroom [shower] and air conditioning. The bedrooms on the second floor include three separate bedrooms, each with its own bathroom and air conditioning. One of these bedrooms can accommodate an additional single bed [sleeps up to 10 guests].', 'Villa, Dalyan merkezinde yer almaktadır. Tüm grup, turistik yerlere yakınlığı takdir edecektir. Villada özel havuz, tam donanımlı mutfak ve oturma odası bulunmaktadır. Dört geniş yatak odası mevcuttur. Birinci kattaki yatak odasında üç kişi konaklayabilir ve özel banyo [duş] ve klima bulunmaktadır. İkinci kattaki yatak odaları ise her biri kendi banyosuna ve klimasına sahip üç ayrı yatak odasından oluşmaktadır. Bu yatak odalarından birine ilave bir tek kişilik yatak eklenebilir [10 kişiye kadar konaklama imkanı].'],
+      ['4', 'Что доступно гостю', 'What is available to the guest?', 'Misafirlerin kullanımına sunulan olanaklar nelerdir?', 'Первый этаж:\nПолноценная кухня и гостиная комната.\n55-дюймовый смарт-телевизор.\nТуалет для гостей, стиральная машина, гладильная доска и утюг.\nСпальня на 3 спальных места с собственной ванной комнатой [душевая кабина].\nПрихожая со шкафом для уличной одежды.\nЛестница на второй этаж.\n\nВторой этаж:\n3 спальные комнаты, каждая из которых имеет собственную ванную комнату.\nДополнительное спальное место в виде односпальной кровати в одной из спален второго этажа.\nСтиральная машина в одной из ванных комнат.', 'First floor:\nFull kitchen and living room.\n55-inch smart TV.\nGuest toilet, washing machine, ironing board, and iron.\nTriple bedroom with en-suite bathroom [shower].\nEntrance hall with closet for outdoor clothing.\nStairs to the second floor.\n\nSecond floor:\nThree bedrooms, each with its own bathroom.\nAn additional single bed can be added in one of the second-floor bedrooms.\nWashing machine in one of the bathrooms.', 'Birinci Kat:\nTam donanımlı mutfak ve oturma odası.\n55 inç akıllı TV.\nMisafir tuvaleti, çamaşır makinesi, ütü masası ve ütü.\nEn-suite banyolu [duşlu] üç kişilik yatak odası.\nDış giyim için dolaplı giriş holü.\nİkinci kata çıkan merdivenler.\n\nİkinci Kat:\nHer biri kendi banyosuna sahip üç yatak odası.\nİkinci kattaki yatak odalarından birine ilave tek kişilik yatak eklenebilir.\nBanyolardan birinde çamaşır makinesi.'],
+      ['5', 'Бассейн и Сад', 'Pool and Garden', 'Havuz ve Bahçe', 'Очистка бассейна и уход за садом проводятся рано утром с 8 до 10 часов.', 'Pool cleaning and garden maintenance are carried out early in the morning from 8 am to 10 am.', 'Havuz temizliği ve bahçe bakımı sabah erken saatlerde, 08:00 ile 10:00 arasında yapılmaktadır.'],
+      ['6', 'Правила проживания', 'House Rules', 'Ev Kuralları', 'Заезд после 16:00, выезд до 10:00. Курение в помещениях виллы строго запрещено.', 'Check-in after 4:00 PM, check-out before 10:00 AM. Smoking is strictly prohibited in the villa.', "Giriş saati 16:00'dan sonra, çıkış saati 10:00'dan öncedir. Villada sigara içmek kesinlikle yasaktır."],
+      ['7', 'Регистрация [KBS/KVKK]', 'Registration [KBS/KVKK]', 'Kayıt [KBS/KVKK]', 'Ваши данные защищены и используются исключительно для регистрации гостей в системе KBS согласно законам Турции.', 'Your data is protected and used solely for the purpose of registering guests in the KBS system in accordance with Turkish law.', 'Verileriniz korunmaktadır ve Türk kanunlarına uygun olarak yalnızca KBS sistemine misafir kaydı amacıyla kullanılmaktadır.']
+    ];
+    sheet.getRange(2, 1, aboutRows.length, 7).setValues(aboutRows);
+    sheet.getRange('C2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('D2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange('F2').setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('G2').setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+  } else if (key === 'SERVICES') {
+    var srvHeaders = ['ID', 'Название услуги [RU]', 'Описание [RU]', 'Название услуги [EN]', 'Описание [EN]', 'Название услуги [TR]', 'Описание [TR]', 'Цена [EUR]', 'Цена [RUB]', 'Цена [TRY]', 'Изображения', 'Наличие', 'Тип', 'Видео презентации', 'Подробное описание [RU]', 'Подробное описание [EN]', 'Подробное описание [TR]'];
+    styleSheetHeader_(sheet, srvHeaders, 1);
+    var srvRows = [
+      ['prod-1', 'Индивидуальный VIP-трансфер из аэропорта Даламан [DLM]', 'Mercedes Vito с кондиционером и напитками', '', '', '', '', '50', '5000', '1800', 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1200', 'Да', 'Услуга', '', 'Встреча в зоне прилета аэропорта Даламан [25 минут до виллы]. В салоне Wi-Fi.', '', ''],
+      ['prod-2', 'Приватный круиз на яхте по реке Дальян и пляжу Изтузу', 'Традиционная деревянная лодка: Ликийские гробницы и черепахи', '', '', '', '', '250', '25000', '9000', 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200', 'Да', 'Пакет', '', 'Эксклюзивный маршрут на весь день со свежеприготовленным обедом от капитана.', '', ''],
+      ['prod-3', 'Ужин от персонального шеф-повара на вилле', '4-курсовой ужин у бассейна: турецкие мезе и морепродукты', '', '', '', '', '120', '12000', '4300', 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200', 'Да', 'Услуга', '', 'Шеф лично закупает фермерские продукты на рынке Дальяна и сервирует стол.', '', ''],
+      ['prod-4', 'Премиальный BBQ-вечер на углях в саду', 'Стейки рибай, каре ягненка и овощи гриль', '', '', '', '', '160', '16000', '5800', 'https://images.unsplash.com/photo-1544025162-d76694265947?w=1200', 'Да', 'Пакет', '', 'Включает угли, розжиг, маринованное фермерское мясо и мастера на 3 часа.', '', ''],
+      ['prod-5', 'СПА-тур и грязевые источники Султание', 'Омолаживающие минеральные термы озера Кёйджегиз', '', '', '', '', '70', '7000', '2500', 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200', 'Да', 'Услуга', '', 'Трансфер на моторной лодке от причала виллы. Входные билеты включены.', '', ''],
+      ['prod-6', 'Аренда сапбордов [SUP] и каяков', '2 устойчивых SUP-борда и двухместный каяк', '', '', '', '', '80', '8000', '2900', 'https://images.unsplash.com/photo-1517404215738-15263e9f9178?w=1200', 'Да', 'Услуга', '', 'Доставка прямо к вилле на весь период проживания для утренних заплывов.', '', '']
+    ];
+    sheet.getRange(2, 1, srvRows.length, 17).setValues(srvRows);
+    sheet.getRange('D2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('F2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange('E2').setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('G2').setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange('P2').setFormula('=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('Q2').setFormula('=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+  } else if (key === 'GUIDES') {
+    var gdHeaders = ['ID', 'Название путеводителя [RU]', 'Описание [RU]', 'Название путеводителя [EN]', 'Описание [EN]', 'Название путеводителя [TR]', 'Описание [TR]', 'Изображения', 'Категория', 'Ссылка на видео', 'Цена [EUR]', 'Цена [RUB]', 'Цена [TRY]', 'Видео презентации', 'Подробное описание [RU]', 'Подробное описание [EN]', 'Подробное описание [TR]'];
+    styleSheetHeader_(sheet, gdHeaders, 1);
+    var gdRows = [
+      ['guide-1', 'Секретные маршруты реки Дальян и черепаший пляж Изтузу', 'Эксклюзивный 40-минутный 4K видео-гид от Алексея Знаменского', '', '', '', '', 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200', 'Локации', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '20', '2000', '700', '', 'Где встретить гигантских черепах Caretta Caretta и как арендовать лодку со скидкой.', '', ''],
+      ['guide-2', 'Ликийские скальные гробницы и древний город Каунос', 'Историческое погружение в тайны Ликийского царства и акрополя', '', '', '', '', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200', 'История', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '25', '2500', '900', '', 'Маршрут подъема к Кауносу, расшифровка надписей и лучшие видовые точки на закате.', '', ''],
+      ['guide-3', 'Гастрономический гид: топ ресторанов и гранатовые сады', 'Где попробовать настоящую турецкую кухню и свежую рыбу', '', '', '', '', 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200', 'Гастрономия', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '15', '1500', '550', '', 'Список 10 проверенных ресторанов со специальными привилегиями для гостей виллы.', '', ''],
+      ['guide-4', 'Термальные источники Султание и озеро Кёйджегиз', 'Как получить максимум от целебных минеральных источников', '', '', '', '', 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200', 'Здоровье', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '20', '2000', '700', '', 'Секретные часы посещения без туристических групп и рекомендации врачей.', '', '']
+    ];
+    sheet.getRange(2, 1, gdRows.length, 17).setValues(gdRows);
+    sheet.getRange('D2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('F2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange('E2').setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('G2').setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange('P2').setFormula('=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('Q2').setFormula('=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+  } else if (key === 'LEGAL') {
+    var legHeaders = ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'];
+    styleSheetHeader_(sheet, legHeaders, 1);
+    var legRows = [
+      ['company_name', 'Организация', '', '', 'ALEKSEI ZNAMENSKII - Villa Turaman'],
+      ['tax_info', 'Налоговый номер', '', '', 'Ortaca Vergi Dairesi, VKN: 9991120181'],
+      ['contact_email', 'Email', '', '', 'villaturaman@gmail.com'],
+      ['contract', 'Договор аренды', '', '', 'Договор краткосрочной аренды Villa Turaman [Дальян, Мугла, Турция]. Владелец: Aleksei Znamenskii [VKN: 9991120181].'],
+      ['footerDesc', 'О Villa Turaman', '', '', 'Премиальная частная вилла в Дальяне [Турция]. Прямое бронирование от владельца Алексея Знаменского без скрытых комиссий сторонних агрегаторов.'],
+      ['footerLocation', 'Адрес', '', '', 'Дальян, Ортаджа, Мугла, Турция'],
+      ['etbis_placeholder', 'QR-код ETBIS', '', '', 'ETBIS QR CODE\nVKN: 9991120181'],
+      ['etbis_text', 'Госреестр ETBIS', '', '', "ETBİS'e Kayıtlıdır"],
+      ['kvkk', 'Политика KVKK', '', '', 'Полный текст политики защиты персональных данных [KVKK Aydınlatma Metni]...'],
+      ['privacy', 'Конфиденциальность', '', '', 'Политика конфиденциальности персональных данных гостей виллы...']
+    ];
+    sheet.getRange(2, 1, legRows.length, 5).setValues(legRows);
+    sheet.getRange('C2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('D2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange('F2').setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('G2').setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+  } else if (key === 'BOOKINGS') {
+    var bkHeaders = ['Дата заявки', 'Имя клиента', 'Контакт [Tel/TG]', 'Старт', 'Завершение', 'Ночей', 'Взрослых', 'Детей', 'Всего гостей', 'Итоговая стоимость', 'Статус оплаты'];
+    styleSheetHeader_(sheet, bkHeaders, 1);
+  } else if (key === 'CALENDAR') {
+    var calHeaders = ['Дата старта', 'Дата завершения', 'Тип [Блокировка/Цена/Мин. дней/Заметка/Настройки]', 'Значение', 'Заметка', 'Автор изменения', 'Время фиксации'];
+    styleSheetHeader_(sheet, calHeaders, 1);
+  } else if (key === 'ACCOUNTS') {
+    var accHeaders = ['Дата регистрации', 'Имя', 'Контакт [Логин]', 'Пароль', 'Блок: Сайт', 'Блок: Аккаунт', 'Блок: Чат'];
+    styleSheetHeader_(sheet, accHeaders, 1);
+  } else if (key === 'MASTER') {
+    var mstHeaders = ['ФИО', 'Телефон', 'Telegram', 'WhatsApp', 'Google Email', 'Логин', 'Пароль', 'Роль', 'Прав: Финансы', 'Прав: Периоды', 'Прав: Блок. дат', 'Прав: Окно брони', 'Прав: Доступ к чатам'];
+    styleSheetHeader_(sheet, mstHeaders, 1);
+    var mstRows = [
+      ['Aleksei Znamenskii', '', '', '', 'admin@villaturaman.com', 'admin', 'admin123', 'Главный', 'Да', 'Да', 'Да', 'Да', 'Да']
+    ];
+    sheet.getRange(2, 1, mstRows.length, 13).setValues(mstRows);
+  } else if (key === 'ORDERS') {
+    var ordHeaders = ['Дата заказа', 'Контакт', 'Тип [Гид/Услуга/Аренда]', 'Сумма', 'Статус оплаты', 'Детали'];
+    styleSheetHeader_(sheet, ordHeaders, 1);
+  } else if (key === 'ACCESS') {
+    var acsHeaders = ['Дата', 'Гость [Контакт]', 'Гид ID', 'Категория', 'Статус оплаты', 'Доступ [Да/Нет]', 'Прогресс'];
+    styleSheetHeader_(sheet, acsHeaders, 1);
+  } else if (key === 'TEMPLATES') {
+    var tmplHeaders = ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'];
+    styleSheetHeader_(sheet, tmplHeaders, 1);
+    var tmplRows = [
+      ['1.1_discount_10', '1.1. Скидка 10% за невозвратный тариф', '', '', 'Здравствуйте, [FIRST_NAME]! Рад вашему интересу к Villa Turaman! Для поездок на ближайшие даты активирована опция: Бронирование без возврата со скидкой 10%. Скидка действует, если дата выезда в пределах 60 дней. С уважением, Алексей Знаменский.', '', ''],
+      ['1.2_budget_price', '1.2. Работа с ценой и вопросы по бюджету', '', '', 'Здравствуйте, [FIRST_NAME]! Понимаю ваше желание оптимизировать бюджет. Стоимость виллы включает приватную территорию, бассейн, скоростной Wi-Fi и чистоту. Минимальный допустимый тариф составляет 180 USD за ночь. С удовольствием отвечу на ваши вопросы!', '', ''],
+      ['2.1_confirmation_initial_info', '2.1. Подтверждение и вводная информация', '', '', 'Здравствуйте, [FIRST_NAME]! Поздравляю с успешным бронированием Villa Turaman [код: [CONFIRMATION_CODE]]! Ваши даты: [CHECKIN_DATE] - [CHECKOUT_DATE]. Заезд с [CHECKIN_TIME], выезд до [CHECKOUT_TIME]. Наш адрес: [ADDRESS].', '', '']
+    ];
+    sheet.getRange(2, 1, tmplRows.length, 7).setValues(tmplRows);
+    sheet.getRange('C2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('D2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange('F2').setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange('G2').setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+  } else if (key === 'VARIABLES') {
+    var varHeaders = ['Плейсхолдер', 'Системный ключ', 'Описание переменной', 'Значение по умолчанию [Тест]'];
+    styleSheetHeader_(sheet, varHeaders, 1);
+    var varRows = [
+      ['[FIRST_NAME]', 'name', 'Имя гостя', 'Иван'],
+      ['[CONFIRMATION_CODE]', 'code', 'Код бронирования', 'VT-7788'],
+      ['[CHECKIN_DATE]', 'checkIn', 'Дата заезда', '01.06.2026'],
+      ['[CHECKOUT_DATE]', 'checkOut', 'Дата выезда', '08.06.2026'],
+      ['[CHECKIN_TIME]', 'checkInTime', 'Стандартное время заезда', '16:00'],
+      ['[CHECKOUT_TIME]', 'checkOutTime', 'Стандартное время выезда', '10:00'],
+      ['[BOOKING_PLATFORM_NAME]', 'platform', 'Платформа бронирования', 'Villa Turaman Direct'],
+      ['[ADDRESS]', 'address', 'Точный адрес виллы', 'Дальян, Ортаджа, Мугла, Турция'],
+      ['[CHECKIN_METHOD]', 'checkinMethod', 'Способ передачи ключей', 'Мини-сейф с кодом / личная встреча владельцем'],
+      ['[WIFI_NAME]', 'wifiName', 'Имя сети Wi-Fi', 'VillaTuraman_5G'],
+      ['[WIFI_PASSWORD]', 'wifiPassword', 'Пароль сети Wi-Fi', 'DalyanTuramanGuest2026'],
+      ['[KEY_HANDOVER_INSTRUCTIONS]', 'keyHandover', 'Инструкции возврата ключей', 'Оставьте ключи в мини-сейфе с кодом у входной двери виллы']
+    ];
+    sheet.getRange(2, 1, varRows.length, 4).setValues(varRows);
   } else if (key === 'SETTINGS') {
     var setHeaders = ['Категория', 'Параметр / Роль / Лист', 'Значение / Статус доступа', 'Промпт / Описание / Инструкция', 'Заметка'];
     styleSheetHeader_(sheet, setHeaders, 1);
@@ -782,22 +907,6 @@ function initSingleSheetByKey_(sheet, key) {
       ['МАТРИЦА_ЛИСТОВ', '⚙️ Системные настройки ИИ Агентов', 'РАЗРЕШЕН [ВСЕ]', 'Лист управления системой ИИ, генеральными директивами ролей и матрицей прав доступа. Агент черпает отсюда свои глобальные рамки поведения.', 'Центр управления ИИ']
     ];
     sheet.getRange(2, 1, setRows.length, 5).setValues(setRows);
-  } else if (key === 'LEGAL') {
-    var legHeaders = ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'];
-    styleSheetHeader_(sheet, legHeaders, 1);
-    var legRows = [
-      ['company_name', 'Организация', '', '', 'ALEKSEI ZNAMENSKII - Villa Turaman'],
-      ['tax_info', 'Налоговый номер', '', '', 'Ortaca Vergi Dairesi, VKN: 9991120181'],
-      ['contact_email', 'Email', '', '', 'villaturaman@gmail.com'],
-      ['contract', 'Договор аренды', '', '', 'Договор краткосрочной аренды Villa Turaman [Дальян, Мугла, Турция]. Владелец: Aleksei Znamenskii [VKN: 9991120181].'],
-      ['footerDesc', 'О Villa Turaman', '', '', 'Премиальная частная вилла в Дальяне [Турция]. Прямое бронирование от владельца Алексея Знаменского без скрытых комиссий сторонних агрегаторов.'],
-      ['footerLocation', 'Адрес', '', '', 'Дальян, Ортаджа, Мугла, Турция'],
-      ['etbis_placeholder', 'QR-код ETBIS', '', '', 'ETBIS QR CODE\nVKN: 9991120181'],
-      ['etbis_text', 'Госреестр ETBIS', '', '', "ETBİS'e Kayıtlıdır"],
-      ['kvkk', 'Политика KVKK', '', '', 'Полный текст политики защиты персональных данных [KVKK Aydınlatma Metni]...'],
-      ['privacy', 'Конфиденциальность', '', '', 'Политика конфиденциальности персональных данных гостей виллы...']
-    ];
-    sheet.getRange(2, 1, legRows.length, 5).setValues(legRows);
   }
 }
 
