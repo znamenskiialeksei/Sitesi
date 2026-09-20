@@ -41,6 +41,7 @@ function registerTelegramBotMenu() {
     .addItem("🔍 Проверить статус Webhook: getWebhookInfo", "checkTelegramWebhookStatus")
     .addItem("❌ Удалить Webhook: переход на Polling", "deleteTelegramWebhook")
     .addSeparator()
+    .addItem("🌐 Проверить статус ключей на Vercel: https://vercel.com/", "checkVercelEnvStatusInteractive")
     .addItem("🔑 Настроить TELEGRAM_BOT_TOKEN и CHAT_ID", "setupTelegramPropertiesInteractive")
     .addItem("🧪 Тестовый пинг в Telegram", "sendTelegramTestPing");
 
@@ -663,6 +664,65 @@ function deleteTelegramWebhook() {
 }
 
 /**
+ * Проверка статуса системных ключей на сервере Vercel: https://vercel.com/
+ */
+function checkVercelEnvStatusInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var props = PropertiesService.getScriptProperties();
+  var siteUrl = (props.getProperty('SITE_URL') || '').trim();
+
+  if (!siteUrl) {
+    var promptRes = ui.prompt(
+      'Проверка статуса Vercel',
+      'Введите адрес вашего сайта: например https://sitesi-5y3x2v6w4-znamenskiialekseis-projects.vercel.app:',
+      ui.ButtonSet.OK_CANCEL
+    );
+    if (promptRes.getSelectedButton() !== ui.Button.OK) return;
+    siteUrl = promptRes.getResponseText().trim();
+    if (siteUrl) props.setProperty('SITE_URL', siteUrl);
+  }
+
+  if (!siteUrl) {
+    ui.alert('Ошибка', 'Адрес сайта SITE_URL не указан.', ui.ButtonSet.OK);
+    return;
+  }
+
+  siteUrl = siteUrl.replace(/\/+$/, '');
+
+  try {
+    var endpoint = siteUrl + '/api/system-status';
+    var response = UrlFetchApp.fetch(endpoint, { muteHttpExceptions: true });
+    var code = response.getResponseCode();
+    var content = response.getContentText();
+
+    if (code !== 200) {
+      ui.alert('Ответ сервера Vercel: HTTP ' + code, content, ui.ButtonSet.OK);
+      return;
+    }
+
+    var data = JSON.parse(content);
+    var k = data.keysStatus || {};
+
+    var statusReport = '🌐 СТАТУС ПЕРЕМЕННЫХ ОКРУЖЕНИЯ НА VERCEL: https://vercel.com/\n\n' +
+      '• Хост: ' + (data.environment && data.environment.siteUrl ? data.environment.siteUrl : siteUrl) + '\n' +
+      '• Среда Vercel: ' + (data.environment && data.environment.vercelEnv ? data.environment.vercelEnv : 'активна') + '\n\n' +
+      'Ключи и сервисы на Vercel:\n' +
+      (k.GOOGLE_SPREADSHEET_ID ? '  ✅' : '  ❌') + ' GOOGLE_SPREADSHEET_ID: ' + (k.GOOGLE_SPREADSHEET_ID ? 'Подключен' : 'Не задан') + '\n' +
+      (k.GOOGLE_CLIENT_EMAIL ? '  ✅' : '  ❌') + ' GOOGLE_CLIENT_EMAIL: ' + (k.GOOGLE_CLIENT_EMAIL ? 'Подключен' : 'Не задан') + '\n' +
+      (k.GOOGLE_PRIVATE_KEY ? '  ✅' : '  ❌') + ' GOOGLE_PRIVATE_KEY: ' + (k.GOOGLE_PRIVATE_KEY ? 'Валиден' : 'Не задан') + '\n' +
+      (k.TELEGRAM_BOT_TOKEN ? '  ✅' : '  ❌') + ' TELEGRAM_BOT_TOKEN: ' + (k.TELEGRAM_BOT_TOKEN ? 'Активен' : 'Не задан') + '\n' +
+      (k.TELEGRAM_CHAT_ID ? '  ✅' : '  ❌') + ' TELEGRAM_CHAT_ID: ' + (k.TELEGRAM_CHAT_ID ? 'Активен' : 'Не задан') + '\n' +
+      (k.REVALIDATE_SECRET_TOKEN ? '  ✅' : '  ❌') + ' REVALIDATE_SECRET_TOKEN: ' + (k.REVALIDATE_SECRET_TOKEN ? 'Активен' : 'Не задан') + '\n\n' +
+      'Общий статус: ' + (data.readiness && data.readiness.overallStatus ? data.readiness.overallStatus : 'OK') + '\n\n' +
+      'Все ключи могут быть заданы непосредственно в панели управления Vercel:\nhttps://vercel.com/ ➔ Settings ➔ Environment Variables';
+
+    ui.alert('Диагностика Vercel', statusReport, ui.ButtonSet.OK);
+  } catch (err) {
+    ui.alert('Сбой связи с Vercel', 'Не удалось связаться с ' + siteUrl + ':\n' + err.message, ui.ButtonSet.OK);
+  }
+}
+
+/**
  * Быстрая интерактивная настройка токена и Chat ID Telegram
  */
 function setupTelegramPropertiesInteractive() {
@@ -670,7 +730,11 @@ function setupTelegramPropertiesInteractive() {
   var props = PropertiesService.getScriptProperties();
 
   var currentToken = props.getProperty('TELEGRAM_BOT_TOKEN') || '';
-  var resToken = ui.prompt('Настройка токена Telegram', 'Введите TELEGRAM_BOT_TOKEN из @BotFather:', ui.ButtonSet.OK_CANCEL);
+  var resToken = ui.prompt(
+    'Настройка токена Telegram',
+    'Все ключи также могут быть заданы на https://vercel.com/ в Environment Variables.\n\nВведите TELEGRAM_BOT_TOKEN из @BotFather для Script Properties:',
+    ui.ButtonSet.OK_CANCEL
+  );
   if (resToken.getSelectedButton() !== ui.Button.OK) return;
   var token = resToken.getResponseText().trim() || currentToken;
 
@@ -684,7 +748,11 @@ function setupTelegramPropertiesInteractive() {
     'TELEGRAM_CHAT_ID': chatId
   }, false);
 
-  ui.alert('✅ Настройки сохранены!', 'Параметры Telegram успешно зафиксированы в Свойствах скрипта.', ui.ButtonSet.OK);
+  ui.alert(
+    '✅ Настройки сохранены!',
+    'Параметры Telegram успешно зафиксированы в Свойствах скрипта.\n\nНапоминание: для серверной части сайта вы также можете настроить эти же ключи на https://vercel.com/ ➔ Settings ➔ Environment Variables.',
+    ui.ButtonSet.OK
+  );
 }
 
 /**

@@ -87,14 +87,15 @@ function onOpen() {
   // 6. Блок 6: Системный аудит, формулы и Свойства скрипта (Script Properties)
   var auditMenu = ui.createMenu("⚙️ 6. Системный аудит & Свойства")
     .addItem("🔑 1. Настроить Свойства скрипта (Script Properties)", "setupScriptPropertiesInteractive")
-    .addItem("📋 2. Показать текущие Свойства скрипта", "viewCurrentScriptProperties")
-    .addItem("⚡ 3. Установить типовые свойства по умолчанию", "setupDefaultScriptProperties")
+    .addItem("🌐 2. Проверить статус ключей на Vercel: https://vercel.com/", "checkVercelEnvStatusInteractive")
+    .addItem("📋 3. Показать текущие Свойства скрипта", "viewCurrentScriptProperties")
+    .addItem("⚡ 4. Установить типовые свойства по умолчанию", "setupDefaultScriptProperties")
     .addSeparator()
-    .addItem("🧪 4. Проверить стандарт точки с запятой (;) в формулах", "auditFormulasSemicolon")
-    .addItem("📄 5. Просмотр паспорта и ID всех листов", "showSheetsPassportModal")
-    .addItem("🛠️ 6. Инициализировать недостающие листы", "ensureAllSystemSheets")
+    .addItem("🧪 5. Проверить стандарт точки с запятой (;) в формулах", "auditFormulasSemicolon")
+    .addItem("📄 6. Просмотр паспорта и ID всех листов", "showSheetsPassportModal")
+    .addItem("🛠️ 7. Инициализировать недостающие листы", "ensureAllSystemSheets")
     .addSeparator()
-    .addItem("📧 7. Инструкция по развертыванию Gmail Relay", "showGmailRelayDeployHelp");
+    .addItem("📧 8. Инструкция по развертыванию Gmail Relay", "showGmailRelayDeployHelp");
 
   // Сборка первого главного меню верхнего уровня: 🏡 Villa Turaman Suite
   ui.createMenu("🏡 Villa Turaman Suite")
@@ -135,6 +136,7 @@ function onOpen() {
     .addItem("🔍 Проверить статус Webhook: getWebhookInfo", "checkTelegramWebhookStatus")
     .addItem("❌ Удалить Webhook: переход на Polling", "deleteTelegramWebhook")
     .addSeparator()
+    .addItem("🌐 Проверить статус ключей на Vercel: https://vercel.com/", "checkVercelEnvStatusInteractive")
     .addItem("🔑 Настроить TELEGRAM_BOT_TOKEN и CHAT_ID", "setupTelegramPropertiesInteractive")
     .addItem("🧪 Тестовый пинг в Telegram", "sendTelegramTestPing");
 
@@ -601,39 +603,104 @@ function ensureAllSystemSheets() {
 // ==============================================================================
 
 /**
- * Интерактивный диалог настройки Свойств скрипта (Script Properties)
+ * Проверка статуса системных ключей на сервере Vercel: https://vercel.com/
+ */
+function checkVercelEnvStatusInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var props = PropertiesService.getScriptProperties();
+  var siteUrl = (props.getProperty('SITE_URL') || '').trim();
+
+  if (!siteUrl) {
+    var promptRes = ui.prompt(
+      'Проверка статуса Vercel',
+      'Введите адрес вашего сайта: например https://sitesi-5y3x2v6w4-znamenskiialekseis-projects.vercel.app:',
+      ui.ButtonSet.OK_CANCEL
+    );
+    if (promptRes.getSelectedButton() !== ui.Button.OK) return;
+    siteUrl = promptRes.getResponseText().trim();
+    if (siteUrl) props.setProperty('SITE_URL', siteUrl);
+  }
+
+  if (!siteUrl) {
+    ui.alert('Ошибка', 'Адрес сайта SITE_URL не указан.', ui.ButtonSet.OK);
+    return;
+  }
+
+  siteUrl = siteUrl.replace(/\/+$/, '');
+
+  try {
+    var endpoint = siteUrl + '/api/system-status';
+    var response = UrlFetchApp.fetch(endpoint, { muteHttpExceptions: true });
+    var code = response.getResponseCode();
+    var content = response.getContentText();
+
+    if (code !== 200) {
+      ui.alert('Ответ сервера Vercel: HTTP ' + code, content, ui.ButtonSet.OK);
+      return;
+    }
+
+    var data = JSON.parse(content);
+    var k = data.keysStatus || {};
+
+    var statusReport = '🌐 СТАТУС ПЕРЕМЕННЫХ ОКРУЖЕНИЯ НА VERCEL: https://vercel.com/\n\n' +
+      '• Хост: ' + (data.environment && data.environment.siteUrl ? data.environment.siteUrl : siteUrl) + '\n' +
+      '• Среда Vercel: ' + (data.environment && data.environment.vercelEnv ? data.environment.vercelEnv : 'активна') + '\n\n' +
+      'Ключи и сервисы на Vercel:\n' +
+      (k.GOOGLE_SPREADSHEET_ID ? '  ✅' : '  ❌') + ' GOOGLE_SPREADSHEET_ID: ' + (k.GOOGLE_SPREADSHEET_ID ? 'Подключен' : 'Не задан') + '\n' +
+      (k.GOOGLE_CLIENT_EMAIL ? '  ✅' : '  ❌') + ' GOOGLE_CLIENT_EMAIL: ' + (k.GOOGLE_CLIENT_EMAIL ? 'Подключен' : 'Не задан') + '\n' +
+      (k.GOOGLE_PRIVATE_KEY ? '  ✅' : '  ❌') + ' GOOGLE_PRIVATE_KEY: ' + (k.GOOGLE_PRIVATE_KEY ? 'Валиден' : 'Не задан') + '\n' +
+      (k.TELEGRAM_BOT_TOKEN ? '  ✅' : '  ❌') + ' TELEGRAM_BOT_TOKEN: ' + (k.TELEGRAM_BOT_TOKEN ? 'Активен' : 'Не задан') + '\n' +
+      (k.TELEGRAM_CHAT_ID ? '  ✅' : '  ❌') + ' TELEGRAM_CHAT_ID: ' + (k.TELEGRAM_CHAT_ID ? 'Активен' : 'Не задан') + '\n' +
+      (k.REVALIDATE_SECRET_TOKEN ? '  ✅' : '  ❌') + ' REVALIDATE_SECRET_TOKEN: ' + (k.REVALIDATE_SECRET_TOKEN ? 'Активен' : 'Не задан') + '\n\n' +
+      'Общий статус: ' + (data.readiness && data.readiness.overallStatus ? data.readiness.overallStatus : 'OK') + '\n\n' +
+      'Все ключи могут быть заданы непосредственно в панели управления Vercel:\nhttps://vercel.com/ ➔ Settings ➔ Environment Variables';
+
+    ui.alert('Диагностика Vercel', statusReport, ui.ButtonSet.OK);
+  } catch (err) {
+    ui.alert('Сбой связи с Vercel', 'Не удалось связаться с ' + siteUrl + ':\n' + err.message, ui.ButtonSet.OK);
+  }
+}
+
+/**
+ * Интерактивный диалог настройки Свойств скрипта: Script Properties
  */
 function setupScriptPropertiesInteractive() {
   var ui = SpreadsheetApp.getUi();
   var scriptProperties = PropertiesService.getScriptProperties();
 
+  ui.alert(
+    'ℹ️ Информация о стандартах хранения ключей',
+    'Обратите внимание: для полноценной работы все ключи также могут находиться на https://vercel.com/ в разделе Environment Variables.\n\nДалее вы можете настроить локальные свойства для Google Таблиц.',
+    ui.ButtonSet.OK
+  );
+
   var currentSiteUrl = scriptProperties.getProperty('SITE_URL') || "http://localhost:3000";
-  var resSiteUrl = ui.prompt("Свойство 1/6: Базовый адрес сайта (SITE_URL)", "Введите URL сайта (например, https://ваш-домен.vercel.app или http://localhost:3000):", ui.ButtonSet.OK_CANCEL);
+  var resSiteUrl = ui.prompt("Свойство 1/6: Базовый адрес сайта: SITE_URL", "Введите URL сайта: например https://ваш-домен.vercel.app или http://localhost:3000:", ui.ButtonSet.OK_CANCEL);
   if (resSiteUrl.getSelectedButton() !== ui.Button.OK) return;
   var siteUrl = resSiteUrl.getResponseText().trim() || currentSiteUrl;
 
   var currentRevalUrl = scriptProperties.getProperty('REVALIDATE_API_URL') || (siteUrl + "/api/revalidate");
-  var resRevalUrl = ui.prompt("Свойство 2/6: URL ревалидации (REVALIDATE_API_URL)", "Введите эндпоинт ревалидации Next.js:", ui.ButtonSet.OK_CANCEL);
+  var resRevalUrl = ui.prompt("Свойство 2/6: URL ревалидации: REVALIDATE_API_URL", "Введите эндпоинт ревалидации Next.js:", ui.ButtonSet.OK_CANCEL);
   if (resRevalUrl.getSelectedButton() !== ui.Button.OK) return;
   var revalidateUrl = resRevalUrl.getResponseText().trim() || currentRevalUrl;
 
   var currentSecret = scriptProperties.getProperty('REVALIDATE_SECRET_TOKEN') || "YOUR_VERY_SECRET_RANDOM_STRING";
-  var resSecret = ui.prompt("Свойство 3/6: Секретный токен (REVALIDATE_SECRET_TOKEN)", "Введите секретный токен из .env.local (REVALIDATE_SECRET_TOKEN):", ui.ButtonSet.OK_CANCEL);
+  var resSecret = ui.prompt("Свойство 3/6: Секретный токен: REVALIDATE_SECRET_TOKEN", "Введите секретный токен: REVALIDATE_SECRET_TOKEN:", ui.ButtonSet.OK_CANCEL);
   if (resSecret.getSelectedButton() !== ui.Button.OK) return;
   var secretToken = resSecret.getResponseText().trim() || currentSecret;
 
   var currentDeployHook = scriptProperties.getProperty('VERCEL_DEPLOY_HOOK_URL') || "";
-  var resDeployHook = ui.prompt("Свойство 4/6: Vercel Deploy Hook (VERCEL_DEPLOY_HOOK_URL)", "Введите Deploy Hook URL из панели Vercel (необязательно):", ui.ButtonSet.OK_CANCEL);
+  var resDeployHook = ui.prompt("Свойство 4/6: Vercel Deploy Hook: VERCEL_DEPLOY_HOOK_URL", "Введите Deploy Hook URL из панели Vercel: необязательно:", ui.ButtonSet.OK_CANCEL);
   if (resDeployHook.getSelectedButton() !== ui.Button.OK) return;
   var deployHook = resDeployHook.getResponseText().trim() || currentDeployHook;
 
   var currentTgToken = scriptProperties.getProperty('TELEGRAM_BOT_TOKEN') || "";
-  var resTgToken = ui.prompt("Свойство 5/6: Telegram Bot Token (TELEGRAM_BOT_TOKEN)", "Введите токен Telegram-бота для уведомлений владельца:", ui.ButtonSet.OK_CANCEL);
+  var resTgToken = ui.prompt("Свойство 5/6: Telegram Bot Token: TELEGRAM_BOT_TOKEN", "Введите токен Telegram-бота для уведомлений владельца:", ui.ButtonSet.OK_CANCEL);
   if (resTgToken.getSelectedButton() !== ui.Button.OK) return;
   var tgToken = resTgToken.getResponseText().trim() || currentTgToken;
 
   var currentTgChatId = scriptProperties.getProperty('TELEGRAM_CHAT_ID') || "";
-  var resTgChat = ui.prompt("Свойство 6/6: Telegram Chat ID (TELEGRAM_CHAT_ID)", "Введите ваш Chat ID в Telegram:", ui.ButtonSet.OK_CANCEL);
+  var resTgChat = ui.prompt("Свойство 6/6: Telegram Chat ID: TELEGRAM_CHAT_ID", "Введите ваш Chat ID в Telegram:", ui.ButtonSet.OK_CANCEL);
   if (resTgChat.getSelectedButton() !== ui.Button.OK) return;
   var tgChatId = resTgChat.getResponseText().trim() || currentTgChatId;
 
@@ -647,7 +714,7 @@ function setupScriptPropertiesInteractive() {
     'TELEGRAM_CHAT_ID': tgChatId
   }, false);
 
-  ui.alert("✅ Успех!", "Все Свойства скрипта (Script Properties) успешно зафиксированы и доступны для вебхуков, Vercel и Telegram.", ui.ButtonSet.OK);
+  ui.alert("✅ Успех!", "Все Свойства скрипта успешно зафиксированы и доступны для вебхуков, Vercel и Telegram.\n\nНапоминание: все ключи также могут находиться на https://vercel.com/ ➔ Settings ➔ Environment Variables.", ui.ButtonSet.OK);
 }
 
 /**
