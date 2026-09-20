@@ -67,8 +67,21 @@ async function restoreAllSheets() {
 
     // Очистка устаревших англоязычных листов-дубликатов
     const obsoleteEnglishNames = [
-      'bookingrequests', 'placeholders', 'homepage', 'calendarsettings',
-      'extraservices', 'videoguides'
+      'home', 'homepage', 'showcase',
+      'gallery', 'photos',
+      'about', 'houserules',
+      'services', 'extraservices',
+      'guides', 'videoguides',
+      'legal', 'documents',
+      'bookings', 'bookingrequests',
+      'calendar', 'calendarsettings', 'pricing',
+      'accounts', 'guestaccounts', 'guests',
+      'master', 'permissions', 'accesscontrol',
+      'orders', 'serviceorders',
+      'access', 'guideaccess',
+      'templates', 'messagetemplates',
+      'variables', 'dictionary', 'placeholders',
+      'settings', 'aisettings'
     ];
     const deleteOldRequests = [];
     for (const oldName of obsoleteEnglishNames) {

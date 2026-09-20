@@ -43,8 +43,45 @@ export default async function handler(req, res) {
     const sheets = google.sheets({ version: 'v4', auth });
 
     const ss = await sheets.spreadsheets.get({ spreadsheetId });
-    const existingSheets = ss.data.sheets || [];
-    const existingTitles = existingSheets.map((s) => s.properties.title.trim());
+    let existingSheets = ss.data.sheets || [];
+
+    // Очистка устаревших англоязычных листов-дубликатов
+    const obsoleteEnglishNames = [
+      'home', 'homepage', 'showcase',
+      'gallery', 'photos',
+      'about', 'houserules',
+      'services', 'extraservices',
+      'guides', 'videoguides',
+      'legal', 'documents',
+      'bookings', 'bookingrequests',
+      'calendar', 'calendarsettings', 'pricing',
+      'accounts', 'guestaccounts', 'guests',
+      'master', 'permissions', 'accesscontrol',
+      'orders', 'serviceorders',
+      'access', 'guideaccess',
+      'templates', 'messagetemplates',
+      'variables', 'dictionary', 'placeholders',
+      'settings', 'aisettings'
+    ];
+    const deleteOldRequests = [];
+    for (const oldName of obsoleteEnglishNames) {
+      const match = existingSheets.find((s) => s.properties.title.trim().toLowerCase() === oldName);
+      if (match) {
+        deleteOldRequests.push({ deleteSheet: { sheetId: match.properties.sheetId } });
+      }
+    }
+    if (deleteOldRequests.length > 0) {
+      try {
+        await sheets.spreadsheets.batchUpdate({
+          spreadsheetId,
+          requestBody: { requests: deleteOldRequests }
+        });
+        const refetch = await sheets.spreadsheets.get({ spreadsheetId });
+        existingSheets = refetch.data.sheets || [];
+      } catch (delErr) {
+        console.warn('Предупреждение при удалении устаревших листов:', delErr.message);
+      }
+    }
 
     const allSheetConfigs = Object.values(SHEETS_REGISTRY).map((cfg) => ({
       key: cfg.key,

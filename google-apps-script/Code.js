@@ -13,23 +13,23 @@
  */
 var VILLA_SHEETS_CONFIG = {
   // Кластер 1: Публичная витрина и презентация листинга
-  HOME: { name: "🏠 Главная витрина", suggestedSheetId: 101, aliases: ["🏠 Главная витрина", "Главная витрина", "Главная", "Витрина", "Home", "Showcase"], cluster: "showcase" },
-  GALLERY: { name: "📸 Фото и Видео Галерея", suggestedSheetId: 102, aliases: ["📸 Фото и Видео Галерея", "Фото и Видео Галерея", "Фотогалерея", "Галерея", "Медиа", "Gallery", "Photos"], cluster: "showcase" },
-  ABOUT: { name: "📖 О вилле и Правила", suggestedSheetId: 103, aliases: ["📖 О вилле и Правила", "О вилле и Правила", "О вилле", "Правила дома", "About", "HouseRules"], cluster: "showcase" },
-  SERVICES: { name: "🛎️ Дополнительные услуги", suggestedSheetId: 104, aliases: ["🛎️ Дополнительные услуги", "Дополнительные услуги", "Услуги", "Сервисы", "Платные услуги", "Services", "ExtraServices"], cluster: "showcase" },
-  GUIDES: { name: "🗺️ Видео-путеводители", suggestedSheetId: 105, aliases: ["🗺️ Видео-путеводители", "Видео-путеводители", "Видеопутеводители", "Путеводители", "Гиды", "Guides", "VideoGuides"], cluster: "showcase" },
-  LEGAL: { name: "⚖️ Юридические документы", suggestedSheetId: 106, aliases: ["⚖️ Юридические документы", "Юридические документы", "Юридическая информация", "Реквизиты", "Legal", "Documents"], cluster: "showcase" },
+  HOME: { name: "🏠 Главная витрина", suggestedSheetId: 101, aliases: ["🏠 Главная витрина", "Главная витрина", "Главная", "Витрина"], cluster: "showcase" },
+  GALLERY: { name: "📸 Фото и Видео Галерея", suggestedSheetId: 102, aliases: ["📸 Фото и Видео Галерея", "Фото и Видео Галерея", "Фотогалерея", "Галерея", "Медиа"], cluster: "showcase" },
+  ABOUT: { name: "📖 О вилле и Правила", suggestedSheetId: 103, aliases: ["📖 О вилле и Правила", "О вилле и Правила", "О вилле", "Правила дома"], cluster: "showcase" },
+  SERVICES: { name: "🛎️ Дополнительные услуги", suggestedSheetId: 104, aliases: ["🛎️ Дополнительные услуги", "Дополнительные услуги", "Услуги", "Сервисы", "Платные услуги"], cluster: "showcase" },
+  GUIDES: { name: "🗺️ Видео-путеводители", suggestedSheetId: 105, aliases: ["🗺️ Видео-путеводители", "Видео-путеводители", "Видеопутеводители", "Путеводители", "Гиды"], cluster: "showcase" },
+  LEGAL: { name: "⚖️ Юридические документы", suggestedSheetId: 106, aliases: ["⚖️ Юридические документы", "Юридические документы", "Юридическая информация", "Реквизиты"], cluster: "showcase" },
 
   // Кластер 2: Бронирования, Кабинет Хозяина, Продажи и CRM
-  BOOKINGS: { name: "📋 Заявки и Бронирования", suggestedSheetId: 107, aliases: ["📋 Заявки и Бронирования", "Заявки и Бронирования", "Заявки на бронирование", "Бронирования", "Заявки", "Вилла", "Bookings", "BookingRequests"], cluster: "host" },
-  CALENDAR: { name: "📅 Календарь и Тарифы", suggestedSheetId: 108, aliases: ["📅 Календарь и Тарифы", "Календарь и Тарифы", "Календарь и Занятость", "Календарь", "Тарифы", "Настройки календаря", "Calendar", "Pricing"], cluster: "host" },
-  ACCOUNTS: { name: "👤 Гостевые аккаунты", suggestedSheetId: 109, aliases: ["👤 Гостевые аккаунты", "Гостевые аккаунты", "Аккаунты гостей", "Гости", "Accounts", "GuestAccounts", "Guests"], cluster: "host" },
-  MASTER: { name: "🔑 Управление доступом", suggestedSheetId: 110, aliases: ["🔑 Управление доступом", "Управление доступом", "Мастер аккаунты", "Права доступа", "Master", "Permissions", "AccessControl"], cluster: "host" },
-  ORDERS: { name: "💳 Заказы услуг и гидов", suggestedSheetId: 111, aliases: ["💳 Заказы услуг и гидов", "Заказы услуг и гидов", "Заказы", "Заказы услуг", "Orders", "ServiceOrders"], cluster: "host" },
-  ACCESS: { name: "🎟️ Доступы к путеводителям", suggestedSheetId: 112, aliases: ["🎟️ Доступы к путеводителям", "Доступы к путеводителям", "Доступы к гидам", "Доступы", "Access", "GuideAccess"], cluster: "host" },
-  TEMPLATES: { name: "💬 Шаблоны сообщений", suggestedSheetId: 113, aliases: ["💬 Шаблоны сообщений", "Шаблоны сообщений", "Шаблоны", "Быстрые ответы", "Templates", "MessageTemplates"], cluster: "host" },
-  VARIABLES: { name: "🧩 Словарь переменных", suggestedSheetId: 114, aliases: ["🧩 Словарь переменных", "Словарь переменных", "Переменные", "Справочник реквизитов", "Variables", "Dictionary"], cluster: "host" },
-  SETTINGS: { name: "⚙️ Системные настройки ИИ Агентов", suggestedSheetId: 115, aliases: ["⚙️ Системные настройки ИИ Агентов", "Системные настройки ИИ Агентов", "Системные настройки", "Настройки ИИ", "Settings", "AiSettings"], cluster: "system" }
+  BOOKINGS: { name: "📋 Заявки и Бронирования", suggestedSheetId: 201, aliases: ["📋 Заявки и Бронирования", "Заявки и Бронирования", "Заявки на бронирование", "Бронирования", "Заявки", "Вилла"], cluster: "host" },
+  CALENDAR: { name: "📅 Календарь и Тарифы", suggestedSheetId: 202, aliases: ["📅 Календарь и Тарифы", "Календарь и Тарифы", "Календарь и Занятость", "Календарь", "Тарифы", "Настройки календаря"], cluster: "host" },
+  ACCOUNTS: { name: "👤 Гостевые аккаунты", suggestedSheetId: 203, aliases: ["👤 Гостевые аккаунты", "Гостевые аккаунты", "Аккаунты гостей", "Гости"], cluster: "host" },
+  MASTER: { name: "🔑 Управление доступом", suggestedSheetId: 204, aliases: ["🔑 Управление доступом", "Управление доступом", "Мастер аккаунты", "Права доступа"], cluster: "host" },
+  ORDERS: { name: "💳 Заказы услуг и гидов", suggestedSheetId: 205, aliases: ["💳 Заказы услуг и гидов", "Заказы услуг и гидов", "Заказы", "Заказы услуг"], cluster: "host" },
+  ACCESS: { name: "🎟️ Доступы к путеводителям", suggestedSheetId: 206, aliases: ["🎟️ Доступы к путеводителям", "Доступы к путеводителям", "Доступы к гидам", "Доступы"], cluster: "host" },
+  TEMPLATES: { name: "💬 Шаблоны сообщений", suggestedSheetId: 207, aliases: ["💬 Шаблоны сообщений", "Шаблоны сообщений", "Шаблоны", "Быстрые ответы"], cluster: "host" },
+  VARIABLES: { name: "🧩 Словарь переменных", suggestedSheetId: 208, aliases: ["🧩 Словарь переменных", "Словарь переменных", "Переменные", "Справочник реквизитов"], cluster: "host" },
+  SETTINGS: { name: "⚙️ Системные настройки ИИ Агентов", suggestedSheetId: 209, aliases: ["⚙️ Системные настройки ИИ Агентов", "Системные настройки ИИ Агентов", "Системные настройки", "Настройки ИИ"], cluster: "system" }
 };
 
 /**
@@ -657,8 +657,21 @@ function ensureAllSystemSheets() {
 
   // 1. Очистка устаревших англоязычных листов-дубликатов
   var obsoleteEnglishNames = [
-    'bookingrequests', 'placeholders', 'homepage', 'calendarsettings',
-    'extraservices', 'videoguides'
+    'home', 'homepage', 'showcase',
+    'gallery', 'photos',
+    'about', 'houserules',
+    'services', 'extraservices',
+    'guides', 'videoguides',
+    'legal', 'documents',
+    'bookings', 'bookingrequests',
+    'calendar', 'calendarsettings', 'pricing',
+    'accounts', 'guestaccounts', 'guests',
+    'master', 'permissions', 'accesscontrol',
+    'orders', 'serviceorders',
+    'access', 'guideaccess',
+    'templates', 'messagetemplates',
+    'variables', 'dictionary', 'placeholders',
+    'settings', 'aisettings'
   ];
   for (var d = 0; d < existingSheets.length; d++) {
     var sName = existingSheets[d].getName().trim().toLowerCase();
