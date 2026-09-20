@@ -153,6 +153,20 @@
         "reveal": "always",
         "panel": "new"
       }
+    },
+    {
+      "label": "💾 14. SPARK: Универсальное создание двухуровневого бэкапа и сохранение версии",
+      "type": "shell",
+      "command": "pwsh -ExecutionPolicy Bypass -File .\\create_project_backup.ps1",
+      "options": {
+        "cwd": "${workspaceFolder}/../Глобальные настройки проекта (накопитель)"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "clear": true
+      }
     }
   ]
 }
