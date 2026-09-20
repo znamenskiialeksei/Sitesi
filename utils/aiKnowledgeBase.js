@@ -72,7 +72,13 @@ function getLocalFallbackKnowledge() {
     },
     templates: SMART_TEMPLATES || [],
     home: fallbackContent.home || {},
-    about: fallbackContent.about || {}
+    about: fallbackContent.about || {},
+    agentRoles: {
+      КОНСЬЕРЖ_МАСТЕР: { status: 'АКТИВЕН', prompt: 'Ты Главный ИИ-Консьерж Villa Turaman. Веди гостеприимный диалог с гостем, помогай с бронированием, трансфером, экскурсиями по Дальяну и удобствами виллы.' },
+      ЮРИСТ_КОНСУЛЬТАНТ: { status: 'АКТИВЕН', prompt: 'Ты Юрисконсульт Villa Turaman. Контролируй соблюдение турецкого законодательства VUK 213, закона о защите данных KVKK и условий краткосрочной аренды виллы.' },
+      ФИНАНСИСТ_БУХГАЛТЕР: { status: 'АКТИВЕН', prompt: 'Ты Финансовый аудитор Villa Turaman. Контролируй минимальную планку цен 180 USD, предоплаты 30%, возвратные залоги и учет расходов.' }
+    },
+    sheetMatrix: {}
   };
 }
 
@@ -137,18 +143,46 @@ async function getAiKnowledgeBase(forceRefresh = false) {
       homeRows,
       aboutRows
     ] = await Promise.all([
-      safeGet('SETTINGS', 'A:D'),
+      safeGet('SETTINGS', 'A:E'),
       safeGet('TEMPLATES', 'A:G'),
       safeGet('VARIABLES', 'A:D'),
       safeGet('HOME', 'A:E'),
       safeGet('ABOUT', 'A:G')
     ]);
 
-    // 1. Разбор системных настроек [SETTINGS]
+    // 1. Разбор системных настроек ИИ Агентов [SETTINGS]
     const settingsObj = {};
+    const agentRoles = {};
+    const sheetMatrix = {};
+
     settingsRows.slice(1).forEach((r) => {
-      if (r[0]) {
-        settingsObj[r[0].toString().trim()] = (r[1] || '').toString().trim();
+      const col0 = (r[0] || '').toString().trim();
+      const col1 = (r[1] || '').toString().trim();
+      const col2 = (r[2] || '').toString().trim();
+      const col3 = (r[3] || '').toString().trim();
+      const col4 = (r[4] || '').toString().trim();
+
+      if (col0 === 'СИСТЕМА') {
+        if (col1) settingsObj[col1] = col2;
+      } else if (col0 === 'РОЛЬ_АГЕНТА') {
+        if (col1) {
+          agentRoles[col1] = {
+            status: col2 || 'АКТИВЕН',
+            prompt: col3 || '',
+            note: col4 || ''
+          };
+        }
+      } else if (col0 === 'МАТРИЦА_ЛИСТОВ') {
+        if (col1) {
+          sheetMatrix[col1] = {
+            access: col2 || 'РАЗРЕШЕНО',
+            prompt: col3 || '',
+            note: col4 || ''
+          };
+        }
+      } else if (col0) {
+        // Поддержка старого формата параметров для обратной совместимости
+        settingsObj[col0] = col1;
       }
     });
 
@@ -213,6 +247,8 @@ async function getAiKnowledgeBase(forceRefresh = false) {
       geminiModel,
       minPriceUsd,
       systemPrompt: systemPrompt || getLocalFallbackKnowledge().systemPrompt,
+      agentRoles,
+      sheetMatrix,
       variables: variablesObj,
       templates: loadedTemplates,
       home: homeObj,

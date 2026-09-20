@@ -65,6 +65,30 @@ async function restoreAllSheets() {
 
     console.log(`Обнаружено существующих листов: ${existingSheets.length}`);
 
+    // Очистка устаревших англоязычных листов-дубликатов BookingRequests и Placeholders
+    const deleteOldRequests = [];
+    const bookingReqSheet = existingSheets.find((s) => s.properties.title.trim().toLowerCase() === 'bookingrequests');
+    const canonBookingsSheet = existingSheets.find((s) => s.properties.title.trim() === SHEETS_REGISTRY.BOOKINGS.defaultName);
+    if (bookingReqSheet && canonBookingsSheet && bookingReqSheet.properties.sheetId !== canonBookingsSheet.properties.sheetId) {
+      console.log('Обнаружен устаревший лист BookingRequests при наличии канонического листа. Удаляем дубликат...');
+      deleteOldRequests.push({ deleteSheet: { sheetId: bookingReqSheet.properties.sheetId } });
+    }
+
+    const placeholdersSheet = existingSheets.find((s) => s.properties.title.trim().toLowerCase() === 'placeholders');
+    const canonVarsSheet = existingSheets.find((s) => s.properties.title.trim() === SHEETS_REGISTRY.VARIABLES.defaultName);
+    if (placeholdersSheet && canonVarsSheet && placeholdersSheet.properties.sheetId !== canonVarsSheet.properties.sheetId) {
+      console.log('Обнаружен устаревший лист Placeholders при наличии канонического листа. Удаляем дубликат...');
+      deleteOldRequests.push({ deleteSheet: { sheetId: placeholdersSheet.properties.sheetId } });
+    }
+
+    if (deleteOldRequests.length > 0) {
+      await sheets.spreadsheets.batchUpdate({
+        spreadsheetId,
+        requestBody: { requests: deleteOldRequests }
+      });
+      console.log(`✅ Ликвидировано устаревших листов-дубликатов: ${deleteOldRequests.length}`);
+    }
+
     const allSheetConfigs = Object.values(SHEETS_REGISTRY).map((cfg) => ({
       key: cfg.key,
       title: cfg.defaultName,
@@ -363,7 +387,7 @@ async function restoreAllSheets() {
 
         if (config.key === 'SETTINGS') {
           dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:D${MASTER_SETTINGS_ROWS.length + 1}`,
+            range: `'${actualTitle}'!A2:E${MASTER_SETTINGS_ROWS.length + 1}`,
             values: MASTER_SETTINGS_ROWS
           });
         }

@@ -10,7 +10,9 @@
     "lint": "next lint",
     "init-db": "node scripts/init-google-sheets.js",
     "sync-content": "node scripts/sync-content.js",
-    "migrate-sheets": "node scripts/migrate-sheets-structure.js"
+    "migrate-sheets": "node scripts/migrate-sheets-structure.js",
+    "restore-sheets": "node scripts/restore-sheets.js",
+    "save-master-seed": "node scripts/save-master-seed.js"
   },
   "dependencies": {
     "@paypal/checkout-server-sdk": "^1.0.3",

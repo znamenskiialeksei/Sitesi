@@ -21,6 +21,27 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
   });
   const [isAiSaving, setIsAiSaving] = useState(false);
   const [isRestoringSheets, setIsRestoringSheets] = useState(false);
+  const [isSavingMasterSeed, setIsSavingMasterSeed] = useState(false);
+
+  const handleSaveMasterSeed = async () => {
+    setIsSavingMasterSeed(true);
+    try {
+      const res = await fetch('/api/admin/save-master-seed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(`Эталон SSOT успешно зафиксирован: разделов ABOUT ${data.aboutCount}, ключей HOME ${data.homeKeysCount}, параметров SETTINGS ${data.settingsCount}`);
+      } else {
+        toast.error(`Ошибка фиксации эталона: ${data.error}`);
+      }
+    } catch (err) {
+      toast.error(`Сбой связи: ${err.message}`);
+    } finally {
+      setIsSavingMasterSeed(false);
+    }
+  };
 
   const handleRestoreSheets = async () => {
     setIsRestoringSheets(true);
@@ -235,14 +256,24 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
               <p className="text-xs text-slate-400 mt-0.5">Восстановить любые удаленные вкладки, структуру, формулы и эталонные данные</p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={handleRestoreSheets}
-            disabled={isRestoringSheets}
-            className="px-5 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 shrink-0"
-          >
-            {isRestoringSheets ? 'Восстановление...' : '🛠️ Восстановить листы в 1 клик'}
-          </button>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <button
+              type="button"
+              onClick={handleRestoreSheets}
+              disabled={isRestoringSheets || isSavingMasterSeed}
+              className="px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 shrink-0 disabled:opacity-50"
+            >
+              {isRestoringSheets ? 'Восстановление...' : '🛠️ Восстановить листы в 1 клик'}
+            </button>
+            <button
+              type="button"
+              onClick={handleSaveMasterSeed}
+              disabled={isSavingMasterSeed || isRestoringSheets}
+              className="px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2 shrink-0 disabled:opacity-50"
+            >
+              {isSavingMasterSeed ? 'Фиксация эталона...' : '💾 Зафиксировать эталон SSOT'}
+            </button>
+          </div>
         </div>
       </div>
 

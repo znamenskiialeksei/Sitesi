@@ -70,6 +70,27 @@ export default async function handler(req, res) {
       });
     }
 
+    // Очистка устаревших листов дубликатов BookingRequests и Placeholders
+    const deleteOldRequests = [];
+    const bookingReqSheet = existingSheets.find((s) => s.properties.title.trim().toLowerCase() === 'bookingrequests');
+    const canonBookingsSheet = existingSheets.find((s) => s.properties.title.trim() === SHEETS_REGISTRY.BOOKINGS.defaultName);
+    if (bookingReqSheet && canonBookingsSheet && bookingReqSheet.properties.sheetId !== canonBookingsSheet.properties.sheetId) {
+      deleteOldRequests.push({ deleteSheet: { sheetId: bookingReqSheet.properties.sheetId } });
+    }
+
+    const placeholdersSheet = existingSheets.find((s) => s.properties.title.trim().toLowerCase() === 'placeholders');
+    const canonVarsSheet = existingSheets.find((s) => s.properties.title.trim() === SHEETS_REGISTRY.VARIABLES.defaultName);
+    if (placeholdersSheet && canonVarsSheet && placeholdersSheet.properties.sheetId !== canonVarsSheet.properties.sheetId) {
+      deleteOldRequests.push({ deleteSheet: { sheetId: placeholdersSheet.properties.sheetId } });
+    }
+
+    if (deleteOldRequests.length > 0) {
+      await sheets.spreadsheets.batchUpdate({
+        spreadsheetId,
+        requestBody: { requests: deleteOldRequests }
+      });
+    }
+
     const updatedSs = await sheets.spreadsheets.get({ spreadsheetId });
     const formatRequests = [];
     const dataAppendRequests = [];
@@ -205,7 +226,7 @@ export default async function handler(req, res) {
 
         if (config.key === 'SETTINGS') {
           dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:D${MASTER_SETTINGS_ROWS.length + 1}`,
+            range: `'${actualTitle}'!A2:E${MASTER_SETTINGS_ROWS.length + 1}`,
             values: MASTER_SETTINGS_ROWS
           });
         }

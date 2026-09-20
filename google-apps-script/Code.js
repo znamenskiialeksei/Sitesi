@@ -21,15 +21,15 @@ var VILLA_SHEETS_CONFIG = {
   LEGAL: { name: "⚖️ Юридические документы", aliases: ["Legal", "Юридический блок", "⚖️ Юридические документы"], cluster: "showcase" },
 
   // Кластер 2: Центр управления хозяина & CRM
-  BOOKINGS: { name: "📋 Заявки и Бронирования", aliases: ["Вилла", "Бронирования", "📋 Заявки и Бронирования"], cluster: "host" },
+  BOOKINGS: { name: "📋 Заявки и Бронирования", aliases: ["BookingRequests", "Вилла", "Бронирования", "Заявки", "Заявки и Бронирования", "📋 Заявки и Бронирования"], cluster: "host" },
   CALENDAR: { name: "📅 Календарь и Тарифы", aliases: ["CalendarSettings", "Календарь", "📅 Календарь и Тарифы"], cluster: "host" },
   ACCOUNTS: { name: "👤 Гостевые аккаунты", aliases: ["Accounts", "Аккаунты", "👤 Гостевые аккаунты"], cluster: "host" },
   MASTER: { name: "🔑 Управление доступом", aliases: ["MasterAccount", "Мастер аккаунт", "🔑 Управление доступом"], cluster: "host" },
   ORDERS: { name: "💳 Заказы услуг и гидов", aliases: ["ServiceOrders", "Заказы", "💳 Заказы услуг и гидов"], cluster: "host" },
   ACCESS: { name: "🎟️ Доступы к путеводителям", aliases: ["GuestsAccess", "Доступы", "🎟️ Доступы к путеводителям"], cluster: "host" },
   TEMPLATES: { name: "💬 Шаблоны сообщений", aliases: ["Templates", "Шаблоны", "💬 Шаблоны сообщений"], cluster: "host" },
-  VARIABLES: { name: "🧩 Словарь переменных", aliases: ["Variables", "Переменные", "🧩 Словарь переменных"], cluster: "host" },
-  SETTINGS: { name: "⚙️ Системные настройки", aliases: ["Settings", "Системные настройки", "⚙️ Системные настройки"], cluster: "system" }
+  VARIABLES: { name: "🧩 Словарь переменных", aliases: ["Placeholders", "Variables", "Переменные", "Словарь переменных", "🧩 Словарь переменных"], cluster: "host" },
+  SETTINGS: { name: "⚙️ Системные настройки ИИ Агентов", aliases: ["Settings", "Системные настройки", "Настройки ИИ", "⚙️ Системные настройки", "⚙️ Системные настройки ИИ Агентов"], cluster: "system" }
 };
 
 /**
@@ -95,8 +95,9 @@ function onOpen() {
     .addItem("🧪 5. Проверить стандарт точки с запятой в формулах", "auditFormulasSemicolon")
     .addItem("📄 6. Просмотр паспорта и ID всех листов", "showSheetsPassportModal")
     .addItem("🛠️ 7. Восстановить все удаленные листы и наполнить контентом", "ensureAllSystemSheets")
+    .addItem("💾 8. Зафиксировать текущие таблицы как эталон SSOT на сайте", "saveMasterSeedInteractive")
     .addSeparator()
-    .addItem("📧 8. Инструкция по развертыванию Gmail Relay", "showGmailRelayDeployHelp");
+    .addItem("📧 9. Инструкция по развертыванию Gmail Relay", "showGmailRelayDeployHelp");
 
   // Сборка первого главного меню верхнего уровня: 🏡 Villa Turaman Suite
   ui.createMenu("🏡 Villa Turaman Suite")
@@ -110,14 +111,36 @@ function onOpen() {
     .addToUi();
 
   // ТРЕТЬЕ ГЛАВНОЕ МЕНЮ ВЕРХНЕГО УРОВНЯ: 🧠 3. ИИ-Агент & Gemini
+  var props = PropertiesService.getScriptProperties();
+  var currentAiMode = (props.getProperty('AI_MODE') || 'autopilot').toLowerCase();
+  var currentModel = props.getProperty('GEMINI_MODEL') || 'gemini-3.6-flash';
+  var currentMinPrice = props.getProperty('MIN_NIGHT_PRICE') || '180';
+
+  var modeLabel = currentAiMode === 'autopilot' ? '🚀 Автопилот' : (currentAiMode === 'copilot' ? '💡 Суфлер' : '⏸️ Выкл');
+  var statusBadge = "📊 Статус: " + modeLabel + " | " + currentModel + " | Мин: $" + currentMinPrice;
+
+  var aiModesSubMenu = ui.createMenu("🚀 1. Выбрать режим работы ИИ")
+    .addItem((currentAiMode === 'autopilot' ? '● ' : '○ ') + "🚀 Автопилот [ИИ отвечает гостям сам]", "setAiModeAutopilot")
+    .addItem((currentAiMode === 'copilot' ? '● ' : '○ ') + "💡 Суфлер [Черновик ответа в ЛС хозяина]", "setAiModeCopilot")
+    .addItem((currentAiMode === 'off' ? '● ' : '○ ') + "⏸️ Выключен [Ручной режим хозяина]", "setAiModeOff");
+
+  var aiRolesSubMenu = ui.createMenu("👥 2. Роли агентов и Промпты")
+    .addItem("👑 Консьерж-Мастер [Алексей Знаменский]", "showConciergePromptInfo")
+    .addItem("⚖️ Юрист-Консультант [KBS / KVKK / Налоги]", "showLawyerPromptInfo")
+    .addItem("💳 Финансист-Бухгалтер [e-Arşiv / Оплаты]", "showFinancePromptInfo")
+    .addSeparator()
+    .addItem("✏️ Редактировать промпты на листе настроек", "openAiSettingsSheet");
+
   var aiMainMenu = ui.createMenu("🧠 3. ИИ-Агент & Gemini")
-    .addItem("🔘 1. Переключить режим: Автопилот / Суфлер / Выкл", "toggleAiModeInteractive")
-    .addItem("⚙️ 2. Системный промпт и правила общения", "setupAiSystemPromptInteractive")
+    .addItem(statusBadge, "showAiFullStatusModal")
+    .addSeparator()
+    .addSubMenu(aiModesSubMenu)
+    .addSubMenu(aiRolesSubMenu)
     .addItem("💰 3. Минимальная цена за ночь: лимит $180", "setupAiMinPriceInteractive")
     .addItem("🤖 4. Выбор модели Gemini: gemini-3.6-flash", "setupAiModelInteractive")
     .addItem("📚 5. Синхронизировать Базу Знаний в память сайта", "syncAiKnowledgeToVercel")
     .addSeparator()
-    .addItem("🛠️ 6. Создать и наполнить Базу Знаний ИИ: 3 листа", "initAiKnowledgeBaseSheets")
+    .addItem("🛠️ 6. Обновить лист Настроек и Матрицу Доступа", "initAiKnowledgeBaseSheets")
     .addItem("🌐 7. Проверить статус Gemini API на Vercel", "checkGeminiVercelStatusInteractive")
     .addItem("🔑 8. Настроить GEMINI_API_KEY в Свойствах скрипта", "setupAiPropertiesInteractive")
     .addItem("💬 9. Тестовый диалог с ИИ-Консьержем", "testAiConciergeInteractive");
@@ -614,6 +637,24 @@ function ensureAllSystemSheets() {
   var ui = SpreadsheetApp.getUi();
   var existingSheets = ss.getSheets();
 
+  // 1. Очистка устаревших англоязычных листов-дубликатов BookingRequests и Placeholders
+  for (var d = 0; d < existingSheets.length; d++) {
+    var sName = existingSheets[d].getName().trim().toLowerCase();
+    if (sName === 'bookingrequests') {
+      var canonBookings = findSheetByConfigKey(ss, 'BOOKINGS');
+      if (canonBookings && canonBookings.getSheetId() !== existingSheets[d].getSheetId()) {
+        ss.deleteSheet(existingSheets[d]);
+      }
+    } else if (sName === 'placeholders') {
+      var canonVars = findSheetByConfigKey(ss, 'VARIABLES');
+      if (canonVars && canonVars.getSheetId() !== existingSheets[d].getSheetId()) {
+        ss.deleteSheet(existingSheets[d]);
+      }
+    }
+  }
+
+  // Обновляем список листов после удаления
+  existingSheets = ss.getSheets();
   var createdCount = 0;
   var keys = Object.keys(VILLA_SHEETS_CONFIG);
 
@@ -705,15 +746,35 @@ function initSingleSheetByKey_(sheet, key) {
     sheet.getRange('C2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
     sheet.getRange('D2').setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
   } else if (key === 'SETTINGS') {
-    var setHeaders = ['Параметр', 'Значение', 'Описание', 'Статус'];
+    var setHeaders = ['Категория', 'Параметр / Роль / Лист', 'Значение / Статус доступа', 'Промпт / Описание / Инструкция', 'Заметка'];
     styleSheetHeader_(sheet, setHeaders, 1);
     var setRows = [
-      ['ai_mode', 'autopilot', 'Режим работы ИИ: autopilot, copilot, off', 'Активен'],
-      ['system_prompt', 'Ты: персональный ИИ-консьерж суперхозяина Алексея Знаменского на вилле Villa Turaman в Дальяне. Отвечай вежливо, дружелюбно и точно. Всегда предлагай помощь в бронировании.', 'Базовые директивы общения ИИ-агента', 'Активен'],
-      ['min_night_price', '180', 'Минимально допустимая цена за сутки бронирования в USD', 'Строгий лимит'],
-      ['gemini_model', 'gemini-3.6-flash', 'Целевая модель Google Gemini для генерации ответов', 'По умолчанию']
+      ['СИСТЕМА', 'ai_mode', 'autopilot', 'Режим работы ИИ: autopilot [автоответ], copilot [суфлер хозяина], off [выключен]', 'Критический'],
+      ['СИСТЕМА', 'ai_model', 'gemini-3.6-flash', 'Целевая модель Google Gemini: gemini-3.6-flash / gemini-2.5-flash', 'Высокая скорость'],
+      ['СИСТЕМА', 'min_night_price', '180', 'Минимально допустимая цена за сутки бронирования в USD: ниже опускать запрещено', 'Финансовый барьер'],
+      ['СИСТЕМА', 'telegram_bot_token', '', 'Токен Telegram-бота от BotFather для оповещений и мобильного пульта', 'Безопасность'],
+      ['СИСТЕМА', 'telegram_admin_chat_id', '', 'ID чата суперхозяина в Telegram для получения алертов и модерации', 'Суперхозяин'],
+      ['СИСТЕМА', 'vercel_url', 'https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app', 'Боевой URL платформы на Vercel для вебхуков и ревалидации', 'Синхронизация'],
+      ['РОЛЬ_АГЕНТА', 'Консьерж-Мастер', 'АКТИВЕН', 'Ты: персональный ИИ-консьерж суперхозяина Алексея Знаменского на вилле Villa Turaman в Дальяне. Твоя миссия: гостеприимно, дипломатично и авторитетно отвечать гостям, презентовать приватный бассейн 36 кв.м, 4 спальни до 10 гостей, террасу и сад. Помогать с бронированием, предлагать доп. услуги [трансфер, шеф-повар, массаж, яхта] и авторские путеводители. Соблюдать правила дома, налоги Турции VKN 9991120181 и никогда не давать цену ниже $180 за ночь.', 'Главная роль'],
+      ['РОЛЬ_АГЕНТА', 'Юрист-Консультант', 'РЕЗЕРВ', 'Ты: ведущий юрисконсульт Villa Turaman. Контролируешь правомерность краткосрочной аренды по законам Турции, обязательную регистрацию гостей в системе KBS жандармерии, соответствие закону о защите персональных данных KVKK и налоговое оформление VUK 213 Madde 230 e-Arşiv Fatura. Действуешь строго в рамках золотой формулы переговоров 30% эмпатии / 70% юридической дисциплины.', 'Правовой модуль'],
+      ['РОЛЬ_АГЕНТА', 'Финансист-Бухгалтер', 'РЕЗЕРВ', 'Ты: главный финансовый менеджер Villa Turaman. Ведешь учет платежей, проверяешь поступления по банковским счетам, рассчитываешь мультивалютные цены EUR/RUB/TRY, применяешь скидку 10% за невозвратный тариф при заезде до 60 дней и блокируешь любые попытки несанкционированного занижения тарифа ниже $180.', 'Финансовый модуль'],
+      ['МАТРИЦА_ЛИСТОВ', '🏠 Главная витрина', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит главную витрину: заголовок hero, описание about, спецификации [10 гостей, 4 спальни, 6 кроватей, 4.5 ванных], статус Superhost и параметры спален 1-4. Агент использует эти данные для точного описания планировки виллы.', 'Витрина'],
+      ['МАТРИЦА_ЛИСТОВ', '📸 Фото и Видео Галерея', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит медиа-банк виллы: ссылки на фото высокого разрешения и видеотуры бассейна, сада, комнат и видов на реку. Агент рекомендует гостям взглянуть на галерею для знакомства с уютом.', 'Медиа'],
+      ['МАТРИЦА_ЛИСТОВ', '📖 О вилле и Правила', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит 7 фундаментальных разделов виллы: заезд после 16:00, выезд до 10:00, очистка бассейна с 8 до 10 утра, строгий запрет курения внутри помещений, правила тишины и регистрация KBS. Агент неукоснительно транслирует эти правила.', 'База знаний'],
+      ['МАТРИЦА_ЛИСТОВ', '🛎️ Дополнительные услуги', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит каталог платных сервисов: трансферы из аэропорта Даламан DLM, персональный шеф-повар, массажи, прогулка на лодке, барбекю, аренда SUP-бордов. Агент активно предлагает эти услуги для повышения среднего чека.', 'Каталог услуг'],
+      ['МАТРИЦА_ЛИСТОВ', '🗺️ Видео-путеводители', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит цифровые гиды по Дальяну, пляжу Изтузу, озеру Кёйджегиз, ресторанам и античному Кауносу. Агент презентует гиды как уникальный авторский контент от суперхозяина.', 'Каталог гидов'],
+      ['МАТРИЦА_ЛИСТОВ', '⚖️ Юридические документы', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит официальный договор аренды, политику KVKK, реквизиты VKN 9991120181. Агент ссылается на эти пункты при возникновении споров, вопросах о налогах или подтверждении легальности.', 'Юриспруденция'],
+      ['МАТРИЦА_ЛИСТОВ', '📋 Заявки и Бронирования', 'РАЗРЕШЕН [ВСЕ]', 'Лист фиксирует статус заявок гостей, даты заезда и выезда, число гостей и статус оплаты. Агент проверяет информацию о бронировании перед персональным обращением.', 'Операции CRM'],
+      ['МАТРИЦА_ЛИСТОВ', '📅 Календарь и Тарифы', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит актуальную сетку занятости дат и тарифные ставки. Агент учитывает занятые даты и минимальный срок проживания, исключая овербукинг.', 'Календарь'],
+      ['МАТРИЦА_ЛИСТОВ', '👤 Гостевые аккаунты', 'РАЗРЕШЕН [КОНСЬЕРЖ]', 'Лист содержит реестр зарегистрированных гостей и статусы блокировок. Агент использует имя гостя для теплого персонализированного приветствия.', 'Гостевой сервис'],
+      ['МАТРИЦА_ЛИСТОВ', '🔑 Управление доступом', 'ОГРАНИЧЕН [МАСТЕР]', 'Лист административных учетных записей хозяев и персонала. Доступ закрыт для публичных диалогов: только для авторизации в Кабинете хозяина.', 'Безопасность'],
+      ['МАТРИЦА_ЛИСТОВ', '💳 Заказы услуг и гидов', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит историю заказов доп. услуг и путеводителей. Агент благодарит гостя за оформленный заказ и подтверждает передачу заявки суперхозяину.', 'Заказы'],
+      ['МАТРИЦА_ЛИСТОВ', '🎟️ Доступы к путеводителям', 'РАЗРЕШЕН [ВСЕ]', 'Лист персональных доступов к медиа-материалам. Агент напоминает гостю о доступных ему видео-материалах после подтверждения оплаты.', 'Доступы'],
+      ['МАТРИЦА_ЛИСТОВ', '💬 Шаблоны сообщений', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит 14 профессиональных шаблонов общения с 12 точными ссылками Google Maps [включая путеводитель по Дальяну]. Агент использует их как золотой эталон дружелюбного тона.', 'Шаблоны коммуникации'],
+      ['МАТРИЦА_ЛИСТОВ', '🧩 Словарь переменных', 'РАЗРЕШЕН [ВСЕ]', 'Лист плейсхолдеров [FIRST_NAME], [CHECKIN_DATE], [VILLA_ADDRESS]. Агент автоматически подставляет живые переменные в текст сообщений.', 'Переменные'],
+      ['МАТРИЦА_ЛИСТОВ', '⚙️ Системные настройки ИИ Агентов', 'РАЗРЕШЕН [ВСЕ]', 'Лист управления системой ИИ, генеральными директивами ролей и матрицей прав доступа. Агент черпает отсюда свои глобальные рамки поведения.', 'Центр управления ИИ']
     ];
-    sheet.getRange(2, 1, setRows.length, 4).setValues(setRows);
+    sheet.getRange(2, 1, setRows.length, 5).setValues(setRows);
   } else if (key === 'LEGAL') {
     var legHeaders = ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'];
     styleSheetHeader_(sheet, legHeaders, 1);
@@ -2395,6 +2456,185 @@ function testAiConciergeInteractive() {
     }
   } catch (err) {
     ui.alert('Ошибка запроса', err.message, ui.ButtonSet.OK);
+  }
+}
+
+// ==============================================================================
+// УПРАВЛЕНИЕ РЕЖИМАМИ ИИ, РОЛЯМИ И ФИКСАЦИЕЙ ЭТАЛОНА SSOT
+// ==============================================================================
+
+/**
+ * Установка режима Автопилот
+ */
+function setAiModeAutopilot() {
+  PropertiesService.getScriptProperties().setProperty('AI_MODE', 'autopilot');
+  updateAiSettingInSheet_('ai_mode', 'autopilot');
+  try { syncAiKnowledgeToVercel(); } catch (e) { }
+  SpreadsheetApp.getActive().toast('Режим ИИ установлен: 🚀 Автопилот. ИИ отвечает гостям самостоятельно.', '🧠 ИИ-Агент', 5);
+}
+
+/**
+ * Установка режима Суфлер
+ */
+function setAiModeCopilot() {
+  PropertiesService.getScriptProperties().setProperty('AI_MODE', 'copilot');
+  updateAiSettingInSheet_('ai_mode', 'copilot');
+  try { syncAiKnowledgeToVercel(); } catch (e) { }
+  SpreadsheetApp.getActive().toast('Режим ИИ установлен: 💡 Суфлер. ИИ готовит черновики ответов хозяину.', '🧠 ИИ-Агент', 5);
+}
+
+/**
+ * Установка режима Выключен
+ */
+function setAiModeOff() {
+  PropertiesService.getScriptProperties().setProperty('AI_MODE', 'off');
+  updateAiSettingInSheet_('ai_mode', 'off');
+  try { syncAiKnowledgeToVercel(); } catch (e) { }
+  SpreadsheetApp.getActive().toast('Режим ИИ установлен: ⏸️ Выключен. Ручной режим суперхозяина.', '🧠 ИИ-Агент', 5);
+}
+
+/**
+ * Вспомогательное обновление параметра в листе настроек
+ */
+function updateAiSettingInSheet_(paramKey, paramVal) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = findSheetByConfigKey(ss, 'SETTINGS');
+  if (!sheet) return;
+
+  var data = sheet.getDataRange().getValues();
+  for (var r = 1; r < data.length; r++) {
+    var c0 = (data[r][0] || '').toString().toLowerCase().trim();
+    var c1 = (data[r][1] || '').toString().toLowerCase().trim();
+    if (c0 === paramKey.toLowerCase() || c0 === paramKey.toUpperCase()) {
+      sheet.getRange(r + 1, 2).setValue(paramVal);
+      return;
+    } else if (c1 === paramKey.toLowerCase() || c1 === paramKey.toUpperCase()) {
+      sheet.getRange(r + 1, 3).setValue(paramVal);
+      return;
+    }
+  }
+}
+
+/**
+ * Полный информационный статус ИИ-агентов
+ */
+function showAiFullStatusModal() {
+  var ui = SpreadsheetApp.getUi();
+  var props = PropertiesService.getScriptProperties();
+  var mode = props.getProperty('AI_MODE') || 'autopilot';
+  var model = props.getProperty('GEMINI_MODEL') || 'gemini-3.6-flash';
+  var minPrice = props.getProperty('MIN_NIGHT_PRICE') || '180';
+  var siteUrl = props.getProperty('SITE_URL') || 'https://...';
+
+  var info = '🧠 ЦЕНТР УПРАВЛЕНИЯ ИИ-АГЕНТАМИ VILLA TURAMAN:\n\n' +
+    '• Текущий режим работы: ' + (mode === 'autopilot' ? '🚀 Автопилот [автоответ]' : (mode === 'copilot' ? '💡 Суфлер [черновики]' : '⏸️ Выключен')) + '\n' +
+    '• Рабочая языковая модель: ' + model + '\n' +
+    '• Минимальный тариф за сутки: $' + minPrice + ' USD [жесткий барьер]\n' +
+    '• Сервер платформы: ' + siteUrl + '\n\n' +
+    'Для изменения ролей, промптов и матрицы доступа к листам перейдите на вкладку:\n"⚙️ Системные настройки ИИ Агентов".';
+
+  ui.alert('Статус ИИ-Агентов', info, ui.ButtonSet.OK);
+}
+
+/**
+ * Промпт Консьержа
+ */
+function showConciergePromptInfo() {
+  SpreadsheetApp.getUi().alert(
+    'Роль: Консьерж-Мастер [Алексей Знаменский]',
+    'Миссия: гостеприимный и авторитетный суперхозяин Villa Turaman в Дальяне.\n\n' +
+    'Обязанности: презентация виллы [10 гостей, 4 спальни, бассейн 36м²], координация заездов и выездов, предложение платных сервисов [трансферы, шеф-повар, яхты] и видео-гидов.\n\n' +
+    'Отредактировать полный текст промпта можно в листе "⚙️ Системные настройки ИИ Агентов", строка "Консьерж-Мастер".',
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
+}
+
+/**
+ * Промпт Юриста
+ */
+function showLawyerPromptInfo() {
+  SpreadsheetApp.getUi().alert(
+    'Роль: Юрист-Консультант [KBS / KVKK / Налоги]',
+    'Миссия: контроль правового соответствия законам Турции о краткосрочной аренде.\n\n' +
+    'Обязанности: разъяснение обязательной регистрации гостей в KBS жандармерии, защита данных по закону KVKK, соблюдение налоговых стандартов VKN 9991120181 и VUK 213 Madde 230 e-Arşiv Fatura. Формула переговоров: 30% эмпатии / 70% юридического контроля.\n\n' +
+    'Отредактировать текст можно на листе "⚙️ Системные настройки ИИ Агентов".',
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
+}
+
+/**
+ * Промпт Финансиста
+ */
+function showFinancePromptInfo() {
+  SpreadsheetApp.getUi().alert(
+    'Роль: Финансист-Бухгалтер [e-Arşiv / Оплаты]',
+    'Миссия: финансовый менеджмент и контроль доходности виллы.\n\n' +
+    'Обязанности: сверка бронирований, расчет скидки 10% за невозвратный тариф, мультивалютный учет EUR/RUB/TRY и жесткий контроль минимального лимита $180/ночь.\n\n' +
+    'Отредактировать текст можно на листе "⚙️ Системные настройки ИИ Агентов".',
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
+}
+
+/**
+ * Открытие листа настроек ИИ
+ */
+function openAiSettingsSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = findSheetByConfigKey(ss, 'SETTINGS');
+  if (sheet) {
+    sheet.showSheet();
+    ss.setActiveSheet(sheet);
+    SpreadsheetApp.getActive().toast('Открыт лист настроек ИИ-агентов.', '⚙️ Настройки ИИ', 3);
+  } else {
+    SpreadsheetApp.getUi().alert('Лист настроек не найден. Воспользуйтесь меню "Восстановить листы".');
+  }
+}
+
+/**
+ * Фиксация текущего состояния Google Таблиц как эталона Single Source of Truth [SSOT]
+ */
+function saveMasterSeedInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var props = PropertiesService.getScriptProperties();
+  var siteUrl = (props.getProperty('SITE_URL') || '').trim();
+
+  var confirm = ui.alert(
+    'Фиксация эталона SSOT',
+    'Вы собираетесь зафиксировать текущие данные Google Таблицы в постоянный эталон utils/masterSeedContent.js на сайте.\n\n' +
+    'Все разделы О вилле, спальни, витрина и настройки ИИ будут обновлены как новый нерушимый эталон самовосстановления.\n\n' +
+    'Продолжить?',
+    ui.ButtonSet.YES_NO
+  );
+
+  if (confirm !== ui.Button.YES) return;
+
+  if (!siteUrl) {
+    ui.alert(
+      'Адрес сайта не настроен',
+      'Для онлайн-фиксации эталона укажите SITE_URL в Свойствах скрипта, либо выполните задачу VS Code:\n\n' +
+      '💾 16. SPARK: Зафиксировать состояние Google Sheets в эталон masterSeedContent.js',
+      ui.ButtonSet.OK
+    );
+    return;
+  }
+
+  try {
+    var response = UrlFetchApp.fetch(siteUrl.replace(/\/+$/, '') + '/api/admin/save-master-seed', {
+      method: 'post',
+      contentType: 'application/json',
+      muteHttpExceptions: true
+    });
+
+    var code = response.getResponseCode();
+    var text = response.getContentText();
+
+    if (code === 200) {
+      ui.alert('✅ Успешно!', 'Эталон masterSeedContent.js успешно зафиксирован на боевом сервере.\n\n' + text, ui.ButtonSet.OK);
+    } else {
+      ui.alert('⚠️ Ответ сервера [' + code + ']', 'Сервер вернул: ' + text + '\n\nВы также можете запустить фиксацию через задачу VS Code №16.', ui.ButtonSet.OK);
+    }
+  } catch (err) {
+    ui.alert('Справка по сохранению', 'Сетевой запрос к сайту не прошел [' + err.message + '].\n\nПожалуйста, используйте локальную задачу в VS Code:\n"💾 16. SPARK: Зафиксировать состояние Google Sheets в эталон masterSeedContent.js" или кнопку в Кабинете хозяина.', ui.ButtonSet.OK);
   }
 }
 

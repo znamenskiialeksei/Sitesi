@@ -100,6 +100,23 @@ export default async function handler(req, res) {
       }
     }
 
+    // Добавление инструкций роли Консьержа и матрицы листов
+    if (kb.agentRoles?.КОНСЬЕРЖ_МАСТЕР?.prompt) {
+      systemInstruction += `\n\nСПЕЦИАЛИЗАЦИЯ РОЛИ КОНСЬЕРЖА:\n${kb.agentRoles.КОНСЬЕРЖ_МАСТЕР.prompt}`;
+    }
+
+    if (kb.sheetMatrix && Object.keys(kb.sheetMatrix).length > 0) {
+      const allowedSheets = Object.entries(kb.sheetMatrix)
+        .filter(([_, info]) => info.access !== 'ЗАПРЕЩЕНО' && info.prompt)
+        .slice(0, 6);
+      if (allowedSheets.length > 0) {
+        systemInstruction += `\n\nКОНТЕКСТНЫЕ ИНСТРУКЦИИ ЛИСТОВ БАЗЫ ДАННЫХ:`;
+        allowedSheets.forEach(([sheet, info]) => {
+          systemInstruction += `\n- [${sheet}]: ${info.prompt}`;
+        });
+      }
+    }
+
     // Формирование контекста диалога для Gemini
     let conversationPrompt = `${systemInstruction}\n\n`;
     conversationPrompt += `ДАННЫЕ ТЕКУЩЕГО ГОСТЯ:\n`;
