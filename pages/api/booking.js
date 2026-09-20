@@ -11,6 +11,7 @@ import { generateVoucher } from '../../utils/pdf';
 import { getLiveSheetMap, resolveRange, SHEETS_REGISTRY } from '../../utils/sheetsRegistry';
 import { generateOtpCode, sendEmailVerificationCode, sendPhoneVerificationCode } from '../../utils/mailer';
 import { SMART_TEMPLATES } from '../../utils/templatesData';
+import { invalidateAiKnowledgeCache } from '../../utils/aiKnowledgeBase';
 
 let memoryCache = {};
 
@@ -2106,6 +2107,172 @@ export default async function handler(req, res) {
     edges.push({ from: 'hub_ical', to: 'hub_villa', type: 'system' });
 
     return res.status(200).json({ success: true, nodes, edges });
+  }
+
+  // --- API: Оформление заказа на доп. услугу или видео-путеводитель с Telegram-уведомлением ---
+  if (action === 'order_service_or_guide') {
+    try {
+      await ensureSystemSheets();
+      const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
+      const guestName = (data.guestName || data.name || 'Гость').toString().trim();
+      const contact = (data.contact || '').toString().trim();
+      const itemTitle = (data.itemTitle || data.title || 'Услуга').toString().trim();
+      const itemType = (data.itemType || (data.type === 'course' ? 'Видео-путеводитель' : 'Дополнительная услуга')).toString().trim();
+      const price = (data.price || '-').toString().trim();
+      const details = (data.details || `Заказ из каталога: ${itemTitle}`).toString().trim();
+
+      if (sheets && spreadsheetId) {
+        // 1. Фиксация заказа в листе ServiceOrders [ORDERS]
+        await sheets.spreadsheets.values.append({
+          spreadsheetId,
+          range: resolveRange(sheetMap, 'ORDERS', 'A:F'),
+          valueInputOption: 'USER_ENTERED',
+          insertDataOption: 'INSERT_ROWS',
+          requestBody: {
+            values: [[
+              timestamp,
+              contact || guestName,
+              itemType,
+              price,
+              'ОЖИДАЕТ ПОДТВЕРЖДЕНИЯ',
+              details
+            ]]
+          }
+        });
+
+        // 2. Добавление записи в чат гостя
+        if (contact) {
+          const targetChatId = getChatSpreadsheetId();
+          const chatSheetName = getChatSheetName(guestName, contact);
+          try {
+            await ensureStyledChatSheet(sheets, targetChatId, chatSheetName);
+            const cardMsg = `🛎️ Оформлен заказ: ${itemTitle}\nКатегория: ${itemType}\nСтоимость: ${price}\nСтатус: Ожидает подтверждения хозяином`;
+            const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+            const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+            const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
+            await sheets.spreadsheets.values.append({
+              spreadsheetId: targetChatId,
+              range: `'${chatSheetName}'!A:G`,
+              valueInputOption: 'USER_ENTERED',
+              insertDataOption: 'INSERT_ROWS',
+              requestBody: { values: [[timestamp, 'Система', cardMsg, fRU, fEN, fTR, '']] }
+            });
+          } catch (chatErr) { /* non-fatal */ }
+        }
+      }
+
+      // 3. Мгновенное интерактивное уведомление владельцу в Telegram
+      if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
+        const tgMsg = `🛎️ НОВЫЙ ЗАКАЗ ИЗ КАТАЛОГА\n` +
+          `📦 Наименование: ${itemTitle}\n` +
+          `🏷️ Категория: ${itemType}\n` +
+          `👤 Клиент: ${guestName}\n` +
+          `📞 Контакт: ${contact || 'Уточняется'}\n` +
+          `💰 Стоимость: ${price}\n` +
+          `Статус: ОЖИДАЕТ ПОДТВЕРЖДЕНИЯ`;
+
+        const inlineKeyboard = [
+          [
+            { text: "✅ Одобрить заказ", callback_data: `ord_approve_${contact || guestName}` },
+            { text: "❌ Отклонить", callback_data: `ord_reject_${contact || guestName}` }
+          ],
+          [
+            { text: `💬 Ответить гостю`, callback_data: `reply_${contact || guestName}` }
+          ]
+        ];
+
+        fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: process.env.TELEGRAM_CHAT_ID,
+            text: tgMsg,
+            reply_markup: { inline_keyboard: inlineKeyboard }
+          })
+        }).catch(() => { });
+      }
+
+      return res.status(200).json({ success: true, message: 'Заказ успешно зафиксирован' });
+    } catch (e) {
+      console.error('[order_service_or_guide Error]:', e);
+      return res.status(500).json({ success: false, error: e.message });
+    }
+  }
+
+  // --- API: Управление настройками ИИ-агента из кабинета хозяина ---
+  if (action === 'update_ai_settings') {
+    try {
+      await ensureSystemSheets();
+      const newMode = (data.aiMode || 'copilot').toString().trim().toLowerCase();
+      const newPrompt = (data.systemPrompt || '').toString().trim();
+      const newMinPrice = (data.minPriceUsd || '180').toString().trim();
+      const newModel = (data.geminiModel || 'gemini-3.6-flash').toString().trim();
+
+      if (sheets && spreadsheetId) {
+        // Чтение текущих настроек для точного обновления строк
+        const curRows = await sheets.spreadsheets.values.get({
+          spreadsheetId,
+          range: resolveRange(sheetMap, 'SETTINGS', 'A:D')
+        });
+        const rows = curRows.data.values || [];
+
+        const updateRow = async (paramName, newValue, desc, status) => {
+          const idx = rows.findIndex((r) => (r[0] || '').toString().trim() === paramName);
+          if (idx >= 0) {
+            const rowNum = idx + 1;
+            await sheets.spreadsheets.values.update({
+              spreadsheetId,
+              range: resolveRange(sheetMap, 'SETTINGS', `A${rowNum}:D${rowNum}`),
+              valueInputOption: 'USER_ENTERED',
+              requestBody: { values: [[paramName, newValue, desc || rows[idx][2] || '', status || 'ACTIVE']] }
+            });
+          } else {
+            await sheets.spreadsheets.values.append({
+              spreadsheetId,
+              range: resolveRange(sheetMap, 'SETTINGS', 'A:D'),
+              valueInputOption: 'USER_ENTERED',
+              insertDataOption: 'INSERT_ROWS',
+              requestBody: { values: [[paramName, newValue, desc || '', status || 'ACTIVE']] }
+            });
+          }
+        };
+
+        if (newMode) await updateRow('AI_MODE', newMode, 'Режим работы ИИ: autopilot или copilot или off', newMode.toUpperCase());
+        if (newPrompt) await updateRow('SYSTEM_PROMPT', newPrompt, 'Глобальный системный промпт ИИ', 'ACTIVE');
+        if (newMinPrice) await updateRow('MIN_NIGHTLY_PRICE_USD', newMinPrice, 'Минимальный тариф ночь USD', 'ENFORCED');
+        if (newModel) await updateRow('GEMINI_MODEL', newModel, 'Модель Google Gemini', 'ACTIVE');
+      }
+
+      // Сброс кэша базы знаний
+      invalidateAiKnowledgeCache();
+
+      return res.status(200).json({
+        success: true,
+        aiMode: newMode,
+        message: 'Настройки ИИ успешно сохранены'
+      });
+    } catch (e) {
+      console.error('[update_ai_settings Error]:', e);
+      return res.status(500).json({ success: false, error: e.message });
+    }
+  }
+
+  // --- API: Получение настроек ИИ-агента ---
+  if (action === 'get_ai_settings') {
+    try {
+      const { getAiKnowledgeBase } = require('../../utils/aiKnowledgeBase');
+      const kb = await getAiKnowledgeBase(req.body?.force === true);
+      return res.status(200).json({
+        success: true,
+        aiMode: kb.aiMode,
+        aiEnabled: kb.aiEnabled,
+        geminiModel: kb.geminiModel,
+        minPriceUsd: kb.minPriceUsd,
+        systemPrompt: kb.systemPrompt
+      });
+    } catch (e) {
+      return res.status(500).json({ success: false, error: e.message });
+    }
   }
 
   return res.status(200).json({ success: true });

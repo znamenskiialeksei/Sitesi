@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import { Waves, Mountain, Wifi, Wind, Utensils, Car, Flame, WashingMachine, Laptop, Shield, Tv, Coffee, Sparkles, X } from 'lucide-react';
 import { useLanguage } from '../utils/language';
 
-export default function Amenities() {
+export default function Amenities({ customAmenitiesGrouped = null }) {
   const { t, lang } = useLanguage();
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -123,6 +123,10 @@ export default function Amenities() {
     }
   ];
 
+  const effectiveAmenitiesGrouped = (customAmenitiesGrouped && customAmenitiesGrouped.length > 0)
+    ? customAmenitiesGrouped
+    : allAmenitiesGrouped;
+
   return (
     <div id="amenities" className="py-8 border-t border-white/10">
       <h2 className="text-xl sm:text-2xl font-bold text-white mb-6">
@@ -168,7 +172,7 @@ export default function Amenities() {
             </div>
 
             <div className="p-6 overflow-y-auto space-y-6">
-              {allAmenitiesGrouped.map((grp, gIdx) => (
+              {effectiveAmenitiesGrouped.map((grp, gIdx) => (
                 <div key={gIdx} className="space-y-3">
                   <h4 className="text-sm font-bold uppercase tracking-wider text-rose-400 border-b border-white/5 pb-1">
                     {grp.category}

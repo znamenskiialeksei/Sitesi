@@ -1,27 +1,16 @@
 // ==============================================================================
 // ИИ-КОНСЬЕРЖ И АССИСТЕНТ VILLA TURAMAN: GOOGLE GEMINI API
 // Файл: pages/api/ai-concierge.js
-// Назначение: Интеллектуальный генератор ответов и суфлер хозяина на базе Gemini
-// Модель по умолчанию: gemini-3.6-flash
-// Ключ API: GEMINI_API_KEY на Vercel https://vercel.com/ или в .env.local
+// Назначение: Интеллектуальный генератор ответов и суфлер хозяина на базе Gemini.
+// База знаний и промпт загружаются динамически из Google Таблиц через aiKnowledgeBase.
+// Модель: gemini-3.6-flash или из листа Системные настройки
+// 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
 import { matchSuggestedTemplate, resolveTemplate } from '../../utils/templateResolver';
-import { SMART_TEMPLATES } from '../../utils/templatesData';
+import { getAiKnowledgeBase } from '../../utils/aiKnowledgeBase';
 
 const DEFAULT_MODEL = 'gemini-3.6-flash';
-
-const SYSTEM_INSTRUCTION = `Ты - профессиональный ИИ-консьерж и цифровой ассистент владельца премиальной виллы Villa Turaman в городе Дальян, провинция Мугла, Турция. Владелец виллы: Алексей Знаменский.
-Твоя цель: помогать гостям и формулировать вежливые, точные и гостеприимные ответы на языке обращения гостя [RU, EN, TR].
-
-КЛЮЧЕВЫЕ ПРАВИЛА И СТАНДАРТЫ:
-1. Тон общения: Премиальный, теплый, заботливый, конкретный и лаконичный.
-2. Локация: Дальян, Турция. Рядом река Дальян, Ликийские гробницы, черепаший пляж Изтузу, термальные источники Султание.
-3. Удобства: Приватный бассейн с регулярной очисткой, сад, зона барбекю, скоростной Wi-Fi VillaTuraman_5G, кухня, кондиционеры.
-4. Правила времени: Стандартный заезд с 16:00, выезд до 10:00.
-5. Финансовые границы: Минимальный допустимый тариф за ночь составляет 180 USD. Скидка 10% действует только при невозвратном тарифе на даты выезда в пределах 60 дней. Категорически запрещено обещать скидки ниже минимума без согласования с хозяином.
-6. Передача ключей: Мини-сейф с кодовым замком у входа или личная встреча хозяином.
-7. Формат ответа: Сразу готовый текст сообщения для гостя без лишних вводных слов, готовый к отправке.`;
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -38,7 +27,14 @@ export default async function handler(req, res) {
       context = {}
     } = req.body;
 
-    // Определение рекомендованного шаблона по намерениям
+    // 1. Загрузка динамической базы знаний из Google Таблиц с кэшированием
+    const kb = await getAiKnowledgeBase();
+
+    // Проверка активности ИИ и текущего режима
+    const aiMode = kb.aiMode || 'copilot';
+    const isAiActive = kb.aiEnabled !== false && aiMode !== 'off';
+
+    // 2. Определение рекомендованного шаблона по намерениям
     const matched = matchSuggestedTemplate(guestMessage);
     const suggestedTemplateId = matched?.id || null;
 
@@ -53,23 +49,59 @@ export default async function handler(req, res) {
       });
     }
 
+    if (!isAiActive) {
+      return res.status(200).json({
+        success: true,
+        source: 'ai_disabled_in_settings',
+        aiMode,
+        model: 'none',
+        reply: fallbackTemplateText || 'Здравствуйте! Чем я могу помочь вам по отдыху на Villa Turaman?',
+        suggestedTemplateId,
+        note: 'Режим ИИ отключен в настройках таблицы: aiMode = off'
+      });
+    }
+
     const apiKey = (process.env.GEMINI_API_KEY || '').trim();
-    const model = (process.env.GEMINI_MODEL || DEFAULT_MODEL).trim();
+    const model = (kb.geminiModel || process.env.GEMINI_MODEL || DEFAULT_MODEL).trim();
 
     // Если ключ Gemini не настроен: возвращаем эталонный ответ из базы шаблонов
     if (!apiKey) {
       return res.status(200).json({
         success: true,
         source: 'templates_fallback',
+        aiMode,
         model: 'none',
         reply: fallbackTemplateText || 'Здравствуйте! Чем я могу помочь вам по отдыху на Villa Turaman?',
         suggestedTemplateId,
-        note: 'GEMINI_API_KEY не задан на https://vercel.com/ : использован шаблон из базы'
+        note: 'GEMINI_API_KEY не задан на https://vercel.com/ : использован шаблон из базы знаний'
       });
     }
 
+    // 3. Формирование динамического системного промпта из Базы Знаний Таблицы
+    let systemInstruction = kb.systemPrompt || '';
+    if (!systemInstruction) {
+      systemInstruction = 'Ты профессиональный ИИ-консьерж виллы Villa Turaman в городе Дальян, Турция. Владелец виллы: Алексей Знаменский. Твоя цель: помогать гостям и формулировать вежливые, точные и гостеприимные ответы на языке обращения гостя [RU, EN, TR].';
+    }
+
+    // Добавление финансовых ограничений из настроек таблицы
+    const minPrice = kb.minPriceUsd || 180;
+    systemInstruction += `\n\nФИНАНСОВЫЕ ГРАНИЦЫ И ПРАВИЛА:`;
+    systemInstruction += `\n- Минимально допустимый тариф за ночь составляет ${minPrice} USD.`;
+    systemInstruction += `\n- Скидка 10% действует только при невозвратном тарифе на даты выезда в пределах 60 дней.`;
+    systemInstruction += `\n- Категорически запрещено обещать скидки ниже ${minPrice} USD без предварительного согласования с владельцем Алексеем.`;
+
+    // Добавление актуальных реквизитов и переменных из Словаря Переменных Таблицы
+    if (kb.variables && Object.keys(kb.variables).length > 0) {
+      systemInstruction += `\n\nАКТУАЛЬНЫЕ ДАННЫЕ ОБЪЕКТА ИЗ СЛОВАРЯ ПЕРЕМЕННЫХ:`;
+      for (const [k, v] of Object.entries(kb.variables)) {
+        if (v && typeof v === 'string') {
+          systemInstruction += `\n- ${k}: ${v}`;
+        }
+      }
+    }
+
     // Формирование контекста диалога для Gemini
-    let conversationPrompt = `${SYSTEM_INSTRUCTION}\n\n`;
+    let conversationPrompt = `${systemInstruction}\n\n`;
     conversationPrompt += `ДАННЫЕ ТЕКУЩЕГО ГОСТЯ:\n`;
     conversationPrompt += `- Имя гостя: ${guestName}\n`;
     conversationPrompt += `- Контакт: ${contact}\n`;
@@ -122,6 +154,7 @@ export default async function handler(req, res) {
       return res.status(200).json({
         success: true,
         source: 'templates_fallback_on_api_error',
+        aiMode,
         model,
         reply: fallbackTemplateText || 'Здравствуйте! Благодарим за обращение. Мы ответим вам в ближайшее время.',
         suggestedTemplateId,
@@ -133,7 +166,8 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      source: 'gemini',
+      source: 'gemini_knowledge_base',
+      aiMode,
       model,
       reply: aiReply,
       suggestedTemplateId

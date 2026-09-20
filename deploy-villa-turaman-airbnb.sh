@@ -7,9 +7,9 @@
 # ==============================================================================
 # Назначение:
 # 1. Развертывание платформы в любой новой папке в 1 команду: bash deploy-villa-turaman-airbnb.sh [FOLDER]
-# 2. Авто-создание 14 листов Google Sheets CRM и базы чатов со смарт-форматированием (autoResizeDimensions, WRAP, MIDDLE, ';')
-# 3. Развертывание расширения Google Apps Script (Code.js) с поддержкой Свойств скрипта (Script Properties)
-# 4. Настройка задач VS Code (.vscode/tasks.json) для среды PowerShell 7 (pwsh.exe)
+# 2. Авто-создание 15 листов Google Sheets CRM: включая ⚙️ Системные настройки и базу чатов со смарт-форматированием [autoResizeDimensions, WRAP, MIDDLE, ';']
+# 3. Развертывание расширения Google Apps Script [Code.js] с поддержкой Свойств скрипта и 3 меню: 🏡 Villa Turaman Suite, 🤖 Telegram Бот, 🧠 3. ИИ-Агент & Gemini
+# 4. Настройка задач VS Code [.vscode/tasks.json] для среды PowerShell 7 [pwsh.exe]
 # ==============================================================================
 
 set -e
@@ -244,7 +244,7 @@ echo -e "${YELLOW}${BOLD}📋 ИНСТРУКЦИЯ ПО НАСТРОЙКЕ GOOGL
 echo -e "  1. Откройте вашу Google Таблицу в браузере."
 echo -e "  2. Выберите: ${CYAN}Расширения ➔ Apps Script${RESET}."
 echo -e "  3. Скопируйте и вставьте код из: ${CYAN}google-apps-script/Code.js${RESET} или ${CYAN}google-apps-script/TelegramBot.js${RESET} и сохраните: Ctrl+S."
-echo -e "  4. Перезагрузите таблицу: F5 — появятся два меню: ${GREEN}🏡 Villa Turaman Suite${RESET} и ${GREEN}🤖 Telegram Бот${RESET}."
+echo -e "  4. Перезагрузите таблицу: F5 - появятся три меню: ${GREEN}🏡 Villa Turaman Suite${RESET}, ${GREEN}🤖 Telegram Бот${RESET} и ${GREEN}🧠 3. ИИ-Агент & Gemini${RESET}."
 echo -e "  5. Ключи окружения настраиваются на ${CYAN}https://vercel.com/${RESET} (Settings ➔ Environment Variables), в ${CYAN}.env.local${RESET} или через Свойства скрипта."
 echo -e "  6. Нажмите: ${CYAN}🤖 Telegram Бот ➔ ⚙️ 6. Настройки Webhook и Токена ➔ 🔑 Настроить TELEGRAM_BOT_TOKEN и CHAT_ID${RESET}."
 echo -e "  7. Проверить статус ключей на Vercel: ${CYAN}🤖 Telegram Бот ➔ ⚙️ 6. Настройки Webhook и Токена ➔ 🌐 Проверить статус ключей на Vercel${RESET}."

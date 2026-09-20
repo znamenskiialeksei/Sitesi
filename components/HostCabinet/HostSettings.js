@@ -5,13 +5,73 @@
 // ==============================================================================
 
 import React, { useState, useEffect } from 'react';
-import { Settings, Save, Clock, DollarSign, Calendar, Shield } from 'lucide-react';
+import { Settings, Save, Clock, DollarSign, Calendar, Shield, Bot, Sparkles } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../Toast';
 
 export default function HostSettings({ globalRules = {}, onSaveSettings, loading = false }) {
   const { t } = useLanguage();
   const toast = useToast();
+
+  const [aiSettings, setAiSettings] = useState({
+    aiMode: 'copilot',
+    geminiModel: 'gemini-3.6-flash',
+    minPriceUsd: 180,
+    systemPrompt: ''
+  });
+  const [isAiSaving, setIsAiSaving] = useState(false);
+
+  // Загрузка актуальных настроек ИИ из базы Google Sheets
+  const fetchAiSettings = async () => {
+    try {
+      const res = await fetch('/api/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'get_ai_settings', force: true })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAiSettings({
+          aiMode: data.aiMode || 'copilot',
+          geminiModel: data.geminiModel || 'gemini-3.6-flash',
+          minPriceUsd: data.minPriceUsd || 180,
+          systemPrompt: data.systemPrompt || ''
+        });
+      }
+    } catch (e) { /* non-fatal */ }
+  };
+
+  useEffect(() => {
+    fetchAiSettings();
+  }, []);
+
+  const handleToggleAiMode = async (newMode) => {
+    setIsAiSaving(true);
+    try {
+      const res = await fetch('/api/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'update_ai_settings',
+          aiMode: newMode,
+          minPriceUsd: aiSettings.minPriceUsd,
+          geminiModel: aiSettings.geminiModel,
+          systemPrompt: aiSettings.systemPrompt
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAiSettings((prev) => ({ ...prev, aiMode: newMode }));
+        toast.success(`Режим ИИ изменен на: ${newMode.toUpperCase()}`);
+      } else {
+        toast.error('Не удалось сохранить режим ИИ');
+      }
+    } catch (e) {
+      toast.error('Ошибка сохранения режима ИИ: ' + e.message);
+    } finally {
+      setIsAiSaving(false);
+    }
+  };
 
   const [form, setForm] = useState({
     basePrice: globalRules.basePrice !== undefined ? globalRules.basePrice : 15000,
@@ -63,6 +123,82 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
           <p className="text-xs text-slate-400">
             {t('villaBaseParamsDesc')}
           </p>
+        </div>
+      </div>
+
+      {/* ПАНЕЛЬ УПРАВЛЕНИЯ ИИ-АГЕНТОМ GEMINI В 1 КЛИК */}
+      <div className="p-5 rounded-2xl bg-gradient-to-r from-purple-950/40 via-indigo-950/30 to-slate-900 border border-purple-500/30 space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-400">
+              <Bot className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                <span>ИИ-Консьерж & Gemini 3.6 Flash</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full font-extrabold uppercase bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  {aiSettings.aiMode.toUpperCase()}
+                </span>
+              </h4>
+              <p className="text-xs text-slate-400">
+                Переключение режима работы ИИ в 1 клик со сквозной синхронизацией в Google Таблице и Telegram
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1.5 bg-slate-950 p-1 rounded-xl border border-white/10 w-full sm:w-auto">
+            <button
+              type="button"
+              disabled={isAiSaving}
+              onClick={() => handleToggleAiMode('autopilot')}
+              className={`flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                aiSettings.aiMode === 'autopilot'
+                  ? 'bg-purple-600 text-white shadow-md'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <span>🚀 Автопилот</span>
+            </button>
+            <button
+              type="button"
+              disabled={isAiSaving}
+              onClick={() => handleToggleAiMode('copilot')}
+              className={`flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                aiSettings.aiMode === 'copilot'
+                  ? 'bg-purple-600 text-white shadow-md'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <span>💡 Суфлер</span>
+            </button>
+            <button
+              type="button"
+              disabled={isAiSaving}
+              onClick={() => handleToggleAiMode('off')}
+              className={`flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                aiSettings.aiMode === 'off'
+                  ? 'bg-slate-700 text-white shadow-md'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <span>⏸️ Выкл</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-white/5 text-xs text-slate-300">
+          <div>
+            <span className="text-[10px] text-slate-400 block uppercase">Модель Gemini:</span>
+            <span className="font-semibold text-purple-300">{aiSettings.geminiModel}</span>
+          </div>
+          <div>
+            <span className="text-[10px] text-slate-400 block uppercase">Минимальный тариф:</span>
+            <span className="font-semibold text-emerald-400">{aiSettings.minPriceUsd} USD / ночь</span>
+          </div>
+          <div>
+            <span className="text-[10px] text-slate-400 block uppercase">База Знаний:</span>
+            <span className="font-semibold text-blue-300">14 шаблонов + 5 листов Таблицы</span>
+          </div>
         </div>
       </div>
 

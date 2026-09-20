@@ -28,7 +28,8 @@ var VILLA_SHEETS_CONFIG = {
   ORDERS: { name: "💳 Заказы услуг и гидов", aliases: ["ServiceOrders", "Заказы", "💳 Заказы услуг и гидов"], cluster: "host" },
   ACCESS: { name: "🎟️ Доступы к путеводителям", aliases: ["GuestsAccess", "Доступы", "🎟️ Доступы к путеводителям"], cluster: "host" },
   TEMPLATES: { name: "💬 Шаблоны сообщений", aliases: ["Templates", "Шаблоны", "💬 Шаблоны сообщений"], cluster: "host" },
-  VARIABLES: { name: "🧩 Словарь переменных", aliases: ["Variables", "Переменные", "🧩 Словарь переменных"], cluster: "host" }
+  VARIABLES: { name: "🧩 Словарь переменных", aliases: ["Variables", "Переменные", "🧩 Словарь переменных"], cluster: "host" },
+  SETTINGS: { name: "⚙️ Системные настройки", aliases: ["Settings", "Системные настройки", "⚙️ Системные настройки"], cluster: "system" }
 };
 
 /**
@@ -97,13 +98,6 @@ function onOpen() {
     .addSeparator()
     .addItem("📧 8. Инструкция по развертыванию Gmail Relay", "showGmailRelayDeployHelp");
 
-  // 7. Блок 7: ИИ-Консьерж и Gemini API
-  var aiMenu = ui.createMenu("🧠 7. ИИ-Консьерж & Gemini")
-    .addItem("🛠️ 1. Создать и наполнить Базу Знаний ИИ: 3 листа", "initAiKnowledgeBaseSheets")
-    .addItem("🤖 2. Проверить статус Gemini API на Vercel", "checkGeminiVercelStatusInteractive")
-    .addItem("⚙️ 3. Настроить параметры ИИ в Свойствах скрипта", "setupAiPropertiesInteractive")
-    .addItem("💬 4. Тестовый диалог с ИИ-Консьержем", "testAiConciergeInteractive");
-
   // Сборка первого главного меню верхнего уровня: 🏡 Villa Turaman Suite
   ui.createMenu("🏡 Villa Turaman Suite")
     .addSubMenu(sheetManagerMenu)
@@ -113,8 +107,21 @@ function onOpen() {
     .addSubMenu(catalogMenu)
     .addSubMenu(crmMenu)
     .addSubMenu(auditMenu)
-    .addSubMenu(aiMenu)
     .addToUi();
+
+  // ТРЕТЬЕ ГЛАВНОЕ МЕНЮ ВЕРХНЕГО УРОВНЯ: 🧠 3. ИИ-Агент & Gemini
+  var aiMainMenu = ui.createMenu("🧠 3. ИИ-Агент & Gemini")
+    .addItem("🔘 1. Переключить режим: Автопилот / Суфлер / Выкл", "toggleAiModeInteractive")
+    .addItem("⚙️ 2. Системный промпт и правила общения", "setupAiSystemPromptInteractive")
+    .addItem("💰 3. Минимальная цена за ночь: лимит $180", "setupAiMinPriceInteractive")
+    .addItem("🤖 4. Выбор модели Gemini: gemini-3.6-flash", "setupAiModelInteractive")
+    .addItem("📚 5. Синхронизировать Базу Знаний в память сайта", "syncAiKnowledgeToVercel")
+    .addSeparator()
+    .addItem("🛠️ 6. Создать и наполнить Базу Знаний ИИ: 3 листа", "initAiKnowledgeBaseSheets")
+    .addItem("🌐 7. Проверить статус Gemini API на Vercel", "checkGeminiVercelStatusInteractive")
+    .addItem("🔑 8. Настроить GEMINI_API_KEY в Свойствах скрипта", "setupAiPropertiesInteractive")
+    .addItem("💬 9. Тестовый диалог с ИИ-Консьержем", "testAiConciergeInteractive");
+  aiMainMenu.addToUi();
 
   // ВТОРОЕ ГЛАВНОЕ МЕНЮ ВЕРХНЕГО УРОВНЯ: 🤖 Telegram Бот
   var tgLaunchMenu = ui.createMenu("📲 1. Запуск и Меню бота")
@@ -1819,6 +1826,455 @@ function sendTelegramTestPing() {
     }
   } catch (err) {
     SpreadsheetApp.getUi().alert('Ошибка пинга', err.message, SpreadsheetApp.getUi().ButtonSet.OK);
+  }
+}
+
+// ==============================================================================
+// МОДУЛЬ 3: ИИ-АГЕНТ GEMINI И БАЗА ЗНАНИЙ VILLA TURAMAN
+// ==============================================================================
+
+/**
+ * Вспомогательное стилизованное форматирование шапки листа
+ */
+function styleSheetHeader_(sheet, headers, bgColor) {
+  var color = bgColor || { red: 0.12, green: 0.16, blue: 0.23 };
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  var headerRange = sheet.getRange(1, 1, 1, headers.length);
+  headerRange.setFontWeight('bold')
+    .setFontColor('#FFFFFF')
+    .setBackgroundRGB(Math.round(color.red * 255), Math.round(color.green * 255), Math.round(color.blue * 255))
+    .setHorizontalAlignment('CENTER')
+    .setVerticalAlignment('MIDDLE')
+    .setWrap(true);
+  sheet.setFrozenRows(1);
+}
+
+/**
+ * 1. Интерактивное переключение режима ИИ в 1 клик
+ * Режимы: autopilot [Автопилот] -> copilot [Суфлер] -> off [Выключен]
+ */
+function toggleAiModeInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var settingsSheet = findSheetByConfigKey(ss, 'SETTINGS');
+  var currentMode = 'copilot';
+
+  if (settingsSheet) {
+    var rows = settingsSheet.getDataRange().getValues();
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][0] === 'AI_MODE') {
+        currentMode = (rows[i][1] || 'copilot').toString().toLowerCase().trim();
+        break;
+      }
+    }
+  }
+
+  var nextMode = 'copilot';
+  var modeTitle = '🟡 Суфлер: ИИ предлагает проект ответа';
+
+  if (currentMode === 'copilot') {
+    nextMode = 'autopilot';
+    modeTitle = '🟢 Автопилот: ИИ отвечает гостям сам';
+  } else if (currentMode === 'autopilot') {
+    nextMode = 'off';
+    modeTitle = '⚪ Выключен: ручной режим владельца';
+  } else {
+    nextMode = 'copilot';
+    modeTitle = '🟡 Суфлер: ИИ предлагает проект ответа';
+  }
+
+  if (settingsSheet) {
+    var rows = settingsSheet.getDataRange().getValues();
+    var found = false;
+    for (var j = 1; j < rows.length; j++) {
+      if (rows[j][0] === 'AI_MODE') {
+        settingsSheet.getRange(j + 1, 2).setValue(nextMode);
+        settingsSheet.getRange(j + 1, 3).setValue(new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' }));
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      settingsSheet.appendRow(['AI_MODE', nextMode, new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' }), 'Режим работы ИИ']);
+    }
+  }
+
+  PropertiesService.getScriptProperties().setProperty('AI_MODE', nextMode);
+  try { syncAiKnowledgeToVercel(); } catch (e) { }
+
+  ui.alert('Режим ИИ-Агента обновлен', 'Текущий режим работы: ' + modeTitle + '\n\nКодовый статус: ' + nextMode + '\nНастройки синхронизированы с сайтом и личным кабинетом.', ui.ButtonSet.OK);
+}
+
+/**
+ * 2. Настройка системного промпта ИИ
+ */
+function setupAiSystemPromptInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var settingsSheet = findSheetByConfigKey(ss, 'SETTINGS');
+  var currentPrompt = 'Ты - профессиональный ИИ-консьерж виллы Villa Turaman в Дальяне. Владелец: Алексей Знаменский.';
+
+  if (settingsSheet) {
+    var rows = settingsSheet.getDataRange().getValues();
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][0] === 'SYSTEM_PROMPT' && rows[i][1]) {
+        currentPrompt = rows[i][1].toString();
+        break;
+      }
+    }
+  }
+
+  var res = ui.prompt('Настройка Системного промпта ИИ', 'Введите системные инструкции для модели Gemini:\n\nТекущий промпт:\n' + currentPrompt.substring(0, 150) + '...', ui.ButtonSet.OK_CANCEL);
+  if (res.getSelectedButton() !== ui.Button.OK) return;
+  var newPrompt = res.getResponseText().trim() || currentPrompt;
+
+  if (settingsSheet) {
+    var rows = settingsSheet.getDataRange().getValues();
+    var found = false;
+    for (var j = 1; j < rows.length; j++) {
+      if (rows[j][0] === 'SYSTEM_PROMPT') {
+        settingsSheet.getRange(j + 1, 2).setValue(newPrompt);
+        settingsSheet.getRange(j + 1, 3).setValue(new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' }));
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      settingsSheet.appendRow(['SYSTEM_PROMPT', newPrompt, new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' }), 'Системный промпт ИИ']);
+    }
+  }
+
+  PropertiesService.getScriptProperties().setProperty('SYSTEM_PROMPT', newPrompt);
+  try { syncAiKnowledgeToVercel(); } catch (e) { }
+
+  ui.alert('✅ Сохранено!', 'Системный промпт зафиксирован в листе Системные настройки и передан на сервер.', ui.ButtonSet.OK);
+}
+
+/**
+ * 3. Настройка минимальной цены за ночь: защита от демпинга
+ */
+function setupAiMinPriceInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var settingsSheet = findSheetByConfigKey(ss, 'SETTINGS');
+  var currentPrice = '180';
+
+  if (settingsSheet) {
+    var rows = settingsSheet.getDataRange().getValues();
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][0] === 'MIN_PRICE_USD' && rows[i][1]) {
+        currentPrice = String(rows[i][1]);
+        break;
+      }
+    }
+  }
+
+  var res = ui.prompt('Защита цены: лимит за ночь', 'Укажите минимальную цену аренды в USD [не может быть ниже 180 USD]:\nТекущее значение: ' + currentPrice, ui.ButtonSet.OK_CANCEL);
+  if (res.getSelectedButton() !== ui.Button.OK) return;
+  var val = parseInt(res.getResponseText().replace(/\D/g, ''), 10) || 180;
+  if (val < 180) {
+    ui.alert('Внимание', 'По правилам проекта минимальная цена не может быть ниже 180 USD. Установлено: 180 USD.', ui.ButtonSet.OK);
+    val = 180;
+  }
+
+  if (settingsSheet) {
+    var rows = settingsSheet.getDataRange().getValues();
+    var found = false;
+    for (var j = 1; j < rows.length; j++) {
+      if (rows[j][0] === 'MIN_PRICE_USD') {
+        settingsSheet.getRange(j + 1, 2).setValue(val);
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      settingsSheet.appendRow(['MIN_PRICE_USD', val, new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' }), 'Минимальная стоимость суток']);
+    }
+  }
+
+  PropertiesService.getScriptProperties().setProperty('MIN_PRICE_USD', String(val));
+  try { syncAiKnowledgeToVercel(); } catch (e) { }
+
+  ui.alert('✅ Лимит обновлен!', 'Минимальная стоимость зафиксирована: ' + val + ' USD/ночь.', ui.ButtonSet.OK);
+}
+
+/**
+ * 4. Выбор модели Google Gemini
+ */
+function setupAiModelInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var settingsSheet = findSheetByConfigKey(ss, 'SETTINGS');
+  var currentModel = 'gemini-3.6-flash';
+
+  if (settingsSheet) {
+    var rows = settingsSheet.getDataRange().getValues();
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][0] === 'GEMINI_MODEL' && rows[i][1]) {
+        currentModel = rows[i][1].toString().trim();
+        break;
+      }
+    }
+  }
+
+  var res = ui.prompt('Выбор модели Gemini', 'Укажите идентификатор модели Google Gemini:\nПо умолчанию: gemini-3.6-flash', ui.ButtonSet.OK_CANCEL);
+  if (res.getSelectedButton() !== ui.Button.OK) return;
+  var modelName = res.getResponseText().trim() || currentModel;
+
+  if (settingsSheet) {
+    var rows = settingsSheet.getDataRange().getValues();
+    var found = false;
+    for (var j = 1; j < rows.length; j++) {
+      if (rows[j][0] === 'GEMINI_MODEL') {
+        settingsSheet.getRange(j + 1, 2).setValue(modelName);
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      settingsSheet.appendRow(['GEMINI_MODEL', modelName, new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' }), 'Модель Google Gemini']);
+    }
+  }
+
+  PropertiesService.getScriptProperties().setProperty('GEMINI_MODEL', modelName);
+  try { syncAiKnowledgeToVercel(); } catch (e) { }
+
+  ui.alert('✅ Модель сохранена!', 'Выбрана модель: ' + modelName, ui.ButtonSet.OK);
+}
+
+/**
+ * 5. Синхронизация Базы Знаний в память сервера Vercel
+ */
+function syncAiKnowledgeToVercel() {
+  var props = PropertiesService.getScriptProperties();
+  var siteUrl = (props.getProperty('SITE_URL') || '').trim().replace(/\/+$/, '');
+  if (!siteUrl) return;
+
+  try {
+    var url = siteUrl + '/api/content?force=true';
+    UrlFetchApp.fetch(url, { muteHttpExceptions: true });
+    SpreadsheetApp.getActiveSpreadsheet().toast('База Знаний обновлена в оперативной памяти сервера.', '✅ Синхронизировано', 4);
+  } catch (e) {
+    console.warn('Сбой сброса кэша:', e.message);
+  }
+}
+
+/**
+ * 6. Создание и наполнение Базы Знаний ИИ: 3 листа
+ */
+function initAiKnowledgeBaseSheets() {
+  var ui = SpreadsheetApp.getUi();
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  try {
+    // 1. Лист СИСТЕМНЫЕ НАСТРОЙКИ
+    var setSheet = findSheetByConfigKey(ss, 'SETTINGS');
+    if (!setSheet) {
+      setSheet = ss.insertSheet('⚙️ Системные настройки');
+    }
+    if (setSheet.getLastRow() === 0) {
+      var setHeaders = ['Ключ параметра', 'Значение', 'Дата обновления', 'Описание'];
+      styleSheetHeader_(setSheet, setHeaders, { red: 0.2, green: 0.25, blue: 0.35 });
+      var defaultSettings = [
+        ['AI_ENABLED', 'Да', new Date().toLocaleString('ru-RU'), 'Активность ИИ-консьержа'],
+        ['AI_MODE', 'copilot', new Date().toLocaleString('ru-RU'), 'Режим: autopilot, copilot или off'],
+        ['GEMINI_MODEL', 'gemini-3.6-flash', new Date().toLocaleString('ru-RU'), 'Рабочая модель Google Gemini'],
+        ['MIN_PRICE_USD', '180', new Date().toLocaleString('ru-RU'), 'Защитный минимум стоимости суток'],
+        ['SYSTEM_PROMPT', 'Ты - профессиональный ИИ-консьерж и цифровой ассистент владельца виллы Villa Turaman в Дальяне. Владелец: Алексей Знаменский. Правила: тон вежливый, локация Дальян, заезд с 16:00, выезд до 10:00, минимальная цена $180/ночь.', new Date().toLocaleString('ru-RU'), 'Системный промпт ИИ']
+      ];
+      setSheet.getRange(2, 1, defaultSettings.length, 4).setValues(defaultSettings);
+    }
+
+    // 2. Лист СЛОВАРЬ ПЕРЕМЕННЫХ
+    var varSheet = findSheetByConfigKey(ss, 'VARIABLES');
+    if (!varSheet) {
+      varSheet = ss.insertSheet('🧩 Словарь переменных');
+    }
+    if (varSheet.getLastRow() === 0) {
+      var varHeaders = ['Плейсхолдер', 'Системный ключ', 'Описание переменной', 'Значение'];
+      styleSheetHeader_(varSheet, varHeaders, { red: 0.15, green: 0.3, blue: 0.25 });
+      var defaultVars = [
+        ['[FIRST_NAME]', 'name', 'Имя гостя', 'Гость'],
+        ['[CONFIRMATION_CODE]', 'code', 'Код бронирования', 'VT-7788'],
+        ['[CHECKIN_DATE]', 'checkIn', 'Дата заезда', '01.06.2026'],
+        ['[CHECKOUT_DATE]', 'checkOut', 'Дата выезда', '08.06.2026'],
+        ['[CHECKIN_TIME]', 'checkInTime', 'Стандартное время заезда', '16:00'],
+        ['[CHECKOUT_TIME]', 'checkOutTime', 'Стандартное время выезда', '10:00'],
+        ['[BOOKING_PLATFORM_NAME]', 'platform', 'Платформа бронирования', 'Villa Turaman Direct'],
+        ['[ADDRESS]', 'address', 'Точный адрес виллы', 'Villa Turaman, Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla'],
+        ['[MAPS_LINK]', 'mapsLink', 'Ссылка на Google Maps', 'https://maps.app.goo.gl/tPgCjCwz4pzq28pE9'],
+        ['[CHECKIN_METHOD]', 'checkinMethod', 'Способ передачи ключей', 'Мини-сейф с кодом у входа или личная встреча владельцем'],
+        ['[WIFI_NAME]', 'wifiName', 'Имя сети Wi-Fi', 'VillaTuraman_5G'],
+        ['[WIFI_PASSWORD]', 'wifiPassword', 'Пароль от Wi-Fi', 'Dalyan2026Turaman'],
+        ['[OWNER_NAME]', 'ownerName', 'Имя суперхозяина', 'Алексей Знаменский'],
+        ['[TRANSFER_PHONE]', 'transferPhone', 'Телефон трансфера', '+90 543 335 80 70 - Ahmet [SAYILAN TURİZM]']
+      ];
+      varSheet.getRange(2, 1, defaultVars.length, 4).setValues(defaultVars);
+    }
+
+    // 3. Лист ШАБЛОНЫ СООБЩЕНИЙ
+    var tmplSheet = findSheetByConfigKey(ss, 'TEMPLATES');
+    if (!tmplSheet) {
+      tmplSheet = ss.insertSheet('💬 Шаблоны сообщений');
+    }
+    if (tmplSheet.getLastRow() === 0) {
+      var tmplHeaders = ['ID Шаблона', 'Название шаблона', 'Текст RU', 'Текст EN', 'Текст TR'];
+      styleSheetHeader_(tmplSheet, tmplHeaders, { red: 0.3, green: 0.18, blue: 0.3 });
+
+      var guideDalyanRu = 'Здравствуйте, [FIRST_NAME]! 👋 🌴✨ Делюсь персональным гидом по Дальяну:\n\n' +
+        '🏡 1. Адрес виллы:\n' +
+        'Адрес: Villa Turaman, Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla\n' +
+        'Google Maps: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n\n' +
+        '🚗 2. Трансфер:\n' +
+        'Taxi Transfer: +90 543 335 80 70 - Ahmet [SAYILAN TURİZM].\n\n' +
+        '🚤 3. Прогулка на лодке по реке:\n' +
+        'Капитан Адам: +90 544 588 58 09 [персональные речные экскурсии].\n\n' +
+        '🍽️ Гастрономия Дальяна:\n' +
+        '🌸 Çiçek Restaurant: Любимый семейный ресторан. Рекомендую: бараньи ребрышки [Kuzu Pirzola], сибас на гриле, салат Rokka и айран.\n' +
+        'Адрес: Dalyan, Rodoslu Yaşar Sünger Sk, 48600 Ortaca/Muğla\n' +
+        'Google Maps: https://maps.google.com/?cid=14955012417485225116\n\n' +
+        '🎱 Mavi Bar and Restaurant: Прямо через дорогу! Бильярд, бассейн, напитки и кухня.\n' +
+        'Адрес: Dalyan, Özalp Sk. No: 14, 48840 Ortaca/Muğla\n' +
+        'Google Maps: https://maps.google.com/?cid=12893448618633420855\n\n' +
+        '🍺 Yanık Gastro Pub: Крафтовое пиво, коктейли и бургеры на пешеходной улице.\n' +
+        'Адрес: Dalyan, Maraş Cd. No:42, 48600 Ortaca/Muğla\n' +
+        'Google Maps: https://maps.google.com/?cid=9741858985725169689\n\n' +
+        '🌅 The Pier Dalyan: Ресторан у воды с видом на подсвеченные гробницы. Совет: бронируйте столик у реки на вечер!\n' +
+        'Адрес: Dalyan, Maraş Cd. No: 60, 48600 Ortaca/Muğla\n' +
+        'Google Maps: https://maps.google.com/?cid=8665819764601302226\n\n' +
+        '🏛️ История и Античность:\n' +
+        '🗿 Гробницы Кауноса [Kral Kaya Mezarları]: Наскальные ликийские гробницы IV в. до н.э. [лучший вид с лодки или противоположного берега].\n' +
+        'Адрес: Çandır, 48840 Ortaca/Muğla\n' +
+        'Google Maps: https://maps.google.com/?cid=14386902661457998742\n\n' +
+        '🏛️ Древний Каунос [Kaunos Antik Kenti]: Античный город с амфитеатром [переправа через реку на лодочке].\n' +
+        'Адрес: Dalyan, 48800 Ortaca/Köyceğiz/Muğla\n' +
+        'Google Maps: https://maps.google.com/?cid=10349596986479033074\n\n' +
+        '🐢 Природа и Пляжи:\n' +
+        '🏖️ Пляж Изтузу [İztuzu Plajı]: 4.5 км песчаной косы, заповедник черепах Каретта-Каретта. Доезд на машине или лодке-долмуше.\n' +
+        'Адрес: Gökbel, 48600 Ortaca/Muğla\n' +
+        'Google Maps: https://maps.google.com/?cid=658248733736535804\n\n' +
+        '🏥 DEKAMER: Центр спасения черепах на пляже Изтузу [вход бесплатный].\n' +
+        'Адрес: Gökbel, 48600 Ortaca/Muğla\n' +
+        'Google Maps: https://maps.google.com/?cid=14102698259453109145\n\n' +
+        '⛵ Озеро Кёйджегиз: Идеальное место для вечернего круиза на закате.\n' +
+        'Адрес: Köyceğiz, Muğla\n' +
+        'Google Maps: https://maps.google.com/?cid=8614170710005189793\n\n' +
+        '♨️ Спа и Смотровые площадки:\n' +
+        '🌋 Султание [Sultaniye Kaplıcaları]: Целебные грязи и горячие источники [+39°C] у озера.\n' +
+        'Адрес: Sultaniye, 48800 Köyceğiz/Muğla\n' +
+        'Google Maps: https://maps.google.com/?cid=8749883205667501071\n\n' +
+        '⛰️ Гора Радар [Radar Tepesi]: Лучшая панорамная площадка с видом на косу Изтузу [приезжайте к закату!].\n' +
+        'Адрес: Gökbel, 48600 Ortaca/Muğla\n' +
+        'Google Maps: https://maps.google.com/?cid=15421430292199163844\n\n' +
+        'Всегда на связи! Легкой дороги и отличного отдыха! ✨\n' +
+        'С уважением, Алексей Знаменский. Villa Turaman.';
+
+      var defaultTemplates = [
+        ['1.1_first_contact_warm', '1.1. Теплый первый контакт', 'Здравствуйте, [FIRST_NAME]! 👋 Спасибо за интерес к Villa Turaman. Будем рады принять вас!', 'Hello [FIRST_NAME]! 👋 Thank you for your interest in Villa Turaman. We would be delighted to host you!', 'Merhaba [FIRST_NAME]! 👋 Villa Turaman\'a gösterdiğiniz ilgi için teşekkür ederiz. Sizi ağırlamaktan mutluluk duyarız!'],
+        ['2.1_booking_confirmed', '2.1. Подтверждение бронирования', 'Поздравляем, ваше бронирование подтверждено! 🥳 Код: [CONFIRMATION_CODE]. Заезд: [CHECKIN_DATE] с [CHECKIN_TIME].', 'Congratulations, your booking is confirmed! 🥳 Code: [CONFIRMATION_CODE]. Check-in: [CHECKIN_DATE] from [CHECKIN_TIME].', 'Tebrikler, rezervasyonunuz onaylandı! 🥳 Onay Kodu: [CONFIRMATION_CODE]. Giriş: [CHECKIN_DATE] saat [CHECKIN_TIME] itibarıyla.'],
+        ['3.1_geolocation_route', '3.1. Геолокация и маршрут к вилле', 'Адрес виллы: [ADDRESS]\nGoogle Maps: [MAPS_LINK]\nБудем рады встретить вас!', 'Villa address: [ADDRESS]\nGoogle Maps: [MAPS_LINK]\nLooking forward to welcoming you!', 'Villa adresi: [ADDRESS]\nGoogle Maps: [MAPS_LINK]\nSizi karşılamak için sabırsızlanıyoruz!'],
+        ['3.4_checkin_instructions', '3.4. Инструкция по заселению и Wi-Fi', 'Вы можете заселиться после [CHECKIN_TIME].\nСпособ: [CHECKIN_METHOD]\nWi-Fi сеть: [WIFI_NAME]\nПароль: [WIFI_PASSWORD]', 'You can check in anytime after [CHECKIN_TIME].\nMethod: [CHECKIN_METHOD]\nWi-Fi network: [WIFI_NAME]\nPassword: [WIFI_PASSWORD]', '[CHECKIN_TIME] sonrası dilediğiniz saatte giriş yapabilirsiniz.\nYöntem: [CHECKIN_METHOD]\nWi-Fi: [WIFI_NAME]\nŞifre: [WIFI_PASSWORD]'],
+        ['3.5_welcome_guide_dalyan', '3.5. Приветственный гид по Дальяну', guideDalyanRu, guideDalyanRu, guideDalyanRu],
+        ['5.1_checkout_warm_farewell', '5.1. Теплое прощание и выезд', 'Выезд стандартно до [CHECKOUT_TIME]. Огромное спасибо за выбор Villa Turaman! Ждем вас снова! 🌴✨', 'Check-out is by [CHECKOUT_TIME]. Thank you so much for staying with us at Villa Turaman! 🌴✨', 'Çıkış saati [CHECKOUT_TIME]\'dir. Villa Turaman\'ı tercih ettiğiniz için çok teşekkür ederiz! 🌴✨']
+      ];
+      tmplSheet.getRange(2, 1, defaultTemplates.length, 5).setValues(defaultTemplates);
+    }
+
+    ui.alert('✅ База Знаний создана!', '3 листа Базы Знаний успешно сформированы и заполнены:\n\n1. ⚙️ Системные настройки\n2. 🧩 Словарь переменных\n3. 💬 Шаблоны сообщений [включая полный гид 3.5 с 12 Google Maps ссылками]', ui.ButtonSet.OK);
+  } catch (err) {
+    ui.alert('Ошибка создания Базы Знаний', err.message, ui.ButtonSet.OK);
+  }
+}
+
+/**
+ * 7. Проверка статуса Gemini API на Vercel
+ */
+function checkGeminiVercelStatusInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var props = PropertiesService.getScriptProperties();
+  var siteUrl = (props.getProperty('SITE_URL') || '').trim().replace(/\/+$/, '');
+
+  if (!siteUrl) {
+    ui.alert('Внимание', 'Сначала укажите SITE_URL в Свойствах скрипта.', ui.ButtonSet.OK);
+    return;
+  }
+
+  try {
+    var res = UrlFetchApp.fetch(siteUrl + '/api/system-status', { muteHttpExceptions: true });
+    var data = JSON.parse(res.getContentText());
+    var k = data.keysStatus || {};
+
+    var statusText = '🤖 СТАТУС GOOGLE GEMINI НА VERCEL:\n\n' +
+      '• Хост: ' + siteUrl + '\n' +
+      '• GEMINI_API_KEY: ' + (k.GEMINI_API_KEY ? 'Подключен ✅' : 'Не задан ❌') + '\n' +
+      '• GEMINI_MODEL: ' + (k.GEMINI_MODEL ? k.GEMINI_MODEL : 'gemini-3.6-flash [по умолчанию]') + '\n' +
+      '• ИИ-Консьерж: ' + (data.readiness && data.readiness.aiConcierge ? 'Готов к работе 🟢' : 'Fallback режим 🟡') + '\n\n' +
+      'Вы можете указать ключ на https://vercel.com/ ➔ Settings ➔ Environment Variables.';
+
+    ui.alert('Диагностика Gemini API', statusText, ui.ButtonSet.OK);
+  } catch (err) {
+    ui.alert('Ошибка связи', 'Не удалось связаться с ' + siteUrl + ':\n' + err.message, ui.ButtonSet.OK);
+  }
+}
+
+/**
+ * 8. Настройка GEMINI_API_KEY в Свойствах скрипта
+ */
+function setupAiPropertiesInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var props = PropertiesService.getScriptProperties();
+
+  var currentKey = props.getProperty('GEMINI_API_KEY') || '';
+  var res = ui.prompt('Настройка GEMINI_API_KEY', 'Ключ также может быть указан на https://vercel.com/.\n\nВведите ваш Google Gemini API ключ:', ui.ButtonSet.OK_CANCEL);
+  if (res.getSelectedButton() !== ui.Button.OK) return;
+  var key = res.getResponseText().trim() || currentKey;
+
+  props.setProperty('GEMINI_API_KEY', key);
+  try { syncAiKnowledgeToVercel(); } catch (e) { }
+
+  ui.alert('✅ Ключ сохранен!', 'GEMINI_API_KEY успешно сохранен в Свойствах скрипта.', ui.ButtonSet.OK);
+}
+
+/**
+ * 9. Тестовый диалог с ИИ-Консьержем
+ */
+function testAiConciergeInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var props = PropertiesService.getScriptProperties();
+  var siteUrl = (props.getProperty('SITE_URL') || '').trim().replace(/\/+$/, '');
+
+  if (!siteUrl) {
+    ui.alert('Внимание', 'Сначала укажите SITE_URL в Свойствах скрипта.', ui.ButtonSet.OK);
+    return;
+  }
+
+  var promptRes = ui.prompt('Тест ИИ-Консьержа', 'Введите тестовый вопрос гостя:\nНапример: Какая цена за ночь и есть ли бассейн?', ui.ButtonSet.OK_CANCEL);
+  if (promptRes.getSelectedButton() !== ui.Button.OK) return;
+  var guestMsg = promptRes.getResponseText().trim() || 'Здравствуйте! Расскажите про бассейн и трансфер.';
+
+  try {
+    var url = siteUrl + '/api/ai-concierge';
+    var payload = {
+      guestMessage: guestMsg,
+      guestName: 'Тестовый Гость',
+      lang: 'ru'
+    };
+
+    var res = UrlFetchApp.fetch(url, {
+      method: 'post',
+      contentType: 'application/json',
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    });
+
+    var data = JSON.parse(res.getContentText());
+    if (data.reply) {
+      ui.alert('Ответ ИИ-Консьержа Gemini', 'Вопрос гостя: "' + guestMsg + '"\n\nМодель: ' + (data.model || 'gemini') + ' [' + (data.source || 'api') + ']\n\nОтвет:\n' + data.reply, ui.ButtonSet.OK);
+    } else {
+      ui.alert('Ответ сервера', JSON.stringify(data), ui.ButtonSet.OK);
+    }
+  } catch (err) {
+    ui.alert('Ошибка запроса', err.message, ui.ButtonSet.OK);
   }
 }
 

@@ -678,159 +678,192 @@ Saygılarımla, Aleksey Znamenskiy. Villa Turaman.`
       tr: '3.5. Dalyan Hoş Geldiniz Rehberi'
     },
     content: {
-      ru: `Здравствуйте, [FIRST_NAME]! 👋
+      ru: `Здравствуйте, [FIRST_NAME]! 👋 🌴✨ Делюсь персональным гидом по Дальяну:
 
-С нетерпением ждем вас в Villa Turaman! 🌴✨ Отвечаю на ваши вопросы и делюсь персональным гидом по Дальяну:
-
-🏡 1. Адрес и встреча:
-
-Адрес: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla.
-
-Заселение: В день приезда встречаю вас лично, передам ключи и всё покажу.
+🏡 1. Адрес виллы:
+Адрес: Villa Turaman, Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla
+Google Maps: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9
 
 🚗 2. Трансфер:
-
-Taxi Transfer: +90 543 335 80 70 : Ахмет (SAYILAN TURİZM).
+Taxi Transfer: +90 543 335 80 70 - Ahmet [SAYILAN TURİZM].
 
 🚤 3. Прогулка на лодке по реке:
-
-Капитан Адам: +90 544 588 58 09 (персональные речные экскурсии).
+Капитан Адам: +90 544 588 58 09 [персональные речные экскурсии].
 
 🍽️ Гастрономия Дальяна:
+🌸 Çiçek Restaurant: Любимый семейный ресторан. Рекомендую: бараньи ребрышки [Kuzu Pirzola], сибас на гриле, салат Rokka и айран.
+Адрес: Dalyan, Rodoslu Yaşar Sünger Sk, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=14955012417485225116
 
-🌸 Çiçek Restaurant: Любимый семейный ресторан. Рекомендую: бараньи ребрышки (Kuzu Pirzola), сибас на гриле, салат Rokka и айран.
-
-🎱 Mavi Bar: Прямо через дорогу! Бильярд, бассейн, напитки и кухня.
+🎱 Mavi Bar and Restaurant: Прямо через дорогу! Бильярд, бассейн, напитки и кухня.
+Адрес: Dalyan, Özalp Sk. No: 14, 48840 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=12893448618633420855
 
 🍺 Yanık Gastro Pub: Крафтовое пиво, коктейли и бургеры на пешеходной улице.
+Адрес: Dalyan, Maraş Cd. No:42, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=9741858985725169689
 
 🌅 The Pier Dalyan: Ресторан у воды с видом на подсвеченные гробницы. Совет: бронируйте столик у реки на вечер!
+Адрес: Dalyan, Maraş Cd. No: 60, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=8665819764601302226
 
 🏛️ История и Античность:
+🗿 Гробницы Кауноса [Kral Kaya Mezarları]: Наскальные ликийские гробницы IV в. до н.э. [лучший вид с лодки или противоположного берега].
+Адрес: Çandır, 48840 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=14386902661457998742
 
-🗿 Гробницы Кауноса (Kral Kaya Mezarları): Наскальные ликийские гробницы IV в. до н.э. (лучший вид с лодки или противоположного берега).
-
-🏛️ Древний Каунос (Kaunos Antik Kenti): Античный город с амфитеатром (переправа через реку на лодочке).
+🏛️ Древний Каунос [Kaunos Antik Kenti]: Античный город с амфитеатром [переправа через реку на лодочке].
+Адрес: Dalyan, 48800 Ortaca/Köyceğiz/Muğla
+Google Maps: https://maps.google.com/?cid=10349596986479033074
 
 🐢 Природа и Пляжи:
+🏖️ Пляж Изтузу [İztuzu Plajı]: 4.5 км песчаной косы, заповедник черепах Каретта-Каретта. Доезд на машине или лодке-долмуше.
+Адрес: Gökbel, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=658248733736535804
 
-🏖️ Пляж Изтузу (İztuzu Plajı): 4.5 км песчаной косы, заповедник черепах Каретта-Каретта. Доезд на машине или лодке-долмуше.
-
-🏥 DEKAMER: Центр спасения черепах на пляже Изтузу (вход бесплатный).
+🏥 DEKAMER: Центр спасения черепах на пляже Изтузу [вход бесплатный].
+Адрес: Gökbel, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=14102698259453109145
 
 ⛵ Озеро Кёйджегиз: Идеальное место для вечернего круиза на закате.
+Адрес: Köyceğiz, Muğla
+Google Maps: https://maps.google.com/?cid=8614170710005189793
 
 ♨️ Спа и Смотровые площадки:
+🌋 Султание [Sultaniye Kaplıcaları]: Целебные грязи и горячие источники [+39°C] у озера.
+Адрес: Sultaniye, 48800 Köyceğiz/Muğla
+Google Maps: https://maps.google.com/?cid=8749883205667501071
 
-🌋 Султание (Sultaniye Kaplıcaları): Целебные грязи и горячие источники (+39°C) у озера.
-
-⛰️ Гора Радар (Radar Tepesi): Лучшая панорамная площадка с видом на косу Изтузу (приезжайте к закату!).
+⛰️ Гора Радар [Radar Tepesi]: Лучшая панорамная площадка с видом на косу Изтузу [приезжайте к закату!].
+Адрес: Gökbel, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=15421430292199163844
 
 Всегда на связи! Легкой дороги и отличного отдыха! ✨
-
 С уважением, Алексей Знаменский. Villa Turaman.`,
-      en: `Hello [FIRST_NAME]! 👋
+      en: `Hello, [FIRST_NAME]! 👋 🌴✨ Sharing a personal guide to Dalyan:
 
-We look forward to welcoming you to Villa Turaman! 🌴✨ Here are the answers to your questions and our personal guide to Dalyan:
+🏡 1. Villa Address:
+Address: Villa Turaman, Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla
+Google Maps: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9
 
-🏡 1. Address & Check-in:
+🚗 2. Transfer:
+Taxi Transfer: +90 543 335 80 70 - Ahmet [SAYILAN TURİZM].
 
-Address: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla.
+🚤 3. River Boat Trip:
+Captain Adam: +90 544 588 58 09 [private river excursions].
 
-Check-in: I will personally meet you at the villa, hand over the keys, and show you around.
+🍽️ Dalyan Gastronomy:
+🌸 Çiçek Restaurant: A favorite family restaurant. I recommend: lamb chops [Kuzu Pirzola], grilled sea bass, Rokka salad, and ayran.
+Address: Dalyan, Rodoslu Yaşar Sünger Sk, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=14955012417485225116
 
-🚗 2. Airport Transfer:
+🎱 Mavi Bar and Restaurant: Right across the street! Billiards, pool, drinks, and food.
+Address: Dalyan, Özalp Sk. No: 14, 48840 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=12893448618633420855
 
-Taxi Transfer: +90 543 335 80 70 - Ahmet (SAYILAN TURİZM).
+🍺 Yanık Gastro Pub: Craft beer, cocktails, and burgers on the pedestrian street.
+Address: Dalyan, Maraş Cd. No:42, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=9741858985725169689
 
-🚤 3. River Boat Cruise:
+🌅 The Pier Dalyan: Waterfront restaurant with a view of the illuminated tombs. Tip: book a table by the river for the evening!
+Address: Dalyan, Maraş Cd. No: 60, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=8665819764601302226
 
-Captain Adam: +90 544 588 58 09 (private custom boat trips).
+🏛️ History and Antiquity:
+🗿 Kaunos Tombs [Kral Kaya Mezarları]: Rock-cut Lycian tombs from the 4th century BC [best view from a boat or the opposite bank].
+Address: Çandır, 48840 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=14386902661457998742
 
-🍽️ Gastronomy Guide:
+🏛️ Ancient Kaunos [Kaunos Antik Kenti]: Ancient city with an amphitheater [cross the river by a small boat].
+Address: Dalyan, 48800 Ortaca/Köyceğiz/Muğla
+Google Maps: https://maps.google.com/?cid=10349596986479033074
 
-🌸 Çiçek Restaurant: Favorite family spot. Must try: Grilled Lamb Chops (Kuzu Pirzola), Sea Bass, Rocket Salad (Rokka Salat), and Ayran.
+🐢 Nature and Beaches:
+🏖️ Iztuzu Beach [İztuzu Plajı]: 4.5 km of sand spit, a sanctuary for Caretta-Caretta turtles. Reachable by car or dolmuş boat.
+Address: Gökbel, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=658248733736535804
 
-🎱 Mavi Bar: Directly across the street! Free pool table, pool, drinks, and food.
+🏥 DEKAMER: Turtle rescue center on Iztuzu Beach [free entry].
+Address: Gökbel, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=14102698259453109145
 
-🍺 Yanık Gastro Pub: Craft beers, cocktails, and burgers on the main pedestrian street.
+⛵ Köyceğiz Lake: Perfect spot for an evening sunset cruise.
+Address: Köyceğiz, Muğla
+Google Maps: https://maps.google.com/?cid=8614170710005189793
 
-🌅 The Pier Dalyan: Waterfront dining opposite the illuminated Rock Tombs. Tip: Reserve a riverside table for dinner!
+♨️ Spa and Viewpoints:
+🌋 Sultaniye [Sultaniye Kaplıcaları]: Healing muds and hot thermal springs [+39°C] by the lake.
+Address: Sultaniye, 48800 Köyceğiz/Muğla
+Google Maps: https://maps.google.com/?cid=8749883205667501071
 
-🏛️ History & Antiquity:
+⛰️ Radar Hill [Radar Tepesi]: The best panoramic viewpoint overlooking the Iztuzu sand spit [come by sunset!].
+Address: Gökbel, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=15421430292199163844
 
-🗿 Kaunos Rock Tombs: Ancient Lycian cliff tombs from 4th century BC (best view from a boat or across the river).
-
-🏛️ Ancient Kaunos: Historical site with an amphitheater (accessible via rowboat ferry across the river).
-
-🐢 Nature & Beaches:
-
-🏖️ İztuzu Beach: Famous 4.5 km protected beach & sea turtle sanctuary. Accessible by car or public riverboat.
-
-🏥 DEKAMER: Sea turtle rehabilitation center at İztuzu Beach (free entry).
-
-⛵ Lake Köyceğiz: Scenic lake perfect for a romantic sunset boat cruise.
-
-♨️ Spa & Viewpoints:
-
-🌋 Sultaniye Hot Springs: Mineral mud baths and thermal pools (+39°C) on the lake shore.
-
-⛰️ Radar Hill: Breathtaking panoramic viewpoint over İztuzu Beach (visit before sunset!).
-
-Always here to help! Safe travels and see you soon! ✨
-
+Always in touch! Have an easy journey and a great holiday! ✨
 Best regards, Aleksei Znamenskii. Villa Turaman.`,
-      tr: `Merhaba [FIRST_NAME]! 👋
+      tr: `Merhaba, [FIRST_NAME]! 👋 🌴✨ Dalyan özel rehberimizi paylaşıyorum:
 
-Sizi Villa Turaman'da ağırlamak için sabırsızlanıyoruz! 🌴✨ Sorularınızın yanıtları ve özel Dalyan rehberimiz aşağıdadır:
+🏡 1. Villa Adresi:
+Adres: Villa Turaman, Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla
+Google Maps: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9
 
-🏡 1. Adres ve Karşılama:
-
-Adres: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla.
-
-Giriş: Varış gününüzde sizi bizzat karşılayıp anahtarları teslim edeceğim.
-
-🚗 2. Havalimanı Transferi:
-
-Taksi Transfer: +90 543 335 80 70 - Ahmet (SAYILAN TURİZM).
+🚗 2. Transfer:
+Taksi Transfer: +90 543 335 80 70 - Ahmet [SAYILAN TURİZM].
 
 🚤 3. Nehir Tekne Turu:
+Kaptan Adam: +90 544 588 58 09 [özel nehir turları].
 
-Kaptan Adam: +90 544 588 58 09 (özel nehir turları).
-
-🍽️ Dalyan Lezzet Rehberi:
-
+🍽️ Dalyan Gastronomisi:
 🌸 Çiçek Restaurant: En sevdiğimiz aile işletmesi. Tavsiye: Kuzu Pirzola, ızgara levrek, Roka Salatası ve ayran.
+Adres: Dalyan, Rodoslu Yaşar Sünger Sk, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=14955012417485225116
 
-🎱 Mavi Bar: Evin hemen karşısında! Bilardo masası, havuz, içecekler ve yemekler.
+🎱 Mavi Bar and Restaurant: Evin hemen karşısında! Bilardo, havuz, içecekler ve yemekler.
+Adres: Dalyan, Özalp Sk. No: 14, 48840 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=12893448618633420855
 
-🍺 Yanık Gastro Pub: Yürüyüş caddesinde craft biralar, kokteyller ve lezzetli burgerler.
+🍺 Yanık Gastro Pub: Yürüyüş caddesinde craft biralar, kokteyller ve burgerler.
+Adres: Dalyan, Maraş Cd. No:42, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=9741858985725169689
 
 🌅 The Pier Dalyan: Işıklandırılmış Kaya Mezarları karşısında nehir kenarı restoranı. İpucu: Akşam için nehir kenarı masa rezerve edin!
+Adres: Dalyan, Maraş Cd. No: 60, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=8665819764601302226
 
 🏛️ Tarih ve Antik Çağ:
+🗿 Kral Kaya Mezarları: M.Ö. 4. yüzyıldan kalma kaya mezarları [tekneden veya karşı kıyıdan en iyi manzara].
+Adres: Çandır, 48840 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=14386902661457998742
 
-🗿 Kral Kaya Mezarları: M.Ö. 4. yüzyıldan kalma görkemli mezarlar (en güzel manzara tekneden izlenir).
-
-🏛️ Kaunos Antik Kenti: Amfitiyatrosu olan antik kent (nehrin karşısına sandal ile geçilir).
+🏛️ Kaunos Antik Kenti: Amfitiyatrosu olan antik kent [nehrin karşısına sandal ile geçilir].
+Adres: Dalyan, 48800 Ortaca/Köyceğiz/Muğla
+Google Maps: https://maps.google.com/?cid=10349596986479033074
 
 🐢 Doğa ve Plajlar:
+🏖️ İztuzu Plajı: Caretta Caretta kaplumbağalarının koruma alanı 4.5 km kumsal. Araçla veya dolmuş tekneyle ulaşım.
+Adres: Gökbel, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=658248733736535804
 
-🏖️ İztuzu Plajı: Caretta Caretta kaplumbağalarının yuvalama alanı 4.5 km'lik plaj. Araçla veya dolmuş tekneyle ulaşım.
-
-🏥 DEKAMER: İztuzu Plajı'ndaki Deniz Kaplumbağaları Tedavi Merkezi (giriş ücretsizdir).
+🏥 DEKAMER: İztuzu Plajı Deniz Kaplumbağaları Kurtarma Merkezi [giriş ücretsiz].
+Adres: Gökbel, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=14102698259453109145
 
 ⛵ Köyceğiz Gölü: Gün batımı tekne turları için harika bir rota.
+Adres: Köyceğiz, Muğla
+Google Maps: https://maps.google.com/?cid=8614170710005189793
 
 ♨️ Kaplıcalar ve Seyir Tepeleri:
+🌋 Sultaniye Kaplıcaları: Göl kenarında şifalı çamurlar ve sıcak termal sular [+39°C].
+Adres: Sultaniye, 48800 Köyceğiz/Muğla
+Google Maps: https://maps.google.com/?cid=8749883205667501071
 
-🌋 Sultaniye Kaplıcaları: Mineral zengini şifalı çamur banyoları ve +39°C termal su kaynakları.
+⛰️ Radar Tepesi: İztuzu kumsalını kuşbakışı gören en iyi seyir noktası [gün batımına doğru gelin!].
+Adres: Gökbel, 48600 Ortaca/Muğla
+Google Maps: https://maps.google.com/?cid=15421430292199163844
 
-⛰️ Radar Tepesi: Bölgenin en yüksek seyir noktası (gün batımından hemen önce gidin!).
-
-Her zaman iletişimdeyiz! Keyifli yolculuklar dilerim! ✨
-
-Saygılarımla, Aleksey Znamenskiy. Villa Turaman.`
+Her zaman iletişimdeyiz! İyi yolculuklar ve harika bir tatil dilerim! ✨
+Saygılarımla, Aleksei Znamenskii. Villa Turaman.`
     }
   },
 

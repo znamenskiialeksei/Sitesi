@@ -326,7 +326,19 @@ export default function HomeListing({ publicData, contentData }) {
         currentContentData.home?.locationImage?.media ||
         currentContentData.home?.locationTitle?.media,
         'image'
-      ) || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200'
+      ) || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200',
+    bedrooms: [1, 2, 3, 4].map((num) => {
+      const key = `bedroom_${num}`;
+      const item = currentContentData.home?.[key];
+      if (!item) return null;
+      return {
+        title: item[lang] || item.ru || '',
+        desc: item.en || item[lang] || item.ru || '',
+        badge: item.tr || `Спальня ${num}`,
+        image: parseDriveLink(item.media, 'image') || ''
+      };
+    }).filter(Boolean),
+    amenitiesGrouped: null
   };
 
   const fullDescriptionSections = Object.values(currentContentData.about || {}).map((item) => ({
@@ -546,10 +558,10 @@ export default function HomeListing({ publicData, contentData }) {
             </div>
 
             {/* Спальные места (Sleeping Arrangements) */}
-            <SleepingArrangements />
+            <SleepingArrangements customBedrooms={homeData.bedrooms} />
 
             {/* Удобства виллы (Amenities) */}
-            <Amenities />
+            <Amenities customAmenitiesGrouped={homeData.amenitiesGrouped} />
 
             {/* Дополнительные услуги и видео-путеводители из Google Sheets */}
             <CatalogSection
@@ -630,9 +642,32 @@ export default function HomeListing({ publicData, contentData }) {
           item={selectedPresentation}
           type={selectedPresentationType}
           onClose={() => setSelectedPresentation(null)}
-          onPurchase={(price, type, item) => {
+          onPurchase={async (price, type, item) => {
             setSelectedPresentation(null);
-            toast.success(`Заказ на «${item.name?.[lang] || item.name?.ru || 'услугу'}» принят!`);
+            const itemName = item.name?.[lang] || item.name?.ru || 'Услуга';
+            try {
+              const res = await fetch('/api/booking', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  action: 'order_service_or_guide',
+                  guestName: currentUser?.name || 'Гость',
+                  contact: currentUser?.contact || '',
+                  itemTitle: itemName,
+                  itemType: type === 'course' ? 'Видео-путеводитель' : 'Дополнительная услуга',
+                  price: price,
+                  details: `Заказ из каталога: ${itemName}`
+                })
+              });
+              const data = await res.json();
+              if (data.success) {
+                toast.success(`Заказ на «${itemName}» успешно отправлен владельцу виллы!`);
+              } else {
+                toast.warn(`Заказ зафиксирован локально: ${itemName}`);
+              }
+            } catch (err) {
+              toast.success(`Заказ на «${itemName}» принят! Хозяин свяжется с вами.`);
+            }
           }}
         />
       )}

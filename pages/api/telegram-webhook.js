@@ -12,6 +12,7 @@ import { google } from 'googleapis';
 import { getLiveSheetMap, resolveRange } from '../../utils/sheetsRegistry';
 import { SMART_TEMPLATES, TEMPLATE_STAGES } from '../../utils/templatesData';
 import { resolveTemplate, extractFirstName } from '../../utils/templateResolver';
+import { getAiKnowledgeBase, invalidateAiKnowledgeCache } from '../../utils/aiKnowledgeBase';
 
 // Вспомогательный кэш сессий ответов в памяти
 const botSessions = global._tgBotSessions || (global._tgBotSessions = {});
@@ -21,8 +22,8 @@ const MAIN_KEYBOARD = {
   keyboard: [
     [{ text: "📋 Заявки и брони" }, { text: "💬 CRM Чаты" }],
     [{ text: "📑 Шаблоны ответов" }, { text: "📅 Календарь дат" }],
-    [{ text: "💳 Тарифы виллы" }, { text: "📢 Массовая рассылка" }],
-    [{ text: "⚙️ Статус и Webhook" }]
+    [{ text: "💳 Тарифы виллы" }, { text: "🧠 Режим ИИ & Gemini" }],
+    [{ text: "📢 Массовая рассылка" }, { text: "⚙️ Статус и Webhook" }]
   ],
   resize_keyboard: true,
   persistent: true
@@ -390,6 +391,220 @@ export default async function handler(req, res) {
         text: statusText,
         reply_markup: MAIN_KEYBOARD
       });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Управление Режимом ИИ из Telegram бота ---
+    if (data === 'menu_ai_control') {
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId, text: '🧠 Загрузка настроек ИИ...' });
+      const kb = await getAiKnowledgeBase();
+      const currentMode = kb.aiMode || 'copilot';
+      const modeNames = {
+        autopilot: '🚀 Автопилот [ИИ отвечает сразу сам]',
+        copilot: '💡 Суфлер [ИИ готовит проект ответа]',
+        off: '⏸️ Выключен [Ручное управление]'
+      };
+
+      const aiText = `🧠 Управление ИИ-Агентом & Gemini:\n\n` +
+        `• Текущий режим: ${modeNames[currentMode] || currentMode}\n` +
+        `• Модель Gemini: ${kb.geminiModel || 'gemini-3.6-flash'}\n` +
+        `• Минимальный тариф: ${kb.minPriceUsd || 180} USD\n` +
+        `• Ключ GEMINI_API_KEY: ${process.env.GEMINI_API_KEY ? 'Настроен на Vercel ✅' : 'Отсутствует ⚠️'}\n\n` +
+        `Переключение режима в 1 клик:`;
+
+      const aiButtons = [
+        [
+          { text: `${currentMode === 'autopilot' ? '✅ ' : ''}🚀 Автопилот`, callback_data: 'ai_set_mode_autopilot' },
+          { text: `${currentMode === 'copilot' ? '✅ ' : ''}💡 Суфлер`, callback_data: 'ai_set_mode_copilot' }
+        ],
+        [
+          { text: `${currentMode === 'off' ? '✅ ' : ''}⏸️ Отключить`, callback_data: 'ai_set_mode_off' },
+          { text: '🔄 Сбросить кэш', callback_data: 'ai_refresh_cache' }
+        ],
+        [
+          { text: '◀️ Назад в меню', callback_data: 'tg_nav_main' }
+        ]
+      ];
+
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: aiText,
+        reply_markup: { inline_keyboard: aiButtons }
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Переключение режима ИИ ---
+    if (data.startsWith('ai_set_mode_')) {
+      const targetMode = data.replace('ai_set_mode_', '');
+      try {
+        if (sheets && spreadsheetId) {
+          const curRows = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: resolveRange(sheetMap, 'SETTINGS', 'A:D')
+          });
+          const rows = curRows.data.values || [];
+          const idx = rows.findIndex((r) => (r[0] || '').toString().trim() === 'AI_MODE');
+          if (idx >= 0) {
+            await sheets.spreadsheets.values.update({
+              spreadsheetId,
+              range: resolveRange(sheetMap, 'SETTINGS', `B${idx + 1}`),
+              valueInputOption: 'USER_ENTERED',
+              requestBody: { values: [[targetMode]] }
+            });
+          }
+        }
+        invalidateAiKnowledgeCache();
+
+        await tgApi(token, 'answerCallbackQuery', {
+          callback_query_id: cqId,
+          text: `Режим ИИ изменен на: ${targetMode.toUpperCase()}`,
+          show_alert: true
+        });
+
+        const updatedKb = await getAiKnowledgeBase(true);
+        const modeNames = {
+          autopilot: '🚀 Автопилот [ИИ отвечает сразу сам]',
+          copilot: '💡 Суфлер [ИИ готовит проект ответа]',
+          off: '⏸️ Выключен [Ручное управление]'
+        };
+        const updatedText = `🧠 Управление ИИ-Агентом & Gemini:\n\n` +
+          `• Текущий режим: ${modeNames[updatedKb.aiMode] || updatedKb.aiMode}\n` +
+          `• Модель Gemini: ${updatedKb.geminiModel || 'gemini-3.6-flash'}\n` +
+          `• Минимальный тариф: ${updatedKb.minPriceUsd || 180} USD\n` +
+          `• Ключ GEMINI_API_KEY: ${process.env.GEMINI_API_KEY ? 'Настроен на Vercel ✅' : 'Отсутствует ⚠️'}\n\n` +
+          `Статус успешно синхронизирован с Google Таблицей и Сайтом!`;
+
+        const newButtons = [
+          [
+            { text: `${targetMode === 'autopilot' ? '✅ ' : ''}🚀 Автопилот`, callback_data: 'ai_set_mode_autopilot' },
+            { text: `${targetMode === 'copilot' ? '✅ ' : ''}💡 Суфлер`, callback_data: 'ai_set_mode_copilot' }
+          ],
+          [
+            { text: `${targetMode === 'off' ? '✅ ' : ''}⏸️ Отключить`, callback_data: 'ai_set_mode_off' },
+            { text: '🔄 Сбросить кэш', callback_data: 'ai_refresh_cache' }
+          ],
+          [
+            { text: '◀️ Назад в меню', callback_data: 'tg_nav_main' }
+          ]
+        ];
+
+        if (msgId) {
+          await tgApi(token, 'editMessageText', {
+            chat_id: chatId,
+            message_id: msgId,
+            text: updatedText,
+            reply_markup: { inline_keyboard: newButtons }
+          });
+        }
+      } catch (aiErr) {
+        await tgApi(token, 'answerCallbackQuery', {
+          callback_query_id: cqId,
+          text: `Ошибка изменения режима: ${aiErr.message}`,
+          show_alert: true
+        });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Сброс кэша ИИ базы знаний ---
+    if (data === 'ai_refresh_cache') {
+      invalidateAiKnowledgeCache();
+      await tgApi(token, 'answerCallbackQuery', {
+        callback_query_id: cqId,
+        text: 'Кэш Базы Знаний ИИ сброшен! Загружены свежие данные из Google Таблицы.',
+        show_alert: true
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Одобрение заказа на услугу/гид ---
+    if (data.startsWith('ord_approve_')) {
+      const contact = data.replace('ord_approve_', '');
+      try {
+        const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
+        if (sheets && chatsSpreadsheetId) {
+          const chatSheetName = `Chat_Гость_${contact.replace(/[\\/?*[\]]/g, '').trim().substring(0, 30)}`;
+          await ensureStyledChatSheet(sheets, chatsSpreadsheetId, chatSheetName);
+          const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+          const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+          const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
+          const okMsg = '✅ Ваш заказ одобрен хозяином виллы! Мы свяжемся с вами для согласования времени и деталей.';
+          await sheets.spreadsheets.values.append({
+            spreadsheetId: chatsSpreadsheetId,
+            range: `'${chatSheetName}'!A:G`,
+            valueInputOption: 'USER_ENTERED',
+            insertDataOption: 'INSERT_ROWS',
+            requestBody: { values: [[timestamp, 'Владелец', okMsg, fRU, fEN, fTR, '']] }
+          });
+        }
+
+        await tgApi(token, 'answerCallbackQuery', {
+          callback_query_id: cqId,
+          text: `Заказ для ${contact} одобрен! Гостю отправлено уведомление.`,
+          show_alert: true
+        });
+
+        if (msgId) {
+          const updatedCard = (msg.text || '') + '\n\n🟢 СТАТУС: ЗАКАЗ ОДОБРЕН ВЛАДЕЛЬЦЕМ';
+          await tgApi(token, 'editMessageText', {
+            chat_id: chatId,
+            message_id: msgId,
+            text: updatedCard,
+            reply_markup: {
+              inline_keyboard: [
+                [{ text: `💬 Написать клиенту: ${contact}`, callback_data: `reply_${contact}` }]
+              ]
+            }
+          });
+        }
+      } catch (ordErr) {
+        await tgApi(token, 'answerCallbackQuery', {
+          callback_query_id: cqId,
+          text: `Ошибка: ${ordErr.message}`,
+          show_alert: true
+        });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Отклонение заказа на услугу/гид ---
+    if (data.startsWith('ord_reject_')) {
+      const contact = data.replace('ord_reject_', '');
+      await tgApi(token, 'answerCallbackQuery', {
+        callback_query_id: cqId,
+        text: `Заказ для ${contact} отклонен.`,
+        show_alert: true
+      });
+      if (msgId) {
+        const updatedCard = (msg.text || '') + '\n\n🔴 СТАТУС: ЗАКАЗ ОТКЛОНЕН ВЛАДЕЛЬЦЕМ';
+        await tgApi(token, 'editMessageText', {
+          chat_id: chatId,
+          message_id: msgId,
+          text: updatedCard,
+          reply_markup: { inline_keyboard: [] }
+        });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Навигация назад в главное меню ---
+    if (data === 'tg_nav_main') {
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId });
+      if (msgId) {
+        await tgApi(token, 'editMessageText', {
+          chat_id: chatId,
+          message_id: msgId,
+          text: '🏡 Главный пульт управления Villa Turaman готов к работе.',
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: '📋 Заявки', callback_data: 'menu_requests' }, { text: '💬 Диалоги', callback_data: 'menu_chats' }],
+              [{ text: '🧠 Управление ИИ', callback_data: 'menu_ai_control' }, { text: '📅 Календарь', callback_data: 'menu_calendar' }],
+              [{ text: '⚙️ Статус систем', callback_data: 'menu_status' }]
+            ]
+          }
+        });
+      }
       return res.status(200).json({ ok: true });
     }
 
@@ -1115,6 +1330,46 @@ export default async function handler(req, res) {
         }
       } catch (err) {
         await tgApi(token, 'sendMessage', { chat_id: chatId, text: `Ошибка рассылки: ${err.message}` });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Раздел: 🧠 Режим ИИ & Gemini ---
+    if (text === '🧠 Режим ИИ & Gemini' || text === '/ai') {
+      try {
+        const kb = await getAiKnowledgeBase();
+        const currentMode = kb.aiMode || 'copilot';
+        const modeNames = {
+          autopilot: '🚀 Автопилот [ИИ отвечает сразу сам]',
+          copilot: '💡 Суфлер [ИИ готовит проект ответа]',
+          off: '⏸️ Выключен [Ручное управление]'
+        };
+
+        const aiText = `🧠 Управление ИИ-Агентом & Gemini:\n\n` +
+          `• Текущий режим: ${modeNames[currentMode] || currentMode}\n` +
+          `• Модель Gemini: ${kb.geminiModel || 'gemini-3.6-flash'}\n` +
+          `• Минимальный тариф: ${kb.minPriceUsd || 180} USD\n` +
+          `• Ключ GEMINI_API_KEY: ${process.env.GEMINI_API_KEY ? 'Настроен на Vercel ✅' : 'Отсутствует ⚠️'}\n\n` +
+          `Переключение режима в 1 клик:`;
+
+        const aiButtons = [
+          [
+            { text: `${currentMode === 'autopilot' ? '✅ ' : ''}🚀 Автопилот`, callback_data: 'ai_set_mode_autopilot' },
+            { text: `${currentMode === 'copilot' ? '✅ ' : ''}💡 Суфлер`, callback_data: 'ai_set_mode_copilot' }
+          ],
+          [
+            { text: `${currentMode === 'off' ? '✅ ' : ''}⏸️ Отключить`, callback_data: 'ai_set_mode_off' },
+            { text: '🔄 Сбросить кэш', callback_data: 'ai_refresh_cache' }
+          ]
+        ];
+
+        await tgApi(token, 'sendMessage', {
+          chat_id: chatId,
+          text: aiText,
+          reply_markup: { inline_keyboard: aiButtons }
+        });
+      } catch (err) {
+        await tgApi(token, 'sendMessage', { chat_id: chatId, text: `Ошибка: ${err.message}` });
       }
       return res.status(200).json({ ok: true });
     }
