@@ -12,24 +12,24 @@
  * смысловые кластеры и исторические технические алиасы.
  */
 var VILLA_SHEETS_CONFIG = {
-  // Кластер 1: Публичная витрина
-  HOME: { name: "🏠 Главная витрина", aliases: ["HomePage", "Главная витрина", "🏠 Главная витрина"], cluster: "showcase" },
-  GALLERY: { name: "📸 Фото и Видео Галерея", aliases: ["Gallery", "Галерея", "📸 Фото и Видео Галерея"], cluster: "showcase" },
-  ABOUT: { name: "📖 О вилле и Правила", aliases: ["About", "О вилле", "📖 О вилле и Правила"], cluster: "showcase" },
-  SERVICES: { name: "🛎️ Дополнительные услуги", aliases: ["ExtraServices", "Услуги", "🛎️ Дополнительные услуги"], cluster: "showcase" },
-  GUIDES: { name: "🗺️ Видео-путеводители", aliases: ["VideoGuides", "Путеводители", "🗺️ Видео-путеводители"], cluster: "showcase" },
-  LEGAL: { name: "⚖️ Юридические документы", aliases: ["Legal", "Юридический блок", "⚖️ Юридические документы"], cluster: "showcase" },
+  // Кластер 1: Публичная витрина листинга
+  HOME: { name: "🏠 Главная витрина", suggestedSheetId: 101, aliases: ["🏠 Главная витрина", "Главная витрина", "Главная"], cluster: "showcase" },
+  ABOUT: { name: "📖 О вилле и Правила", suggestedSheetId: 102, aliases: ["📖 О вилле и Правила", "О вилле и Правила", "О вилле"], cluster: "showcase" },
+  GALLERY: { name: "📸 Фотогалерея", suggestedSheetId: 103, aliases: ["📸 Фотогалерея", "Фотогалерея", "📸 Фото и Видео Галерея", "Фото и Видео Галерея", "Галерея"], cluster: "showcase" },
+  REVIEWS: { name: "⭐ Отзывы гостей", suggestedSheetId: 104, aliases: ["⭐ Отзывы гостей", "Отзывы гостей", "Отзывы"], cluster: "showcase" },
+  BLOG: { name: "📰 Статьи и Блог", suggestedSheetId: 105, aliases: ["📰 Статьи и Блог", "Статьи и Блог", "Блог", "Статьи"], cluster: "showcase" },
+  LEGAL: { name: "⚖️ Юридическая информация", suggestedSheetId: 106, aliases: ["⚖️ Юридическая информация", "Юридическая информация", "Юридические документы", "Юридический блок", "Реквизиты"], cluster: "showcase" },
+  FAQS: { name: "❓ Частые вопросы", suggestedSheetId: 107, aliases: ["❓ Частые вопросы", "Частые вопросы", "Вопросы и ответы", "FAQ"], cluster: "showcase" },
 
-  // Кластер 2: Центр управления хозяина & CRM
-  BOOKINGS: { name: "📋 Заявки и Бронирования", aliases: ["BookingRequests", "Вилла", "Бронирования", "Заявки", "Заявки и Бронирования", "📋 Заявки и Бронирования"], cluster: "host" },
-  CALENDAR: { name: "📅 Календарь и Тарифы", aliases: ["CalendarSettings", "Календарь", "📅 Календарь и Тарифы"], cluster: "host" },
-  ACCOUNTS: { name: "👤 Гостевые аккаунты", aliases: ["Accounts", "Аккаунты", "👤 Гостевые аккаунты"], cluster: "host" },
-  MASTER: { name: "🔑 Управление доступом", aliases: ["MasterAccount", "Мастер аккаунт", "🔑 Управление доступом"], cluster: "host" },
-  ORDERS: { name: "💳 Заказы услуг и гидов", aliases: ["ServiceOrders", "Заказы", "💳 Заказы услуг и гидов"], cluster: "host" },
-  ACCESS: { name: "🎟️ Доступы к путеводителям", aliases: ["GuestsAccess", "Доступы", "🎟️ Доступы к путеводителям"], cluster: "host" },
-  TEMPLATES: { name: "💬 Шаблоны сообщений", aliases: ["Templates", "Шаблоны", "💬 Шаблоны сообщений"], cluster: "host" },
-  VARIABLES: { name: "🧩 Словарь переменных", aliases: ["Placeholders", "Variables", "Переменные", "Словарь переменных", "🧩 Словарь переменных"], cluster: "host" },
-  SETTINGS: { name: "⚙️ Системные настройки ИИ Агентов", aliases: ["Settings", "Системные настройки", "Настройки ИИ", "⚙️ Системные настройки", "⚙️ Системные настройки ИИ Агентов"], cluster: "system" }
+  // Кластер 2: Кабинет хозяина, CRM и бэк-офис
+  BOOKINGS: { name: "📋 Заявки на бронирование", suggestedSheetId: 108, aliases: ["📋 Заявки на бронирование", "Заявки на бронирование", "Заявки и Бронирования", "📋 Заявки и Бронирования", "Бронирования", "Заявки", "Вилла"], cluster: "host" },
+  CALENDAR: { name: "📅 Календарь и Занятость", suggestedSheetId: 109, aliases: ["📅 Календарь и Занятость", "Календарь и Занятость", "Календарь и Тарифы", "📅 Календарь и Тарифы", "Календарь", "Настройки календаря"], cluster: "host" },
+  EXPENSES: { name: "💰 Учет расходов", suggestedSheetId: 110, aliases: ["💰 Учет расходов", "Учет расходов", "Расходы", "Финансы виллы"], cluster: "host" },
+  CLEANING: { name: "🧹 График клининга", suggestedSheetId: 111, aliases: ["🧹 График клининга", "График клининга", "Клининг", "Уборка"], cluster: "host" },
+  GUESTS: { name: "👥 База гостей", suggestedSheetId: 112, aliases: ["👥 База гостей", "База гостей", "Гости", "Гостевая база"], cluster: "host" },
+  TEMPLATES: { name: "💬 Шаблоны сообщений", suggestedSheetId: 113, aliases: ["💬 Шаблоны сообщений", "Шаблоны сообщений", "Шаблоны", "Быстрые ответы"], cluster: "host" },
+  VARIABLES: { name: "🧩 Словарь переменных", suggestedSheetId: 114, aliases: ["🧩 Словарь переменных", "Словарь переменных", "Переменные", "Справочник реквизитов"], cluster: "host" },
+  SETTINGS: { name: "⚙️ Системные настройки ИИ Агентов", suggestedSheetId: 115, aliases: ["⚙️ Системные настройки ИИ Агентов", "Системные настройки ИИ Агентов", "⚙️ Системные настройки", "Системные настройки", "Настройки ИИ"], cluster: "system" }
 };
 
 /**
@@ -197,17 +197,36 @@ function onOpen() {
 
 /**
  * Находит лист по ключу конфигурации VILLA_SHEETS_CONFIG
+ * Реализует честный двухэтапный поиск:
+ * Этап 1: строгий поиск по постоянному числовому sheetId.
+ * Этап 2: поиск по каноническому русскому названию и псевдонимам.
  */
 function findSheetByConfigKey(ss, configKey) {
   var cfg = VILLA_SHEETS_CONFIG[configKey];
   if (!cfg) return null;
 
   var sheets = ss.getSheets();
-  for (var i = 0; i < sheets.length; i++) {
-    var title = sheets[i].getName().trim();
-    for (var j = 0; j < cfg.aliases.length; j++) {
-      if (cfg.aliases[j].toLowerCase() === title.toLowerCase()) {
+
+  // ЭТАП 1: Строгий поиск по числовому sheetId
+  if (cfg.suggestedSheetId) {
+    for (var i = 0; i < sheets.length; i++) {
+      if (sheets[i].getSheetId() === cfg.suggestedSheetId) {
         return sheets[i];
+      }
+    }
+  }
+
+  // ЭТАП 2: Поиск по каноническому русскому имени или псевдонимам
+  for (var k = 0; k < sheets.length; k++) {
+    var title = sheets[k].getName().trim().toLowerCase();
+    if (cfg.name && cfg.name.toLowerCase() === title) {
+      return sheets[k];
+    }
+    if (cfg.aliases) {
+      for (var j = 0; j < cfg.aliases.length; j++) {
+        if (cfg.aliases[j].toLowerCase() === title) {
+          return sheets[k];
+        }
       }
     }
   }
@@ -401,9 +420,9 @@ function sortSheetsCanonically() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var canonicalOrder = [
     // 1. Публичная витрина
-    "HOME", "GALLERY", "ABOUT", "SERVICES", "GUIDES", "LEGAL",
-    // 2. Центр управления хозяина & CRM
-    "BOOKINGS", "CALENDAR", "ACCOUNTS", "ORDERS", "ACCESS", "TEMPLATES", "VARIABLES", "MASTER"
+    "HOME", "ABOUT", "GALLERY", "REVIEWS", "BLOG", "LEGAL", "FAQS",
+    // 2. Кабинет хозяина, CRM и бэк-офис
+    "BOOKINGS", "CALENDAR", "EXPENSES", "CLEANING", "GUESTS", "TEMPLATES", "VARIABLES", "SETTINGS"
   ];
 
   var currentIndex = 1;
@@ -537,7 +556,7 @@ function auditCalendarHolds() {
     }
   }
 
-  SpreadsheetApp.getUi().alert("Аудит календаря", "Активных 24-часовых удержаний (HOLD): " + activeHolds + "\nКалендарь синхронизирован.", SpreadsheetApp.getUi().ButtonSet.OK);
+  SpreadsheetApp.getUi().alert("Аудит календаря", "Активных 24-часовых удержаний: " + activeHolds + "\nКалендарь синхронизирован.", SpreadsheetApp.getUi().ButtonSet.OK);
 }
 
 /** Экспорт ссылки iCal */
@@ -585,7 +604,7 @@ function auditTemplatesFormat() {
   SpreadsheetApp.getUi().alert("Шаблоны сообщений", "Шаблоны загружены и готовы к отправке из панели хозяина.", SpreadsheetApp.getUi().ButtonSet.OK);
 }
 
-/** Проверка строгого стандарта точки с запятой (;) в формулах */
+/** Проверка строгого стандарта точки с запятой в формулах */
 function auditFormulasSemicolon() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheets = ss.getSheets();
@@ -599,7 +618,6 @@ function auditFormulasSemicolon() {
         var f = formulas[r][c];
         if (f && f.indexOf("=") === 0) {
           totalChecked++;
-          // Если формула содержит вызовы MAP/IF/GOOGLETRANSLATE и запятую как разделитель
           if ((f.indexOf("MAP(") !== -1 || f.indexOf("GOOGLETRANSLATE(") !== -1) && f.indexOf(",") !== -1 && f.indexOf(";") === -1) {
             commaWarnings++;
           }
@@ -609,7 +627,7 @@ function auditFormulasSemicolon() {
   }
 
   if (commaWarnings > 0) {
-    SpreadsheetApp.getUi().alert("⚠️ Внимание!", "Найдено формул с запятой: " + commaWarnings + ".\nРекомендуется заменить разделитель на точку с запятой (;) во избежание ошибки #ERROR!.", SpreadsheetApp.getUi().ButtonSet.OK);
+    SpreadsheetApp.getUi().alert("⚠️ Внимание!", "Найдено формул с запятой: " + commaWarnings + ".\nРекомендуется заменить разделитель на точку с запятой во избежание ошибки #ERROR!.", SpreadsheetApp.getUi().ButtonSet.OK);
   } else {
     SpreadsheetApp.getUi().alert("✅ Стандарт соблюден!", "Проверено формул: " + totalChecked + ".\nВсе формулы соответствуют каноническому стандарту русской локали с точкой с запятой (;).", SpreadsheetApp.getUi().ButtonSet.OK);
   }
@@ -619,11 +637,11 @@ function auditFormulasSemicolon() {
 function showSheetsPassportModal() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheets = ss.getSheets();
-  var info = "📋 ПАСПОРТ ЛИСТОВ ТАБЛИЦЫ (ID & НАЗВАНИЯ):\n\n";
+  var info = "📋 ПАСПОРТ ЛИСТОВ ТАБЛИЦЫ [ID & НАЗВАНИЯ]:\n\n";
 
   for (var i = 0; i < sheets.length; i++) {
     var sh = sheets[i];
-    info += (i + 1) + ". " + sh.getName() + " (sheetId: " + sh.getSheetId() + ", скрыт: " + (sh.isSheetHidden() ? "Да" : "Нет") + ")\n";
+    info += (i + 1) + ". " + sh.getName() + " [sheetId: " + sh.getSheetId() + ", скрыт: " + (sh.isSheetHidden() ? "Да" : "Нет") + "]\n";
   }
 
   SpreadsheetApp.getUi().alert("Паспорт листов", info, SpreadsheetApp.getUi().ButtonSet.OK);
@@ -637,23 +655,23 @@ function ensureAllSystemSheets() {
   var ui = SpreadsheetApp.getUi();
   var existingSheets = ss.getSheets();
 
-  // 1. Очистка устаревших англоязычных листов-дубликатов BookingRequests и Placeholders
+  // 1. Очистка устаревших англоязычных листов-дубликатов
+  var obsoleteEnglishNames = [
+    'bookingrequests', 'placeholders', 'homepage', 'calendarsettings',
+    'extraservices', 'videoguides'
+  ];
   for (var d = 0; d < existingSheets.length; d++) {
     var sName = existingSheets[d].getName().trim().toLowerCase();
-    if (sName === 'bookingrequests') {
-      var canonBookings = findSheetByConfigKey(ss, 'BOOKINGS');
-      if (canonBookings && canonBookings.getSheetId() !== existingSheets[d].getSheetId()) {
+    if (obsoleteEnglishNames.indexOf(sName) !== -1) {
+      try {
         ss.deleteSheet(existingSheets[d]);
-      }
-    } else if (sName === 'placeholders') {
-      var canonVars = findSheetByConfigKey(ss, 'VARIABLES');
-      if (canonVars && canonVars.getSheetId() !== existingSheets[d].getSheetId()) {
-        ss.deleteSheet(existingSheets[d]);
+      } catch (e) {
+        Logger.log("Не удалось удалить устаревший лист: " + sName + ": " + e.message);
       }
     }
   }
 
-  // Обновляем список листов после удаления
+  // 2. Обновляем список листов после удаления
   existingSheets = ss.getSheets();
   var createdCount = 0;
   var keys = Object.keys(VILLA_SHEETS_CONFIG);
@@ -661,18 +679,7 @@ function ensureAllSystemSheets() {
   for (var k = 0; k < keys.length; k++) {
     var key = keys[k];
     var cfg = VILLA_SHEETS_CONFIG[key];
-    var targetSheet = null;
-
-    for (var i = 0; i < existingSheets.length; i++) {
-      var name = existingSheets[i].getName().trim();
-      for (var a = 0; a < cfg.aliases.length; a++) {
-        if (cfg.aliases[a].toLowerCase() === name.toLowerCase()) {
-          targetSheet = existingSheets[i];
-          break;
-        }
-      }
-      if (targetSheet) break;
-    }
+    var targetSheet = findSheetByConfigKey(ss, key);
 
     if (!targetSheet) {
       targetSheet = ss.insertSheet(cfg.name);

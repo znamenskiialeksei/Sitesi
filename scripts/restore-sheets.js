@@ -65,48 +65,58 @@ async function restoreAllSheets() {
 
     console.log(`Обнаружено существующих листов: ${existingSheets.length}`);
 
-    // Очистка устаревших англоязычных листов-дубликатов BookingRequests и Placeholders
+    // Очистка устаревших англоязычных листов-дубликатов
+    const obsoleteEnglishNames = [
+      'bookingrequests', 'placeholders', 'homepage', 'calendarsettings',
+      'extraservices', 'videoguides'
+    ];
     const deleteOldRequests = [];
-    const bookingReqSheet = existingSheets.find((s) => s.properties.title.trim().toLowerCase() === 'bookingrequests');
-    const canonBookingsSheet = existingSheets.find((s) => s.properties.title.trim() === SHEETS_REGISTRY.BOOKINGS.defaultName);
-    if (bookingReqSheet && canonBookingsSheet && bookingReqSheet.properties.sheetId !== canonBookingsSheet.properties.sheetId) {
-      console.log('Обнаружен устаревший лист BookingRequests при наличии канонического листа. Удаляем дубликат...');
-      deleteOldRequests.push({ deleteSheet: { sheetId: bookingReqSheet.properties.sheetId } });
-    }
-
-    const placeholdersSheet = existingSheets.find((s) => s.properties.title.trim().toLowerCase() === 'placeholders');
-    const canonVarsSheet = existingSheets.find((s) => s.properties.title.trim() === SHEETS_REGISTRY.VARIABLES.defaultName);
-    if (placeholdersSheet && canonVarsSheet && placeholdersSheet.properties.sheetId !== canonVarsSheet.properties.sheetId) {
-      console.log('Обнаружен устаревший лист Placeholders при наличии канонического листа. Удаляем дубликат...');
-      deleteOldRequests.push({ deleteSheet: { sheetId: placeholdersSheet.properties.sheetId } });
+    for (const oldName of obsoleteEnglishNames) {
+      const match = existingSheets.find((s) => s.properties.title.trim().toLowerCase() === oldName);
+      if (match) {
+        console.log(`Обнаружен устаревший лист [${match.properties.title}]. Удаляем...`);
+        deleteOldRequests.push({ deleteSheet: { sheetId: match.properties.sheetId } });
+      }
     }
 
     if (deleteOldRequests.length > 0) {
-      await sheets.spreadsheets.batchUpdate({
-        spreadsheetId,
-        requestBody: { requests: deleteOldRequests }
-      });
-      console.log(`✅ Ликвидировано устаревших листов-дубликатов: ${deleteOldRequests.length}`);
+      try {
+        await sheets.spreadsheets.batchUpdate({
+          spreadsheetId,
+          requestBody: { requests: deleteOldRequests }
+        });
+        console.log(`✅ Ликвидировано устаревших листов-дубликатов: ${deleteOldRequests.length}`);
+      } catch (delErr) {
+        console.warn('Предупреждение при удалении устаревших листов:', delErr.message);
+      }
     }
 
     const allSheetConfigs = Object.values(SHEETS_REGISTRY).map((cfg) => ({
       key: cfg.key,
       title: cfg.defaultName,
       aliases: cfg.aliases,
-      headers: cfg.headers
+      headers: cfg.headers,
+      suggestedSheetId: cfg.suggestedSheetId
     }));
 
-    // 1. Поиск и создание недостающих листов
+    // 1. Поиск и создание недостающих листов с постоянными sheetId
     const sheetsToCreate = allSheetConfigs.filter((config) => {
-      return !existingTitles.some((title) =>
-        config.aliases.some((alias) => alias.toLowerCase() === title.toLowerCase())
-      );
+      return !existingSheets.some((s) => {
+        if (config.suggestedSheetId && s.properties.sheetId === config.suggestedSheetId) return true;
+        const title = s.properties.title.trim();
+        return config.aliases.some((alias) => alias.toLowerCase() === title.toLowerCase());
+      });
     });
 
     if (sheetsToCreate.length > 0) {
       console.log(`Обнаружено отсутствующих листов: ${sheetsToCreate.length}. Создаем...`);
       const addRequests = sheetsToCreate.map((sheetDef) => ({
-        addSheet: { properties: { title: sheetDef.title } }
+        addSheet: {
+          properties: {
+            sheetId: sheetDef.suggestedSheetId,
+            title: sheetDef.title
+          }
+        }
       }));
       await sheets.spreadsheets.batchUpdate({
         spreadsheetId,
@@ -124,7 +134,9 @@ async function restoreAllSheets() {
     const safeFormulasToInject = [];
 
     for (const config of allSheetConfigs) {
+      // Честный двухэтапный поиск: sheetId на этапе 1, затем по русским именам
       const sheet = updatedSs.data.sheets.find((s) => {
+        if (config.suggestedSheetId && s.properties.sheetId === config.suggestedSheetId) return true;
         const title = s.properties.title.trim();
         return config.aliases.some((alias) => alias.toLowerCase() === title.toLowerCase());
       });
