@@ -223,124 +223,100 @@
     }
   },
   "legal": {
-    "legal_info_title": {
+    "contract": {
       "title": {
-        "ru": "Юридическая информация",
-        "en": "Legal Information",
-        "tr": "Yasal Bilgiler"
+        "ru": "Договор краткосрочной аренды виллы",
+        "en": "Short-Term Villa Rental Contract",
+        "tr": "Kısa Dönem Villa Kiralama Sözleşmesi"
       },
       "text": {
-        "ru": "Реквизиты и правовые документы",
-        "en": "Requisites and legal documents",
-        "tr": "Kurumsal ve yasal belgeler"
-      }
-    },
-    "company_name": {
-      "title": {
-        "ru": "Название компании:",
-        "en": "Company Name:",
-        "tr": "Ticari Ünvan:"
-      },
-      "text": {
-        "ru": "ALEKSEI ZNAMENSKII",
-        "en": "ALEKSEI ZNAMENSKII",
-        "tr": "ALEKSEI ZNAMENSKII"
-      }
-    },
-    "tax_info": {
-      "title": {
-        "ru": "Налоговая информация:",
-        "en": "Tax Information:",
-        "tr": "Vergi Bilgileri:"
-      },
-      "text": {
-        "ru": "Ortaca VD / 9991120181",
-        "en": "Ortaca Tax Office / 9991120181",
-        "tr": "Ortaca VD / 9991120181"
-      }
-    },
-    "contact_email": {
-      "title": {
-        "ru": "Email:",
-        "en": "Email:",
-        "tr": "E-posta:"
-      },
-      "text": {
-        "ru": "villaturaman@gmail.com",
-        "en": "villaturaman1@gmail.com",
-        "tr": "villaturaman2@gmail.com"
-      }
-    },
-    "etbis_placeholder": {
-      "title": {
-        "ru": "QR-код ETBIS",
-        "en": "ETBIS QR-code",
-        "tr": "ETBİS Karekodu"
-      },
-      "text": {
-        "ru": "QR КОД ETBIS\nБУДЕТ ДОБАВЛЕН СЮДА",
-        "en": "ETBIS QR CODE\nWILL BE ADDED HERE",
-        "tr": "ETBİS KAREKODU\nBURAYA EKLENECEK"
-      }
-    },
-    "etbis_text": {
-      "title": {
-        "ru": "Система инфо.",
-        "en": "Info system",
-        "tr": "Bilgi sistemi"
-      },
-      "text": {
-        "ru": "Система Электронной Коммерции",
-        "en": "Electronic Commerce Info System",
-        "tr": "Elektronik Ticaret Bilgi Sistemi"
+        "ru": "Договор посуточной аренды Villa Turaman [Дальян, Мугла, Турция]. Владелец: Aleksei Znamenskii [VKN: 9991120181]. Вилла передается гостям в идеальном состоянии для проживания до 10 человек.",
+        "en": "Short-term rental contract of Villa Turaman [Dalyan, Mugla, Turkey]. Owner: Aleksei Znamenskii [VKN: 9991120181]. Accommodates up to 10 guests.",
+        "tr": "Villa Turaman kısa dönem kiralama sözleşmesi [Dalyan, Muğla, Türkiye]. Ev sahibi: Aleksei Znamenskii [VKN: 9991120181]."
       }
     },
     "kvkk": {
       "title": {
-        "ru": "Политика KVKK",
-        "en": "KVKK Policy",
-        "tr": "KVKK Metni"
+        "ru": "Политика защиты персональных данных KVKK",
+        "en": "KVKK Data Protection Policy",
+        "tr": "KVKK Kişisel Verilerin Korunması Politikası"
       },
       "text": {
-        "ru": "Полный текст политики KVKK...",
-        "en": "Full text of KVKK policy...",
-        "tr": "KVKK metninin tam hali..."
+        "ru": "Aydınlatma Metni: обработка персональных данных гостей осуществляется строго в рамках турецкого закона KVKK №6698 исключительно в целях регистрации заезда и соблюдения безопасности.",
+        "en": "Clarification text: guest personal data is processed strictly under Turkish Law No. 6698 exclusively for guest check-in registration and safety.",
+        "tr": "Aydınlatma Metni: Misafir kişisel verileri yalnızca 6698 sayılı KVKK kapsamında ve konaklama kaydı amacıyla işlenmektedir."
       }
     },
-    "contract": {
+    "house_rules": {
       "title": {
-        "ru": "Договор аренды",
-        "en": "Rental Contract",
-        "tr": "Kiralama Sözleşmesi"
+        "ru": "Правила дома и проживания",
+        "en": "House Rules",
+        "tr": "Ev Kuralları"
       },
       "text": {
-        "ru": "Полный текст договора...",
-        "en": "Full text of the contract...",
-        "tr": "Sözleşmenin tam metni..."
-      }
-    },
-    "privacy": {
-      "title": {
-        "ru": "Конфиденциальность",
-        "en": "Privacy Policy",
-        "tr": "Gizlilik Politikası"
-      },
-      "text": {
-        "ru": "Полный текст политики...",
-        "en": "Full text of the policy...",
-        "tr": "Politikanın tam metni..."
+        "ru": "Стандартный заезд с 16:00, выезд до 10:00. Курение внутри помещений категорически запрещено. Проживание с домашними животными по предварительному согласованию. Тихий час с 23:00 до 08:00.",
+        "en": "Standard check-in after 16:00, check-out before 10:00. Smoking indoors is strictly prohibited. Pets upon prior agreement. Quiet hours from 23:00 to 08:00.",
+        "tr": "Giriş 16:00'dan sonra, çıkış 10:00'dan önce. İç mekanlarda sigara içmek kesinlikle yasaktır. Evcil hayvanlar ön onay ile. Sessiz saatler 23:00 - 08:00."
       }
     },
     "cancellation": {
       "title": {
-        "ru": "Возврат и отмена",
-        "en": "Return & Cancellation",
-        "tr": "İptal ve İade"
+        "ru": "Политика отмены и возврата средств",
+        "en": "Cancellation & Refund Policy",
+        "tr": "İptal ve İade Politikası"
       },
       "text": {
-        "ru": "Полный текст правил..",
-        "en": "Full text of the rules...",
-        "tr": "Kuralların tam metni....,"
+        "ru": "Полный возврат 100% предоплаты при отмене бронирования не позднее чем за 14 суток до даты заселения. При бронировании невозвратного тарифа предоставляется скидка 10%.",
+        "en": "Full 100% refund for cancellations at least 14 days before check-in. Non-refundable rate offers a 10% discount.",
+        "tr": "Giriş tarihinden en az 14 gün önce yapılan iptallerde %100 tam iade. İadesiz tarifede %10 indirim uygulanır."
+      }
+    },
+    "tax_info": {
+      "title": {
+        "ru": "Налоговый статус и инвойсы",
+        "en": "Tax Status & Invoices",
+        "tr": "Vergi Durumu ve Faturalar"
+      },
+      "text": {
+        "ru": "Регистрация в налоговой инспекции Ortaca Vergi Dairesi, налоговый номер VKN: 9991120181. Выставление официальных электронных счетов e-Arşiv Fatura согласно закону VUK 213 Madde 230.",
+        "en": "Registered with Ortaca Tax Office, Tax ID [VKN]: 9991120181. Official e-Arşiv Fatura invoices issued under VUK 213 Article 230.",
+        "tr": "Ortaca Vergi Dairesi, VKN: 9991120181. VUK 213 Madde 230 uyarınca resmi e-Arşiv Fatura düzenlenmektedir."
+      }
+    },
+    "etbis": {
+      "title": {
+        "ru": "Регистрация в госреестре ETBIS",
+        "en": "ETBIS Registry Registration",
+        "tr": "ETBİS Kayıt Belgesi"
+      },
+      "text": {
+        "ru": "Сайт официально зарегистрирован в реестре электронной коммерции Министерства торговли Турецкой Республики [ETBİS'e Kayıtlıdır].",
+        "en": "Officially registered in the E-Commerce Information System of the Turkish Ministry of Commerce [ETBİS'e Kayıtlıdır].",
+        "tr": "Türkiye Cumhuriyeti Ticaret Bakanlığı Elektronik Ticaret Bilgi Sistemi'ne kayıtlıdır [ETBİS'e Kayıtlıdır]."
+      }
+    },
+    "checkin_protocol": {
+      "title": {
+        "ru": "Протокол заселения и передачи ключей",
+        "en": "Check-in & Key Handover Protocol",
+        "tr": "Giriş ve Anahtar Teslim Protokolü"
+      },
+      "text": {
+        "ru": "Заселение через электронный смарт-замок [электронный код]. Персональный пароль генерируется в день заезда. Возврат ключей: закрыть смарт-замок.",
+        "en": "Self check-in via electronic smart lock. Personal code provided on check-in day. Key handover: close smart lock.",
+        "tr": "Akıllı kilit ile temassız giriş. Kişisel şifre giriş gününde iletilir."
+      }
+    },
+    "emergency": {
+      "title": {
+        "ru": "Экстренные службы и безопасность",
+        "en": "Emergency Services & Safety",
+        "tr": "Acil Durum Servisleri ve Güvenlik"
+      },
+      "text": {
+        "ru": "Единый номер экстренных служб Турции: 112 [Полиция, Жандармерия, Скорая помощь, Пожарная служба]. Жандармерия Дальяна: +90 252 284 20 05. Экстренная связь с суперхозяином: 24/7 в чате.",
+        "en": "Turkey universal emergency number: 112 [Police, Gendarmerie, Ambulance, Fire]. Dalyan Gendarmerie: +90 252 284 20 05. Host emergency line: 24/7 in chat.",
+        "tr": "Türkiye acil çağrı merkezi: 112. Dalyan Jandarma: +90 252 284 20 05. Ev sahibi acil iletişim: 7/24 mesajlaşma."
       }
     }
   },
@@ -350,12 +326,12 @@
         "name": {
           "ru": "Приветствие на заявку для подтверждения дат",
           "en": "Greeting for application to confirm dates",
-          "tr": "Tarihleri ​​teyit etmek için başvuruya yönelik selamlama"
+          "tr": "Tarihleri teyit etmek için başvuruya yönelik selamlama"
         },
         "text": {
-          "ru": "Здравствуйте, [FIRST_NAME]! 👋\n\nСпасибо за ваш интерес к Villa Turaman! 🥳Ваша заявка на заселение 📅 с периодом проживания: [CHECKIN_DATE], [CHECKIN_TIME] — [CHECKOUT_DATE], [CHECKOUT_TIME] получена нами. В ближайшее время мы свяжемся с вами.\n\nЕсли у вас возникнут вопросы  — я всегда на связи и с радостью помогу. 📍✨\n\nС нетерпением ждём вас в гости!\n\nС уважением, Aleksei Znamenskii. Villa Turaman.",
-          "en": "Hello, [FIRST_NAME]! 👋\n\nThank you for your interest in Villa Turaman! 🥳Your check-in request 📅 for the stay period: [CHECKIN_DATE], [CHECKIN_TIME] - [CHECKOUT_DATE], [CHECKOUT_TIME] has been received. We will contact you shortly.\n\nIf you have any questions, I am always available and happy to help. 📍✨\n\nWe look forward to welcoming you!\n\nSincerely, Aleksei Znamenskii, Villa Turaman.",
-          "tr": "Merhaba, [ADINIZ]! 👋\n\nVilla Turaman'a gösterdiğiniz ilgi için teşekkür ederiz! 🥳 [GİRİŞ TARİHİ], [GİRİŞ SAATİ] - [ÇIKIŞ TARİHİ], [ÇIKIŞ SAATİ] tarihleri ​​arasındaki konaklama dönemi için giriş talebiniz 📅 alınmıştır. Kısa süre içinde sizinle iletişime geçeceğiz.\n\nHerhangi bir sorunuz olursa, her zaman yardımcı olmaktan memnuniyet duyarım. 📍✨\n\nSizi ağırlamayı dört gözle bekliyoruz!\n\nSaygılarımla, Aleksei Znamenskii, Villa Turaman."
+          "ru": "Здравствуйте, [FIRST_NAME]! Спасибо за ваш интерес к Villa Turaman! Ваша заявка на заселение с периодом проживания: [CHECKIN_DATE] - [CHECKOUT_DATE] получена нами. В ближайшее время мы свяжемся с вами. С уважением, Алексей Знаменский.",
+          "en": "Hello, [FIRST_NAME]! Thank you for your interest in Villa Turaman! Your booking request for [CHECKIN_DATE] - [CHECKOUT_DATE] has been received. Sincerely, Aleksei Znamenskii.",
+          "tr": "Merhaba, [FIRST_NAME]! Villa Turaman'a ilginiz için teşekkür ederiz! [CHECKIN_DATE] - [CHECKOUT_DATE] tarihleri arasındaki rezervasyon talebiniz alınmıştır. Saygılarımla, Aleksei Znamenskii."
         }
       }
     ],
@@ -367,135 +343,449 @@
           "tr": "Ödeme yapıldıktan sonra rezervasyon onayı"
         },
         "text": {
-          "ru": "Здравствуйте, [FIRST_NAME]! 👋\n\nПоздравляем, ваше бронирование Villa Turaman успешно подтверждено! 🥳 Спасибо, что выбрали именно нас для своего отдыха.\n\n🔑 Код подтверждения: [CONFIRMATION_CODE]\n📅 Период проживания: [CHECKIN_DATE], [CHECKIN_TIME] — [CHECKOUT_DATE], [CHECKOUT_TIME]\n\nЕсли у вас возникнут вопросы по поездке или понадобятся рекомендации по местным ресторанам, пляжам и достопримечательностям — я всегда на связи и с радостью помогу. 📍✨\n\nС нетерпением ждём вас в гости!\n\nС уважением, Aleksei Znamenskii. Villa Turaman.",
-          "en": "Hello, [FIRST_NAME]! 👋\n\nCongratulations, your reservation at Villa Turaman has been successfully confirmed! 🥳 Thank you for choosing us for your vacation.\n\n🔑 Confirmation code: [CONFIRMATION_CODE]\n📅 Stay period: [CHECKIN_DATE], [CHECKIN_TIME] — [CHECKOUT_DATE], [CHECKOUT_TIME]\n\nIf you have any questions about your trip or need recommendations for local restaurants, beaches, and attractions, I'm always available and happy to help. 📍✨\n\nWe look forward to welcoming you!\n\nSincerely, Aleksei Znamenskii, Villa Turaman.",
-          "tr": "Merhaba, [ADINIZ]! 👋\n\nTebrikler, Villa Turaman'daki rezervasyonunuz başarıyla onaylandı! 🥳 Tatiliniz için bizi tercih ettiğiniz için teşekkür ederiz.\n\n🔑 Onay kodu: [ONAY_KODU]\n📅 Konaklama süresi: [GİRİŞ_TARİHİ], [GİRİŞ_SAATI] — [ÇIKIŞ_TARİHİ], [ÇIKIŞ_SAATI]\n\nSeyahatinizle ilgili herhangi bir sorunuz varsa veya yerel restoranlar, plajlar ve turistik yerler için önerilere ihtiyacınız varsa, her zaman yardımcı olmaktan mutluluk duyarım. 📍✨\n\nSizi ağırlamayı dört gözle bekliyoruz!\n\nSaygılarımla, Aleksei Znamenskii, Villa Turaman."
+          "ru": "Здравствуйте, [FIRST_NAME]! Поздравляем, ваше бронирование Villa Turaman подтверждено! Код: [CONFIRMATION_CODE]. Даты: [CHECKIN_DATE] - [CHECKOUT_DATE]. Заезд с [CHECKIN_TIME], выезд до [CHECKOUT_TIME]. С уважением, Алексей Знаменский.",
+          "en": "Hello, [FIRST_NAME]! Congratulations, your reservation at Villa Turaman is confirmed! Code: [CONFIRMATION_CODE]. Dates: [CHECKIN_DATE] - [CHECKOUT_DATE]. Check-in from [CHECKIN_TIME], check-out until [CHECKOUT_TIME]. Sincerely, Aleksei Znamenskii.",
+          "tr": "Merhaba, [FIRST_NAME]! Tebrikler, Villa Turaman rezervasyonunuz onaylandı! Kod: [CONFIRMATION_CODE]. Tarihler: [CHECKIN_DATE] - [CHECKOUT_DATE]. Giriş: [CHECKIN_TIME], Çıkış: [CHECKOUT_TIME]. Saygılarımla, Aleksei Znamenskii."
         }
       }
     ]
   },
   "products": [
     {
-      "id": "1",
+      "id": "prod-1",
       "name": {
-        "ru": "Массаж",
-        "en": "Massage",
-        "tr": "Masaj"
+        "ru": "VIP-трансфер из аэропорта Даламан [DLM]",
+        "en": "VIP Airport Transfer from Dalaman [DLM]",
+        "tr": "Dalaman Havalimanı [DLM] VIP Transfer"
       },
       "desc": {
-        "ru": "класный качественный",
-        "en": "cool, high quality",
-        "tr": "serin, yüksek kaliteli"
+        "ru": "Комфортабельный Mercedes Vito с кондиционером и напитками",
+        "en": "Comfortable Mercedes Vito with AC and refreshments",
+        "tr": "Klimalı ve içecek ikramlı konforlu Mercedes Vito"
       },
-      "price": {
-        "eur": "500",
-        "rub": "0",
-        "try": "0"
-      },
-      "images": [],
-      "videos": [],
+      "price": { "eur": "50", "rub": "5000", "try": "1800" },
+      "images": ["https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1200"],
+      "videos": ["https://youtube.com/watch?v=transfer"],
       "detailedDesc": {
-        "ru": "",
-        "en": "",
-        "tr": ""
+        "ru": "Встреча в зоне прилета с именной табличкой. Время в пути до виллы 25 минут. В салоне бесплатный Wi-Fi и прохладительные напитки.",
+        "en": "Meet & greet in arrival hall with nameplate. 25 minutes drive to the villa. Free Wi-Fi and chilled soft drinks.",
+        "tr": "İsim tabelasıyla karşılama. Villaya 25 dakikalık konforlu yolculuk. Ücretsiz Wi-Fi ve soğuk içecekler."
       },
-      "type": {
-        "ru": "Услуга",
-        "en": "Service",
-        "tr": "Hizmet"
-      }
+      "type": { "ru": "Услуга", "en": "Service", "tr": "Hizmet" }
+    },
+    {
+      "id": "prod-2",
+      "name": {
+        "ru": "Приватный круиз на яхте по реке Дальян и пляжу Изтузу",
+        "en": "Private Dalyan River & Iztuzu Beach Boat Cruise",
+        "tr": "Özel Dalyan Nehri ve İztuzu Plajı Tekne Turu"
+      },
+      "desc": {
+        "ru": "Традиционная деревянная лодка: Капитан Адам, Ликийские гробницы",
+        "en": "Traditional wooden boat: Captain Adam, Lycian Tombs",
+        "tr": "Geleneksel ahşap tekne: Kaptan Adam, Likya Kaya Mezarları"
+      },
+      "price": { "eur": "250", "rub": "25000", "try": "9000" },
+      "images": ["https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200"],
+      "videos": ["https://youtube.com/watch?v=cruise"],
+      "detailedDesc": {
+        "ru": "Эксклюзивный дневной маршрут: Ликийские гробницы, ловля голубых крабов, купание на пляже Изтузу и обед от капитана со свежей рыбой.",
+        "en": "Exclusive full-day route: Lycian Rock Tombs, blue crab catching, swimming at Iztuzu Beach and fresh fish lunch cooked by the captain.",
+        "tr": "Özel tam günlük rota: Likya Mezarları, mavi yengeç avı, İztuzu Plajı'nda yüzme ve kaptandan taze balık öğle yemeği."
+      },
+      "type": { "ru": "Пакет услуг", "en": "Service Package", "tr": "Hizmet Paketi" }
+    },
+    {
+      "id": "prod-3",
+      "name": {
+        "ru": "Ужин от персонального шеф-повара на вилле",
+        "en": "Private Chef Dinner at the Villa",
+        "tr": "Villada Özel Şef Akşam Yemeği"
+      },
+      "desc": {
+        "ru": "4-курсовой ужин у бассейна: традиционные турецкие мезе и морепродукты",
+        "en": "4-course poolside dinner: authentic Turkish mezes and seafood",
+        "tr": "Havuz başında 4 çeşit akşam yemeği: geleneksel Türk mezeleri ve deniz ürünleri"
+      },
+      "price": { "eur": "120", "rub": "12000", "try": "4300" },
+      "images": ["https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200"],
+      "videos": ["https://youtube.com/watch?v=chef"],
+      "detailedDesc": {
+        "ru": "Шеф-повар лично закупает фермерские продукты на рынке Дальяна, готовит ужин на вашей кухне, сервирует стол и наводит идеальный порядок.",
+        "en": "Chef sources local farm products from Dalyan market, prepares the meal in your kitchen, serves the table and cleans up completely.",
+        "tr": "Şef pazardan taze ürünleri temin eder, mutfağınızda hazırlar, masayı kurar ve temizliği eksiksiz yapar."
+      },
+      "type": { "ru": "Услуга", "en": "Service", "tr": "Hizmet" }
+    },
+    {
+      "id": "prod-4",
+      "name": {
+        "ru": "Премиальный BBQ-вечер на углях в саду виллы",
+        "en": "Premium Garden Charcoal BBQ Evening",
+        "tr": "Bahçede Özel Barbekü / Mangal Akşamı"
+      },
+      "desc": {
+        "ru": "Стейки рибай, каре ягненка на косточке и овощи гриль",
+        "en": "Ribeye steaks, lamb chops and grilled local vegetables",
+        "tr": "Antrikot, kuzu pirzola ve ızgara sebzeler"
+      },
+      "price": { "eur": "160", "rub": "16000", "try": "5800" },
+      "images": ["https://images.unsplash.com/photo-1544025162-d76694265947?w=1200"],
+      "videos": ["https://youtube.com/watch?v=bbq"],
+      "detailedDesc": {
+        "ru": "В стоимость входит премиальное маринованное фермерское мясо, отборные угли, розжиг, лаваш, соусы и работа гриль-мастера в течение 3 часов.",
+        "en": "Includes premium marinated meats, charcoal, fire starter, lavash, signature sauces and 3 hours of master griller service.",
+        "tr": "Marine edilmiş etler, kömür, lavaş, özel soslar ve 3 saatlik ızgara ustası hizmeti fiyata dahildir."
+      },
+      "type": { "ru": "Пакет услуг", "en": "Service Package", "tr": "Hizmet Paketi" }
+    },
+    {
+      "id": "prod-5",
+      "name": {
+        "ru": "СПА-тур и грязевые источники Султание",
+        "en": "Sultaniye Mud Baths & Thermal Springs SPA Tour",
+        "tr": "Sultaniye Kaplıcaları ve Çamur Banyosu Turu"
+      },
+      "desc": {
+        "ru": "Омолаживающие минеральные термы и ванны озера Кёйджегиз",
+        "en": "Rejuvenating mineral waters and baths of Lake Koycegiz",
+        "tr": "Köyceğiz Gölü kıyısında şifalı termal kaplıcalar"
+      },
+      "price": { "eur": "70", "rub": "7000", "try": "2500" },
+      "images": ["https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200"],
+      "videos": ["https://youtube.com/watch?v=spa"],
+      "detailedDesc": {
+        "ru": "Трансфер на моторной лодке прямо от причала виллы. Входные билеты в термальные комплексы и радоновые бассейны включены.",
+        "en": "Boat transfer directly from the villa dock. Entrance tickets to thermal mineral complexes and radon baths included.",
+        "tr": "Villanın iskelesinden tekne transferi ve termal tesislere giriş biletleri dahildir."
+      },
+      "type": { "ru": "Услуга", "en": "Service", "tr": "Hizmet" }
+    },
+    {
+      "id": "prod-6",
+      "name": {
+        "ru": "Аренда сапбордов [SUP] и двухместного каяка",
+        "en": "SUP Paddleboards & Double Sea Kayak Rental",
+        "tr": "SUP Kürek Sörfü ve İki Kişilik Kano Kiralama"
+      },
+      "desc": {
+        "ru": "2 устойчивых SUP-борда и двухместный экспедиционный каяк",
+        "en": "2 stable SUP boards and a 2-person expedition kayak",
+        "tr": "2 adet SUP tahtası ve iki kişilik keşif kanosu"
+      },
+      "price": { "eur": "80", "rub": "8000", "try": "2900" },
+      "images": ["https://images.unsplash.com/photo-1517404215738-15263e9f9178?w=1200"],
+      "videos": ["https://youtube.com/watch?v=sup"],
+      "detailedDesc": {
+        "ru": "Доставка оборудования прямо к вилле на весь период проживания. В комплекте весла, страховочные лиши и спасательные жилеты.",
+        "en": "Delivered directly to the villa for your whole stay. Comes with paddles, safety leashes and life vests.",
+        "tr": "Konaklamanız boyunca villaya teslim edilir. Kürekler, güvenlik ipleri ve can yelekleri dahildir."
+      },
+      "type": { "ru": "Услуга", "en": "Service", "tr": "Hizmet" }
+    },
+    {
+      "id": "prod-7",
+      "name": {
+        "ru": "Прокат электровелосипедов для прогулок по Дальяну",
+        "en": "E-Bikes Rental for Dalyan Exploration",
+        "tr": "Dalyan Çevresi İçin Elektrikli Bisiklet Kiralama"
+      },
+      "desc": {
+        "ru": "2 современных электробайка с запасом хода до 60 км",
+        "en": "2 modern e-bikes with up to 60 km range",
+        "tr": "60 km menzilli 2 modern elektrikli bisiklet"
+      },
+      "price": { "eur": "40", "rub": "4000", "try": "1500" },
+      "images": ["https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=1200"],
+      "videos": ["https://youtube.com/watch?v=bike"],
+      "detailedDesc": {
+        "ru": "Идеальный способ исследовать гранатовые сады и улочки Дальяна. В комплекте шлемы, замки и держатели для смартфонов с навигатором.",
+        "en": "Perfect way to explore Dalyan pomegranate groves and cozy streets. Helmets, locks and phone holders included.",
+        "tr": "Dalyan nar bahçelerini keşfetmek için harika bir yöntem. Kasklar, kilitler ve telefon tutucuları dahildir."
+      },
+      "type": { "ru": "Услуга", "en": "Service", "tr": "Hizmet" }
+    },
+    {
+      "id": "prod-8",
+      "name": {
+        "ru": "Дополнительная экспресс-уборка и смена белья",
+        "en": "Extra Express Villa Cleaning & Linen Change",
+        "tr": "Ekstra Hızlı Villa Temizliği ve Çarşaf Değişimi"
+      },
+      "desc": {
+        "ru": "Внеплановая влажная уборка виллы, замена полотенец и постельного белья",
+        "en": "On-demand wet cleaning, fresh towels and premium bed linen change",
+        "tr": "İsteğe bağlı detaylı villa temizliği, havlu ve nevresim değişimi"
+      },
+      "price": { "eur": "60", "rub": "6000", "try": "2200" },
+      "images": ["https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1200"],
+      "videos": ["https://youtube.com/watch?v=cleaning"],
+      "detailedDesc": {
+        "ru": "Полная уборка всех 4 спален, кухни и санузлов, мытье полов эко-средствами, замена постельных комплектов сатин премиум и банных полотенец.",
+        "en": "Complete cleaning of all 4 bedrooms, kitchen and bathrooms with eco detergents, premium satin linen and bath towel change.",
+        "tr": "Tüm 4 yatak odası, mutfak ve banyoların eco ürünlerle temizliği, birinci sınıf nevresim ve havlu değişimi."
+      },
+      "type": { "ru": "Услуга", "en": "Service", "tr": "Hizmet" }
     }
   ],
-  "courses": [],
+  "courses": [
+    {
+      "id": "guide-1",
+      "name": {
+        "ru": "Секретные маршруты реки Дальян и черепаший пляж Изтузу",
+        "en": "Secret Dalyan River Routes & Iztuzu Turtle Beach",
+        "tr": "Gizli Dalyan Nehri Rotaları ve İztuzu Kaplumbağa Plajı"
+      },
+      "desc": {
+        "ru": "Эксклюзивный 40-минутный 4K видео-гид от Алексея Знаменского",
+        "en": "Exclusive 40-minute 4K video guide by Aleksei Znamenskii",
+        "tr": "Aleksei Znamenskii'den özel 40 dakikalık 4K video rehber"
+      },
+      "images": ["https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200"],
+      "module": "Локации",
+      "privateLink": "https://youtube.com/watch?v=guide1",
+      "price": { "eur": "20", "rub": "2000", "try": "700" },
+      "videos": ["https://youtube.com/watch?v=preview1"],
+      "detailedDesc": {
+        "ru": "Где встретить гигантских черепах Caretta-Caretta, как взять лодку без наценок и какие дикие бухты скрыты от массовых туристов.",
+        "en": "Where to spot giant Caretta-Caretta turtles, how to rent a boat without markups, and secluded bays hidden from mass tourism.",
+        "tr": "Dev Caretta-Caretta kaplumbağalarını nerede görebileceğiniz ve turist kalabalığından uzak gizli koylar."
+      },
+      "level": "Для гостей"
+    },
+    {
+      "id": "guide-2",
+      "name": {
+        "ru": "Ликийские скальные гробницы и древний город Каунос",
+        "en": "Lycian Rock Tombs & Ancient City of Kaunos",
+        "tr": "Likya Kaya Mezarları ve Kaunos Antik Kenti"
+      },
+      "desc": {
+        "ru": "Историческое погружение в тайны Ликийского царства и акрополя",
+        "en": "Historical immersion into the secrets of Lycia and ancient acropolis",
+        "tr": "Likya Krallığı ve antik akropolün sırlarına tarihi bir yolculuk"
+      },
+      "images": ["https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200"],
+      "module": "История",
+      "privateLink": "https://youtube.com/watch?v=guide2",
+      "price": { "eur": "25", "rub": "2500", "try": "900" },
+      "videos": ["https://youtube.com/watch?v=preview2"],
+      "detailedDesc": {
+        "ru": "Маршрут безопасного подъема к амфитеатру Кауноса, тайные тропы древней гавани и лучшие видовые точки для фотосъемки на закате.",
+        "en": "Safe hiking trail to Kaunos amphitheater, ancient harbor trails and best sunset viewpoint spots for photo shoots.",
+        "tr": "Kaunos amfitiyatrosuna güvenli tırmanış rotası, antik liman patikaları ve gün batımı fotoğraf noktaları."
+      },
+      "level": "Для гостей"
+    },
+    {
+      "id": "guide-3",
+      "name": {
+        "ru": "Гастрономический гид: топ-10 ресторанов и гранатовые сады",
+        "en": "Gourmet Guide: Top 10 Restaurants & Pomegranate Orchards",
+        "tr": "Gastronomi Rehberi: En İyi 10 Restoran ve Nar Bahçeleri"
+      },
+      "desc": {
+        "ru": "Где попробовать настоящую турецкую кухню, свежую рыбу и мезе",
+        "en": "Where to taste authentic Turkish food, fresh fish and homemade mezes",
+        "tr": "Gerçek Türk mutfağı, taze balık ve ev yapımı mezeler nerede yenir"
+      },
+      "images": ["https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200"],
+      "module": "Гастрономия",
+      "privateLink": "https://youtube.com/watch?v=guide3",
+      "price": { "eur": "15", "rub": "1500", "try": "550" },
+      "videos": ["https://youtube.com/watch?v=preview3"],
+      "detailedDesc": {
+        "ru": "Список проверенных ресторанов Дальяна, включая культовый ресторан Çiçek Restoran, явки шефов и специальные привилегии для гостей нашей виллы.",
+        "en": "Hand-picked Dalyan restaurants including iconic Çiçek Restoran, chef secrets and exclusive discounts for our villa guests.",
+        "tr": "Çiçek Restoran dahil Dalyan'ın en güvenilir restoranları, şef tavsiyeleri ve villamızın misafirlerine özel ayrıcalıklar."
+      },
+      "level": "Для гостей"
+    },
+    {
+      "id": "guide-4",
+      "name": {
+        "ru": "Термальные источники Султание и минеральные грязи",
+        "en": "Sultaniye Hot Springs & Mineral Mud Baths Guide",
+        "tr": "Sultaniye Kaplıcaları ve Şifalı Çamur Banyoları Rehberi"
+      },
+      "desc": {
+        "ru": "Как получить максимальный оздоровительный эффект без толп",
+        "en": "How to get maximum health benefits avoiding tourist crowds",
+        "tr": "Turist kalabalığı olmadan maksimum sağlık faydası nasıl elde edilir"
+      },
+      "images": ["https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200"],
+      "module": "Здоровье",
+      "privateLink": "https://youtube.com/watch?v=guide4",
+      "price": { "eur": "20", "rub": "2000", "try": "700" },
+      "videos": ["https://youtube.com/watch?v=preview4"],
+      "detailedDesc": {
+        "ru": "Расписание работы источников, часы отсутствия экскурсионных теплоходов, состав минеральных вод и правильный порядок принятия ванн.",
+        "en": "Operating hours, times when tourist boats are absent, mineral water chemical composition and proper bathing steps.",
+        "tr": "Çalışma saatleri, tur teknelerinin olmadığı sakin zamanlar, mineral suyun bileşimi ve doğru banyo adımları."
+      },
+      "level": "Для гостей"
+    },
+    {
+      "id": "guide-5",
+      "name": {
+        "ru": "Горные трекинговые тропы и смотровая площадка Радар",
+        "en": "Radar Viewpoint Mountain Trekking Trails",
+        "tr": "Radar Tepesi Dağ Yürüyüş Rotaları ve Manzara Noktası"
+      },
+      "desc": {
+        "ru": "Пешие маршруты с панорамными видами на дельту реки и косу Изтузу",
+        "en": "Hiking trails with breathtaking panoramic views over Dalyan delta & Iztuzu spit",
+        "tr": "Dalyan deltası ve İztuzu kumsalına bakan panoramik yürüyüş parkurları"
+      },
+      "images": ["https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200"],
+      "module": "Трекинг",
+      "privateLink": "https://youtube.com/watch?v=guide5",
+      "price": { "eur": "15", "rub": "1500", "try": "550" },
+      "videos": ["https://youtube.com/watch?v=preview5"],
+      "detailedDesc": {
+        "ru": "Точные GPS-треки подъема на высоту 500 метров над уровнем моря, рекомендации по обуви, запасу воды и безопасности на Ликийской тропе.",
+        "en": "Precise GPS tracks up to 500m above sea level, gear advice, water supply recommendations and trail safety tips.",
+        "tr": "500 metre rakıma çıkan kesin GPS rotaları, ayakkabı ve su tavsiyeleri, Likya Yolu güvenlik kuralları."
+      },
+      "level": "Для гостей"
+    },
+    {
+      "id": "guide-6",
+      "name": {
+        "ru": "Субботний фермерский рынок Дальяна: секреты и покупки",
+        "en": "Saturday Dalyan Farmers Market: Insider Shopping Secrets",
+        "tr": "Cumartesi Dalyan Köy Pazarı: Alışveriş Sırları"
+      },
+      "desc": {
+        "ru": "Инструкция по выбору домашних сыров, оливок, гранатового сиропа",
+        "en": "Guide to picking artisan cheeses, cured olives and real pomegranate molasses",
+        "tr": "Köy peynirleri, zeytinler ve hakiki nar ekşisi seçme rehberi"
+      },
+      "images": ["https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=1200"],
+      "module": "Шоппинг",
+      "privateLink": "https://youtube.com/watch?v=guide6",
+      "price": { "eur": "10", "rub": "1000", "try": "350" },
+      "videos": ["https://youtube.com/watch?v=preview6"],
+      "detailedDesc": {
+        "ru": "С какими фермерами стоит торговаться, где найти натуральное холодное оливковое масло первого отжима и свежайший инжир.",
+        "en": "Which local stalls are trustworthy, where to find cold-pressed virgin olive oil and delicious fresh figs.",
+        "tr": "Hangi yerel üreticilerin güvenilir olduğu, soğuk sıkım zeytinyağı ve taze incirlerin nereden alınacağı."
+      },
+      "level": "Для гостей"
+    }
+  ],
   "gallery": [
     {
-      "id": "1",
-      "group": {
-        "ru": "Территория придомовая.",
-        "en": "The territory is adjacent to the house.",
-        "tr": "Söz konusu arazi evin bitişiğindedir."
-      },
-      "groupDesc": {
-        "ru": "",
-        "en": "",
-        "tr": ""
-      },
+      "id": "gal-01",
+      "group": { "ru": "Фасад и Бассейн", "en": "Facade & Pool", "tr": "Cephe ve Havuz" },
+      "groupDesc": { "ru": "Приватный бассейн с соленой водой 36 кв.м и шезлонги", "en": "Private 36 sqm saltwater pool with sun loungers", "tr": "36 m² özel tuzlu su havuzu ve şezlonglar" },
       "type": "image",
-      "media": [
-        "https://drive.google.com/file/d/1NjSHRDa5eJpQTzO9268e8LMRzDVmYtX7/view?usp=sharing",
-        "https://drive.google.com/file/d/1IZMH6wtfLHZ6ibKHfmBhPGMFntZ_fXKU/view?usp=drive_link"
-      ],
-      "caption": {
-        "ru": "Главный фасад",
-        "en": "Main facade",
-        "tr": "Ana cephe"
-      }
+      "media": ["https://drive.google.com/file/d/1NjSHRDa5eJpQTzO9268e8LMRzDVmYtX7/view?usp=sharing"],
+      "caption": { "ru": "Бассейн 36м² и зона отдыха", "en": "36m² pool and relaxation area", "tr": "36m² havuz ve dinlenme alanı" }
     },
     {
-      "id": "2",
-      "group": {
-        "ru": "Бассейн и джакузи.",
-        "en": "Swimming pool and jacuzzi.",
-        "tr": "Yüzme havuzu ve jakuzi."
-      },
-      "groupDesc": {
-        "ru": "",
-        "en": "",
-        "tr": ""
-      },
+      "id": "gal-02",
+      "group": { "ru": "Фасад и Бассейн", "en": "Facade & Pool", "tr": "Cephe ve Havuz" },
+      "groupDesc": { "ru": "Вечерняя гидроподсветка бассейна и джакузи", "en": "Evening underwater pool lighting and jacuzzi", "tr": "Akşam havuz aydınlatması ve jakuzi" },
       "type": "image",
-      "media": [
-        "https://drive.google.com/file/d/1lXyEH0hUh3Hh5oYJyoW1QLCiv2j3W2ml/view?usp=drive_link"
-      ],
-      "caption": {
-        "ru": "Общий вид на бассейн и территорию вокруг.",
-        "en": "General view of the pool and surrounding area.",
-        "tr": "Havuzun ve çevresinin genel görünümü."
-      }
+      "media": ["https://images.unsplash.com/photo-1572120360610-d971b9d7767c?w=1600"],
+      "caption": { "ru": "Вечерняя подсветка бассейна", "en": "Evening pool illumination", "tr": "Akşam havuz aydınlatması" }
     },
     {
-      "id": "3",
-      "group": {
-        "ru": "Бассейн и джакузи.",
-        "en": "Swimming pool and jacuzzi.",
-        "tr": "Yüzme havuzu ve jakuzi."
-      },
-      "groupDesc": {
-        "ru": "",
-        "en": "",
-        "tr": ""
-      },
+      "id": "gal-03",
+      "group": { "ru": "Интерьер и Гостиная", "en": "Interior & Living Room", "tr": "İç Mekan ve Salon" },
+      "groupDesc": { "ru": "Просторная гостиная со Smart TV 55\" и кондиционером", "en": "Spacious living room with 55\" Smart TV and AC", "tr": "55 inç Akıllı TV ve klimalı geniş salon" },
       "type": "image",
-      "media": [
-        "https://drive.google.com/file/d/1HFV4EF5X5Xg52z1tGpPqyc_t6_-tRRE0/view?usp=drive_link"
-      ],
-      "caption": {
-        "ru": "Общий вид на бассейн и зону загара..",
-        "en": "General view of the pool and sunbathing area.",
-        "tr": "Havuz ve güneşlenme alanının genel görünümü."
-      }
+      "media": ["https://drive.google.com/file/d/1IZMH6wtfLHZ6ibKHfmBhPGMFntZ_fXKU/view?usp=drive_link"],
+      "caption": { "ru": "Светлая гостиная виллы", "en": "Bright villa living room", "tr": "Aydınlık villa salonu" }
     },
     {
-      "id": "4",
-      "group": {
-        "ru": "Бассейн и джакузи.",
-        "en": "Swimming pool and jacuzzi.",
-        "tr": "Yüzme havuzu ve jakuzi."
-      },
-      "groupDesc": {
-        "ru": "",
-        "en": "",
-        "tr": ""
-      },
+      "id": "gal-04",
+      "group": { "ru": "Кухня и Столовая", "en": "Kitchen & Dining", "tr": "Mutfak ve Yemek Alanı" },
+      "groupDesc": { "ru": "Полноценная кухня с индукционной панелью и кофемашиной", "en": "Full kitchen with induction cooktop and coffee machine", "tr": "İndüksiyon ocaklı ve kahve makineli tam mutfak" },
       "type": "image",
-      "media": [
-        "https://drive.google.com/file/d/1HFV4EF5X5Xg52z1tGpPqyc_t6_-tRRE0/view?usp=drive_link"
-      ],
-      "caption": {
-        "ru": "Вид на бассейн и зону загара..",
-        "en": "View of the pool and sunbathing area.",
-        "tr": "Havuz ve güneşlenme alanının manzarası."
-      }
+      "media": ["https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1600"],
+      "caption": { "ru": "Кухня со всей техникой", "en": "Fully equipped kitchen", "tr": "Tam donanımlı mutfak" }
+    },
+    {
+      "id": "gal-05",
+      "group": { "ru": "Спальни виллы", "en": "Villa Bedrooms", "tr": "Villa Yatak Odaları" },
+      "groupDesc": { "ru": "Мастер-спальня 1 на первом этаже с кроватью King Size", "en": "Master bedroom 1 on ground floor with King Bed", "tr": "Zemin kat King yataklı 1. ebeveyn odası" },
+      "type": "image",
+      "media": ["https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1600"],
+      "caption": { "ru": "Спальня 1 с видом на бассейн", "en": "Bedroom 1 pool view", "tr": "Havuz manzaralı 1. yatak odası" }
+    },
+    {
+      "id": "gal-06",
+      "group": { "ru": "Спальни виллы", "en": "Villa Bedrooms", "tr": "Villa Yatak Odaları" },
+      "groupDesc": { "ru": "Мастер-спальня 2 на втором этаже с балконом с видом на горы", "en": "Master bedroom 2 on 1st floor with mountain view balcony", "tr": "Balkonlu ve dağ manzaralı 2. ebeveyn odası" },
+      "type": "image",
+      "media": ["https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=1600"],
+      "caption": { "ru": "Спальня 2 Queen Bed с балконом", "en": "Bedroom 2 Queen Bed with balcony", "tr": "Balkonlu Queen yataklı 2. oda" }
+    },
+    {
+      "id": "gal-07",
+      "group": { "ru": "Спальни виллы", "en": "Villa Bedrooms", "tr": "Villa Yatak Odaları" },
+      "groupDesc": { "ru": "Спальня 3 с двумя раздельными комфортными кроватями", "en": "Bedroom 3 with two comfortable twin beds", "tr": "İki ayrı tek kişilik yataklı 3. yatak odası" },
+      "type": "image",
+      "media": ["https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=1600"],
+      "caption": { "ru": "Спальня 3 с 2 кроватями", "en": "Bedroom 3 with 2 twin beds", "tr": "2 ayrı yataklı 3. oda" }
+    },
+    {
+      "id": "gal-08",
+      "group": { "ru": "Спальни виллы", "en": "Villa Bedrooms", "tr": "Villa Yatak Odaları" },
+      "groupDesc": { "ru": "Спальня 4 с ортопедическим диваном-кроватью в лаундж-зоне", "en": "Bedroom 4 with orthopedic sofa-bed in lounge area", "tr": "Lounge alanında ortopedik çekyatlı 4. oda" },
+      "type": "image",
+      "media": ["https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1600"],
+      "caption": { "ru": "Спальня 4 в лаундж-зоне", "en": "Bedroom 4 lounge area", "tr": "Lounge alanı 4. yatak odası" }
+    },
+    {
+      "id": "gal-09",
+      "group": { "ru": "Санузлы", "en": "Bathrooms", "tr": "Banyolar" },
+      "groupDesc": { "ru": "4 индивидуальные ванные комнаты с тропическим душем", "en": "4 en-suite bathrooms with walk-in rain showers", "tr": "Yağmur duşlu 4 özel banyo" },
+      "type": "image",
+      "media": ["https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=1600"],
+      "caption": { "ru": "Индивидуальная ванная комната", "en": "En-suite bathroom", "tr": "Özel banyo" }
+    },
+    {
+      "id": "gal-10",
+      "group": { "ru": "Сад и Терраса", "en": "Garden & Terrace", "tr": "Bahçe ve Teras" },
+      "groupDesc": { "ru": "Приватный сад с обеденным столом и зоной барбекю", "en": "Private garden with dining table and BBQ area", "tr": "Yemek masası ve barbekü alanı bulunan özel bahçe" },
+      "type": "image",
+      "media": ["https://images.unsplash.com/photo-1544025162-d76694265947?w=1600"],
+      "caption": { "ru": "Зона BBQ и обеденная пергола", "en": "BBQ area and dining pergola", "tr": "Barbekü ve yemek alanı" }
+    },
+    {
+      "id": "gal-11",
+      "group": { "ru": "Бассейн и спа", "en": "Pool & Spa", "tr": "Havuz ve Spa" },
+      "groupDesc": { "ru": "Уличное джакузи с автоматическим гидромассажем", "en": "Outdoor jacuzzi with automatic hydro massage", "tr": "Otomatik hidromasajlı açık jakuzi" },
+      "type": "image",
+      "media": ["https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=1600"],
+      "caption": { "ru": "Джакузи и летний душ", "en": "Jacuzzi and outdoor shower", "tr": "Jakuzi ve açık duş" }
+    },
+    {
+      "id": "gal-12",
+      "group": { "ru": "Природа Дальяна", "en": "Dalyan Nature", "tr": "Dalyan Doğası" },
+      "groupDesc": { "ru": "Набережная реки Дальян в 5 минутах пешком от виллы", "en": "Dalyan river promenade 5 minutes walk from villa", "tr": "Villadan 5 dakika yürüme mesafesinde Dalyan nehir kordonu" },
+      "type": "image",
+      "media": ["https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1600"],
+      "caption": { "ru": "Живописная река Дальян", "en": "Scenic Dalyan River", "tr": "Doğal Dalyan Nehri" }
+    },
+    {
+      "id": "gal-13",
+      "group": { "ru": "Достопримечательности", "en": "Attractions", "tr": "Görülecek Yerler" },
+      "groupDesc": { "ru": "Ликийские скальные гробницы IV века до н.э. с подсветкой", "en": "4th century BC Lycian rock tombs with night illumination", "tr": "M.Ö. 4. yüzyıl Likya kaya mezarları" },
+      "type": "image",
+      "media": ["https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600"],
+      "caption": { "ru": "Ликийские скальные гробницы", "en": "Lycian Rock Tombs", "tr": "Likya Kaya Mezarları" }
+    },
+    {
+      "id": "gal-14",
+      "group": { "ru": "Пляжи и заповедники", "en": "Beaches & Reserves", "tr": "Plajlar ve Tabiat Parkları" },
+      "groupDesc": { "ru": "Песчаный черепаший пляж Изтузу и озеро Кёйджегиз", "en": "Sandy Iztuzu turtle beach and Lake Koycegiz", "tr": "Kumlu İztuzu kaplumbağa plajı ve Köyceğiz Gölü" },
+      "type": "image",
+      "media": ["https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1600"],
+      "caption": { "ru": "Пляж Изтузу и черепахи", "en": "Iztuzu Beach & Turtles", "tr": "İztuzu Plajı ve Kaplumbağalar" }
     }
   ]
 }

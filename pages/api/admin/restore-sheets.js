@@ -7,7 +7,21 @@
 
 import { google } from 'googleapis';
 import { SHEETS_REGISTRY } from '../../../utils/sheetsRegistry';
-import { MASTER_SETTINGS_ROWS, MASTER_HOME_MAP, MASTER_HOME_ROWS, MASTER_TEMPLATES_ROWS } from '../../../utils/masterSeedContent';
+import {
+  MASTER_SETTINGS_ROWS,
+  MASTER_HOME_MAP,
+  MASTER_HOME_ROWS,
+  MASTER_TEMPLATES_ROWS,
+  MASTER_GALLERY_ROWS,
+  MASTER_SERVICES_ROWS,
+  MASTER_GUIDES_ROWS,
+  MASTER_LEGAL_ROWS,
+  MASTER_BOOKINGS_ROWS,
+  MASTER_CALENDAR_ROWS,
+  MASTER_ACCOUNTS_ROWS,
+  MASTER_ORDERS_ROWS,
+  MASTER_ACCESS_ROWS
+} from '../../../utils/masterSeedContent';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -215,109 +229,162 @@ export default async function handler(req, res) {
         }
 
         if (config.key === 'HOME') {
+          const colsA_D = MASTER_HOME_ROWS.map((r) => [r[0], r[1], r[2], r[3]]);
+          const colsG_H = MASTER_HOME_ROWS.map((r) => [r[6] || '', r[7] || '']);
+
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:D${colsA_D.length + 1}`,
+            values: colsA_D
+          });
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!G2:H${colsG_H.length + 1}`,
+            values: colsG_H
+          });
+
           safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-          dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:H${MASTER_HOME_ROWS.length + 1}`,
-            values: MASTER_HOME_ROWS
-          });
-        }
-
-        if (config.key === 'SERVICES') {
-          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!P2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-
-          dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:O7`,
-            values: [
-              ['prod-1', 'Индивидуальный VIP-трансфер из аэропорта Даламан [DLM]', 'Mercedes Vito с кондиционером и напитками', '', '', '', '', '50', '5000', '1800', 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1200', 'Да', 'Услуга', '', 'Встреча в зоне прилета аэропорта Даламан [25 минут до виллы]. В салоне Wi-Fi.'],
-              ['prod-2', 'Приватный круиз на яхте по реке Дальян и пляжу Изтузу', 'Традиционная деревянная лодка: Ликийские гробницы и черепахи', '', '', '', '', '250', '25000', '9000', 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200', 'Да', 'Пакет', '', 'Эксклюзивный маршрут на весь день со свежеприготовленным обедом от капитана.'],
-              ['prod-3', 'Ужин от персонального шеф-повара на вилле', '4-курсовой ужин у бассейна: турецкие мезе и морепродукты', '', '', '', '', '120', '12000', '4300', 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200', 'Да', 'Услуга', '', 'Шеф лично закупает фермерские продукты на рынке Дальяна и сервирует стол.'],
-              ['prod-4', 'Премиальный BBQ-вечер на углях в саду', 'Стейки рибай, каре ягненка и овощи гриль', '', '', '', '', '160', '16000', '5800', 'https://images.unsplash.com/photo-1544025162-d76694265947?w=1200', 'Да', 'Пакет', '', 'Включает угли, розжиг, маринованное фермерское мясо и мастера на 3 часа.'],
-              ['prod-5', 'СПА-тур и грязевые источники Султание', 'Омолаживающие минеральные термы озера Кёйджегиз', '', '', '', '', '70', '7000', '2500', 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200', 'Да', 'Услуга', '', 'Трансфер на моторной лодке от причала виллы. Входные билеты включены.'],
-              ['prod-6', 'Аренда сапбордов [SUP] и каяков', '2 устойчивых SUP-борда и двухместный каяк', '', '', '', '', '80', '8000', '2900', 'https://images.unsplash.com/photo-1517404215738-15263e9f9178?w=1200', 'Да', 'Услуга', '', 'Доставка прямо к вилле на весь период проживания для утренних заплывов.']
-            ]
-          });
-        }
-
-        if (config.key === 'GUIDES') {
-          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!P2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-
-          dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:O5`,
-            values: [
-              ['guide-1', 'Секретные маршруты реки Дальян и черепаший пляж Изтузу', 'Эксклюзивный 40-минутный 4K видео-гид от Алексея Знаменского', '', '', '', '', 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200', 'Локации', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '20', '2000', '700', '', 'Где встретить гигантских черепах Caretta Caretta и как арендовать лодку со скидкой.'],
-              ['guide-2', 'Ликийские скальные гробницы и древний город Каунос', 'Историческое погружение в тайны Ликийского царства и акрополя', '', '', '', '', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200', 'История', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '25', '2500', '900', '', 'Маршрут подъема к Кауносу, расшифровка надписей и лучшие видовые точки на закате.'],
-              ['guide-3', 'Гастрономический гид: топ ресторанов и гранатовые сады', 'Где попробовать настоящую турецкую кухню и свежую рыбу', '', '', '', '', 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200', 'Гастрономия', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '15', '1500', '550', '', 'Список 10 проверенных ресторанов со специальными привилегиями для гостей виллы.'],
-              ['guide-4', 'Термальные источники Султание и озеро Кёйджегиз', 'Как получить максимум от целебных минеральных источников', '', '', '', '', 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200', 'Здоровье', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '20', '2000', '700', '', 'Секретные часы посещения без туристических групп и рекомендации врачей.']
-            ]
-          });
         }
 
         if (config.key === 'GALLERY') {
+          const colsA_C = MASTER_GALLERY_ROWS.map((r) => [r[0], r[1], r[2]]);
+          const colsH_J = MASTER_GALLERY_ROWS.map((r) => [r[7] || '', r[8] || '', r[9] || '']);
+
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:C${colsA_C.length + 1}`,
+            values: colsA_C
+          });
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!H2:J${colsH_J.length + 1}`,
+            values: colsH_J
+          });
+
           safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!K2`, values: [['=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!L2`, values: [['=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-
-          dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:J7`,
-            values: [
-              ['gal-1', 'Бассейн и лаунж-терраса', 'Кристально чистый бассейн глубиной 1.5м с шезлонгами', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1572120360610-d971b9d7767c?w=1600,https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=1600', 'Приватный бассейн виллы с удобными шезлонгами'],
-              ['gal-2', 'Бассейн и лаунж-терраса', 'Кристально чистый бассейн глубиной 1.5м с шезлонгами', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=1600', 'Затененная пергола для послеобеденного отдыха'],
-              ['gal-3', 'Интерьер виллы и спальни', '4 просторные мастер-спальни с индивидуальными ванными', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=1600,https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=1600', 'Мастер-спальня 1 с кроватью King-Size и террасой'],
-              ['gal-4', 'Интерьер виллы и спальни', '4 просторные мастер-спальни с индивидуальными ванными', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600', 'Светлая гостиная со Smart TV 65'],
-              ['gal-5', 'Кухня и зона BBQ', 'Полностью оборудованная кухня со всей бытовой техникой', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1600', 'Кухня шеф-повара с посудомоечной машиной и кофемашиной'],
-              ['gal-6', 'Окрестности Дальяна и река', 'Уникальная природа: Ликийские гробницы и пляж Изтузу', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1600', 'Ликийские скальные гробницы IV века до н.э. с подсветкой']
-            ]
-          });
         }
 
-        if (config.key === 'TEMPLATES') {
+        if (config.key === 'SERVICES') {
+          const colsA_C = MASTER_SERVICES_ROWS.map((r) => [r[0], r[1], r[2]]);
+          const colsH_O = MASTER_SERVICES_ROWS.map((r) => [r[7] || '', r[8] || '', r[9] || '', r[10] || '', r[11] || '', r[12] || '', r[13] || '', r[14] || '']);
+
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:C${colsA_C.length + 1}`,
+            values: colsA_C
+          });
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!H2:O${colsH_O.length + 1}`,
+            values: colsH_O
+          });
+
+          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!P2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+        }
+
+        if (config.key === 'GUIDES') {
+          const colsA_C = MASTER_GUIDES_ROWS.map((r) => [r[0], r[1], r[2]]);
+          const colsH_O = MASTER_GUIDES_ROWS.map((r) => [r[7] || '', r[8] || '', r[9] || '', r[10] || '', r[11] || '', r[12] || '', r[13] || '', r[14] || '']);
+
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:C${colsA_C.length + 1}`,
+            values: colsA_C
+          });
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!H2:O${colsH_O.length + 1}`,
+            values: colsH_O
+          });
+
+          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!P2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+        }
+
+        if (config.key === 'LEGAL') {
+          const colsA_B = MASTER_LEGAL_ROWS.map((r) => [r[0], r[1]]);
+          const colE = MASTER_LEGAL_ROWS.map((r) => [r[4] || '']);
+
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:B${colsA_B.length + 1}`,
+            values: colsA_B
+          });
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!E2:E${colE.length + 1}`,
+            values: colE
+          });
+
           safeFormulasToInject.push({ range: `'${actualTitle}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+        }
+
+        if (config.key === 'BOOKINGS') {
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:K${MASTER_BOOKINGS_ROWS.length + 1}`,
+            values: MASTER_BOOKINGS_ROWS
+          });
+        }
+
+        if (config.key === 'CALENDAR') {
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:G${MASTER_CALENDAR_ROWS.length + 1}`,
+            values: MASTER_CALENDAR_ROWS
+          });
+        }
+
+        if (config.key === 'ACCOUNTS') {
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:G${MASTER_ACCOUNTS_ROWS.length + 1}`,
+            values: MASTER_ACCOUNTS_ROWS
+          });
+        }
+
+        if (config.key === 'ORDERS') {
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:F${MASTER_ORDERS_ROWS.length + 1}`,
+            values: MASTER_ORDERS_ROWS
+          });
+        }
+
+        if (config.key === 'ACCESS') {
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:G${MASTER_ACCESS_ROWS.length + 1}`,
+            values: MASTER_ACCESS_ROWS
+          });
+        }
+
+        if (config.key === 'TEMPLATES') {
+          const colsA_B = MASTER_TEMPLATES_ROWS.map((r) => [r[0], r[1]]);
+          const colE = MASTER_TEMPLATES_ROWS.map((r) => [r[4] || '']);
 
           dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:G${MASTER_TEMPLATES_ROWS.length + 1}`,
-            values: MASTER_TEMPLATES_ROWS
+            range: `'${actualTitle}'!A2:B${colsA_B.length + 1}`,
+            values: colsA_B
           });
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!E2:E${colE.length + 1}`,
+            values: colE
+          });
+
+          safeFormulasToInject.push({ range: `'${actualTitle}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
         }
 
         if (config.key === 'SETTINGS') {
           dataAppendRequests.push({
             range: `'${actualTitle}'!A2:E${MASTER_SETTINGS_ROWS.length + 1}`,
             values: MASTER_SETTINGS_ROWS
-          });
-        }
-
-        if (config.key === 'LEGAL') {
-          dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:E11`,
-            values: [
-              ['company_name', 'Организация', '', '', 'ALEKSEI ZNAMENSKII - Villa Turaman'],
-              ['tax_info', 'Налоговый номер', '', '', 'Ortaca Vergi Dairesi, VKN: 9991120181'],
-              ['contact_email', 'Email', '', '', 'villaturaman@gmail.com'],
-              ['contract', 'Договор аренды', '', '', 'Договор краткосрочной аренды Villa Turaman [Дальян, Мугла, Турция]. Владелец: Aleksei Znamenskii [VKN: 9991120181].'],
-              ['footerDesc', 'О Villa Turaman', '', '', 'Премиальная частная вилла в Дальяне [Турция]. Прямое бронирование от владельца Алексея Знаменского без скрытых комиссий сторонних агрегаторов.'],
-              ['footerLocation', 'Адрес', '', '', 'Дальян, Ортаджа, Мугла, Турция'],
-              ['etbis_placeholder', 'QR-код ETBIS', '', '', 'ETBIS QR CODE\nVKN: 9991120181'],
-              ['etbis_text', 'Госреестр ETBIS', '', '', "ETBİS'e Kayıtlıdır"],
-              ['kvkk', 'Политика KVKK', '', '', 'Полный текст политики защиты персональных данных [KVKK Aydınlatma Metni]...'],
-              ['privacy', 'Конфиденциальность', '', '', 'Политика конфиденциальности персональных данных гостей виллы...']
-            ]
           });
         }
       }
