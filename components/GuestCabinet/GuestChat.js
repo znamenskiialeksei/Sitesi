@@ -5,7 +5,7 @@
 // ==============================================================================
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Paperclip, X, MessageCircle, User, Shield, FileText } from 'lucide-react';
+import { Send, Paperclip, X, MessageCircle, User, Shield, FileText, Sparkles } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../Toast';
@@ -87,8 +87,9 @@ export default function GuestChat({ messages = [], onSendMessage, loading = fals
         ) : (
           messages.map((m, idx) => {
             const isHost = m.sender === 'Владелец' || m.sender === 'Алексей Знаменский' || m.sender === 'Admin' || m.sender === 'Owner';
+            const isAi = (m.sender || '').includes('ИИ') || (m.sender || '').includes('Gemini');
             const isSystem = m.sender === 'Система';
-            const isMe = !isHost && !isSystem;
+            const isMe = !isHost && !isSystem && !isAi;
 
             if (isSystem) {
               return (
@@ -105,15 +106,24 @@ export default function GuestChat({ messages = [], onSendMessage, loading = fals
                 key={idx}
                 className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
               >
-                <span className="text-[10px] text-slate-500 mb-1 px-1">
-                  {m.sender} • {m.date}
-                </span>
+                {isAi ? (
+                  <span className="text-[10px] text-purple-400 mb-1 px-1 flex items-center gap-1 font-semibold">
+                    <Sparkles className="w-3 h-3 text-purple-400" />
+                    <span>{m.sender} • {m.date}</span>
+                  </span>
+                ) : (
+                  <span className="text-[10px] text-slate-500 mb-1 px-1">
+                    {m.sender} • {m.date}
+                  </span>
+                )}
 
                 <div
                   className={`p-4 rounded-2xl max-w-[82%] text-xs sm:text-sm whitespace-pre-wrap break-words shadow-md ${
                     isMe
                       ? 'bg-rose-600 text-white rounded-tr-sm'
-                      : 'bg-slate-800 text-slate-200 border border-white/10 rounded-tl-sm'
+                      : isAi
+                        ? 'bg-gradient-to-br from-slate-900 to-purple-950/60 text-purple-100 border border-purple-500/30 rounded-tl-sm shadow-purple-950/20'
+                        : 'bg-slate-800 text-slate-200 border border-white/10 rounded-tl-sm'
                   }`}
                 >
                   {m[lang] || m.original}

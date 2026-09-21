@@ -11,7 +11,7 @@ import { generateVoucher } from '../../utils/pdf';
 import { getLiveSheetMap, resolveRange, SHEETS_REGISTRY } from '../../utils/sheetsRegistry';
 import { generateOtpCode, sendEmailVerificationCode, sendPhoneVerificationCode } from '../../utils/mailer';
 import { SMART_TEMPLATES } from '../../utils/templatesData';
-import { invalidateAiKnowledgeCache } from '../../utils/aiKnowledgeBase';
+import { getAiKnowledgeBase, invalidateAiKnowledgeCache } from '../../utils/aiKnowledgeBase';
 
 let memoryCache = {};
 
@@ -1218,6 +1218,85 @@ export default async function handler(req, res) {
               reply_markup: { inline_keyboard: inlineKeyboard }
             })
           }).catch(() => { });
+        }
+
+        // Автономный ответ ИИ-Консьержа Gemini 3.6 Flash при режиме autopilot
+        const isGuestSender = data.sender && data.sender !== 'Владелец' && data.sender !== 'Алексей Знаменский' && data.sender !== 'Admin' && data.sender !== 'Owner';
+        if (msgText && isGuestSender) {
+          try {
+            const kb = await getAiKnowledgeBase();
+            const aiMode = (kb.aiMode || 'copilot').toLowerCase();
+            const apiKey = (process.env.GEMINI_API_KEY || '').trim();
+            const model = (kb.geminiModel || process.env.GEMINI_MODEL || 'gemini-3.6-flash').trim();
+
+            if (aiMode === 'autopilot' && apiKey) {
+              let systemInstruction = kb.systemPrompt || 'Ты профессиональный ИИ-консьерж виллы Villa Turaman в городе Дальян, Турция. Владелец: Алексей Знаменский. Помогай гостям вежливо, точно и гостеприимно на языке их обращения [RU, EN, TR].';
+              const minPrice = kb.minPriceUsd || 180;
+              systemInstruction += `\nМинимальный допустимый тариф: ${minPrice} USD за ночь. Скидка 10% только при невозвратном тарифе на даты до 60 дней. Скидки ниже ${minPrice} USD строго запрещены.`;
+
+              if (kb.variables) {
+                systemInstruction += `\nРЕКВИЗИТЫ: Wi-Fi: ${kb.variables.wifiName || 'Guest'} [пароль: ${kb.variables.wifiPassword || 'villa2026'}], Адрес: ${kb.variables.address || 'Dalyan'}, Заезд: 16:00, Выезд: 10:00, Джакузи: 09:00-18:00 каждые 45 минут на 15 мин.`;
+              }
+
+              const aiPrompt = `${systemInstruction}\n\nГОСТЬ: ${data.sender} [${data.contact}]\nСООБЩЕНИЕ ГОСТЯ: "${msgText}"\nОтветь гостю доброжелательно, емко и гостеприимно.`;
+
+              const aiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  contents: [{ role: 'user', parts: [{ text: aiPrompt }] }],
+                  generationConfig: { temperature: 0.4, maxOutputTokens: 2048 }
+                })
+              });
+
+              const aiData = await aiRes.json();
+              const aiReplyText = aiData?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+
+              if (aiReplyText) {
+                const aiTimestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
+                const aiSender = 'ИИ-Консьерж [Gemini 3.6 Flash]';
+
+                if (sheets && targetChatId) {
+                  try {
+                    await sheets.spreadsheets.values.append({
+                      spreadsheetId: targetChatId,
+                      range: `'${chatSheetName}'!A:G`,
+                      valueInputOption: 'USER_ENTERED',
+                      insertDataOption: 'INSERT_ROWS',
+                      requestBody: { values: [[aiTimestamp, aiSender, aiReplyText, fRU, fEN, fTR, '']] }
+                    });
+                  } catch (aiAppendErr) {
+                    console.warn('[AI Chat Append Error]:', aiAppendErr.message);
+                  }
+                }
+
+                existingCache.push({
+                  date: aiTimestamp,
+                  sender: aiSender,
+                  original: aiReplyText,
+                  ru: aiReplyText,
+                  en: aiReplyText,
+                  tr: aiReplyText,
+                  file: ''
+                });
+                await safeCacheSet(cacheKey, existingCache, { ex: 86400 * 7 });
+
+                if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
+                  const aiReport = `🤖 АВТОПИЛОТ GEMINI 3.6 FLASH ОТВЕТИЛ ГОСТЮ\n👤 Гость: ${data.sender}\n📞 Контакт: ${data.contact}\n📝 Вопрос: ${msgText}\n\n✨ Ответ ИИ:\n${aiReplyText}`;
+                  fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      chat_id: process.env.TELEGRAM_CHAT_ID,
+                      text: aiReport
+                    })
+                  }).catch(() => { });
+                }
+              }
+            }
+          } catch (aiErr) {
+            console.warn('[Autopilot AI Error]:', aiErr.message);
+          }
         }
       }
 

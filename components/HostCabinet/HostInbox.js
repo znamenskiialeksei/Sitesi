@@ -36,7 +36,7 @@ import {
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../Toast';
 import { SMART_TEMPLATES, TEMPLATE_STAGES } from '../../utils/templatesData';
-import { detectGuestLanguage, resolveTemplate, matchSuggestedTemplate } from '../../utils/templateResolver';
+import { detectGuestLanguage, resolveTemplate } from '../../utils/templateResolver';
 
 export default function HostInbox({
   chats = [],
@@ -171,13 +171,6 @@ export default function HostInbox({
     return [...activeChat.messages].reverse().find((m) => m.sender !== 'Владелец' && m.sender !== 'Система');
   }, [activeChat?.messages]);
 
-  // Рекомендация ИИ-суфлера на базе намерений гостя
-  const aiRecommendation = useMemo(() => {
-    if (!lastGuestMsg) return null;
-    const textToMatch = lastGuestMsg.original || lastGuestMsg.ru || lastGuestMsg.en || lastGuestMsg.tr || '';
-    return matchSuggestedTemplate(textToMatch);
-  }, [lastGuestMsg]);
-
   // Функция резолва шаблона под контекст текущего гостя с учетом живых переменных
   const getResolvedTemplateText = (template, targetLang = templateLang) => {
     if (!template) return '';
@@ -248,7 +241,7 @@ export default function HostInbox({
           textareaRef.current.focus();
         }
       } else {
-        toast.warn('ИИ не смог сгенерировать ответ, проверьте ключ Gemini');
+        toast.warn(res.data?.error || 'ИИ не смог сгенерировать ответ. Проверьте GEMINI_API_KEY на Vercel');
       }
     } catch (err) {
       toast.error(`Ошибка ИИ: ${err.message}`);
@@ -519,39 +512,30 @@ export default function HostInbox({
             <div ref={chatBottomRef} />
           </div>
 
-          {/* КАРТОЧКА РЕКОМЕНДАЦИИ ИИ-СУФЛЕРА: НАГЛЯДНОЕ ПРЕВЬЮ ПОЛНОГО ОТВЕТА */}
-          {aiRecommendation && (
-            <div className="mx-3 my-2 p-3 bg-gradient-to-r from-rose-950/60 to-purple-950/60 border border-rose-500/40 rounded-2xl shadow-lg flex flex-col gap-2">
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-amber-300">
-                  <Sparkles className="w-3.5 h-3.5 animate-pulse text-amber-400 shrink-0" />
-                  <span>Рекомендация ИИ-суфлера:</span>
-                  <span className="text-white font-semibold">
-                    {aiRecommendation.template.title?.[templateLang] || aiRecommendation.template.title?.ru}
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => handleApplyTemplate(aiRecommendation.template, templateLang)}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-[11px] transition-colors border border-white/10 flex items-center gap-1"
-                  >
-                    <FileText className="w-3 h-3 text-rose-400" />
-                    <span>Вставить в поле</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDirectSendTemplate(aiRecommendation.template, templateLang)}
-                    className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-[11px] transition-colors shadow-sm flex items-center gap-1"
-                  >
-                    <Send className="w-3 h-3" />
-                    <span>Отправить</span>
-                  </button>
+          {/* БЛОК СУФЛЕРА ХОЗЯИНА: ЖИВОЙ ГЕНЕРАТОР ЧЕРНОВИКОВ GEMINI 3.6 FLASH */}
+          {lastGuestMsg && (
+            <div className="mx-3 my-2 p-3 bg-gradient-to-r from-purple-950/40 via-slate-900 to-rose-950/40 border border-purple-500/30 rounded-2xl shadow-lg flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <Sparkles className="w-4 h-4 text-purple-400 shrink-0 animate-pulse" />
+                <div className="min-w-0">
+                  <div className="text-xs font-bold text-white flex items-center gap-1.5 truncate">
+                    <span>ИИ-Суфлер</span>
+                    <span className="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-mono text-[10px]">Gemini 3.6 Flash</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 truncate">
+                    Гость: «{lastGuestMsg.original || lastGuestMsg.ru || lastGuestMsg.en || lastGuestMsg.tr || ''}»
+                  </p>
                 </div>
               </div>
-              <div className="text-[11px] text-slate-300 font-sans line-clamp-2 bg-slate-950/60 p-2 rounded-xl border border-white/5 whitespace-pre-wrap">
-                {getResolvedTemplateText(aiRecommendation.template, templateLang)}
-              </div>
+              <button
+                type="button"
+                onClick={handleAskAiHelp}
+                disabled={isAiLoading}
+                className="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition-all shadow-md shadow-purple-600/30 shrink-0 flex items-center gap-1.5 disabled:opacity-50"
+              >
+                <Sparkles className={`w-3.5 h-3.5 ${isAiLoading ? 'animate-spin' : ''}`} />
+                <span>{isAiLoading ? 'Генерация...' : 'Сформировать ответ'}</span>
+              </button>
             </div>
           )}
 
@@ -679,16 +663,11 @@ export default function HostInbox({
                 <div className="space-y-2">
                   {displayedTemplates.map((tItem) => {
                     const resolvedText = getResolvedTemplateText(tItem, templateLang);
-                    const isAiMatched = aiRecommendation?.template?.id === tItem.id;
 
                     return (
                       <div
                         key={tItem.id}
-                        className={`p-3 rounded-2xl border transition-all text-xs space-y-2 ${
-                          isAiMatched
-                            ? 'bg-rose-950/30 border-rose-500/50 shadow-md'
-                            : 'bg-slate-900/90 border-white/10 hover:border-white/20'
-                        }`}
+                        className="p-3 rounded-2xl border transition-all text-xs space-y-2 bg-slate-900/90 border-white/10 hover:border-white/20"
                       >
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2 min-w-0">

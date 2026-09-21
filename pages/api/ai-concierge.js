@@ -1,14 +1,15 @@
 // ==============================================================================
 // ИИ-КОНСЬЕРЖ И АССИСТЕНТ VILLA TURAMAN: GOOGLE GEMINI API
 // Файл: pages/api/ai-concierge.js
-// Назначение: Интеллектуальный генератор ответов и суфлер хозяина на базе Gemini.
+// Назначение: Интеллектуальный генератор ответов и суфлер хозяина на базе Gemini 3.6 Flash.
 // База знаний и промпт загружаются динамически из Google Таблиц через aiKnowledgeBase.
-// Модель: gemini-3.6-flash или из листа Системные настройки
-// 100% Zero-Brackets & Zero-Emdash Стандарт.
+// Модель: gemini-3.6-flash [Google AI Studio Tier 1].
+// Полная ликвидация примитивного подбора слов: 100% честный живой ИИ.
+// 100% Zero-Brackets & Zero-Emdash Стандарт в строках и комментариях.
 // ==============================================================================
 
-import { matchSuggestedTemplate, resolveTemplate } from '../../utils/templateResolver';
 import { getAiKnowledgeBase } from '../../utils/aiKnowledgeBase';
+import { buildSparkRulesPromptSection } from '../../utils/spark_rules_manifest';
 
 const DEFAULT_MODEL = 'gemini-3.6-flash';
 
@@ -30,33 +31,18 @@ export default async function handler(req, res) {
     // 1. Загрузка динамической базы знаний из Google Таблиц с кэшированием
     const kb = await getAiKnowledgeBase();
 
-    // Проверка активности ИИ и текущего режима
+    // Проверка активности ИИ и текущего режима [autopilot / copilot / off]
     const aiMode = kb.aiMode || 'copilot';
     const isAiActive = kb.aiEnabled !== false && aiMode !== 'off';
-
-    // 2. Определение рекомендованного шаблона по намерениям
-    const matched = matchSuggestedTemplate(guestMessage);
-    const suggestedTemplateId = matched?.id || null;
-
-    let fallbackTemplateText = '';
-    if (matched?.template) {
-      const raw = matched.template.content?.[lang] || matched.template.content?.ru || '';
-      fallbackTemplateText = resolveTemplate(raw, {
-        guestName,
-        contact,
-        checkIn: context.checkIn || '',
-        checkOut: context.checkOut || ''
-      });
-    }
 
     if (!isAiActive) {
       return res.status(200).json({
         success: true,
+        isRealAi: false,
         source: 'ai_disabled_in_settings',
         aiMode,
         model: 'none',
-        reply: fallbackTemplateText || 'Здравствуйте! Чем я могу помочь вам по отдыху на Villa Turaman?',
-        suggestedTemplateId,
+        reply: 'ИИ-Консьерж временно отключен владельцем в настройках таблицы.',
         note: 'Режим ИИ отключен в настройках таблицы: aiMode = off'
       });
     }
@@ -64,20 +50,19 @@ export default async function handler(req, res) {
     const apiKey = (process.env.GEMINI_API_KEY || '').trim();
     const model = (kb.geminiModel || process.env.GEMINI_MODEL || DEFAULT_MODEL).trim();
 
-    // Если ключ Gemini не настроен: возвращаем эталонный ответ из базы шаблонов
+    // Если ключ Gemini не настроен: честно возвращаем статус ошибки без фейковой подмены
     if (!apiKey) {
       return res.status(200).json({
-        success: true,
-        source: 'templates_fallback',
+        success: false,
+        isRealAi: false,
+        source: 'missing_api_key',
         aiMode,
-        model: 'none',
-        reply: fallbackTemplateText || 'Здравствуйте! Чем я могу помочь вам по отдыху на Villa Turaman?',
-        suggestedTemplateId,
-        note: 'GEMINI_API_KEY не задан на https://vercel.com/ : использован шаблон из базы знаний'
+        model,
+        error: 'Ключ GEMINI_API_KEY не обнаружен в process.env на https://vercel.com/ [Environment Variables]'
       });
     }
 
-    // 3. Формирование динамического системного промпта из Базы Знаний Таблицы
+    // 2. Формирование динамического системного промпта из Базы Знаний Таблицы
     let systemInstruction = kb.systemPrompt || '';
     if (!systemInstruction) {
       systemInstruction = 'Ты профессиональный ИИ-консьерж виллы Villa Turaman в городе Дальян, Турция. Владелец виллы: Алексей Знаменский. Твоя цель: помогать гостям и формулировать вежливые, точные и гостеприимные ответы на языке обращения гостя [RU, EN, TR].';
@@ -90,7 +75,7 @@ export default async function handler(req, res) {
     systemInstruction += `\n- Скидка 10% действует только при невозвратном тарифе на даты выезда в пределах 60 дней.`;
     systemInstruction += `\n- Категорически запрещено обещать скидки ниже ${minPrice} USD без предварительного согласования с владельцем Алексеем.`;
 
-    // Добавление актуальных реквизитов и переменных из Словаря Переменных Таблицы
+    // Добавление актуальных реквизитов и переменных из Словаря Переменных Таблицы [VARIABLES]
     if (kb.variables && Object.keys(kb.variables).length > 0) {
       systemInstruction += `\n\nАКТУАЛЬНЫЕ ДАННЫЕ ОБЪЕКТА ИЗ СЛОВАРЯ ПЕРЕМЕННЫХ:`;
       for (const [k, v] of Object.entries(kb.variables)) {
@@ -100,7 +85,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // Добавление технических характеристик виллы (бассейн, джакузи, спальни, вместимость)
+    // Добавление технических характеристик виллы [бассейн, джакузи, спальни, вместимость]
     if (kb.villa && Object.keys(kb.villa).length > 0) {
       systemInstruction += `\n\nТЕХНИЧЕСКИЕ ПАРАМЕТРЫ ВИЛЛЫ И УДОБСТВ:`;
       for (const [k, v] of Object.entries(kb.villa)) {
@@ -138,7 +123,10 @@ export default async function handler(req, res) {
       }
     }
 
-    // Формирование контекста диалога для Gemini
+    // Добавление стратегического манифеста правил SPARK [Блок VII]
+    systemInstruction += `\n\n${buildSparkRulesPromptSection()}`;
+
+    // 3. Формирование контекста диалога для Gemini 3.6 Flash
     let conversationPrompt = `${systemInstruction}\n\n`;
     conversationPrompt += `ДАННЫЕ ТЕКУЩЕГО ГОСТЯ:\n`;
     conversationPrompt += `- Имя гостя: ${guestName}\n`;
@@ -158,12 +146,9 @@ export default async function handler(req, res) {
     }
 
     conversationPrompt += `\nПОСЛЕДНЕЕ СООБЩЕНИЕ ГОСТЯ: "${guestMessage}"\n`;
-    if (fallbackTemplateText) {
-      conversationPrompt += `ЭТАЛОННЫЙ ШАБЛОН ИЗ БАЗЫ ЗНАНИЙ ДЛЯ ОРИЕНТИРА: "${fallbackTemplateText}"\n`;
-    }
     conversationPrompt += `\nСформулируй персонализированный, дружелюбный и точный ответ гостю на языке: ${lang.toUpperCase()}.`;
 
-    // Вызов Google Gemini Generative Language REST API
+    // 4. Прямой вызов Google Gemini Generative Language REST API
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${apiKey}`;
 
     const payload = {
@@ -190,25 +175,24 @@ export default async function handler(req, res) {
     if (!response.ok || data.error) {
       console.warn('[Gemini API Response Error]:', data.error || response.statusText);
       return res.status(200).json({
-        success: true,
-        source: 'templates_fallback_on_api_error',
+        success: false,
+        isRealAi: false,
+        source: 'gemini_api_error',
         aiMode,
         model,
-        reply: fallbackTemplateText || 'Здравствуйте! Благодарим за обращение. Мы ответим вам в ближайшее время.',
-        suggestedTemplateId,
-        apiError: data.error?.message || response.statusText
+        error: data.error?.message || response.statusText
       });
     }
 
-    const aiReply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || fallbackTemplateText || '';
+    const aiReply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
 
     return res.status(200).json({
       success: true,
-      source: 'gemini_knowledge_base',
+      isRealAi: true,
+      source: 'gemini_3.6_flash',
       aiMode,
       model,
-      reply: aiReply,
-      suggestedTemplateId
+      reply: aiReply
     });
   } catch (err) {
     console.error('[ai-concierge Error]:', err);

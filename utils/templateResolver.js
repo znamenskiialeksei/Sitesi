@@ -1,5 +1,3 @@
-const { SMART_TEMPLATES } = require('./templatesData');
-
 /**
  * СМАРТ-РЕЗОЛВЕР ПЛЕЙСХОЛДЕРОВ И ДЕТЕКТОР ЯЗЫКА ДЛЯ ШАБЛОНОВ VILLA TURAMAN
  * Файл: utils/templateResolver.js
@@ -119,80 +117,8 @@ function resolveTemplate(templateText = '', context = {}) {
   return result;
 }
 
-/**
- * ИИ-суфлер (Фаза 1): Определение намерения гостя и рекомендация шаблона
- */
-function matchSuggestedTemplate(guestMessage = '') {
-  if (!guestMessage || typeof guestMessage !== 'string') return null;
-  const q = guestMessage.toLowerCase();
-  let matchedId = null;
-
-  // 1. Скидки и торг по цене
-  if (q.includes('скидк') || q.includes('скидка') || q.includes('дешевле') || q.includes('бюджет') || q.includes('стоимост') ||
-      q.includes('discount') || q.includes('cheaper') || q.includes('budget') || q.includes('indirim') || q.includes('fiyat') || q.includes('bütçe')) {
-    matchedId = '1.2_budget_price';
-  }
-
-  // 2. Трансфер
-  else if (q.includes('трансфер') || q.includes('такси') || q.includes('аэропорт') ||
-      q.includes('transfer') || q.includes('taxi') || q.includes('airport') || q.includes('havalimanı') || q.includes('taksi')) {
-    matchedId = '2.3_transfer_assistance';
-  }
-
-  // 3. Верхний этаж
-  else if (q.includes('этаж') || q.includes('верхний') || q.includes('3 этаж') || q.includes('третий этаж') ||
-      q.includes('floor') || q.includes('top floor') || q.includes('3rd floor') || q.includes('üst kat') || q.includes('çatı')) {
-    matchedId = '2.2_top_floor_clarification';
-  }
-
-  // 4. Документы, паспорт, KBS
-  else if (q.includes('паспорт') || q.includes('документ') || q.includes('регистрац') || q.includes('kbs') ||
-      q.includes('passport') || q.includes('kimlik') || q.includes('tc') || q.includes('belge')) {
-    matchedId = '3.1_kbs_registration';
-  }
-
-  // 5. Адрес и локация
-  else if (q.includes('адрес') || q.includes('где вы') || q.includes('как доехать') || q.includes('локация') || q.includes('карта') ||
-      q.includes('address') || q.includes('location') || q.includes('map') || q.includes('adres') || q.includes('konum') || q.includes('harita')) {
-    matchedId = '3.2_address_geolocation';
-  }
-
-  // 6. Время заезда: ранний / поздний
-  else if (q.includes('раньше') || q.includes('позже') || q.includes('во сколько') || q.includes('заезд') || q.includes('приедем') ||
-      q.includes('early') || q.includes('late') || q.includes('arrival') || q.includes('check-in time') || q.includes('giriş saati') || q.includes('erken')) {
-    matchedId = '3.3_checkin_time_coordination';
-  }
-
-  // 7. Wi-Fi и заселение
-  else if (q.includes('вайфай') || q.includes('интернет') || q.includes('пароль') || q.includes('wifi') || q.includes('wi-fi') || q.includes('internet') || q.includes('şifre')) {
-    matchedId = '3.4_checkin_instructions';
-  }
-
-  // 8. Экскурсии, рестораны, путеводитель
-  else if (q.includes('ресторан') || q.includes('гид') || q.includes('пляж') || q.includes('лодка') || q.includes('куда сходить') ||
-      q.includes('restaurant') || q.includes('guide') || q.includes('beach') || q.includes('boat') || q.includes('gezilecek') || q.includes('plaj')) {
-    matchedId = '3.5_welcome_guide_dalyan';
-  }
-
-  // 9. Бассейн
-  else if (q.includes('бассейн') || q.includes('чистк') || q.includes('pool') || q.includes('cleaning') || q.includes('havuz') || q.includes('bakım')) {
-    matchedId = '4.2_pool_maintenance_notice';
-  }
-
-  // 10. Выезд
-  else if (q.includes('выезд') || q.includes('уезжаем') || q.includes('ключи') ||
-      q.includes('checkout') || q.includes('check-out') || q.includes('leaving') || q.includes('çıkış') || q.includes('anahtar')) {
-    matchedId = '5.2_checkout_checklist';
-  }
-
-  if (!matchedId) return null;
-  const tmpl = SMART_TEMPLATES.find((t) => t.id === matchedId);
-  return tmpl ? { id: matchedId, template: tmpl } : null;
-}
-
 module.exports = {
   extractFirstName,
   detectGuestLanguage,
-  resolveTemplate,
-  matchSuggestedTemplate
+  resolveTemplate
 };

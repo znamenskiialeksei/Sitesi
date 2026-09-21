@@ -5,7 +5,7 @@
  */
 
 import { TEMPLATE_STAGES, SMART_TEMPLATES } from '../../utils/templatesData';
-import { resolveTemplate, detectGuestLanguage, matchSuggestedTemplate } from '../../utils/templateResolver';
+import { resolveTemplate, detectGuestLanguage } from '../../utils/templateResolver';
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
@@ -18,13 +18,7 @@ export default async function handler(req, res) {
 
   if (req.method === 'POST') {
     try {
-      const { guestContext = {}, lang = 'ru', stageId, guestMessage } = req.body;
-
-      // Если передано сообщение гостя, определяем намерение (AI Copilot Фаза 1)
-      let suggestedTemplateId = null;
-      if (guestMessage) {
-        suggestedTemplateId = matchSuggestedTemplate(guestMessage);
-      }
+      const { guestContext = {}, lang = 'ru', stageId } = req.body;
 
       // Разрешение плейсхолдеров для каждого шаблона
       const resolvedList = SMART_TEMPLATES.map((tmpl) => {
@@ -35,8 +29,7 @@ export default async function handler(req, res) {
           stageId: tmpl.stageId,
           title: tmpl.title[lang] || tmpl.title.ru,
           rawText: rawContent,
-          resolvedText: resolvedText,
-          isSuggested: tmpl.id === suggestedTemplateId
+          resolvedText: resolvedText
         };
       });
 
@@ -45,8 +38,7 @@ export default async function handler(req, res) {
       return res.status(200).json({
         success: true,
         stages: TEMPLATE_STAGES,
-        templates: filtered,
-        suggestedTemplateId
+        templates: filtered
       });
     } catch (err) {
       return res.status(500).json({ success: false, error: err.message });
