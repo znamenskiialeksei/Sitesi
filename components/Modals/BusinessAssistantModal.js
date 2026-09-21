@@ -453,7 +453,7 @@ export default function BusinessAssistantModal({
                       }
                     }}
                     placeholder={`Напишите или продиктуйте поручение для отдела ${selectedDirection}...`}
-                    className="flex-1 resize-none p-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 leading-relaxed"
+                    className="flex-1 resize-none p-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 leading-relaxed text-slate-900 bg-white placeholder:text-slate-400 font-medium"
                   />
 
                   <button
@@ -491,7 +491,7 @@ export default function BusinessAssistantModal({
                       type="text"
                       value={calcGuestName}
                       onChange={(e) => setCalcGuestName(e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:border-emerald-500 focus:outline-none"
+                      className="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:border-emerald-500 focus:outline-none text-slate-900 bg-white font-medium"
                     />
                   </div>
 
@@ -503,7 +503,7 @@ export default function BusinessAssistantModal({
                       type="number"
                       value={calcGrossTRY}
                       onChange={(e) => setCalcGrossTRY(e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:border-emerald-500 focus:outline-none font-mono"
+                      className="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:border-emerald-500 focus:outline-none font-mono text-slate-900 bg-white font-bold"
                     />
                   </div>
 
@@ -515,7 +515,7 @@ export default function BusinessAssistantModal({
                       type="number"
                       value={calcNights}
                       onChange={(e) => setCalcNights(e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:border-emerald-500 focus:outline-none font-mono"
+                      className="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:border-emerald-500 focus:outline-none font-mono text-slate-900 bg-white font-bold"
                     />
                   </div>
                 </div>
@@ -710,7 +710,7 @@ export default function BusinessAssistantModal({
                       value={drivePath}
                       onChange={(e) => setDrivePath(e.target.value)}
                       placeholder="Бухгалтерия/2026/Сентябрь/Счета_GIB"
-                      className="flex-1 p-2.5 rounded-xl border border-slate-200 text-xs font-mono focus:border-amber-500 focus:outline-none"
+                      className="flex-1 p-2.5 rounded-xl border border-slate-200 text-xs font-mono focus:border-amber-500 focus:outline-none text-slate-900 bg-white placeholder:text-slate-400 font-medium"
                     />
                     <button
                       type="button"
@@ -734,7 +734,7 @@ export default function BusinessAssistantModal({
                       type="text"
                       value={docName}
                       onChange={(e) => setDocName(e.target.value)}
-                      className="text-xs font-mono px-3 py-1 rounded-lg border border-slate-200 bg-white"
+                      className="text-xs font-mono px-3 py-1 rounded-lg border border-slate-200 text-slate-900 bg-white font-medium"
                     />
                   </div>
                   <textarea
@@ -742,7 +742,7 @@ export default function BusinessAssistantModal({
                     value={docContent}
                     onChange={(e) => setDocContent(e.target.value)}
                     placeholder="Введите текст документа, протокола или заметки для сохранения на Google Drive..."
-                    className="w-full p-3 rounded-xl border border-slate-200 text-xs leading-relaxed focus:border-amber-500 focus:outline-none"
+                    className="w-full p-3 rounded-xl border border-slate-200 text-xs leading-relaxed focus:border-amber-500 focus:outline-none text-slate-900 bg-white placeholder:text-slate-400 font-medium"
                   />
                   <button
                     type="button"

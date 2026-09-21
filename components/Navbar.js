@@ -35,19 +35,19 @@ export default function Navbar() {
   const isHost = !!currentUser?.isHost;
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-slate-900/90 backdrop-blur-md border-b border-white/10 transition-all">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-50 w-full bg-slate-900/90 backdrop-blur-md border-b border-white/10 transition-all max-w-full overflow-x-clip">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-2 sm:gap-4 max-w-full">
 
         {/* Логотип Villa Turaman */}
-        <Link href="/" className="flex items-center gap-3 group shrink-0">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-500 to-amber-500 flex items-center justify-center shadow-lg shadow-rose-500/20 group-hover:scale-105 transition-transform">
+        <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-500 to-amber-500 flex items-center justify-center shadow-lg shadow-rose-500/20 group-hover:scale-105 transition-transform shrink-0">
             <Home className="w-5 h-5 text-white" />
           </div>
-          <div className="flex flex-col">
-            <span className="text-lg font-bold tracking-tight text-white group-hover:text-rose-400 transition-colors">
+          <div className="flex flex-col min-w-0">
+            <span className="text-base sm:text-lg font-bold tracking-tight text-white group-hover:text-rose-400 transition-colors truncate">
               {t('brandName')}
             </span>
-            <span className="text-[10px] uppercase tracking-widest text-slate-400 font-semibold flex items-center gap-1">
+            <span className="text-[10px] uppercase tracking-widest text-slate-400 font-semibold hidden xs:flex items-center gap-1">
               <Sparkles className="w-2.5 h-2.5 text-amber-400" /> Dalyan • Turkey
             </span>
           </div>
@@ -115,7 +115,7 @@ export default function Navbar() {
             </button>
 
             {langMenuOpen && (
-              <div className="absolute right-0 mt-2 w-56 bg-slate-800 rounded-2xl shadow-2xl border border-white/10 p-3 z-50 fade-in flex flex-col gap-3">
+              <div className="absolute right-0 mt-2 w-56 max-w-[calc(100vw-24px)] bg-slate-800 rounded-2xl shadow-2xl border border-white/10 p-3 z-50 fade-in flex flex-col gap-3">
                 <div>
                   <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-2 px-2">
                     Язык (Language)
@@ -187,7 +187,7 @@ export default function Navbar() {
             </button>
 
             {profileMenuOpen && (
-              <div className="absolute right-0 mt-2 w-64 bg-slate-800 rounded-2xl shadow-2xl border border-white/10 p-2 z-50 fade-in flex flex-col">
+              <div className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-24px)] bg-slate-800 rounded-2xl shadow-2xl border border-white/10 p-2 z-50 fade-in flex flex-col">
                 {currentUser ? (
                   <>
                     <div className="px-4 py-3 border-b border-white/10 mb-1">

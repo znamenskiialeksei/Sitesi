@@ -33,7 +33,8 @@ import {
   WifiOff,
   CornerDownLeft,
   Bot,
-  ArrowLeft
+  ArrowLeft,
+  Info
 } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../Toast';
@@ -68,8 +69,8 @@ export default function HostInbox({
   // Сворачиваемая правая боковая панель с деталями бронирования для расширения зоны чата
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
-  // Мобильный режим отображения списка диалогов или активного чата
-  const [mobileActiveView, setMobileActiveView] = useState('list'); // 'list' | 'chat'
+  // Мобильный режим отображения: список диалогов, активный чат или детали бронирования
+  const [mobileActiveView, setMobileActiveView] = useState('list'); // 'list' | 'chat' | 'details'
 
   const activeChat = chats.find((c) => c.sheetName === selectedSheet) || chats[0];
   const chatBottomRef = useRef(null);
@@ -333,14 +334,14 @@ export default function HostInbox({
   };
 
   return (
-    <div className="bg-slate-900 border border-white/10 rounded-3xl overflow-hidden shadow-2xl h-[820px] flex flex-col fade-in">
+    <div className="bg-slate-900 border border-white/10 rounded-3xl overflow-hidden shadow-2xl h-[86vh] min-h-[640px] max-h-[920px] flex flex-col fade-in">
 
       {/* Верхняя панель управления инбоксом */}
-      <div className="p-4 bg-slate-800/80 border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <MessageSquare className="w-5 h-5 text-rose-500" />
-          <h3 className="text-base font-bold text-white">{t('guestMessageCenter')}</h3>
-          <span className="text-xs text-slate-400 bg-slate-900 px-2.5 py-0.5 rounded-full border border-white/5">
+      <div className="p-3 sm:p-4 bg-slate-800/80 border-b border-white/10 flex flex-wrap items-center justify-between gap-2 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <MessageSquare className="w-5 h-5 text-rose-500 shrink-0" />
+          <h3 className="text-sm sm:text-base font-bold text-white">{t('guestMessageCenter')}</h3>
+          <span className="text-[11px] sm:text-xs text-slate-400 bg-slate-900 px-2 py-0.5 rounded-full border border-white/5">
             {t('dialogsCount').replace('{count}', chats.length)}
           </span>
 
@@ -360,32 +361,32 @@ export default function HostInbox({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Кнопка принудительной синхронизации базы знаний из Google Sheets */}
           <button
             onClick={() => loadKnowledgeBase(true)}
             disabled={isSyncingKnowledge}
             title="Обновить 14 шаблонов и переменные напрямую из Google Таблицы"
-            className="px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:text-white border border-white/10 hover:border-cyan-500/50 disabled:opacity-50"
+            className="p-2 sm:px-3 sm:py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:text-white border border-white/10 hover:border-cyan-500/50 disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-cyan-400 ${isSyncingKnowledge ? 'animate-spin' : ''}`} />
-            <span className="hidden sm:inline">{isSyncingKnowledge ? 'Синхронизация...' : 'Обновить из Таблицы'}</span>
+            <span className="hidden md:inline">{isSyncingKnowledge ? 'Синхронизация...' : 'Обновить из Таблицы'}</span>
           </button>
 
           <button
             onClick={handleFormatChats}
             disabled={formattingChats}
             title="Форматировать шапки и колонки всех листов чатов Google Таблиц"
-            className="px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:text-white border border-white/10 hover:border-emerald-500/50 disabled:opacity-50"
+            className="p-2 sm:px-3 sm:py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:text-white border border-white/10 hover:border-emerald-500/50 disabled:opacity-50"
           >
             <Sparkles className={`w-3.5 h-3.5 text-emerald-400 ${formattingChats ? 'animate-spin' : ''}`} />
-            <span className="hidden sm:inline">{formattingChats ? 'Форматирование...' : 'Форматировать CRM чаты'}</span>
+            <span className="hidden md:inline">{formattingChats ? 'Форматирование...' : 'Форматировать CRM чаты'}</span>
           </button>
 
           <button
             onClick={() => setIsAssistantOpen(true)}
             title="Открыть Бизнес-Ассистент: Секретарь, Юрист, Бухгалтер"
-            className="px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-gradient-to-r from-rose-600 to-amber-600 text-white shadow-md hover:brightness-110"
+            className="px-2.5 py-2 sm:px-3 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-gradient-to-r from-rose-600 to-amber-600 text-white shadow-md hover:brightness-110"
           >
             <Bot className="w-3.5 h-3.5 text-white" />
             <span className="hidden sm:inline">Бизнес-Ассистент</span>
@@ -396,29 +397,29 @@ export default function HostInbox({
               setIsBroadcastMode(!isBroadcastMode);
               if (!isBroadcastMode) setSelectedMultiSheets(chats.map((c) => c.sheetName));
             }}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+            className={`px-2.5 py-2 sm:px-3.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 sm:gap-2 ${
               isBroadcastMode ? 'bg-amber-500 text-slate-950 shadow-md' : 'bg-slate-800 text-slate-300 hover:text-white border border-white/10'
             }`}
           >
             <Users className="w-4 h-4" />
-            <span>{isBroadcastMode ? t('regularChatMode') : t('broadcastMode')}</span>
+            <span className="hidden sm:inline">{isBroadcastMode ? t('regularChatMode') : t('broadcastMode')}</span>
           </button>
 
           {/* Кнопка быстрого сворачивания / разворачивания правого сайдбара деталей брони */}
           <button
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             title={isSidebarCollapsed ? 'Развернуть панель деталей бронирования' : 'Свернуть панель деталей для расширения чата'}
-            className="px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:text-white border border-white/10"
+            className="hidden md:flex px-3 py-2 rounded-xl text-xs font-bold transition-all items-center gap-1.5 bg-slate-800 text-slate-300 hover:text-white border border-white/10"
           >
             {isSidebarCollapsed ? (
               <>
                 <PanelRightOpen className="w-4 h-4 text-rose-400" />
-                <span className="hidden md:inline">Детали</span>
+                <span>Детали</span>
               </>
             ) : (
               <>
                 <PanelRightClose className="w-4 h-4 text-slate-400" />
-                <span className="hidden md:inline">Свернуть детали</span>
+                <span>Свернуть детали</span>
               </>
             )}
           </button>
@@ -428,7 +429,7 @@ export default function HostInbox({
       <div className="grid grid-cols-1 md:grid-cols-12 flex-1 overflow-hidden">
 
         {/* Левая колонка: Список диалогов с гостями [4 колонки] */}
-        <div className={`col-span-12 md:col-span-4 border-r border-white/10 flex flex-col bg-slate-950/50 ${mobileActiveView === 'chat' ? 'hidden md:flex' : 'flex'}`}>
+        <div className={`col-span-12 md:col-span-4 border-r border-white/10 flex flex-col bg-slate-950/50 ${mobileActiveView !== 'list' ? 'hidden md:flex' : 'flex'}`}>
           <div className="p-3 border-b border-white/5">
             <div className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -470,20 +471,20 @@ export default function HostInbox({
                       setMobileActiveView('chat');
                     }
                   }}
-                  className={`p-3.5 cursor-pointer transition-colors flex items-start gap-3 min-h-[64px] ${
+                  className={`p-3.5 cursor-pointer transition-colors flex items-start gap-3 min-h-[70px] ${
                     isSelected ? 'bg-rose-950/40 border-l-4 border-rose-500' : 'hover:bg-slate-800/50'
                   }`}
                 >
-                  <div className="w-9 h-9 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5 shadow-sm">
+                  <div className="w-10 h-10 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center text-sm font-bold text-white shrink-0 mt-0.5 shadow-sm">
                     {c.clientName?.charAt(0).toUpperCase() || 'G'}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-1">
-                      <span className="text-xs font-bold text-white truncate">{c.clientName}</span>
+                      <span className="text-xs sm:text-sm font-bold text-white truncate">{c.clientName}</span>
                       <span className="text-[10px] text-slate-500 shrink-0">{lastMsg?.date?.split(' ')?.[0] || ''}</span>
                     </div>
                     <p className="text-[11px] text-slate-400 truncate mt-0.5">{c.clientContact}</p>
-                    <p className="text-[11px] text-slate-500 truncate mt-1">
+                    <p className="text-xs text-slate-400 truncate mt-1">
                       {lastMsg ? `${lastMsg.sender}: ${lastMsg.original}` : t('noMessages')}
                     </p>
                   </div>
@@ -495,10 +496,10 @@ export default function HostInbox({
 
         {/* Центральная колонка: Активная переписка, textarea и смарт-шаблоны */}
         {/* Динамическое расширение с 5 до 8 колонок при сворачивании правой панели */}
-        <div className={`col-span-12 ${isSidebarCollapsed ? 'md:col-span-8' : 'md:col-span-5'} flex flex-col bg-slate-900 justify-between overflow-hidden transition-all duration-200 ${mobileActiveView === 'list' ? 'hidden md:flex' : 'flex'}`}>
+        <div className={`col-span-12 ${isSidebarCollapsed ? 'md:col-span-8' : 'md:col-span-5'} flex flex-col bg-slate-900 justify-between overflow-hidden transition-all duration-200 ${mobileActiveView !== 'chat' ? 'hidden md:flex' : 'flex'}`}>
 
           {/* Верхняя строка активного чата */}
-          <div className="p-3.5 border-b border-white/10 bg-slate-800/40 flex items-center justify-between gap-2">
+          <div className="p-3 sm:p-3.5 border-b border-white/10 bg-slate-800/40 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 min-w-0">
               <button
                 type="button"
@@ -508,14 +509,27 @@ export default function HostInbox({
               >
                 <ArrowLeft className="w-4 h-4" />
               </button>
-              <span className="text-xs font-bold text-white truncate">
-                {isBroadcastMode
-                  ? t('massBroadcastRecipients').replace('{count}', selectedMultiSheets.length)
-                  : t('chatWithGuest').replace('{name}', activeChat?.clientName || t('guestLabel'))}
-              </span>
+              <div className="min-w-0">
+                <span className="text-xs sm:text-sm font-bold text-white block truncate">
+                  {isBroadcastMode
+                    ? t('massBroadcastRecipients').replace('{count}', selectedMultiSheets.length)
+                    : t('chatWithGuest').replace('{name}', activeChat?.clientName || t('guestLabel'))}
+                </span>
+                <span className="text-[10px] sm:text-[11px] text-slate-400 block truncate">{activeChat?.clientContact}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] text-slate-400 truncate">{activeChat?.clientContact}</span>
+
+            {/* Мобильная кнопка перехода в детали бронирования */}
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => setMobileActiveView('details')}
+                className="md:hidden flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 text-xs font-bold transition-colors"
+                title="Детали бронирования и действия с заявкой"
+              >
+                <Info className="w-3.5 h-3.5 text-rose-400" />
+                <span>Детали</span>
+              </button>
             </div>
           </div>
 
@@ -529,7 +543,7 @@ export default function HostInbox({
                     {m.sender} • {m.date}
                   </span>
                   <div
-                    className={`p-3.5 rounded-2xl max-w-[85%] text-xs whitespace-pre-wrap break-words shadow-md ${
+                    className={`p-3.5 rounded-2xl max-w-[85%] text-xs sm:text-sm whitespace-pre-wrap break-words shadow-md leading-relaxed ${
                       isOwner ? 'bg-rose-600 text-white rounded-tr-sm' : 'bg-slate-800 text-slate-200 border border-white/10 rounded-tl-sm'
                     }`}
                   >
@@ -551,7 +565,7 @@ export default function HostInbox({
                     <span>ИИ-Суфлер</span>
                     <span className="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-mono text-[10px]">Gemini 3.6 Flash</span>
                   </div>
-                  <p className="text-[11px] text-slate-400 truncate">
+                  <p className="text-[11px] sm:text-xs text-slate-400 truncate">
                     Гость: «{lastGuestMsg.original || lastGuestMsg.ru || lastGuestMsg.en || lastGuestMsg.tr || ''}»
                   </p>
                 </div>
@@ -578,7 +592,7 @@ export default function HostInbox({
                 onChange={(e) => setMessageInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Напишите ответ гостю или выберите один из 14 сценариев ниже... [Shift+Enter для новой строки]"
-                className="flex-1 bg-slate-800 border border-white/10 px-3.5 py-2.5 rounded-xl text-xs text-white outline-none focus:border-rose-500 resize-none min-h-[75px] max-h-[220px] overflow-y-auto leading-relaxed"
+                className="flex-1 bg-slate-800 border border-white/10 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm text-white outline-none focus:border-rose-500 resize-none min-h-[80px] max-h-[220px] overflow-y-auto leading-relaxed"
               />
 
               <div className="flex flex-col gap-2 shrink-0">
@@ -721,19 +735,19 @@ export default function HostInbox({
                         </div>
 
                         {/* Кнопки действий: вставить для правки или отправить сразу */}
-                        <div className="flex items-center justify-end gap-2 pt-1">
+                        <div className="flex flex-wrap sm:flex-nowrap items-center justify-end gap-2 pt-1">
                           <button
                             type="button"
                             onClick={() => handleApplyTemplate(tItem, templateLang)}
-                            className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-colors border border-white/10 flex items-center gap-1.5"
+                            className="flex-1 sm:flex-initial px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-colors border border-white/10 flex items-center justify-center gap-1.5"
                           >
                             <FileText className="w-3.5 h-3.5 text-rose-400" />
-                            <span>Вставить в поле для редактирования</span>
+                            <span>Вставить в поле</span>
                           </button>
                           <button
                             type="button"
                             onClick={() => handleDirectSendTemplate(tItem, templateLang)}
-                            className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition-colors shadow-sm flex items-center gap-1.5"
+                            className="flex-1 sm:flex-initial px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-1.5"
                           >
                             <Send className="w-3.5 h-3.5" />
                             <span>Отправить сразу</span>
@@ -750,18 +764,28 @@ export default function HostInbox({
         </div>
 
         {/* Правая колонка: Детали гостя, текущая бронь и выдача LMS видео-гидов [3 колонки] */}
-        {/* Скрывается плавно при активации режима полного экрана для переписки */}
-        {!isSidebarCollapsed && (
-          <div className="hidden md:flex md:col-span-3 border-l border-white/10 bg-slate-950/60 p-4 flex-col justify-between overflow-y-auto space-y-6">
+        {/* Скрывается плавно при активации режима полного экрана на десктопе, а на мобильных доступна как отдельный экран */}
+        {(!isSidebarCollapsed || mobileActiveView === 'details') && (
+          <div className={`${mobileActiveView === 'details' ? 'flex col-span-12' : 'hidden md:flex md:col-span-3'} border-l border-white/10 bg-slate-950/60 p-4 flex-col justify-between overflow-y-auto space-y-6`}>
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-white">
-                  {t('guestInfoTitle')}
-                </h4>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setMobileActiveView('chat')}
+                    className="md:hidden p-1.5 rounded-lg bg-slate-700/80 text-white hover:bg-slate-600 transition-colors"
+                    title="Вернуться к диалогу"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                  </button>
+                  <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white">
+                    {t('guestInfoTitle')}
+                  </h4>
+                </div>
                 <button
                   onClick={() => setIsSidebarCollapsed(true)}
                   title="Свернуть панель деталей"
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className="hidden md:block text-slate-400 hover:text-white transition-colors"
                 >
                   <PanelRightClose className="w-4 h-4" />
                 </button>

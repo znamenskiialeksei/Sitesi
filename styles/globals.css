@@ -10,11 +10,18 @@
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+html,
+body,
+#__next {
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
 body {
   background-color: #0f172a; /* Премиальный темно-синий фон Slate 900 */
   color: #f8fafc; /* Контрастный светло-серый цвет текста */
   font-family: var(--font-sans);
-  overflow-x: hidden; /* Защита от горизонтального скролла */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
