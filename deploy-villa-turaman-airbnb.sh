@@ -210,13 +210,13 @@ cat << 'EOF' > .vscode/tasks.json
     {
       "label": "⏸️ 6. Перевести сайт в режим обслуживания - Vercel Pause",
       "type": "shell",
-      "command": "bash \".\\160519092026 Исторические скрипты запуска корня\\pause-site.sh\"",
+      "command": "pwsh.exe -ExecutionPolicy Bypass -File .\\pause_site.ps1",
       "problemMatcher": []
     },
     {
       "label": "▶️ 7. Возобновить штатную работу сайта - Vercel Resume",
       "type": "shell",
-      "command": "bash \".\\160519092026 Исторические скрипты запуска корня\\resume-site.sh\"",
+      "command": "pwsh.exe -ExecutionPolicy Bypass -File .\\resume_site.ps1",
       "problemMatcher": []
     },
     {

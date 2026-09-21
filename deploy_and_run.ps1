@@ -202,13 +202,13 @@ function Interactive-Menu {
             }
             "6" {
                 Write-Host "`nАктивация режима обслуживания на Vercel..." -ForegroundColor Yellow
-                bash "160519092026 Исторические скрипты запуска корня/pause-site.sh"
+                & pwsh -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "pause_site.ps1")
                 Write-Host "`nНажмите любую клавишу для возврата в меню..." -ForegroundColor DarkGray
                 $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
             }
             "7" {
                 Write-Host "`nВозобновление штатной работы на Vercel..." -ForegroundColor Green
-                bash "160519092026 Исторические скрипты запуска корня/resume-site.sh"
+                & pwsh -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "resume_site.ps1")
                 Write-Host "`nНажмите любую клавишу для возврата в меню..." -ForegroundColor DarkGray
                 $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
             }
