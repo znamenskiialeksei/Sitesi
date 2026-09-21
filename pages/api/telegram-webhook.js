@@ -21,6 +21,7 @@ const botSessions = global._tgBotSessions || (global._tgBotSessions = {});
 const MAIN_KEYBOARD = {
   keyboard: [
     [{ text: "📋 Заявки и брони" }, { text: "💬 CRM Чаты" }],
+    [{ text: "💼 Бизнес-Ассистент" }, { text: "🧾 e-Arşiv Fatura" }],
     [{ text: "📑 Шаблоны ответов" }, { text: "📅 Календарь дат" }],
     [{ text: "💳 Тарифы виллы" }, { text: "🧠 Режим ИИ & Gemini" }],
     [{ text: "📢 Массовая рассылка" }, { text: "⚙️ Статус и Webhook" }]
@@ -1135,6 +1136,104 @@ export default async function handler(req, res) {
       }
       return res.status(200).json({ ok: true });
     }
+
+    // --- Действие: Обзор Бизнес-Ассистента ---
+    if (data === 'bot_assistant_overview') {
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId });
+      const assistText = `💼 Бизнес-Ассистент Суперхозяина:\n\n` +
+        `Единый центр поддержки суперхозяина Алексея:\n` +
+        `• 🧾 Бухгалтер: точный расчет e-Arşiv Fatura для портала GİB [делитель 1.21, KDV 20%, Konaklama 1%];\n` +
+        `• ⚖️ Юрист: проверка статуса гостя, правил KBS 1774 и реквизитов VKN 9991120181;\n` +
+        `• 📝 Секретарь: поручения и фиксация в лист CRM «📋 Задачи и Поручения Секретаря».\n\n` +
+        `Выберите нужное действие:`;
+      const assistButtons = [
+        [{ text: "🧾 Рассчитать e-Arşiv Fatura", callback_data: "bot_invoice_help" }],
+        [{ text: "⚖️ Юрист & KBS 1774", callback_data: "bot_lawyer_help" }],
+        [{ text: "📋 Задачи CRM Секретаря", callback_data: "bot_list_tasks" }]
+      ];
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: assistText,
+        reply_markup: { inline_keyboard: assistButtons }
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Помощь по e-Arşiv Fatura ---
+    if (data === 'bot_invoice_help') {
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId });
+      const invHelp = `🧾 Расчет e-Arşiv Fatura для портала GİB:\n\n` +
+        `Чтобы мгновенно рассчитать фактуру и записать в CRM, отправьте команду:\n` +
+        `/invoice [СУММА_TRY] [КОЛИЧЕСТВО_НОЧЕЙ] [ИМЯ_ГОСТЯ]\n\n` +
+        `Пример:\n` +
+        `/invoice 36300 7 Ahmet Yılmaz\n\n` +
+        `Бот рассчитает:\n` +
+        `• Базу Matrah: 36300 / 1.21 = 30000.00 TRY\n` +
+        `• НДС KDV 20%: 6000.00 TRY\n` +
+        `• Налог Konaklama 1%: 300.00 TRY\n` +
+        `• Цену за единицу с 8 знаками\n` +
+        `• Готовую строку Not для вставки в GİB`;
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: invHelp,
+        reply_markup: MAIN_KEYBOARD
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Юрист & KBS справка ---
+    if (data === 'bot_lawyer_help') {
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId });
+      const lawText = `⚖️ Юридический блок виллы Villa Turaman:\n\n` +
+        `• Налоговый номер VKN: 9991120181\n` +
+        `• Закон о счетах: VUK 213 Madde 230\n` +
+        `• Учет гостей: Kimlik Bildirme Kanunu 1774 [KBS полиция]\n` +
+        `• Защита данных: KVKK 6698\n` +
+        `• Договор бронирования: оформляется на фактического плательщика\n` +
+        `• Валюта расчетов в Турции: TRY по курсу TCMB на день операции`;
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: lawText,
+        reply_markup: MAIN_KEYBOARD
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Список задач Секретаря из CRM ---
+    if (data === 'bot_list_tasks') {
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId });
+      try {
+        if (!sheets || !spreadsheetId) {
+          await tgApi(token, 'sendMessage', { chat_id: chatId, text: '❌ База задач недоступна.' });
+          return res.status(200).json({ ok: true });
+        }
+        const taskData = await sheets.spreadsheets.values.get({
+          spreadsheetId,
+          range: resolveRange(sheetMap, 'TASKS', 'A:G')
+        });
+        const rows = (taskData.data.values || []).slice(1).slice(-6);
+        if (rows.length === 0) {
+          await tgApi(token, 'sendMessage', {
+            chat_id: chatId,
+            text: '📋 Лист задач пуст. Создайте задачу командой:\n/task Текст поручения',
+            reply_markup: MAIN_KEYBOARD
+          });
+          return res.status(200).json({ ok: true });
+        }
+        let listText = `📋 Последние задачи из CRM [лист Задачи и Поручения]:\n\n`;
+        rows.forEach((r) => {
+          listText += `• [${r[0] || 'TASK'}] ${r[2] || ''} | ${r[4] || ''}\n  ${r[3] || ''}\n\n`;
+        });
+        await tgApi(token, 'sendMessage', {
+          chat_id: chatId,
+          text: listText,
+          reply_markup: MAIN_KEYBOARD
+        });
+      } catch (tErr) {
+        await tgApi(token, 'sendMessage', { chat_id: chatId, text: `Ошибка задач: ${tErr.message}` });
+      }
+      return res.status(200).json({ ok: true });
+    }
   }
 
   // ==============================================================================
@@ -1544,6 +1643,241 @@ export default async function handler(req, res) {
         });
       } catch (err) {
         await tgApi(token, 'sendMessage', { chat_id: chatId, text: `Ошибка статуса: ${err.message}` });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Раздел: 💼 Бизнес-Ассистент ---
+    if (text === '💼 Бизнес-Ассистент' || text === '/assistant') {
+      const assistText = `💼 Бизнес-Ассистент Суперхозяина:\n\n` +
+        `Единый центр поддержки суперхозяина Алексея:\n` +
+        `• 🧾 Бухгалтер: точный расчет e-Arşiv Fatura для портала GİB [делитель 1.21, KDV 20%, Konaklama 1%];\n` +
+        `• ⚖️ Юрист: проверка статуса гостя, правил KBS 1774 и реквизитов VKN 9991120181;\n` +
+        `• 📝 Секретарь: поручения и фиксация в лист CRM «📋 Задачи и Поручения Секретаря».\n\n` +
+        `Быстрые команды:\n` +
+        `• /invoice [СУММА] [НОЧЕЙ] [ИМЯ] : расчет фактуры\n` +
+        `• /lawyer : юридический регламент и KBS\n` +
+        `• /task [ТЕКСТ] : создать задачу секретарю\n` +
+        `• /tasks : список активных задач\n\n` +
+        `Выберите действие ниже:`;
+      const assistButtons = [
+        [{ text: "🧾 Рассчитать e-Arşiv Fatura", callback_data: "bot_invoice_help" }],
+        [{ text: "⚖️ Юрист & KBS 1774", callback_data: "bot_lawyer_help" }],
+        [{ text: "📋 Задачи CRM Секретаря", callback_data: "bot_list_tasks" }]
+      ];
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: assistText,
+        reply_markup: { inline_keyboard: assistButtons }
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Раздел: 🧾 e-Arşiv Fatura калькулятор ---
+    if (text === '🧾 e-Arşiv Fatura' || text === '/invoice' || text.startsWith('/invoice ')) {
+      const parts = text.replace('/invoice', '').trim().split(/\s+/).filter(Boolean);
+      if (parts.length >= 2) {
+        const gross = parseFloat(parts[0].replace(',', '.')) || 0;
+        const nights = parseInt(parts[1], 10) || 1;
+        const guestName = parts.slice(2).join(' ') || 'Гость';
+
+        if (gross > 0) {
+          const matrah = gross / 1.21;
+          const kdv20 = matrah * 0.20;
+          const konaklama1 = matrah * 0.01;
+          const unitPrice = (matrah / nights).toFixed(8);
+          const wholePart = Math.floor(gross);
+          const kurusPart = Math.round((gross - wholePart) * 100);
+          const notNote = `YALNIZ ${wholePart} TL ${kurusPart} KURUŞTUR. E ARŞİV İZNİ KAPSAMINDA ELEKTRONİK ORTAMDA İLETİLMİŞTİR.`;
+
+          const taskId = `TASK-${Date.now().toString().slice(-4)}`;
+          const now = new Date();
+          const dateStr = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+          if (sheets && spreadsheetId) {
+            try {
+              await sheets.spreadsheets.values.append({
+                spreadsheetId,
+                range: resolveRange(sheetMap, 'TASKS', 'A:G'),
+                valueInputOption: 'USER_ENTERED',
+                insertDataOption: 'INSERT_ROWS',
+                requestBody: {
+                  values: [[
+                    taskId,
+                    dateStr,
+                    'Бухгалтер',
+                    `e-Arşiv Fatura: ${guestName}, Брутто: ${gross.toFixed(2)} TRY, База: ${matrah.toFixed(2)} TRY, Ночей: ${nights}`,
+                    'Выполнена',
+                    'https://drive.google.com/drive/folders/11xBSWA02NypliPFbziRSMfC9aAPclYF_',
+                    'Калькулятор GİB'
+                  ]]
+                }
+              });
+            } catch (appErr) {
+              console.warn('[Telegram Bot] Ошибка сохранения фактуры в TASKS:', appErr.message);
+            }
+          }
+
+          const faturaReport = `🧾 РАСЧЕТ E-ARŞİV FATURA ДЛЯ ПОРТАЛА GİB:\n\n` +
+            `• Получатель Alıcı: ${guestName}\n` +
+            `• Валюта: TRY\n` +
+            `• Итого брутто к оплате: ${gross.toFixed(2)} TRY\n` +
+            `• Налоговая база Matrah [делитель 1.21]: ${matrah.toFixed(2)} TRY\n` +
+            `• Ставка НДС KDV 20%: ${kdv20.toFixed(2)} TRY\n` +
+            `• Налог Konaklama 1%: ${konaklama1.toFixed(2)} TRY\n` +
+            `• Количество ночей: ${nights}\n` +
+            `• Цена за единицу Birim Fiyat [8 знаков]: ${unitPrice} TRY\n` +
+            `• VKN эмитента: 9991120181\n` +
+            `• Основание закона: VUK 213 Madde 230\n\n` +
+            `📝 Поле Not для портала GİB [скопируйте в 1 клик]:\n` +
+            `\`${notNote}\`\n\n` +
+            `✅ Запись внесена в CRM: лист «📋 Задачи и Поручения Секретаря» [ID: ${taskId}]`;
+
+          await tgApi(token, 'sendMessage', {
+            chat_id: chatId,
+            text: faturaReport,
+            parse_mode: 'Markdown',
+            reply_markup: MAIN_KEYBOARD
+          });
+          return res.status(200).json({ ok: true });
+        }
+      }
+
+      // Если параметры не указаны: подсказка
+      const helpMsg = `🧾 Калькулятор e-Arşiv Fatura [GİB Portal]:\n\n` +
+        `Отправьте команду в формате:\n` +
+        `/invoice [СУММА_TRY] [КОЛИЧЕСТВО_НОЧЕЙ] [ИМЯ_ГОСТЯ]\n\n` +
+        `Пример 1: /invoice 36300 7 Ahmet Yılmaz\n` +
+        `Пример 2: /invoice 24200 4 Elena Ivanova\n\n` +
+        `Бот автоматически:\n` +
+        `1. Разделит сумму на 1.21 [Matrah];\n` +
+        `2. Рассчитает KDV 20% и Konaklama 1%;\n` +
+        `3. Рассчитает точную цену за единицу [8 знаков];\n` +
+        `4. Сформирует строку Not на турецком языке;\n` +
+        `5. Сохранит операцию в лист CRM TASKS.`;
+
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: helpMsg,
+        reply_markup: MAIN_KEYBOARD
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Раздел: ⚖️ Юрист & KBS ---
+    if (text === '⚖️ Юрист & KBS' || text === '/lawyer') {
+      const lawMsg = `⚖️ Юридический центр и стандарты безопасности виллы:\n\n` +
+        `• Налоговый номер VKN: 9991120181\n` +
+        `• Основание счетов: VUK 213 Madde 230\n` +
+        `• Регистрация гостей: Закон Kimlik Bildirme Kanunu 1774 [KBS полиция Турция]\n` +
+        `• Конфиденциальность: Закон KVKK 6698 [Защита персональных данных]\n` +
+        `• Договор бронирования: оформляется строго на фактического плательщика\n` +
+        `• Расчеты: Турецкая лира TRY по официальному курсу TCMB на дату платежа.`;
+
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: lawMsg,
+        reply_markup: MAIN_KEYBOARD
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Раздел: 📝 Задачи Секретаря [создание /task] ---
+    if (text.startsWith('/task ') || text === '/task' || text === '📝 Новая задача Секретарю') {
+      const taskBody = text.replace(/^\/task\s*/i, '').trim();
+      if (taskBody && taskBody !== '📝 Новая задача Секретарю') {
+        const taskId = `TASK-${Date.now().toString().slice(-4)}`;
+        const now = new Date();
+        const dateStr = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+        if (sheets && spreadsheetId) {
+          try {
+            await sheets.spreadsheets.values.append({
+              spreadsheetId,
+              range: resolveRange(sheetMap, 'TASKS', 'A:G'),
+              valueInputOption: 'USER_ENTERED',
+              insertDataOption: 'INSERT_ROWS',
+              requestBody: {
+                values: [[
+                  taskId,
+                  dateStr,
+                  'Секретарь',
+                  taskBody,
+                  'Новая',
+                  'https://drive.google.com/drive/folders/11xBSWA02NypliPFbziRSMfC9aAPclYF_',
+                  'Суперхозяин Алексей'
+                ]]
+              }
+            });
+          } catch (tErr) {
+            console.warn('[Telegram Bot] Ошибка сохранения задачи:', tErr.message);
+          }
+        }
+
+        const confirmMsg = `✅ Задача успешно зафиксирована в CRM!\n\n` +
+          `• Номер: ${taskId}\n` +
+          `• Дата: ${dateStr}\n` +
+          `• Направление: Секретарь\n` +
+          `• Содержание: ${taskBody}\n` +
+          `• Статус: Новая\n` +
+          `• Назначена: Суперхозяин Алексей\n` +
+          `• Папка Google Drive: Villa Turaman Проект`;
+
+        await tgApi(token, 'sendMessage', {
+          chat_id: chatId,
+          text: confirmMsg,
+          reply_markup: MAIN_KEYBOARD
+        });
+        return res.status(200).json({ ok: true });
+      }
+
+      // Если текст задачи не указан: подсказка
+      const promptMsg = `📝 Создание задачи или поручения секретарю:\n\n` +
+        `Отправьте сообщение с командой:\n` +
+        `/task [Текст вашего поручения]\n\n` +
+        `Пример 1: /task Заказать генеральную уборку виллы к заезду 15 октября\n` +
+        `Пример 2: /task Проверить договор трансфера с Ahmet Dalyan VIP\n\n` +
+        `Задача будет мгновенно занесена в лист CRM «📋 Задачи и Поручения Секретаря».`;
+
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: promptMsg,
+        reply_markup: MAIN_KEYBOARD
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Раздел: 📋 Список задач CRM ---
+    if (text === '📋 Задачи CRM' || text === '/tasks') {
+      try {
+        if (!sheets || !spreadsheetId) {
+          await tgApi(token, 'sendMessage', { chat_id: chatId, text: '❌ База задач недоступна.' });
+          return res.status(200).json({ ok: true });
+        }
+        const taskData = await sheets.spreadsheets.values.get({
+          spreadsheetId,
+          range: resolveRange(sheetMap, 'TASKS', 'A:G')
+        });
+        const rows = (taskData.data.values || []).slice(1).slice(-7);
+        if (rows.length === 0) {
+          await tgApi(token, 'sendMessage', {
+            chat_id: chatId,
+            text: '📋 В листе задач пока нет записей.\nСоздайте задачу командой:\n/task Текст поручения',
+            reply_markup: MAIN_KEYBOARD
+          });
+          return res.status(200).json({ ok: true });
+        }
+        let listText = `📋 Задачи из CRM [лист Задачи и Поручения Секретаря]:\n\n`;
+        rows.forEach((r) => {
+          listText += `• [${r[0] || 'TASK'}] ${r[2] || ''} | ${r[4] || ''}\n  ${r[3] || ''}\n  📅 ${r[1] || ''}\n\n`;
+        });
+        await tgApi(token, 'sendMessage', {
+          chat_id: chatId,
+          text: listText,
+          reply_markup: MAIN_KEYBOARD
+        });
+      } catch (tErr) {
+        await tgApi(token, 'sendMessage', { chat_id: chatId, text: `Ошибка задач: ${tErr.message}` });
       }
       return res.status(200).json({ ok: true });
     }

@@ -31,10 +31,12 @@ import {
   Database,
   Wifi,
   WifiOff,
-  CornerDownLeft
+  CornerDownLeft,
+  Bot
 } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../Toast';
+import BusinessAssistantModal from '../Modals/BusinessAssistantModal';
 import { SMART_TEMPLATES, TEMPLATE_STAGES } from '../../utils/templatesData';
 import { detectGuestLanguage, resolveTemplate } from '../../utils/templateResolver';
 
@@ -64,6 +66,7 @@ export default function HostInbox({
 
   // Сворачиваемая правая боковая панель с деталями бронирования для расширения зоны чата
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
 
   const activeChat = chats.find((c) => c.sheetName === selectedSheet) || chats[0];
   const chatBottomRef = useRef(null);
@@ -374,6 +377,15 @@ export default function HostInbox({
           >
             <Sparkles className={`w-3.5 h-3.5 text-emerald-400 ${formattingChats ? 'animate-spin' : ''}`} />
             <span className="hidden sm:inline">{formattingChats ? 'Форматирование...' : 'Форматировать CRM чаты'}</span>
+          </button>
+
+          <button
+            onClick={() => setIsAssistantOpen(true)}
+            title="Открыть Бизнес-Ассистент: Секретарь, Юрист, Бухгалтер"
+            className="px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-gradient-to-r from-rose-600 to-amber-600 text-white shadow-md hover:brightness-110"
+          >
+            <Bot className="w-3.5 h-3.5 text-white" />
+            <span className="hidden sm:inline">Бизнес-Ассистент</span>
           </button>
 
           <button
@@ -827,6 +839,12 @@ export default function HostInbox({
         )}
 
       </div>
+
+      <BusinessAssistantModal
+        isOpen={isAssistantOpen}
+        onClose={() => setIsAssistantOpen(false)}
+        activeBooking={activeChat?.activeRequests?.[0]}
+      />
     </div>
   );
 }

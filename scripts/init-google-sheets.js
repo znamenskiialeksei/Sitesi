@@ -9,7 +9,7 @@ require('dotenv').config({ path: '.env.local' });
 const { google } = require('googleapis');
 const { SHEETS_REGISTRY, getLiveSheetMap, resolveRange } = require('../utils/sheetsRegistry');
 const { SMART_TEMPLATES } = require('../utils/templatesData');
-const { MASTER_ABOUT_SECTIONS, MASTER_SETTINGS_ROWS, MASTER_HOME_MAP } = require('../utils/masterSeedContent');
+const { MASTER_ABOUT_SECTIONS, MASTER_SETTINGS_ROWS, MASTER_HOME_MAP, MASTER_TASKS_ROWS } = require('../utils/masterSeedContent');
 
 // Конфигурация структуры базы данных Google Таблиц
 const GOOGLE_CONFIG = {
@@ -526,6 +526,14 @@ const initializeSpreadsheet = async () => {
             dataAppendRequests.push({
               range: `'${actualTitle}'!A2:G${templateRows.length + 1}`,
               values: templateRows
+            });
+          }
+
+          // Посев эталонных задач и поручений секретаря
+          if (config.key === 'TASKS' && MASTER_TASKS_ROWS) {
+            dataAppendRequests.push({
+              range: `'${actualTitle}'!A2:G${MASTER_TASKS_ROWS.length + 1}`,
+              values: MASTER_TASKS_ROWS
             });
           }
         }

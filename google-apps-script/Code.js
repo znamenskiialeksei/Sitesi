@@ -30,7 +30,8 @@ var VILLA_SHEETS_CONFIG = {
   // Кластер 3: Бэк-офис, Шаблоны и Системный SSOT [3 листа]
   ACCESS: { name: "🎟️ Доступы к путеводителям", suggestedSheetId: 206, aliases: ["🎟️ Доступы к путеводителям", "Доступы к путеводителям", "Доступы к гидам", "Доступы"], cluster: "host" },
   TEMPLATES: { name: "💬 Шаблоны сообщений", suggestedSheetId: 207, aliases: ["💬 Шаблоны сообщений", "Шаблоны сообщений", "Шаблоны", "Быстрые ответы"], cluster: "host" },
-  SETTINGS: { name: "⚙️ Системные настройки ИИ Агентов", suggestedSheetId: 209, aliases: ["⚙️ Системные настройки ИИ Агентов", "Системные настройки ИИ Агентов", "Системные настройки", "Настройки ИИ", "🔑 Управление доступом", "Управление доступом", "MasterAccount", "🧩 Словарь переменных", "Словарь переменных"], cluster: "system" }
+  SETTINGS: { name: "⚙️ Системные настройки ИИ Агентов", suggestedSheetId: 209, aliases: ["⚙️ Системные настройки ИИ Агентов", "Системные настройки ИИ Агентов", "Системные настройки", "Настройки ИИ", "🔑 Управление доступом", "Управление доступом", "MasterAccount", "🧩 Словарь переменных", "Словарь переменных"], cluster: "system" },
+  TASKS: { name: "📋 Задачи и Поручения Секретаря", suggestedSheetId: 210, aliases: ["📋 Задачи и Поручения Секретаря", "Задачи и Поручения Секретаря", "Задачи Секретаря", "Поручения Секретаря", "Задачи и Поручения"], cluster: "host" }
 };
 
 /**
@@ -54,7 +55,8 @@ function onOpen() {
     .addItem("🎟️ Доступы к путеводителям [ID: 206]", "jumpToSheet_ACCESS")
     .addSeparator()
     .addItem("💬 Шаблоны сообщений [ID: 207]", "jumpToSheet_TEMPLATES")
-    .addItem("⚙️ Системные настройки ИИ [ID: 209]", "jumpToSheet_SETTINGS");
+    .addItem("⚙️ Системные настройки ИИ [ID: 209]", "jumpToSheet_SETTINGS")
+    .addItem("📋 Задачи и Поручения [ID: 210]", "jumpToSheet_TASKS");
 
   var focusMenu = ui.createMenu("🎯 3. Режимы фокуса по кластерам")
     .addItem("🏠 1. Публичная витрина [5 листов]", "applyPresetShowcase")
@@ -186,9 +188,17 @@ function onOpen() {
     .addSeparator()
     .addItem("🛠️ 6. Обновить лист Настроек и Матрицу Доступа", "initAiKnowledgeBaseSheets")
     .addItem("🌐 7. Проверить статус Gemini API на Vercel", "checkGeminiVercelStatusInteractive")
-    .addItem("🔑 8. Настроить GEMINI_API_KEY в Свойствах скрипта", "setupAiPropertiesInteractive")
-    .addItem("💬 9. Тестовый диалог с ИИ-Консьержем", "testAiConciergeInteractive");
   aiMainMenu.addToUi();
+
+  // ЧЕТВЕРТОЕ ГЛАВНОЕ МЕНЮ: 💼 4. Секретарь • Юрист • Бухгалтер
+  var assistantMenu = ui.createMenu("💼 4. Секретарь • Юрист • Бухгалтер")
+    .addItem("🧾 1. Калькулятор фактур e-Arşiv Fatura [GİB]", "openInvoiceCalculatorModal")
+    .addItem("⚖️ 2. Юрист: Экспресс-проверка бронирования", "openLegalCheckModal")
+    .addItem("📋 3. Секретарь: Добавить задачу или поручение", "openNewTaskModal")
+    .addItem("📁 4. Google Drive: Создать папку в архиве", "openCreateDriveFolderModal")
+    .addSeparator()
+    .addItem("📑 5. Открыть лист Задач и Поручений", "jumpToSheet_TASKS");
+  assistantMenu.addToUi();
 }
 
 // ==============================================================================
@@ -322,6 +332,7 @@ function jumpToSheet_ORDERS() { jumpToConfigSheet("ORDERS"); }
 function jumpToSheet_ACCESS() { jumpToConfigSheet("ACCESS"); }
 function jumpToSheet_TEMPLATES() { jumpToConfigSheet("TEMPLATES"); }
 function jumpToSheet_SETTINGS() { jumpToConfigSheet("SETTINGS"); }
+function jumpToSheet_TASKS() { jumpToConfigSheet("TASKS"); }
 
 /** Пресет: Раскрыть ВСЕ листы */
 function applyPresetAllOpen() {
@@ -1737,5 +1748,170 @@ function saveMasterSeedInteractive() {
     }
   } catch (err) {
     ui.alert('Справка по сохранению', 'Сетевой запрос к сайту не прошел [' + err.message + '].', ui.ButtonSet.OK);
+  }
+}
+
+// ==============================================================================
+// 💼 БИЗНЕС-АССИСТЕНТ: СЕКРЕТАРЬ • ЮРИСТ • БУХГАЛТЕР
+// 100% Zero-Brackets & Zero-Emdash Стандарт.
+// ==============================================================================
+
+/**
+ * 🧾 Калькулятор e-Arşiv Fatura для портала GİB
+ */
+function openInvoiceCalculatorModal() {
+  var ui = SpreadsheetApp.getUi();
+  var promptRes = ui.prompt(
+    'Калькулятор e-Arşiv Fatura [GİB Portal]',
+    'Введите данные расчета через двоеточие:\n[Сумма Брутто TRY]:[Количество ночей]:[ФИО гостя]\n\nНапример: 75000:7:Иван Смирнов',
+    ui.ButtonSet.OK_CANCEL
+  );
+
+  if (promptRes.getSelectedButton() !== ui.Button.OK) return;
+  var input = promptRes.getResponseText().trim();
+  if (!input) return;
+
+  var parts = input.split(':');
+  var grossTRY = parseFloat(parts[0]) || 0;
+  var nights = parseInt(parts[1], 10) || 1;
+  var guestName = (parts[2] || 'Гость').trim();
+
+  if (grossTRY <= 0) {
+    ui.alert('Ошибка', 'Сумма брутто должна быть больше 0', ui.ButtonSet.OK);
+    return;
+  }
+
+  // Расчет по Блоку 9: Matrah = Gross / 1.21
+  var matrah = grossTRY / 1.21;
+  var kdv20 = matrah * 0.20;
+  var konaklama1 = matrah * 0.01;
+  var unitPrice = (matrah / nights).toFixed(8);
+
+  var wholePart = Math.floor(grossTRY);
+  var kurusPart = Math.round((grossTRY - wholePart) * 100);
+
+  var summary = '🧾 РАСЧЕТ E-ARŞİV FATURA [GİB]:\n\n' +
+    '• Получатель [Alıcı]: ' + guestName + '\n' +
+    '• Итого Брутто [Ödenecek Tutar]: ' + grossTRY.toFixed(2) + ' TRY\n' +
+    '• Налоговая база [Matrah]: ' + matrah.toFixed(2) + ' TRY\n' +
+    '• НДС [KDV 20%]: ' + kdv20.toFixed(2) + ' TRY\n' +
+    '• Налог на проживание [Konaklama 1%]: ' + konaklama1.toFixed(2) + ' TRY\n' +
+    '• Ночей [Adet]: ' + nights + '\n' +
+    '• Цена за единицу [Birim Fiyat 8 знаков]: ' + unitPrice + ' TRY\n\n' +
+    '• Шаблон Not:\nYALNIZ ' + wholePart + ' TL ' + kurusPart + ' KURUŞTUR. E ARŞİV İZNİ KAPSAMINDA ELEKTRONİK ORTAMDA İLETİLMİŞTİR.';
+
+  ui.alert('Результат расчета e-Arşiv Fatura', summary, ui.ButtonSet.OK);
+
+  // Фиксация в лист 📋 Задачи и Поручения Секретаря
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = findSheetByConfigKey(ss, 'TASKS');
+    if (sheet) {
+      var dateStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd.MM.yyyy HH:mm');
+      var newId = 'TASK-' + (sheet.getLastRow());
+      sheet.appendRow([
+        newId,
+        dateStr,
+        'Бухгалтер',
+        'Расчет e-Arşiv Fatura: ' + guestName + ', Брутто: ' + grossTRY + ' TRY, База: ' + matrah.toFixed(2) + ' TRY',
+        'Выполнена',
+        'https://drive.google.com/drive/folders/11xBSWA02NypliPFbziRSMfC9aAPclYF_',
+        'Google Apps Script'
+      ]);
+      SpreadsheetApp.getActive().toast('Запись сохранена в лист Задач', '✅ Бухгалтер', 3);
+    }
+  } catch (err) {}
+}
+
+/**
+ * ⚖️ Юрист: Проверка данных бронирования
+ */
+function openLegalCheckModal() {
+  var ui = SpreadsheetApp.getUi();
+  var legalInfo = '⚖️ ЮРИДИЧЕСКИЙ ЧЕК-ЛИСТ VILLA TURAMAN:\n\n' +
+    '1. KBS Жандармерии: Регистрация всех гостей старше 0 лет в течение 24 часов.\n' +
+    '2. KVKK №6698: Сбор данных строго под цели KBS с информированием гостя.\n' +
+    '3. Налоговый номер VKN: 9991120181 [Ortaca Vergi Dairesi].\n' +
+    '4. Основание инвойса: VUK 213 Madde 230 e-Arşiv Fatura.\n' +
+    '5. Золотая формула переговоров: 30% эмпатии / 70% юридической точности.\n' +
+    '6. Договор краткосрочной аренды: лимит 10 гостей, тихий час с 23:00 до 08:00.\n' +
+    '7. Защита диалога: окно 15 минут до закрытия.';
+
+  ui.alert('Юридический стандарт', legalInfo, ui.ButtonSet.OK);
+}
+
+/**
+ * 📋 Секретарь: Добавить задачу или поручение
+ */
+function openNewTaskModal() {
+  var ui = SpreadsheetApp.getUi();
+  var directionPrompt = ui.prompt(
+    'Новое поручение суперхозяина',
+    'Выберите направление [Бухгалтер / Юрист / Секретарь]:',
+    ui.ButtonSet.OK_CANCEL
+  );
+  if (directionPrompt.getSelectedButton() !== ui.Button.OK) return;
+  var direction = directionPrompt.getResponseText().trim() || 'Секретарь';
+
+  var textPrompt = ui.prompt(
+    'Суть задачи',
+    'Введите описание задачи или поручения:',
+    ui.ButtonSet.OK_CANCEL
+  );
+  if (textPrompt.getSelectedButton() !== ui.Button.OK) return;
+  var taskText = textPrompt.getResponseText().trim();
+  if (!taskText) return;
+
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = findSheetByConfigKey(ss, 'TASKS');
+  if (sheet) {
+    var dateStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd.MM.yyyy HH:mm');
+    var newId = 'TASK-' + (sheet.getLastRow());
+    sheet.appendRow([
+      newId,
+      dateStr,
+      direction,
+      taskText,
+      'Новая',
+      'https://drive.google.com/drive/folders/11xBSWA02NypliPFbziRSMfC9aAPclYF_',
+      'Суперхозяин Алексей'
+    ]);
+    ui.alert('✅ Задача зафиксирована!', 'Поручение добавлено в лист 📋 Задачи и Поручения Секретаря под ID: ' + newId, ui.ButtonSet.OK);
+  } else {
+    ui.alert('Внимание', 'Лист Задач и Поручений пока не создан. Запустите 🛠️ Восстановить все листы.', ui.ButtonSet.OK);
+  }
+}
+
+/**
+ * 📁 Google Drive: Создать папку в проекте
+ */
+function openCreateDriveFolderModal() {
+  var ui = SpreadsheetApp.getUi();
+  var promptRes = ui.prompt(
+    'Google Drive: Создание папки',
+    'Введите относительный путь папки [например: Бухгалтерия/2026/Сентябрь/Счета_GIB]:',
+    ui.ButtonSet.OK_CANCEL
+  );
+  if (promptRes.getSelectedButton() !== ui.Button.OK) return;
+  var folderPath = promptRes.getResponseText().trim();
+  if (!folderPath) return;
+
+  var rootId = '11xBSWA02NypliPFbziRSMfC9aAPclYF_';
+  try {
+    var currentFolder = DriveApp.getFolderById(rootId);
+    var parts = folderPath.split(/[\/\\]+/);
+    for (var i = 0; i < parts.length; i++) {
+      var part = parts[i].trim();
+      if (!part) continue;
+      var subFolders = currentFolder.getFoldersByName(part);
+      if (subFolders.hasNext()) {
+        currentFolder = subFolders.next();
+      } else {
+        currentFolder = currentFolder.createFolder(part);
+      }
+    }
+    ui.alert('✅ Папка создана!', 'Путь: ' + folderPath + '\n\nСсылка:\n' + currentFolder.getUrl(), ui.ButtonSet.OK);
+  } catch (err) {
+    ui.alert('Google Drive', 'Результат: ' + err.message + '\nКорневой ID: ' + rootId, ui.ButtonSet.OK);
   }
 }

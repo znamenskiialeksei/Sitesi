@@ -10,6 +10,7 @@
 
 import { getAiKnowledgeBase } from '../../utils/aiKnowledgeBase';
 import { buildSparkRulesPromptSection } from '../../utils/spark_rules_manifest';
+import { classifyIntent, globalKnowledgeGraph } from '../../utils/aiKnowledgeGraph';
 
 const DEFAULT_MODEL = 'gemini-3.6-flash';
 
@@ -126,6 +127,17 @@ export default async function handler(req, res) {
     // Добавление стратегического манифеста правил SPARK [Блок VII]
     systemInstruction += `\n\n${buildSparkRulesPromptSection()}`;
 
+    // Интеллектуальная классификация интента гостя [Уровень 1]
+    const fullMessageContext = `${(chatHistory || []).map(m => m.original || m.ru || '').join(' ')} ${guestMessage}`;
+    const intent = classifyIntent(fullMessageContext);
+    const intentMicroContext = (kb.graph || globalKnowledgeGraph).getContextForIntent(intent);
+
+    systemInstruction += `\n\nАКТУАЛЬНЫЙ ЦЕЛЕВОЙ КОНТЕКСТ [ИНТЕНТ: ${intent}]:\n${intentMicroContext}`;
+
+    if (intent === 'TRANSFER_TRANSPORT') {
+      systemInstruction += `\n\nОБЯЗАТЕЛЬНОЕ ПРАВИЛО: Если гость просит телефон или контакт компании трансфера / такси / партнера : СРАЗУ выдай прямой номер Ahmet: +90 543 335 80 70 [WhatsApp: +90 543 335 80 70, Mercedes Vito, €50 / 1800 TRY]! КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО выспрашивать детали рейса или задавать встречные вопросы вместо прямого ответа!`;
+    }
+
     // 3. Формирование контекста диалога для Gemini 3.6 Flash
     let conversationPrompt = `${systemInstruction}\n\n`;
     conversationPrompt += `ДАННЫЕ ТЕКУЩЕГО ГОСТЯ:\n`;
@@ -137,7 +149,7 @@ export default async function handler(req, res) {
 
     if (chatHistory && chatHistory.length > 0) {
       conversationPrompt += `\nПОСЛЕДНИЕ СООБЩЕНИЯ В ЧАТЕ:\n`;
-      const recent = chatHistory.slice(-6);
+      const recent = chatHistory.slice(-8);
       recent.forEach((m) => {
         const sender = m.sender === 'Владелец' ? 'Хозяин Алексей' : 'Гость';
         const msg = m.original || m.ru || m.en || m.tr || '';
@@ -146,7 +158,7 @@ export default async function handler(req, res) {
     }
 
     conversationPrompt += `\nПОСЛЕДНЕЕ СООБЩЕНИЕ ГОСТЯ: "${guestMessage}"\n`;
-    conversationPrompt += `\nСформулируй персонализированный, дружелюбный и точный ответ гостю на языке: ${lang.toUpperCase()}.`;
+    conversationPrompt += `\nСформулируй персонализированный, дружелюбный и точный ответ гостю на языке: ${lang.toUpperCase()}. Если гость просил номер телефона : обязательно включи его в ответ!`;
 
     // 4. Прямой вызов Google Gemini Generative Language REST API
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${apiKey}`;

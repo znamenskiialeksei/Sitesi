@@ -43,10 +43,15 @@ export default async function handler(req, res) {
           minPriceUsd: kb.minPriceUsd || 180,
           systemPrompt: kb.systemPrompt || ''
         },
+        blocks: kb.blocks || {},
         agentRoles: kb.agentRoles || {},
         sheetMatrix: kb.sheetMatrix || {},
         variables: kb.variables || {},
         templates: kb.templates || [],
+        services: kb.services || [],
+        legal: kb.legal || [],
+        guides: kb.guides || [],
+        tasks: kb.tasks || [],
         home: kb.home || {},
         about: kb.about || {}
       }
