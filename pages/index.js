@@ -508,6 +508,7 @@ export default function HomeListing({ publicData, contentData }) {
             gateway: paymentGateway,
             amount: numericAmount,
             currency,
+            origin: typeof window !== 'undefined' ? window.location.origin : '',
             bookingDetails: bookingData
           })
         });

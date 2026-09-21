@@ -165,6 +165,15 @@ export default function Navbar() {
             )}
           </div>
 
+          {/* Быстрая кнопка перехода в чат на мобильных устройствах */}
+          <Link
+            href={isHost ? '/host?tab=inbox' : '/guest?tab=chat'}
+            className="flex sm:hidden items-center justify-center w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 border border-white/10 text-slate-300 hover:text-white transition-colors"
+            title={isHost ? 'Входящие чаты хозяина' : 'Чат с виллой'}
+          >
+            <MessageCircle className="w-4 h-4 text-emerald-400" />
+          </Link>
+
           {/* Меню профиля пользователя (AirBnB Pill) */}
           <div className="relative" ref={profileRef}>
             <button

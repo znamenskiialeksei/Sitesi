@@ -78,9 +78,13 @@ export async function generateConciergeReply({
   const transferPartnerPhone = vars.transfer_partner_phone || '+90 543 335 80 70';
   const transferPartnerContact = vars.transfer_partner_contact || 'Ahmet';
   const transferPartnerWhatsapp = vars.transfer_partner_whatsapp || '+90 543 335 80 70';
-  const hostPhone = vars.host_phone || '+90 534 000 00 00';
-  const hostWhatsapp = vars.host_whatsapp || '+90 534 000 00 00';
+  const cleanHostPhone = (vars.host_phone && !vars.host_phone.includes('000 00 00')) ? vars.host_phone : '';
+  const cleanHostWhatsapp = (vars.host_whatsapp && !vars.host_whatsapp.includes('000 00 00')) ? vars.host_whatsapp : '';
   const hostTelegram = vars.host_telegram || '@villaturaman';
+  const hostContactInfo = cleanHostPhone
+    ? `Телефон: ${cleanHostPhone}, WhatsApp: ${cleanHostWhatsapp || cleanHostPhone}, Telegram: ${hostTelegram}`
+    : `Telegram: ${hostTelegram}, прямой телефон и код доступа к вилле отправляются гостю в подтверждении бронирования`;
+
   const address = vars.address || 'Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla';
   const wifiName = vars.wifi_name || 'Guest';
   const wifiPass = vars.wifi_password || 'villa2026';
@@ -100,8 +104,10 @@ export async function generateConciergeReply({
   systemInstruction += `\n• Адрес виллы: ${address}`;
   systemInstruction += `\n• Wi-Fi: Сеть ${wifiName}, Пароль ${wifiPass}`;
   systemInstruction += `\n• Стандартный заезд: 16:00, Стандартный выезд: 10:00`;
-  systemInstruction += `\n• Суперхозяин: Алексей Знаменский [Телефон: ${hostPhone}, WhatsApp: ${hostWhatsapp}, Telegram: ${hostTelegram}]`;
+  systemInstruction += `\n• Суперхозяин: Алексей Знаменский [${hostContactInfo}]`;
   systemInstruction += `\n• Проверенный партнер по трансферу: ${transferPartnerName} [Координатор: ${transferPartnerContact}, Телефон: ${transferPartnerPhone}, WhatsApp: ${transferPartnerWhatsapp}, Авто: Mercedes Vito VIP, Тариф: 50 EUR / 1800 TRY]`;
+  systemInstruction += `\n• Проверенный партнер по лодке: Капитан Адам [Телефон / WhatsApp: +90 544 588 58 09]`;
+  systemInstruction += `\n• Рекомендованный семейный ресторан: Çiçek Restaurant [Dalyan, Rodoslu Yaşar Sünger Sk, баранина, сибас, мезе]`;
 
   // Регламент KBS
   if (kb.kbs && Object.keys(kb.kbs).length > 0) {

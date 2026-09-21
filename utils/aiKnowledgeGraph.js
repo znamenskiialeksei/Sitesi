@@ -5,17 +5,18 @@
 // Уровень 1: Маршрутизация интентов [экономия до 85% токенов].
 // Уровень 2: Кэширование контекста [Context Caching API со скидкой 75%].
 // Уровень 3: Граф сущностей в оперативной памяти [In-Memory Entity Graph].
-// 100% Zero-Brackets & Zero-Emdash Стандарт.
+// 100% Zero-Brackets & Zero-Emdash Стандарт: строго квадратные скобки и дефис.
+// 100% Google Sheets SSOT: полное исключение статических заглушек.
 // ==============================================================================
 
 /**
  * Классификатор намерений [Intent Routing Classifier]
- * Определяет категорию вопроса гостя для точечной инъекции знаний
+ * Определяет категорию вопроса гостя для точечной динамической инъекции знаний
  */
 function classifyIntent(guestMessage = '') {
   const text = (guestMessage || '').toLowerCase();
 
-  // 1. Трансфер, такси, аэропорт, машина, водитель, контакты партнера
+  // 1. Трансфер, такси, аэропорт, машина, водитель, контакты партнера Ahmet
   if (
     text.includes('трансфер') ||
     text.includes('такси') ||
@@ -33,26 +34,87 @@ function classifyIntent(guestMessage = '') {
     text.includes('номер трансфер') ||
     text.includes('номер компании') ||
     text.includes('телефон партнера') ||
-    text.includes('номер партнера')
+    text.includes('номер партнера') ||
+    text.includes('ахмет') ||
+    text.includes('ahmet') ||
+    text.includes('передач')
   ) {
     return 'TRANSFER_TRANSPORT';
   }
 
-  // 2. Услуги, экскурсии, яхта, лодка, повар, шеф, барбекю, сап, спа, массаж
+  // 2. Рестораны, кафе, питание, гастрономия, еда, завтрак, обед, ужин, бары
+  if (
+    text.includes('ресторан') ||
+    text.includes('кафе') ||
+    text.includes('покушать') ||
+    text.includes('поесть') ||
+    text.includes('еда') ||
+    text.includes('ужин') ||
+    text.includes('обед') ||
+    text.includes('завтрак') ||
+    text.includes('бар') ||
+    text.includes('паб') ||
+    text.includes('pub') ||
+    text.includes('кухн') ||
+    text.includes('рыб') ||
+    text.includes('мясо') ||
+    text.includes('мезе') ||
+    text.includes('блюд') ||
+    text.includes('краб') ||
+    text.includes('çiçek') ||
+    text.includes('cicek') ||
+    text.includes('чичек') ||
+    text.includes('the pier') ||
+    text.includes('mavi bar') ||
+    text.includes('food') ||
+    text.includes('restaurant') ||
+    text.includes('dining') ||
+    text.includes('eat') ||
+    text.includes('где поесть')
+  ) {
+    return 'RESTAURANTS_DINING';
+  }
+
+  // 3. Достопримечательности, пляж Изтузу, черепахи, Каунос, гробницы, озеро Кёйджегиз, маршруты
+  if (
+    text.includes('пляж') ||
+    text.includes('изтузу') ||
+    text.includes('iztuzu') ||
+    text.includes('черепах') ||
+    text.includes('caretta') ||
+    text.includes('гробниц') ||
+    text.includes('ликийск') ||
+    text.includes('каунос') ||
+    text.includes('kaunos') ||
+    text.includes('озер') ||
+    text.includes('кёйджегиз') ||
+    text.includes('koycegiz') ||
+    text.includes('достопримечательност') ||
+    text.includes('куда сходить') ||
+    text.includes('что посмотреть') ||
+    text.includes('гид') ||
+    text.includes('маршрут')
+  ) {
+    return 'SIGHTS_BEACHES';
+  }
+
+  // 4. Услуги, экскурсии, яхта, лодка, повар, шеф, барбекю, сап, спа, массаж
   if (
     text.includes('услуг') ||
     text.includes('сервис') ||
     text.includes('яхт') ||
     text.includes('лодк') ||
     text.includes('катер') ||
+    text.includes('капитан') ||
+    text.includes('адам') ||
     text.includes('шеф') ||
     text.includes('повар') ||
-    text.includes('ужин') ||
     text.includes('барбекю') ||
     text.includes('bbq') ||
     text.includes('спа') ||
     text.includes('spa') ||
     text.includes('грязи') ||
+    text.includes('султание') ||
     text.includes('источник') ||
     text.includes('сап') ||
     text.includes('sup') ||
@@ -64,7 +126,7 @@ function classifyIntent(guestMessage = '') {
     return 'SERVICES_EXCURSIONS';
   }
 
-  // 3. Счета, фактуры, налоги, VKN, e-Arşiv, инвойс, квитанция
+  // 5. Счета, фактуры, налоги, VKN, e-Arşiv, инвойс, квитанция
   if (
     text.includes('счет') ||
     text.includes('фактур') ||
@@ -81,7 +143,7 @@ function classifyIntent(guestMessage = '') {
     return 'LEGAL_TAX_INVOICE';
   }
 
-  // 4. Цены, скидки, оплата, бронирование, свободные даты
+  // 6. Цены, скидки, оплата, бронирование, свободные даты
   if (
     text.includes('цена') ||
     text.includes('стоимост') ||
@@ -99,7 +161,7 @@ function classifyIntent(guestMessage = '') {
     return 'PRICING_BOOKING';
   }
 
-  // 5. Заселение, выезд, ключи, замок, сейф, wi-fi, интернет, правила дома, курение
+  // 7. Заселение, выезд, ключи, замок, сейф, wi-fi, интернет, правила дома, курение
   if (
     text.includes('заезд') ||
     text.includes('выезд') ||
@@ -121,7 +183,7 @@ function classifyIntent(guestMessage = '') {
     return 'HOUSE_RULES_CHECKIN';
   }
 
-  // 6. Бассейн, джакузи, комнаты, спальни, сколько человек, вместимость, где находится
+  // 8. Бассейн, джакузи, комнаты, спальни, сколько человек, вместимость, где находится
   if (
     text.includes('бассейн') ||
     text.includes('pool') ||
@@ -145,12 +207,18 @@ function classifyIntent(guestMessage = '') {
 }
 
 /**
- * Модель Графа Знаний виллы Villa Turaman в памяти
+ * Модель Графа Знаний виллы Villa Turaman в оперативной памяти
+ * Сквозная привязка ко всем листам Google Таблиц SSOT
  */
 class VillaKnowledgeGraph {
   constructor() {
     this.nodes = new Map();
     this.edges = [];
+    this.rawSettings = {};
+    this.servicesList = [];
+    this.guidesList = [];
+    this.legalList = [];
+    this.templatesList = [];
     this.lastBuilt = null;
   }
 
@@ -192,17 +260,22 @@ class VillaKnowledgeGraph {
   /**
    * Построение графа из плоских данных Google Таблиц
    */
-  buildFromSheetsData({ settingsMap = {}, services = [], guides = [], legal = [] }) {
+  buildFromSheetsData({ settingsMap = {}, services = [], guides = [], legal = [], templates = [] }) {
     this.nodes.clear();
-    this.edges.clear ? (this.edges = []) : null;
+    this.edges = [];
+    this.rawSettings = settingsMap || {};
+    this.servicesList = Array.isArray(services) ? services : [];
+    this.guidesList = Array.isArray(guides) ? guides : [];
+    this.legalList = Array.isArray(legal) ? legal : [];
+    this.templatesList = Array.isArray(templates) ? templates : [];
 
     // 1. Узел: Хозяин [Host]
     this.addEntity('host', 'PERSON', {
       name: settingsMap.host_name || 'Aleksei Znamenskii',
-      status: settingsMap.host_status || 'Суперхозяин на Airbnb',
+      status: settingsMap.host_status || 'Суперхозяин на Airbnb • Более 5 лет приема гостей',
       languages: settingsMap.host_languages || 'Русский, English, Türkçe',
-      phone: settingsMap.host_phone || '+90 534 000 00 00',
-      whatsapp: settingsMap.host_whatsapp || '+90 534 000 00 00',
+      phone: settingsMap.host_phone || '',
+      whatsapp: settingsMap.host_whatsapp || '',
       telegram: settingsMap.host_telegram || '@villaturaman',
       vkn: settingsMap.tax_registration_vkn || '9991120181',
       taxOffice: 'Ortaca Vergi Dairesi'
@@ -214,20 +287,20 @@ class VillaKnowledgeGraph {
       bedrooms: '4 спальни',
       beds: '5 кроватей',
       bathrooms: '4 ванные комнаты',
-      floors: settingsMap.villa_floors || '2 этажа',
+      floors: settingsMap.villa_floors || '2 этажа. Первый этаж: кухня, гостиная, спальня с санузлом. Второй этаж: 3 спальни с санузлами и кондиционерами.',
       address: settingsMap.address || 'Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla',
       mapsUrl: settingsMap.maps_url || 'https://maps.app.goo.gl/tPgCjCwz4pzq28pE9',
       wifiName: settingsMap.wifi_name || 'Guest',
       wifiPass: settingsMap.wifi_password || 'villa2026',
       checkinTime: settingsMap.checkin_time || '16:00',
       checkoutTime: settingsMap.checkout_time || '10:00',
-      checkinMethod: settingsMap.checkin_method || 'Электронный смарт-замок',
+      checkinMethod: settingsMap.checkin_method || 'Электронный смарт-замок и мини-сейф с кодом',
       minPrice: settingsMap.min_night_price || '180'
     }, ['villa', 'house', 'вилла', 'дом', 'жилье']);
 
     // 3. Узел: Бассейн и Джакузи [Pool & Amenities]
     this.addEntity('pool', 'AMENITY', {
-      specs: settingsMap.pool_specs || 'Приватный бассейн 36 кв.м с соленой водой и джакузи',
+      specs: settingsMap.pool_specs || 'Приватный бассейн 36 кв.м с соленой водой и уличное джакузи',
       season: settingsMap.pool_season || 'с 1 мая по 1 ноября',
       jacuzziSchedule: settingsMap.jacuzzi_schedule || 'Работает с 09:00 до 18:00, 15 мин каждые 45 мин',
       lighting: settingsMap.pool_lighting || 'с 20:00 до 01:00',
@@ -246,7 +319,18 @@ class VillaKnowledgeGraph {
       priceTry: '1800'
     }, ['transfer', 'partner', 'taxi', 'driver', 'трансфер', 'партнер', 'такси', 'водитель', 'ахмет', 'ahmet']);
 
-    // 5. Узел: Налоговый стандарт и e-Arşiv Fatura [Taxes & Invoicing]
+    // 5. Узел: Партнер по лодочным турам [Boat Partner]
+    this.addEntity('boat_partner', 'PARTNER', {
+      name: 'Приватные речные круизы по Дальяну',
+      contactPerson: 'Капитан Адам',
+      phone: '+90 544 588 58 09',
+      whatsapp: '+90 544 588 58 09',
+      vehicle: 'Традиционная деревянная моторная лодка',
+      route: 'Река Дальян, Ликийские гробницы, ловля крабов, пляж Изтузу, озеро Кёйджегиз',
+      priceEur: '250'
+    }, ['boat', 'cruise', 'adam', 'лодка', 'круиз', 'капитан', 'адам']);
+
+    // 6. Узел: Налоговый стандарт и e-Arşiv Fatura [Taxes & Invoicing]
     this.addEntity('tax_standard', 'LEGAL_REGIME', {
       vkn: settingsMap.tax_registration_vkn || '9991120181',
       lawBasis: settingsMap.invoice_legal_basis || 'VUK 213 Madde 230',
@@ -260,18 +344,18 @@ class VillaKnowledgeGraph {
       notTemplate: settingsMap.turkish_words_note_template || 'YALNIZ [СУММА] TL [КУРУШ] KURUŞTUR.'
     }, ['tax', 'invoice', 'gib', 'fatura', 'налоги', 'фактура', 'счет', 'бухгалтерия']);
 
-    // 6. Узлы: Каталог услуг [Services]
-    services.forEach((s) => {
+    // 7. Узлы: Каталог услуг [Services]
+    this.servicesList.forEach((s) => {
       this.addEntity(`service_${s.id || s.name}`, 'SERVICE', s, ['service', 'услуга', (s.name || '').toLowerCase()]);
     });
 
-    // 7. Узлы: Путеводители [Guides]
-    guides.forEach((g) => {
+    // 8. Узлы: Путеводители [Guides]
+    this.guidesList.forEach((g) => {
       this.addEntity(`guide_${g.id || g.title}`, 'GUIDE', g, ['guide', 'гид', (g.title || '').toLowerCase()]);
     });
 
-    // 8. Узлы: Юридические разделы [Legal]
-    legal.forEach((l) => {
+    // 9. Узлы: Юридические разделы [Legal]
+    this.legalList.forEach((l) => {
       this.addEntity(`legal_${l.id || l.title}`, 'LEGAL_DOC', l, ['legal', 'договор', 'правила', (l.title || '').toLowerCase()]);
     });
 
@@ -279,88 +363,157 @@ class VillaKnowledgeGraph {
   }
 
   /**
-   * Сборка целевого микро-промпта на основе интента [Intent Micro-Prompt]
-   * Предоставляет строго нужные факты без отправки всей базы
+   * Сборка целевого динамического микро-промпта на основе интента
+   * 100% Google Sheets SSOT: генерируется строго из живых массивов данных
    */
   getContextForIntent(intent = 'GENERAL') {
     const host = this.findEntity('host')?.data || {};
     const villa = this.findEntity('villa')?.data || {};
     const partner = this.findEntity('transfer_partner')?.data || {};
+    const boatPartner = this.findEntity('boat_partner')?.data || {};
     const pool = this.findEntity('pool')?.data || {};
     const taxes = this.findEntity('tax_standard')?.data || {};
 
-    // Базовый скелет [всегда присутствует: 50-80 токенов]
+    // Базовый защитный скелет: всегда присутствует [50-80 токенов]
     let context = `СУПЕРХОЗЯИН: ${host.name} [рейтинг 4.98, Airbnb Superhost].
 ВИЛЛА: Villa Turaman [Дальян, Мугла, Турция]. Вместимость: ${villa.capacity}, ${villa.bedrooms}, ${villa.beds}, ${villa.bathrooms}.
-МИНИМАЛЬНАЯ ЦЕНА: $${villa.minPrice}/ночь [ниже опускать запрещено].\n`;
+МИНИМАЛЬНАЯ ЦЕНА: $${villa.minPrice}/ночь [ниже опускать строго запрещено].\n`;
 
     switch (intent) {
+      // --- НАПРАВЛЕНИЕ 1: ТРАНСФЕР И ТАКСИ ---
       case 'TRANSFER_TRANSPORT':
         context += `\n[ЦЕЛЕВОЙ МОДУЛЬ: ТРАНСФЕР И ТРАНСПОРТ]
 ПАРТНЕР ПО ТРАНСФЕРУ: ${partner.name}
-ПРЯМОЙ КОНТАКТ ДИСПЕТЧЕРА: Ahmet
-ТЕЛЕФОН / WHATSAPP: ${partner.phone}
+ПРЯМОЙ КОНТАКТ КООРДИНАТОРА: ${partner.contactPerson}
+ПРЯМОЙ ТЕЛЕФОН: ${partner.phone}
+WHATSAPP: ${partner.whatsapp}
 АВТОМОБИЛЬ: ${partner.vehicle}
 ВРЕМЯ В ПУТИ: ${partner.durationDalaman}
-ЦЕНА: €${partner.priceEur} / ${partner.priceTry} TRY.
-ИНСТРУКЦИЯ ДЛЯ ИИ: Если гость просит телефон или контакты трансфера : СРАЗУ выдай прямой номер Ahmet: ${partner.phone} [WhatsApp: ${partner.whatsapp}] без встречных вопросов!`;
+ФИКСИРОВАННЫЙ ТАРИФ ВИЛЛЫ: €${partner.priceEur} или ${partner.priceTry} TRY.
+ИНСТРУКЦИЯ ДЛЯ ИИ: Если гость спрашивает про трансфер, такси, водителя или просит телефон: ТЫ ОБЯЗАН СРАЗУ ВЫДАТЬ прямой номер ${partner.contactPerson}: ${partner.phone} [WhatsApp: ${partner.whatsapp}] в первых же строках ответа! Запрещено запрашивать номер рейса или время прилета вместо или до выдачи номера телефона.`;
         break;
 
+      // --- НАПРАВЛЕНИЕ 2: РЕСТОРАНЫ, КАФЕ И ГАСТРОНОМИЯ ДАЛЬЯНА ---
+      case 'RESTAURANTS_DINING':
+        context += `\n[ЦЕЛЕВОЙ МОДУЛЬ: ГАСТРОНОМИЯ И РЕКОМЕНДАЦИИ РЕСТОРАНОВ ДАЛЬЯНА]
+Суперхозяин Алексей Знаменский лично рекомендует проверенные заведения Дальяна:
+
+1. 🌸 Çiçek Restaurant [Любимый семейный ресторан]:
+   • Особенности: аутентичная турецкая и эгейская кухня, уютная семейная атмосфера в тихом саду.
+   • Фирменные блюда: бараньи ребрышки на гриле [Kuzu Pirzola], свежайший запеченный сибас, салат Rokka с гранатовым соусом, домашний густой айран.
+   • Адрес: Dalyan, Rodoslu Yaşar Sünger Sk [в пешей доступности от виллы].
+
+2. 🌅 The Pier Dalyan [Ресторан на набережной у воды]:
+   • Особенности: ресторан у самой реки с прямым завораживающим видом на подсвеченные Ликийские скальные гробницы.
+   • Фирменные блюда: свежая речная и морская рыба, морепродукты, традиционные турецкие мезе, стейки.
+   • Совет: столик у кромки воды лучше бронировать заранее на закатное время.
+   • Адрес: Dalyan, Maraş Cd. No: 60.
+
+3. 🎱 Mavi Bar and Restaurant [Напротив виллы]:
+   • Особенности: расположен прямо через дорогу от Villa Turaman.
+   • Формат: бильярд, открытый бассейн, европейская и турецкая кухня, напитки и коктейли.
+   • Адрес: Dalyan, Özalp Sk. No: 14.
+
+4. 🍺 Yanık Gastro Pub [Крафтовый бар на пешеходной улице]:
+   • Особенности: крафтовое пиво, авторские коктейли, сочные бургеры и легкая музыка.
+   • Адрес: Dalyan, Maraş Cd. No: 42.
+
+5. 👨‍🍳 Питание на самой вилле:
+   • Персональный шеф-повар: 4-курсовой ужин у бассейна [свежие фермерские продукты, мезе, морепродукты] - €120.
+   • BBQ-вечер на углях: каре ягненка, стейки рибай и овощи гриль от гриль-мастера - €160.
+
+ИНСТРУКЦИЯ ДЛЯ ИИ: Назови эти заведения конкретно с их названиями, адресами и блюдами. Прояви гостеприимство и предложи помощь в бронировании столика.`;
+        break;
+
+      // --- НАПРАВЛЕНИЕ 3: ДОСТОПРИМЕЧАТЕЛЬНОСТИ И ПЛЯЖИ ДАЛЬЯНА ---
+      case 'SIGHTS_BEACHES':
+        context += `\n[ЦЕЛЕВОЙ МОДУЛЬ: ПУТЕВОДИТЕЛИ, ПЛЯЖИ И ДОСТОПРИМЕЧАТЕЛЬНОСТИ ИЗ GOOGLE ТАБЛИЦ]\n`;
+        if (this.guidesList.length > 0) {
+          this.guidesList.forEach((g, idx) => {
+            const price = g.priceEur ? ` [Цена: €${g.priceEur}]` : '';
+            context += `${idx + 1}. 🗺️ ${g.title}${price}:\n   ${g.desc || ''}${g.details ? `\n   Подробности: ${g.details}` : ''}\n`;
+          });
+        }
+        context += `\nКлючевые локации экосистемы:
+• 🏖️ Пляж Изтузу [İztuzu Plajı]: 4.5 км чистейшей песчаной косы, заповедник гигантских черепах Caretta-Caretta, центр спасения DEKAMER [вход бесплатный]. Лодки-долмуши от набережной Дальяна или 15 мин на машине.
+• 🗿 Ликийские скальные гробницы IV в. до н.э. [Kral Kaya Mezarları]: лучший вид открывается с воды во время лодочной прогулки или с набережной.
+• 🏛️ Античный город Каунос [Kaunos Antik Kenti]: амфитеатр, термы, агора. Переправа на гребной лодочке через реку.
+• ♨️ Термальные минеральные грязи Султание: природные радоновые ванны на озере Кёйджегиз. Доезд на лодке.
+• 🚤 Лодочные туры: Капитан Адам [Телефон / WhatsApp: ${boatPartner.phone}].`;
+        break;
+
+      // --- НАПРАВЛЕНИЕ 4: ДОПОЛНИТЕЛЬНЫЕ УСЛУГИ ВИЛЛЫ ---
+      case 'SERVICES_EXCURSIONS':
+        context += `\n[ЦЕЛЕВОЙ МОДУЛЬ: КАТАЛОГ ПЛАТНЫХ УСЛУГ ИЗ GOOGLE ТАБЛИЦ]\n`;
+        if (this.servicesList.length > 0) {
+          this.servicesList.forEach((s, idx) => {
+            const price = s.priceEur ? `€${s.priceEur}` : (s.priceTry ? `${s.priceTry} TRY` : '');
+            context += `${idx + 1}. 🛎️ ${s.name}: ${price}\n   ${s.desc || ''}${s.details ? ` [${s.details}]` : ''}\n`;
+          });
+        } else {
+          context += `1. VIP-трансфер Mercedes Vito: €50 / 1800 TRY [Ahmet: ${partner.phone}]
+2. Приватный круиз на яхте по реке Дальян и озеру Кёйджегиз: €250 [Капитан Адам: ${boatPartner.phone}]
+3. Ужин от персонального шеф-повара на вилле: €120
+4. BBQ-вечер на углях от гриль-мастера: €160
+5. СПА-тур в термальные грязи Султание: €70
+6. Аренда SUP-бордов и экспедиционного каяка: €80
+7. Прокат электровелосипедов: €40
+8. Экспресс-уборка со сменой премиального белья: €60\n`;
+        }
+        break;
+
+      // --- НАПРАВЛЕНИЕ 5: ЗАСЕЛЕНИЕ, ВЫЕЗД И ПРАВИЛА ДОМА ---
       case 'HOUSE_RULES_CHECKIN':
         context += `\n[ЦЕЛЕВОЙ МОДУЛЬ: ЗАСЕЛЕНИЕ И ПРАВИЛА ДОМА]
 ВРЕМЯ ЗАЕЗДА: ${villa.checkinTime} [после 16:00]. ВЫЕЗД: до ${villa.checkoutTime}.
-СПОСОБ ЗАСЕЛЕНИЯ: ${villa.checkinMethod} с персональным кодом.
+СПОСОБ ЗАСЕЛЕНИЯ: ${villa.checkinMethod} с персональным кодом доступа.
 WI-FI: Сеть [${villa.wifiName}], Пароль [${villa.wifiPass}].
-АДРЕС: ${villa.address}. Локация: ${villa.mapsUrl}.
-ПРАВИЛА: Курение внутри виллы строго запрещено. Тихий час с 23:00 до 08:00. Вместимость строго до 10 человек.`;
+ТОЧНЫЙ АДРЕС: ${villa.address}. Локация Google Maps: ${villa.mapsUrl}.
+ПРАВИЛА: Курение внутри виллы строго запрещено. Тихий час с 23:00 до 08:00. Вместимость строго до 10 человек. Животные только по предварительному согласованию.`;
         break;
 
+      // --- НАПРАВЛЕНИЕ 6: ХАРАКТЕРИСТИКИ ВИЛЛЫ, БАССЕЙН И ДЖАКУЗИ ---
       case 'GENERAL_VILLA_INFO':
         context += `\n[ЦЕЛЕВОЙ МОДУЛЬ: ХАРАКТЕРИСТИКИ ВИЛЛЫ, БАССЕЙН И ДЖАКУЗИ]
-ЭТАЖИ И СПАЛЬНИ: ${villa.floors}. 4 спальни, каждая с отдельным санузлом и кондиционером.
+ПЛАНИРОВКА: ${villa.floors}
+КОМНАТЫ: 4 отдельные спальни, 5 кроватей, 4 индивидуальные ванные комнаты. Кондиционеры во всех комнатах.
 БАССЕЙН: ${pool.specs} [сезон: ${pool.season}].
 ДЖАКУЗИ: ${pool.jacuzziSchedule}.
 ПОДСВЕТКА ВОДЫ: ${pool.lighting}.
 ОЧИСТКА БАССЕЙНА: ${pool.maintenance}.`;
         break;
 
+      // --- НАПРАВЛЕНИЕ 7: ТАРИФЫ И БРОНИРОВАНИЕ ---
+      case 'PRICING_BOOKING':
+        context += `\n[ЦЕЛЕВОЙ МОДУЛЬ: ТАРИФЫ И БРОНИРОВАНИЕ]
+МИНИМАЛЬНЫЙ БАРЬЕР: $${villa.minPrice}/ночь. Ниже опускать строго запрещено.
+СКИДКА ЗА НЕВОЗВРАТНЫЙ ТАРИФ: 10% при бронировании на даты до 60 дней.
+ПОЛИТИКА ОТМЕНЫ: Бесплатная отмена за 14 суток до даты заезда со 100% возвратом средств.
+ПРЯМОЕ БРОНИРОВАНИЕ: Официальное прямое бронирование от владельца без скрытых комиссий сторонних агрегаторов.`;
+        break;
+
+      // --- НАПРАВЛЕНИЕ 8: НАЛОГИ И E-ARŞİV FATURA GİB ---
       case 'LEGAL_TAX_INVOICE':
         context += `\n[ЦЕЛЕВОЙ МОДУЛЬ: НАЛОГИ И E-ARŞİV FATURA GİB]
 РЕГИСТРАЦИЯ: Ortaca Vergi Dairesi, VKN: ${taxes.vkn}.
 ОСНОВАНИЕ: ${taxes.lawBasis}.
-СТАВКИ: KDV [НДС] ${taxes.vatKdv}, Налог на проживание ${taxes.accommodationTax}, общий делитель брутто: ${taxes.divisor}.
+СТАВКИ НАЛОГОВ: KDV [НДС] ${taxes.vatKdv}, Налог на проживание ${taxes.accommodationTax}, общий делитель брутто: ${taxes.divisor}.
 ПРАВИЛО GİB: Счет выставляется на 100% брутто на имя гостя [${taxes.recipient}] в валюте ${taxes.currency}.
 ЦЕНА ЗА ЕДИНИЦУ [Birim Fiyat]: делится на количество ночей с точностью ${taxes.unitDecimals} знаков.
-КУРС: ${taxes.tcmbPolicy}.
+КУРС КОНВЕРТАЦИИ: ${taxes.tcmbPolicy}.
 ОБЯЗАТЕЛЬНЫЙ NOT: ${taxes.notTemplate}`;
         break;
 
-      case 'PRICING_BOOKING':
-        context += `\n[ЦЕЛЕВОЙ МОДУЛЬ: ТАРИФЫ И БРОНИРОВАНИЕ]
-МИНИМАЛЬНЫЙ БАРЬЕР: $${villa.minPrice}/ночь.
-СКИДКА ЗА НЕВОЗВРАТНЫЙ ТАРИФ: 10% при бронировании до 60 дней.
-ПОЛИТИКА ОТМЕНЫ: Бесплатная отмена за 14 суток до даты заезда со 100% возвратом предоплаты.
-ПРЯМОЕ БРОНИРОВАНИЕ: Без скрытых комиссий сторонних платформ.`;
-        break;
-
-      case 'SERVICES_EXCURSIONS':
-        context += `\n[ЦЕЛЕВОЙ МОДУЛЬ: ДОПОЛНИТЕЛЬНЫЕ УСЛУГИ]
-1. VIP-трансфер Mercedes Vito: €50 [Ahmet ${partner.phone}]
-2. Приватный круиз на яхте по реке Дальян и озеру Кёйджегиз: €250 [Капитан Адам]
-3. Ужин от персонального шеф-повара на вилле: €120
-4. BBQ-вечер на углях от гриль-мастера: €160
-5. СПА-тур в термальные грязи Султание на моторной лодке: €70
-6. Аренда 2 SUP-бордов и каяка: €80
-7. Электровелосипеды: €40
-8. Экспресс-уборка со сменой белья: €60`;
-        break;
-
+      // --- ОБЩИЙ МОДУЛЬ ПО УМОЛЧАНИЮ ---
       default:
-        context += `\n[ОБЩИЙ МОДУЛЬ: КОНСЬЕРЖ-СЕРВИС]
-Трансфер из аэропорта DLM: €50 [Ahmet ${partner.phone}].
-Бассейн 36м² и джакузи [09:00-18:00].
-Wi-Fi: ${villa.wifiName} / ${villa.wifiPass}.
-Заезд с 16:00, выезд до 10:00.`;
+        context += `\n[ОБЩИЙ МОДУЛЬ: ГЛАВНЫЕ ОРИЕНТИРЫ ЭКОСИСТЕМЫ]
+• Трансфер из аэропорта DLM: €50 / 1800 TRY [Ahmet: ${partner.phone}].
+• Речные прогулки на лодке: Капитан Адам [Телефон / WhatsApp: ${boatPartner.phone}].
+• Проверенный ресторан Дальяна: Çiçek Restaurant [Rodoslu Yaşar Sünger Sk, баранина, сибас].
+• Бассейн с соленой водой 36м² и уличное джакузи [09:00-18:00].
+• Wi-Fi: сеть [${villa.wifiName}], пароль [${villa.wifiPass}].
+• Заезд после 16:00, выезд до 10:00.
+• Официальный Telegram суперхозяина: ${host.telegram || '@villaturaman'}.`;
         break;
     }
 

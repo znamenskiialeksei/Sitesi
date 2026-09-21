@@ -32,7 +32,8 @@ import {
   Wifi,
   WifiOff,
   CornerDownLeft,
-  Bot
+  Bot,
+  ArrowLeft
 } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../Toast';
@@ -67,6 +68,8 @@ export default function HostInbox({
   // Сворачиваемая правая боковая панель с деталями бронирования для расширения зоны чата
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
+  // Мобильный режим отображения списка диалогов или активного чата
+  const [mobileActiveView, setMobileActiveView] = useState('list'); // 'list' | 'chat'
 
   const activeChat = chats.find((c) => c.sheetName === selectedSheet) || chats[0];
   const chatBottomRef = useRef(null);
@@ -425,7 +428,7 @@ export default function HostInbox({
       <div className="grid grid-cols-1 md:grid-cols-12 flex-1 overflow-hidden">
 
         {/* Левая колонка: Список диалогов с гостями [4 колонки] */}
-        <div className="md:col-span-4 border-r border-white/10 flex flex-col bg-slate-950/50">
+        <div className={`col-span-12 md:col-span-4 border-r border-white/10 flex flex-col bg-slate-950/50 ${mobileActiveView === 'chat' ? 'hidden md:flex' : 'flex'}`}>
           <div className="p-3 border-b border-white/5">
             <div className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -460,8 +463,12 @@ export default function HostInbox({
                 <div
                   key={idx}
                   onClick={() => {
-                    if (isBroadcastMode) toggleSelectMulti(c.sheetName);
-                    else setSelectedSheet(c.sheetName);
+                    if (isBroadcastMode) {
+                      toggleSelectMulti(c.sheetName);
+                    } else {
+                      setSelectedSheet(c.sheetName);
+                      setMobileActiveView('chat');
+                    }
                   }}
                   className={`p-3.5 cursor-pointer transition-colors flex items-start gap-3 min-h-[64px] ${
                     isSelected ? 'bg-rose-950/40 border-l-4 border-rose-500' : 'hover:bg-slate-800/50'
@@ -488,17 +495,27 @@ export default function HostInbox({
 
         {/* Центральная колонка: Активная переписка, textarea и смарт-шаблоны */}
         {/* Динамическое расширение с 5 до 8 колонок при сворачивании правой панели */}
-        <div className={`${isSidebarCollapsed ? 'md:col-span-8' : 'md:col-span-5'} flex flex-col bg-slate-900 justify-between overflow-hidden transition-all duration-200`}>
+        <div className={`col-span-12 ${isSidebarCollapsed ? 'md:col-span-8' : 'md:col-span-5'} flex flex-col bg-slate-900 justify-between overflow-hidden transition-all duration-200 ${mobileActiveView === 'list' ? 'hidden md:flex' : 'flex'}`}>
 
           {/* Верхняя строка активного чата */}
-          <div className="p-3.5 border-b border-white/10 bg-slate-800/40 flex items-center justify-between">
-            <span className="text-xs font-bold text-white truncate">
-              {isBroadcastMode
-                ? t('massBroadcastRecipients').replace('{count}', selectedMultiSheets.length)
-                : t('chatWithGuest').replace('{name}', activeChat?.clientName || t('guestLabel'))}
-            </span>
+          <div className="p-3.5 border-b border-white/10 bg-slate-800/40 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <button
+                type="button"
+                onClick={() => setMobileActiveView('list')}
+                className="md:hidden p-1.5 rounded-lg bg-slate-700/80 text-white hover:bg-slate-600 transition-colors shrink-0"
+                title="Вернуться к списку диалогов"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+              <span className="text-xs font-bold text-white truncate">
+                {isBroadcastMode
+                  ? t('massBroadcastRecipients').replace('{count}', selectedMultiSheets.length)
+                  : t('chatWithGuest').replace('{name}', activeChat?.clientName || t('guestLabel'))}
+              </span>
+            </div>
             <div className="flex items-center gap-2">
-              <span className="text-[11px] text-slate-400">{activeChat?.clientContact}</span>
+              <span className="text-[11px] text-slate-400 truncate">{activeChat?.clientContact}</span>
             </div>
           </div>
 
@@ -735,7 +752,7 @@ export default function HostInbox({
         {/* Правая колонка: Детали гостя, текущая бронь и выдача LMS видео-гидов [3 колонки] */}
         {/* Скрывается плавно при активации режима полного экрана для переписки */}
         {!isSidebarCollapsed && (
-          <div className="md:col-span-3 border-l border-white/10 bg-slate-950/60 p-4 flex flex-col justify-between overflow-y-auto space-y-6">
+          <div className="hidden md:flex md:col-span-3 border-l border-white/10 bg-slate-950/60 p-4 flex-col justify-between overflow-y-auto space-y-6">
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-white/10 pb-2">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-white">

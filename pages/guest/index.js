@@ -146,6 +146,7 @@ export default function GuestCabinetPage() {
         gateway: 'stripe',
         amount: priceNum,
         currency: 'EUR',
+        origin: typeof window !== 'undefined' ? window.location.origin : '',
         bookingDetails: {
           action: 'booking',
           isRegistered: true,

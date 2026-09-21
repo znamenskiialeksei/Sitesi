@@ -9,7 +9,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import axios from 'axios';
-import { Shield, Calendar, Clock, MessageSquare, Settings, RefreshCw, Layers, ArrowLeft, LogOut, CheckCircle2, UserCheck } from 'lucide-react';
+import { Shield, Calendar, Clock, MessageSquare, Settings, RefreshCw, Layers, ArrowLeft, LogOut, CheckCircle2, UserCheck, Bot } from 'lucide-react';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import HostReservations from '../../components/HostCabinet/HostReservations';
@@ -17,6 +17,7 @@ import HostCalendar from '../../components/HostCabinet/HostCalendar';
 import HostInbox from '../../components/HostCabinet/HostInbox';
 import HostSettings from '../../components/HostCabinet/HostSettings';
 import HostChannelManager from '../../components/HostCabinet/HostChannelManager';
+import BusinessAssistantModal from '../../components/Modals/BusinessAssistantModal';
 import TwoFaModal from '../../components/Modals/TwoFaModal';
 import AuthModal from '../../components/Modals/AuthModal';
 import { useAuth } from '../../context/AuthContext';
@@ -39,6 +40,7 @@ export default function HostDashboardPage() {
   const [allRequestsList, setAllRequestsList] = useState([]);
   const [lmsModules, setLmsModules] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isAssistantModalOpen, setIsAssistantModalOpen] = useState(false);
 
   // Синхронизация таба из query
   useEffect(() => {
@@ -313,7 +315,16 @@ export default function HostDashboardPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <button
+              onClick={() => setIsAssistantModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white text-xs font-bold transition-all shadow-lg shadow-rose-600/20 hover:scale-105"
+              title="Открыть Рабочий Чат Ассистента: Секретарь, Юрист, Бухгалтер"
+            >
+              <Bot className="w-4 h-4 text-white" />
+              <span>Бизнес-Ассистент</span>
+            </button>
+
             <Link
               href="/host/graph"
               className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 text-xs font-bold transition-all shadow-lg"
@@ -426,6 +437,14 @@ export default function HostDashboardPage() {
                 <RefreshCw className="w-4 h-4" />
                 <span>{t('tabChannels')}</span>
               </button>
+
+              <button
+                onClick={() => setIsAssistantModalOpen(true)}
+                className="flex items-center gap-2 px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all bg-gradient-to-r from-amber-500/20 to-indigo-500/20 text-amber-300 hover:text-white border border-amber-500/30 hover:border-amber-500/60 shadow-lg shadow-amber-500/10"
+              >
+                <Bot className="w-4 h-4 text-amber-400" />
+                <span>Бизнес-Ассистент [ИИ]</span>
+              </button>
             </div>
 
             {/* Контент табов хозяина */}
@@ -487,6 +506,11 @@ export default function HostDashboardPage() {
       <Footer />
       <TwoFaModal />
       <AuthModal />
+      <BusinessAssistantModal
+        isOpen={isAssistantModalOpen}
+        onClose={() => setIsAssistantModalOpen(false)}
+        activeBooking={allRequestsList?.[0] || chats?.[0]}
+      />
     </div>
   );
 }

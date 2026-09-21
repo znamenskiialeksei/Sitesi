@@ -13,14 +13,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { gateway, amount, currency = 'RUB', bookingDetails } = req.body || {};
+    const { gateway, amount, currency = 'RUB', bookingDetails, origin: clientOrigin } = req.body || {};
 
     if (!gateway || !amount || !bookingDetails) {
       return res.status(400).json({ error: 'Отсутствуют обязательные параметры платежа' });
     }
 
-    // Формирование абсолютных URL-адресов возврата после оплаты
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    // Динамическое определение базового URL текущего домена [Vercel, custom domain или local]
+    const protocol = req.headers['x-forwarded-proto'] || (req.connection?.encrypted ? 'https' : 'http');
+    const host = req.headers['x-forwarded-host'] || req.headers.host;
+    const headerOrigin = host ? `${protocol}://${host}` : null;
+    const baseUrl = clientOrigin || headerOrigin || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
     const successUrl = `${baseUrl}/api/payment_success?data=${encodeURIComponent(JSON.stringify(bookingDetails))}`;
     const cancelUrl = `${baseUrl}/?payment=cancel`;
 

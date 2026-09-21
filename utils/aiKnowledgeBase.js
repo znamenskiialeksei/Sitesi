@@ -126,7 +126,8 @@ function getLocalFallbackKnowledge() {
     settingsMap: { ...settingsMap, ...variablesObj, ...hostInfo, ...villaInfo, ...dialogStrategy, ...gibInvoice },
     services: parsedServices,
     guides: parsedGuides,
-    legal: parsedLegal
+    legal: parsedLegal,
+    templates: parsedTemplates
   });
 
   return {
@@ -391,7 +392,8 @@ async function getAiKnowledgeBase(forceRefresh = false) {
       settingsMap: { ...settingsMap, ...variablesObj, ...hostInfo, ...villaInfo, ...dialogStrategy, ...gibInvoice },
       services: parsedServices,
       guides: parsedGuides,
-      legal: parsedLegal
+      legal: parsedLegal,
+      templates: parsedTemplates
     });
 
     const aiMode = (settingsMap['ai_mode'] || 'copilot').toLowerCase();

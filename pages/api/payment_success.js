@@ -15,9 +15,9 @@ export default async function handler(req, res) {
       bookingData.paymentStatus = 'ОПЛАЧЕНО';
       bookingData.action = bookingData.action || 'booking';
 
-      const host = req.headers.host || 'localhost:3000';
-      const protocol = req.headers['x-forwarded-proto'] || 'http';
-      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
+      const protocol = req.headers['x-forwarded-proto'] || (req.connection?.encrypted ? 'https' : 'http');
+      const host = req.headers['x-forwarded-host'] || req.headers.host;
+      const baseUrl = host ? `${protocol}://${host}` : (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000');
 
       // Автоматическое обновление записи в Google Таблицах и отправка ваучера
       await fetch(`${baseUrl}/api/booking`, {
