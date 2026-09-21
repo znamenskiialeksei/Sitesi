@@ -1,0 +1,193 @@
+// ==============================================================================
+// ЕДИНЫЙ ДВИЖОК ИИ-КОНСЬЕРЖА: GOOGLE GEMINI 3.6 FLASH
+// Файл: utils/aiConciergeEngine.js
+// Назначение: Единое серверное ядро генерации ответов гостям виллы:
+// 1. Непрерывная память диалога [анализ последних сообщений];
+// 2. Интеллектуальный маршрутизатор интентов Intent Routing;
+// 3. Прямая инъекция контактов партнеров из Google Sheets SSOT;
+// 4. Категорический запрет встречных вопросов вместо выдачи телефона Ахмета;
+// 5. Единая логика для гостевого чата [booking.js] и суфлера хозяина [ai-concierge.js].
+// 100% Zero-Brackets & Zero-Emdash Стандарт.
+// ==============================================================================
+
+import { getAiKnowledgeBase } from './aiKnowledgeBase';
+import { classifyIntent, globalKnowledgeGraph } from './aiKnowledgeGraph';
+import { buildSparkRulesPromptSection } from './spark_rules_manifest';
+
+const DEFAULT_MODEL = 'gemini-3.6-flash';
+
+/**
+ * Единый генератор ответов ИИ-Консьержа
+ * @param {Object} params
+ * @param {string} params.guestMessage - Текущее сообщение гостя
+ * @param {string} params.guestName - Имя гостя
+ * @param {string} params.contact - Контакт гостя [телефон или email]
+ * @param {Array} params.chatHistory - Предыдущие сообщения в чате
+ * @param {Object} [params.providedKb] - Опциональная предзагруженная база знаний
+ */
+export async function generateConciergeReply({
+  guestMessage = '',
+  guestName = 'Гость',
+  contact = '',
+  chatHistory = [],
+  providedKb = null
+}) {
+  const kb = providedKb || await getAiKnowledgeBase();
+  const apiKey = (process.env.GEMINI_API_KEY || '').trim();
+  const model = (kb.geminiModel || process.env.GEMINI_MODEL || DEFAULT_MODEL).trim();
+
+  if (!apiKey) {
+    return {
+      success: false,
+      isRealAi: false,
+      error: 'Ключ GEMINI_API_KEY не обнаружен на Vercel [Environment Variables]',
+      replyText: ''
+    };
+  }
+
+  // 1. Формирование истории переписки для сохранения контекста диалога
+  const historyLines = (chatHistory || [])
+    .slice(-8)
+    .map((m) => {
+      const sender = m.sender || (m.isHost ? 'Владелец' : 'Гость');
+      const text = (m.original || m.ru || m.text || '').trim();
+      return text ? `${sender}: ${text}` : null;
+    })
+    .filter(Boolean);
+
+  const accumulatedText = `${historyLines.join(' ')} ${guestMessage}`.toLowerCase();
+
+  // 2. Определение намерения гостя с учетом всей истории переписки
+  let intent = classifyIntent(accumulatedText);
+  if (
+    accumulatedText.includes('трансфер') ||
+    accumulatedText.includes('такси') ||
+    accumulatedText.includes('transfer') ||
+    accumulatedText.includes('taxi') ||
+    accumulatedText.includes('аэропорт') ||
+    accumulatedText.includes('даламан') ||
+    accumulatedText.includes('водитель') ||
+    accumulatedText.includes('передач')
+  ) {
+    intent = 'TRANSFER_TRANSPORT';
+  }
+
+  // 3. Извлечение переменных и контактов из SSOT базы Google Таблиц
+  const vars = kb.blocks?.variables || kb.variables || {};
+  const transferPartnerName = vars.transfer_partner_name || 'Dalyan VIP Transfer Service';
+  const transferPartnerPhone = vars.transfer_partner_phone || '+90 543 335 80 70';
+  const transferPartnerContact = vars.transfer_partner_contact || 'Ahmet';
+  const transferPartnerWhatsapp = vars.transfer_partner_whatsapp || '+90 543 335 80 70';
+  const hostPhone = vars.host_phone || '+90 534 000 00 00';
+  const hostWhatsapp = vars.host_whatsapp || '+90 534 000 00 00';
+  const hostTelegram = vars.host_telegram || '@villaturaman';
+  const address = vars.address || 'Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla';
+  const wifiName = vars.wifi_name || 'Guest';
+  const wifiPass = vars.wifi_password || 'villa2026';
+  const minPrice = kb.minPriceUsd || 180;
+
+  // 4. Сборка системного промпта
+  let systemInstruction = kb.systemPrompt || '';
+  if (!systemInstruction) {
+    systemInstruction = 'Ты: персональный ИИ-консьерж суперхозяина Алексея Знаменского на вилле Villa Turaman в Дальяне, Турция. Твоя миссия: гостеприимно, дипломатично, точно и авторитетно отвечать гостям на языке их обращения [RU, EN, TR]. Все факты берутся строго из Google Таблиц экосистемы.';
+  }
+
+  // Финансовый регламент
+  systemInstruction += `\n\nФИНАНСОВЫЙ БАРЬЕР: Минимальный тариф за сутки: ${minPrice} USD. Скидка 10% только при невозвратном тарифе на даты до 60 дней. Скидки ниже ${minPrice} USD строго запрещены.`;
+
+  // Официальные контакты и реквизиты объекта
+  systemInstruction += `\n\nОФИЦИАЛЬНЫЕ РЕКВИЗИТЫ И КОНТАКТЫ ЭКОСИСТЕМЫ:`;
+  systemInstruction += `\n• Адрес виллы: ${address}`;
+  systemInstruction += `\n• Wi-Fi: Сеть ${wifiName}, Пароль ${wifiPass}`;
+  systemInstruction += `\n• Стандартный заезд: 16:00, Стандартный выезд: 10:00`;
+  systemInstruction += `\n• Суперхозяин: Алексей Знаменский [Телефон: ${hostPhone}, WhatsApp: ${hostWhatsapp}, Telegram: ${hostTelegram}]`;
+  systemInstruction += `\n• Проверенный партнер по трансферу: ${transferPartnerName} [Координатор: ${transferPartnerContact}, Телефон: ${transferPartnerPhone}, WhatsApp: ${transferPartnerWhatsapp}, Авто: Mercedes Vito VIP, Тариф: 50 EUR / 1800 TRY]`;
+
+  // Регламент KBS
+  if (kb.kbs && Object.keys(kb.kbs).length > 0) {
+    systemInstruction += `\n\nПРАВИЛА KBS ПОЛИЦИИ: Обязательная передача паспортных данных всех гостей до заезда согласно закону Kimlik Bildirme Kanunu 1774.`;
+  }
+
+  // Манифест SPARK
+  systemInstruction += `\n\n${buildSparkRulesPromptSection()}`;
+
+  // Микроконтекст графа знаний
+  const microContext = (kb.graph || globalKnowledgeGraph).getContextForIntent(intent);
+  systemInstruction += `\n\nЦЕЛЕВОЙ МОДУЛЬ ЗНАНИЙ [ТЕМА: ${intent}]:\n${microContext}`;
+
+  // 5. БЕЗУСЛОВНЫЙ ИМПЕРАТИВНЫЙ ПРИКАЗ ПО ТРАНСФЕРУ
+  if (intent === 'TRANSFER_TRANSPORT') {
+    systemInstruction += `\n\n🚨 КРИТИЧЕСКОЕ ПРАВИЛО ПО ТРАНСФЕРУ И ПАРТНЕРАМ:\n` +
+      `Гость спрашивает про трансфер, такси, водителя, партнера или просит телефон / контакты.\n` +
+      `ТЫ ОБЯЗАН В ПЕРВЫХ ЖЕ СТРОКАХ СВОЕГО ОТВЕТА ВЫДАТЬ ПРЯМЫЕ КОНТАКТЫ АХМЕТА:\n` +
+      `• Служба трансфера: ${transferPartnerName}\n` +
+      `• Координатор: ${transferPartnerContact}\n` +
+      `• Прямой телефон: ${transferPartnerPhone}\n` +
+      `• WhatsApp: ${transferPartnerWhatsapp}\n` +
+      `• Автомобиль: комфортабельный минивэн Mercedes Vito\n` +
+      `• Стоимость: 50 EUR или 1800 TRY [фиксированный тариф виллы]\n` +
+      `КАТЕГОРИЧЕСКИ И СТРОЖАЙШЕ ЗАПРЕЩЕНО запрашивать номер рейса, время прилета, объем багажа или количество пассажиров ДО или ВМЕСТО предоставления этих контактов!\n` +
+      `Даже если гость пишет кратко: "просто пришлите телефон партнёра", "передача", "мне нужен трансфер" : СРАЗУ выдавай телефон Ахмета ${transferPartnerPhone}!\n` +
+      `Сначала выдай прямой телефон, а затем при необходимости вежливо предложи помощь.`;
+  }
+
+  // 6. Формирование финального промпта с историей диалога
+  let fullPrompt = `${systemInstruction}\n\n`;
+
+  if (historyLines.length > 0) {
+    fullPrompt += `ИСТОРИЯ ПРЕДЫДУЩИХ СООБЩЕНИЙ В ЭТОМ ДИАЛОГЕ:\n`;
+    historyLines.forEach((line) => {
+      fullPrompt += `${line}\n`;
+    });
+    fullPrompt += `\n`;
+  }
+
+  fullPrompt += `ТЕКУЩЕЕ СООБЩЕНИЕ ГОСТЯ: "${guestMessage}"\n`;
+  fullPrompt += `ИМЯ ГОСТЯ: ${guestName} [${contact || 'Контакт в профиле'}]\n\n`;
+  fullPrompt += `Сформулируй гостеприимный, лаконичный и точный ответ гостю. Строго следуй критическому правилу по трансферу, если тема касается поездки.`;
+
+  // 7. Запрос к Google Gemini REST API
+  try {
+    const aiRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: fullPrompt }] }],
+          generationConfig: {
+            temperature: 0.25, // Низкая температура для строгой точности и соблюдения инструкций
+            maxOutputTokens: 2048
+          }
+        })
+      }
+    );
+
+    const aiData = await aiRes.json();
+    const replyText = aiData?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+
+    if (!replyText) {
+      return {
+        success: false,
+        isRealAi: false,
+        error: aiData?.error?.message || 'Пустой ответ от Gemini API',
+        replyText: ''
+      };
+    }
+
+    return {
+      success: true,
+      isRealAi: true,
+      replyText,
+      intent,
+      model
+    };
+  } catch (err) {
+    return {
+      success: false,
+      isRealAi: false,
+      error: err.message,
+      replyText: ''
+    };
+  }
+}
