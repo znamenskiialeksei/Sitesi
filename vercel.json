@@ -1,16 +1,27 @@
 ﻿{
-  "version": 2,
-  "builds": [
+  "framework": null,
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "cleanUrls": true,
+  "rewrites": [
     {
-      "src": "maintenance.html",
-      "use": "@vercel/static"
+      "source": "/((?!maintenance\\.html).*)",
+      "destination": "/maintenance.html"
     }
   ],
-  "routes": [
+  "headers": [
     {
-      "src": "/(.*)",
-      "dest": "/maintenance.html",
-      "status": 503
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, max-age=0"
+        },
+        {
+          "key": "Retry-After",
+          "value": "3600"
+        }
+      ]
     }
   ]
 }
