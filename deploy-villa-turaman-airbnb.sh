@@ -67,7 +67,7 @@ cd "$PROJECT_ROOT"
 
 # Создание каталогов проекта
 mkdir -p .vscode components components/GuestCabinet components/HostCabinet components/Modals \
-         context google-apps-script pages pages/api pages/api/admin pages/api/webhooks \
+         context google-apps-script pages pages/api pages/api/admin pages/api/ai pages/api/webhooks \
          pages/guest pages/host pages/legal public public/images scripts styles utils scratch _BACKUPS
 
 # Если исходные файлы доступны рядом со скриптом, копируем их
