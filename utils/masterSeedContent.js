@@ -9,92 +9,92 @@ const MASTER_ABOUT_SECTIONS = [
   {
     id: '1',
     title: {
-      ru: 'О вилле и о нас',
-      en: 'About the villa and about us',
-      tr: 'Villa hakkında ve biz hakkında'
+      ru: '1. Концепция объекта, геолокация и расширенные географические ориентиры',
+      en: '1. Property Concept, Geolocation and Extended Landmarks',
+      tr: '1. Tesis Konsepti, Coğrafi Konum ve Genişletilmiş Önemli Noktalar'
     },
     text: {
-      ru: 'Вилла Turaman расположена в живописном маленьком городке Дальян в провинции Мугла [Турция] на берегу реки Дальян и озера Кёйджегиз. Готова принять 10 гостей путешественников. Приватный бассейн 36 квадратных метров и роскошная придомовая территория с террасой и садом. Адрес виллы: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla. Локация: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9',
-      en: 'Villa Turaman is located in the picturesque small town of Dalyan in the Muğla Province of Turkey, on the banks of the Dalyan River and Lake Köyceğiz. It can accommodate up to 10 guests. It features a private 36-square-meter pool and a luxurious courtyard with a terrace and garden. Address: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla. Location: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9',
-      tr: "Villa Turaman, Türkiye'nin Muğla ilinin pitoresk Dalyan kasabasında, Dalyan Nehri ve Köyceğiz Gölü kıyısında yer almaktadır. 10 kişiye kadar konaklama imkanı sunan villada, 36 metrekarelik özel bir havuz ve teraslı ve bahçeli lüks bir avlu bulunmaktadır. Adres: Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla. Konum: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9"
+      ru: 'Dalyan Turaman [частный бассейн, 10 спальных мест] - это цифровая веб-платформа прямого онлайн-бронирования двухэтажной виллы премиум-класса в экологическом заповедном курорте Дальян [район Ортаджа, провинция Мугла, Турция], расположенном между рекой Дальян и озером Кёйджегиз.\n\nОфициальный адрес и навигация:\n* Адрес виллы: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Turkey.\n* Ссылка на геолокацию в Google Maps: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n* Точные координаты GPS: 36.8336° N, 28.6439° E.\n\nПолный реестр ключевых географических ориентиров:\n* Пешеходный центр Дальяна: всего 250 метров [3 минуты пешком] до главной пешеходной улицы с магазинами, рынками, аптеками и сувенирными лавками.\n* Речная набережная реки Дальян: 400 метров для утренних пробежек, вечерних прогулок и наблюдения за речными лодками.\n* Гастрономия: популярный ресторан высокой кухни La Boheme Dalyan - 350 метров; традиционный рыбный ресторан Çiçek Restoran - 500 метров.\n* Ликийские скальные гробницы королей Кауноса [IV век до н.э.]: панорамный вид с набережной Дальяна [450 метров], вечерняя подсветка скал и 10 минут на лодке.\n* Античный город Каунос, древний акрополь и амфитеатр: 1.5 км [переправа на весельной лодке через реку Дальян и пеший маршрут].\n* Всемирно известный песчаный пляж Изтузу [İztuzu]: 11 км [около 15 минут на машине или 30-40 минут на живописном речном катере-такси через лабиринты камышей]. Заповедная зона обитания гигантских морских черепах Caretta-Caretta.\n* Термальные радоновые источники и омолаживающие грязи Султание [Sultaniye Kaplıcaları]: 4 км по воде на озере Кёйджегиз.\n* Озеро Кёйджегиз [Köyceğiz Gölü]: 5 км до выхода из русла реки в открытую озерную акваторию.\n* Смотровая площадка Радар [Radar Tepesi]: 8 км [панорамный обзор 360° на всю дельту реки, озеро и косу пляжа Изтузу с высоты 500 метров].\n* Международный аэропорт Даламан [DLM]: 30 км [25-30 минут на машине или индивидуальном трансфере].\n* Субботний фермерский рынок Дальяна: 600 метров [свежие фермерские сыры, оливки, гранатовый сок, инжир и фрукты].\n* Морские курорты: город Мармарис - 85 км, город Фетхие и бухта Олюдениз - 60 км.',
+      en: 'Dalyan Turaman [private pool, sleeps 10] is a direct online booking digital platform for a premium 2-story villa in the ecological nature resort of Dalyan [Ortaca district, Muğla province, Turkey], situated between the Dalyan River and Lake Köyceğiz.\n\nOfficial Address & Navigation:\n* Address: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Turkey.\n* Google Maps: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n* GPS: 36.8336° N, 28.6439° E.\n\nKey Geographic Landmarks:\n* Dalyan pedestrian center: 250 m [3 min walk] to shops, markets and pharmacies.\n* Dalyan River promenade: 400 m for scenic walks and boat trips.\n* Dining: La Boheme Dalyan Bistro [350 m], Çiçek Restoran [500 m].\n* Lycian Rock Tombs: 450 m line of sight from promenade.\n* Ancient Kaunos & Amphitheater: 1.5 km across river.\n* Iztuzu Turtle Beach: 11 km [15 min drive or 35 min river boat].\n* Sultaniye Hot Springs & Mud Baths: 4 km via water.\n* Lake Köyceğiz: 5 km.\n* Radar Hill Panoramic View: 8 km [360 degree panoramic view].\n* Dalaman Airport [DLM]: 30 km [25-30 min drive].\n* Saturday Farmers Market: 600 m [7 min walk].\n* Resorts: Marmaris 85 km, Fethiye 60 km.',
+      tr: 'Dalyan Turaman [özel havuz, 10 yatak] Dalyan Nehri ile Köyceğiz Gölü arasında yer alan lüks 2 katlı villanın doğrudan online rezervasyon platformudur [Ortaca, Muğla, Türkiye].\n\nResmi Adres ve Konum:\n* Adres: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Türkiye.\n* Google Maps: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n* GPS: 36.8336° N, 28.6439° E.\n\nÖnemli Noktalar:\n* Dalyan yaya merkezi: 250 m [3 dk yürüme].\n* Dalyan Nehri kordonu: 400 m.\n* Restoranlar: La Boheme Dalyan [350 m], Çiçek Restoran [500 m].\n* Likya Kaya Mezarları: 450 m kordondan direkt manzara.\n* Antik Kaunos Kenti: 1.5 km.\n* İztuzu Plajı: 11 km [15 dk araç veya 35 dk tekne].\n* Sultaniye Kaplıcaları ve Çamur Banyosu: 4 km su yolu.\n* Köyceğiz Gölü: 5 km.\n* Radar Tepesi Seyir Noktası: 8 km [360 derece panorama].\n* Dalaman Havalimanı [DLM]: 30 km [25-30 dk araç].\n* Cumartesi Pazarı: 600 m.\n* Tatil merkezleri: Marmaris 85 km, Fethiye 60 km.'
     }
   },
   {
     id: '2',
     title: {
-      ru: 'Вместимость',
-      en: 'Capacity',
-      tr: 'Kapasite'
+      ru: '2. Архитектура виллы и номерной фонд',
+      en: '2. Villa Architecture and Bed Configuration',
+      tr: '2. Villa Mimarisi ve Oda Düzeni'
     },
     text: {
-      ru: 'Вилла рассчитана максимум на 10 гостей [включая детей].',
-      en: 'The villa can accommodate a maximum of 10 guests [including children].',
-      tr: 'Villa en fazla 10 kişiyi [çocuklar dahil] ağırlayabilir.'
+      ru: 'Тип недвижимости: Дом / Вилла [в распоряжении гостей жилье целиком].\nПлощадь, этажность и год постройки: 240 кв. метров, 2 этажа, год постройки - 2013.\nВместимость: до 10 гостей [включая детей], 10 полноценных спальных мест.\nКонфигурация спален и санузлов: 4 большие спальни [каждая оборудована персональной ванной комнатой и автономным кондиционером] + гостевой туалет на первом этаже:\n\nПервый этаж:\n* Полноценная оборудованная кухня Beko [большой двухкамерный холодильник, духовка, плита, посудомоечная машина, кофемашина, чайник, полный комплект посуды и столовых приборов].\n* Просторная светлая гостиная: два удобных дивана, 55-дюймовый Smart TV [Netflix, YouTube], журнальный стол.\n* Гостевой туалет, прихожая со шкафом для верхней одежды.\n* Постирочная зона: стиральная машина, гладильная доска и утюг.\n* Спальня 1: рассчитана на 3 спальных места [1 двуспальная кровать квин-сайз + 1 односпальная кровать], собственная ванная комната с душевой кабиной, индивидуальный кондиционер.\n\nВторой этаж:\n* Спальня 2: 1 двуспальная кровать кинг-сайз, ванная комната с тропическим душем, кондиционер, балкон.\n* Спальня 3: 1 двуспальная кровать квин-сайз, ванная комната, кондиционер, вид на горы.\n* Спальня 4: рассчитана на 3 спальных места [1 двуспальная кровать квин-сайз + 1 односпальная кровать], ванная комната, кондиционер.\n* Дополнительная стиральная машина во второй ванной комнате второго этажа.\n\nИтоговая структура 10 спальных мест: 4 двуспальные кровати + 2 односпальные кровати + диван в гостиной = 10 спальных мест.',
+      en: 'Property Type: Entire Villa.\nArea & Floors: 240 sqm, 2 floors, built 2013.\nCapacity: up to 10 guests [including children], 10 beds.\n4 large en-suite bedrooms + guest WC on the first floor:\n\nFirst Floor:\n* Full Beko kitchen [refrigerator, oven, stove, dishwasher, coffee maker, kettle, full cookware].\n* Living room: 2 sofas, 55" Smart TV [Netflix, YouTube], coffee table.\n* Guest toilet, entrance hall.\n* Laundry zone: washing machine, iron, ironing board.\n* Bedroom 1: sleeps 3 [1 Queen bed + 1 single bed], en-suite shower, AC.\n\nSecond Floor:\n* Bedroom 2: 1 King bed, en-suite bathroom with tropical shower, AC, balcony.\n* Bedroom 3: 1 Queen bed, en-suite bathroom, AC, mountain view.\n* Bedroom 4: sleeps 3 [1 Queen bed + 1 single bed], en-suite bathroom, AC.\n* Extra washing machine on second floor.\nTotal 10 beds: 4 double beds + 2 single beds + living room sofa.',
+      tr: 'Emlak Tipi: Müstakil Villa tamamı.\nAlan ve Kat: 240 m², 2 kat, yapım yılı 2013.\nKapasite: 10 misafire kadar [çocuklar dahil], 10 yatak.\n4 geniş ebeveyn banyolu yatak odası + zemin katta misafir WC:\n\nZemin Kat:\n* Tam donanımlı Beko mutfak [buzdolabı, fırın, ocak, bulaşık makinesi, kahve makinesi, su ısıtıcısı, yemek takımı].\n* Oturma odası: 2 kanepe, 55 inç Smart TV [Netflix, YouTube], sehpa.\n* Misafir tuvaleti, vestiyer.\n* Çamaşır alanı: çamaşır makinesi, ütü ve masası.\n* Yatak Odası 1: 3 kişilik [1 Queen çift kişilik + 1 tek kişilik], özel duşlu banyo, klima.\n\nİkinci Kat:\n* Yatak Odası 2: 1 King yatak, tropikal duşlu özel banyo, klima, balkon.\n* Yatak Odası 3: 1 Queen yatak, özel banyo, klima, dağ manzarası.\n* Yatak Odası 4: 3 kişilik [1 Queen + 1 tek kişilik], özel banyo, klima.\n* İkinci katta ilave çamaşır makinesi.\nToplam 10 yatak kapasitesi.'
     }
   },
   {
     id: '3',
     title: {
-      ru: 'Описание виллы',
-      en: 'Description of the villa',
-      tr: 'Villanın Tanımı'
+      ru: '3. Придомовая территория, бассейн и спа-комплекс',
+      en: '3. Courtyard, Pool and Spa Complex',
+      tr: '3. Bahçe Alanı, Havuz ve Spa Kompleksi'
     },
     text: {
-      ru: 'Вилла находится в самом центре Дальяна. Вся компания оценит близость к достопримечательностям. Приватный бассейн. Полноценная кухня и гостиная комната. 4 большие спальни. Спальня на 1 этаже: рассчитана на 3 спальных места, располагает собственной ванной комнатой [душевая кабина] и кондиционером. Спальни на 2 этаже: три отдельные спальные комнаты по 2 спальных места, каждая со своей ванной комнатой и кондиционером. В одной из этих спален дополнительно установлена односпальная кровать [до 10 гостей].',
-      en: 'The villa is located in the heart of Dalyan. The whole group will appreciate the proximity to attractions. It features a private pool, a full kitchen, and a living room. Four large bedrooms. The bedroom on the first floor sleeps three and has an en-suite bathroom [shower] and air conditioning. The bedrooms on the second floor include three separate bedrooms, each with its own bathroom and air conditioning. One of these bedrooms can accommodate an additional single bed [sleeps up to 10 guests].',
-      tr: 'Villa, Dalyan merkezinde yer almaktadır. Tüm grup, turistik yerlere yakınlığı takdir edecektir. Villada özel havuz, tam donanımlı mutfak ve oturma odası bulunmaktadır. Dört geniş yatak odası mevcuttur. Birinci kattaki yatak odasında üç kişi konaklayabilir ve özel banyo [duş] ve klima bulunmaktadır. İkinci kattaki yatak odaları ise her biri kendi banyosuna ve klimasına sahip üç ayrı yatak odasından oluşmaktadır. Bu yatak odalarından birine ilave bir tek kişilik yatak eklenebilir [10 kişiye kadar konaklama imkanı].'
+      ru: 'Приватный бассейн с соленой водой: чаша 4×9 метров [площадь 36 кв. м], постоянная глубина 150 см. Идеальное место для отдыха и освежающих купаний без запаха хлора. Доступен в период с 1 мая по 1 ноября. Профилактическая чистка проводится в день заселения и далее каждые 7 дней. Внутренняя подсветка бассейна активна автоматически с 20:00 до 01:00.\n\nУличное приватное джакузи: гидромассажная спа-ванна на 4 персоны в зоне бассейна. Автоматический режим: включается на 15 минут с интервалом каждые 45 минут в период с 10:00 до 17:00. Подсветка джакузи активна с 20:00 до 01:00. Доступно с 1 мая по 1 ноября.\n\nОсвещение территории: автоматическое включение уличных фонарей в диапазонах с 20:00 до 01:00 и с 04:00 до 06:00.\n\nПарковка: бесплатная частная парковка на закрытой территории перед домом на 2 автомобиля.\n\nОткрытые пространства для отдыха: полностью огороженный задний двор-сад, зона барбекю [гриль на дровах и углях], уютное крыльцо с кофейными столиками, большой обеденный стол на открытом воздухе на 8 персон, терраса для загара с удобными шезлонгами и летний душ.',
+      en: 'Private Saltwater Pool: 4x9 m [36 sqm], 150 cm depth. Odor-free natural mineralized water without harsh chlorine. Open May 1 - Nov 1. Cleaning on check-in day and every 7 days. Underwater lighting 20:00 - 01:00.\n\nOutdoor Private Jacuzzi: 4-person spa tub by the pool. Auto-cycle: 15 min on every 45 min between 10:00 and 17:00. Lighting 20:00 - 01:00. Available May 1 - Nov 1.\n\nArea Lighting: Automated lighting 20:00 - 01:00 and 04:00 - 06:00.\n\nParking: Free private parking inside gated grounds for 2 cars.\n\nOutdoor Living: Fenced private garden, charcoal BBQ grill, porch with coffee tables, outdoor dining table for 8, sun loungers and outdoor shower.',
+      tr: 'Özel Tuzlu Su Havuzu: 4x9 metre [36 m²], 150 cm derinlik. Klorsuz yumuşak su. 1 Mayıs - 1 Kasım arası açık. Giriş günü ve her 7 günde bir temizlik. Havuz aydınlatması 20:00 - 01:00.\n\nAçık Özel Jakuzi: Havuz başında 4 kişilik hidro-masajlı spa jakuzi. 10:00 - 17:00 arası her 45 dakikada 15 dakika çalışma döngüsü. Aydınlatma 20:00 - 01:00.\n\nBahçe Aydınlatması: Otomatik 20:00 - 01:00 ve 04:00 - 06:00.\n\nOtopark: Kapalı özel bahçe içinde 2 araçlık ücretsiz otopark.\n\nAçık Alanlar: Korunaklı bahçe, barbekü alanı, veranda, 8 kişilik açık yemek masası, şezlonglar ve açık duş.'
     }
   },
   {
     id: '4',
     title: {
-      ru: 'Что доступно гостю',
-      en: 'What is available to the guest?',
-      tr: 'Misafirlerin kullanımına sunulan olanaklar nelerdir?'
+      ru: '4. Юридический регламент, безопасность и доступная среда',
+      en: '4. Legal Regulations, Safety and Accessible Environment',
+      tr: '4. Yasal Mevzuat, Güvenlik ve Engelsiz Erişim'
     },
     text: {
-      ru: 'Первый этаж:\nПолноценная кухня и гостиная комната.\n55-дюймовый смарт-телевизор.\nТуалет для гостей, стиральная машина, гладильная доска и утюг.\nСпальня на 3 спальных места с собственной ванной комнатой [душевая кабина].\nПрихожая со шкафом для уличной одежды.\nЛестница на второй этаж.\n\nВторой этаж:\n3 спальные комнаты, каждая из которых имеет собственную ванную комнату.\nДополнительное спальное место в виде односпальной кровати в одной из спален второго этажа.\nСтиральная машина в одной из ванных комнат.',
-      en: 'First floor:\nFull kitchen and living room.\n55-inch smart TV.\nGuest toilet, washing machine, ironing board, and iron.\nTriple bedroom with en-suite bathroom [shower].\nEntrance hall with closet for outdoor clothing.\nStairs to the second floor.\n\nSecond floor:\nThree bedrooms, each with its own bathroom.\nAn additional single bed can be added in one of the second-floor bedrooms.\nWashing machine in one of the bathrooms.',
-      tr: 'Birinci Kat:\nTam donanımlı mutfak ve oturma odası.\n55 inç akıllı TV.\nMisafir tuvaleti, çamaşır makinesi, ütü masası ve ütü.\nEn-suite banyolu [duşlu] üç kişilik yatak odası.\nDış giyim için dolaplı giriş holü.\nİkinci kata çıkan merdivenler.\n\nİkinci Kat:\nHer biri kendi banyosuna sahip üç yatak odası.\nİkinci kattaki yatak odalarından birine ilave tek kişilik yatak eklenebilir.\nBanyolardan birinde çamaşır makinesi.'
+      ru: 'Закон Турции № 7464 о краткосрочной аренде: при заселении гость подписывает официальный договор краткосрочной аренды виллы с описью имущества.\n\nРегистрация в системе учета населения [KBS]: гость обязуется предоставить данные удостоверений личности [паспортов] всех проживающих заранее или при заселении. Размещение лиц, не зарегистрированных в системе, строго запрещено.\n\nБезопасность дома: наружные камеры видеонаблюдения по внешнему периметру территории, детекторы дыма, огнетушитель, аптечка первой помощи.\n\nЭлементы доступной среды: парковочное место для людей с инвалидностью, освещенная ровная дорожка к гостевому входу, доступ без ступеней, входная дверь шириной от 81 см, подъемник для бассейна и джакузи.\n\nПолитика отмены бронирования:\n* Краткосрочные бронирования [менее 28 ночей]: Негибкие.\n* Долгосрочные бронирования [от 28 ночей]: Строгие правила для долгосрочных бронирований.\n* Дополнительный параметр: тариф Без возврата денег со скидкой 10% [активен при заезде в течение ближайших 60 дней] либо стандартный тариф.',
+      en: 'Turkish Law No. 7464 on Short-Term Rental: Official short-term lease agreement with inventory signed upon check-in.\n\nPolice KBS Registration: All guests must provide passports for mandatory registration in the KBS system. Unregistered guests strictly prohibited.\n\nHome Safety: External perimeter CCTV cameras, optical smoke detectors, fire extinguisher, first aid kit.\n\nAccessible Environment: Disabled parking space, illuminated step-free path, doorway >= 81 cm, mobile pool and jacuzzi lift.\n\nCancellation Policy:\n* Short-term [< 28 nights]: Inflexible.\n* Long-term [>= 28 nights]: Strict long-term.\n* Non-refundable option: 10% discount for bookings within 60 days of check-in.',
+      tr: '7464 Sayılı Konutların Turizm Amaçlı Kiralanması Kanunu: Girişte eşya envanterli resmi kira sözleşmesi imzalanır.\n\nKBS Kimlik Bildirimi: Tüm konukların pasaport/kimlik bilgileri polise bildirilmek zorundadır. Kayıtsız konaklama yasaktır.\n\nGüvenlik: Dış çevre güvenlik kameraları, duman dedektörleri, yangın söndürücü, ilk yardım çantası.\n\nEngelsiz Erişim: Engelli otopark alanı, basamaksız aydınlatılmış yol, 81 cm üzeri kapı genişliği, havuz ve jakuzi lifti.\n\nİptal Politikası:\n* Kısa dönem [< 28 gece]: Esnek olmayan.\n* Uzun dönem [>= 28 gece]: Katı uzun dönem.\n* İadesiz tarife seçeneği: 60 gün öncesi rezervasyonlarda %10 indirim.'
     }
   },
   {
     id: '5',
     title: {
-      ru: 'Бассейн и Сад',
-      en: 'Pool and Garden',
-      tr: 'Havuz ve Bahçe'
+      ru: '5. Профиль суперхозяина и мастер-доступ',
+      en: '5. Superhost Profile and Master Access',
+      tr: '5. Süper Ev Sahibi Profili ve Ana Erişim'
     },
     text: {
-      ru: 'Очистка бассейна и уход за садом проводятся рано утром с 8 до 10 часов.',
-      en: 'Pool cleaning and garden maintenance are carried out early in the morning from 8 am to 10 am.',
-      tr: 'Havuz temizliği ve bahçe bakımı sabah erken saatlerde, 08:00 ile 10:00 arasında yapılmaktadır.'
+      ru: 'Личность владельца: Алексей Знаменский [Aleksei Znamenskii].\nМесто постоянного проживания: Мармарис, Турция.\nРод занятий: Яхтсмен на пенсии.\nЖизненное кредо: «Хочешь что-то сделать хорошо, сделай это сам».\nМечта: отправиться в Португалию и увидеть океан.\nХобби и интересы: Велоспорт, Парусный спорт, Природа.\nШтампы путешествий: Дубай [ОАЭ, 3 поездки], Абу-Даби [ОАЭ, посещение в марте 2026 г.].\nЯзыки общения: Русский, English, Türkçe.\nРеквизиты налогоплательщика: Ortaca Vergi Dairesi, VKN: 9991120181.\n\nМастер-доступ суперхозяина [стартовые данные восстановления]:\n* Email: villaturaman@gmail.com\n* Логин / Пароль: admin / admin123\n* Роль: Владелец\n* Пакет полномочий: Финансы, Периоды, Блокировки, Окно брони, Чаты [Главный системный аккаунт].',
+      en: 'Host: Aleksei Znamenskii.\nResidence: Marmaris, Turkey.\nOccupation: Retired yachtsman.\nMotto: "If you want something done right, do it yourself".\nDream: Visit Portugal and see the Atlantic Ocean.\nHobbies: Cycling, Sailing, Nature.\nTravel Stamps: Dubai [3 trips], Abu Dhabi [March 2026].\nLanguages: Russian, English, Turkish.\nTax ID: Ortaca Vergi Dairesi, VKN: 9991120181.\n\nMaster Access [Recovery & Seed Credentials]:\n* Email: villaturaman@gmail.com\n* Login / Password: admin / admin123\n* Role: Owner\n* Permissions: Finance, Periods, Blocks, Booking Window, Chats [Root Master Account].',
+      tr: 'Ev Sahibi: Aleksei Znamenskii.\nİkamet: Marmaris, Türkiye.\nMeslek: Emekli yat kaptanı / yatçı.\nHayat İlkesi: "Bir şeyi iyi yapmak istiyorsan kendin yap".\nHayal: Portekiz\'e gitmek ve okyanusu görmek.\nHobiler: Bisiklet, Yelken, Doğa.\nSeyahat Pulları: Dubai [3 gezi], Abu Dabi [Mart 2026].\nDiller: Rusça, İngilizce, Türkçe.\nVergi No: Ortaca Vergi Dairesi, VKN: 9991120181.\n\nAna Sistem Erişimi:\n* E-posta: villaturaman@gmail.com\n* Kullanıcı / Şifre: admin / admin123\n* Rol: Sahip [Tüm yetkiler].'
     }
   },
   {
     id: '6',
     title: {
-      ru: 'Правила проживания',
-      en: 'House Rules',
-      tr: 'Ev Kuralları'
+      ru: '6. Новая планировка Центра сообщений и CRM [HostInbox.js]',
+      en: '6. New Message Center and CRM Layout [HostInbox.js]',
+      tr: '6. Yeni Mesaj Merkezi ve CRM Düzeni [HostInbox.js]'
     },
     text: {
-      ru: 'Заезд после 16:00, выезд до 10:00. Курение в помещениях виллы строго запрещено.',
-      en: 'Check-in after 4:00 PM, check-out before 10:00 AM. Smoking is strictly prohibited in the villa.',
-      tr: "Giriş saati 16:00'dan sonra, çıkış saati 10:00'dan öncedir. Villada sigara içmek kesinlikle yasaktır."
+      ru: 'Просторное многострочное поле ввода ответа:\n* Минимальная высота увеличена до 90px с автоматическим комфортным расширением до 220px при наборе текста.\n* Текст хозяина больше не сжимается, обеспечен полноценный контраст и удобный скролл.\n\nОтдельная смарт-панель шаблонов [без перекрытия переписки]:\n* Панель шаблонов вынесена в независимый блок, не загораживающий активный чат с гостем.\n* Полноразмерный предпросмотр: возможность полностью прочитать длинные многострочные сценарии [включая расчеты цен, правила заезда и инструкции к бассейну] до их вставки.\n* Две понятные кнопки действия: «Вставить в поле для правки» и «Отправить сразу».\n* Динамический счетчик шаблонов на базе данных из Google Таблицы без жесткого числа «14».\n\nЛиквидация дергания экрана:\n* Замена глобального scrollIntoView на локальный скролл контейнера: messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight.',
+      en: 'Spacious Multi-line Reply Input Field:\n* Min height increased to 90px with auto expansion up to 220px.\n* Clear contrast, comfortable leading and smooth scroll.\n\nDedicated Smart Template Sidebar [No chat overlay]:\n* Positioned in independent right panel tab without blocking active conversation.\n* Full preview of lengthy responses prior to insertion.\n* Action buttons: "Insert into input" and "Send immediately".\n* Dynamic template counter based on live Google Sheets.\n\nElimination of Screen Jitter:\n* Isolated container scroll via messagesContainerRef.current.scrollTop.',
+      tr: 'Genişletilmiş Çok Satırlı Cevap Giriş Alanı:\n* Minimum yükseklik 90px, yazarken 220px\'e kadar otomatik genişleme.\n* Sohbeti kapatmayan bağımsız şablon paneli.\n* Şablonları eklemeden önce tam metin önizleme imkanı.\n* Doğrudan yerleştirme ve anında gönderme butonları.\n* Canlı Google E-Tablo senkronizasyonlu dinamik sayaç.'
     }
   },
   {
     id: '7',
     title: {
-      ru: 'Регистрация [KBS/KVKK]',
-      en: 'Registration [KBS/KVKK]',
-      tr: 'Kayıt [KBS/KVKK]'
+      ru: '7. Размещение данных на витрине сайта и в стартовых файлах',
+      en: '7. Showcase Data Placement and Startup Recovery Files',
+      tr: '7. Vitrin Veri Yerleşimi ve Başlangıç Kurtarma Dosyaları'
     },
     text: {
-      ru: 'Ваши данные защищены и используются исключительно для регистрации гостей в системе KBS согласно законам Турции.',
-      en: 'Your data is protected and used solely for the purpose of registering guests in the KBS system in accordance with Turkish law.',
-      tr: 'Verileriniz korunmaktadır ve Türk kanunlarına uygun olarak yalnızca KBS sistemine misafir kaydı amacıyla kullanılmaktadır.'
+      ru: 'Главная витрина сайта [pages/index.js]:\n* В Hero-секции и подзаголовке: четкое указание локации Дальян, приватного бассейна 36 кв. м и 10 спальных мест.\n* Интерактивный блок «Географические ориентиры Дальяна»: карточки с точными расстояниями [250м центр, 400м набережная, 350м ресторан La Boheme, 11км пляж Изтузу, 30км аэропорт Даламан, грязи Султание, гробницы Кауноса].\n* Блок номерного фонда: детальное отображение 4 спален [1 на первом этаже, 3 на втором], санузлов в каждой спальне и схемы спальных мест.\n* Блок спа-комплекса: технические параметры бассейна с соленой водой, график работы джакузи [10:00-17:00], освещения [20:00-01:00] и чистки.\n* Блок безопасности и закона № 7464: обязательная регистрация по паспортам KBS, опись имущества, видеонаблюдение.\n* Карточка суперхозяина: рассказ об Алексее Знаменском, Мармарисе, девизе, интересах и путешествиях.\n* Блок элементов доступной среды и правил отмены.\n\nФайлы эталонного наполнения и восстановления базы данных [masterSeedContent.js, scripts/init-google-sheets.js, scripts/restore-sheets.js]:\n* Лист 🏠 Главная витрина [HOME, ID 101]: все блоки витрины с реальными данными.\n* Лист 📸 Фото и Видео Галерея [GALLERY, ID 102]: полный фототур по всем зонам виллы.\n* Лист 👤 Гостевые аккаунты [ACCOUNTS, ID 203]: мастер-аккаунт villaturaman@gmail.com [admin / admin123].\n* Лист ⚖️ Юридические документы [LEGAL, ID 106]: договор аренды, закон № 7464, KVKK, правила дома.\n* Лист ⚙️ Системные настройки ИИ [SETTINGS, ID 209]: профиль хозяина, тайминги джакузи и освещения, базовая валюта.',
+      en: 'Main Showcase [pages/index.js]:\n* Hero section: Dalyan location, 36 sqm saltwater pool, 10 beds.\n* Landmarks grid: 14 cards with exact distances [250m center, 400m river, 350m bistro, 11km beach, 30km DLM airport].\n* 4 en-suite bedrooms layout.\n* Saltwater pool & outdoor jacuzzi specs [10:00-17:00, lighting 20:00-01:00].\n* Law 7464, KBS police registration, security and accessibility.\n* Superhost profile card: Aleksei Znamenskii.\n\nDatabase Recovery & Seed Files [masterSeedContent.js, init-google-sheets.js, restore-sheets.js]:\n* Sheet HOME [ID 101]: Full showcase blocks.\n* Sheet GALLERY [ID 102]: Photo & video tour.\n* Sheet ACCOUNTS [ID 203]: Master account villaturaman@gmail.com [admin / admin123].\n* Sheet LEGAL [ID 106]: Short-term lease contract, Law 7464, KVKK.\n* Sheet SETTINGS [ID 209]: Host profile, jacuzzi & lighting timings, currency.',
+      tr: 'Ana Vitrin [pages/index.js]:\n* Hero bölümü: Dalyan konumu, 36 m² tuzlu su havuzu, 10 yatak kapasitesi.\n* Önemli noktalar: 14 kart ve kesin mesafeler [250m merkez, 400m kordon, 11km plaj, 30km havalimanı].\n* 4 ebeveyn banyolu yatak odası.\n* Tuzlu su havuzu ve açık jakuzi çalışma saatleri.\n* 7464 sayılı Kanun, KBS bildirimi, güvenlik ve erişilebilirlik.\n* Süper ev sahibi Aleksei Znamenskii profil kartı.\n\nKurtarma ve Başlangıç Dosyaları:\n* HOME [ID 101], GALLERY [ID 102], ACCOUNTS [ID 203], LEGAL [ID 106], SETTINGS [ID 209].'
     }
   }
 ];
@@ -137,20 +137,20 @@ const MASTER_HOME_ROWS = [
   ['4. О вилле', 'about_text', 'Краткое описание виллы на главной странице', 'Villa Turaman: это гармоничное сочетание уединения, современного комфорта и первоклассного сервиса для незабываемого отпуска в сердце Дальяна.', 'Villa Turaman offers a harmonious combination of privacy, modern comfort and first-class service for an unforgettable holiday in the heart of Dalyan.', 'Villa Turaman, Dalyan\'ın kalbinde unutulmaz bir tatil için mahremiyet, modern konfor ve birinci sınıf hizmetin uyumlu bir kombinasyonunu sunmaktadır.', '', 'Вкл'],
   ['4. О вилле', 'about_btn_more', 'Текст ссылки открытия полного описания', 'Показать больше об объекте', 'Show more about property', 'Tesis hakkında daha fazla göster', 'ChevronRight', 'Вкл'],
   ['4. О вилле', 'about_modal_title', 'Заголовок всплывающего окна подробностей', 'Об этой вилле', 'About this villa', 'Bu villa hakkında', '', 'Вкл'],
-  ['4. О вилле', 'about_sec_1_title', 'Модальное окно: Раздел 1 Заголовок', 'О вилле и о нас', 'About the villa and about us', 'Villa hakkında ve biz hakkında', '', 'Вкл'],
-  ['4. О вилле', 'about_sec_1_text', 'Модальное окно: Раздел 1 Текст', 'Вилла Turaman расположена по адресу: [ADDRESS]. Локация: [MAPS_URL]. [OUTDOOR_ZONES]. [POOL_SPECS] [период работы: [POOL_SEASON]]. Режим джакузи: [JACUZZI_HOURS]. Освещение: [POOL_LIGHTS].', 'Villa Turaman is located at: [ADDRESS]. Location: [MAPS_URL]. [OUTDOOR_ZONES]. [POOL_SPECS] [operating season: [POOL_SEASON]]. Jacuzzi mode: [JACUZZI_HOURS]. Lighting: [POOL_LIGHTS].', 'Villa Turaman adresi: [ADDRESS]. Konum: [MAPS_URL]. [OUTDOOR_ZONES]. [POOL_SPECS] [sezon: [POOL_SEASON]]. Jakuzi modu: [JACUZZI_HOURS]. Aydınlatma: [POOL_LIGHTS].', '', 'Вкл'],
-  ['4. О вилле', 'about_sec_2_title', 'Модальное окно: Раздел 2 Заголовок', 'Вместимость', 'Capacity', 'Kapasite', '', 'Вкл'],
-  ['4. О вилле', 'about_sec_2_text', 'Модальное окно: Раздел 2 Текст', '[VILLA_FLOORS] Вместимость: [MAX_GUESTS].', '[VILLA_FLOORS] Capacity: [MAX_GUESTS].', '[VILLA_FLOORS] Kapasite: [MAX_GUESTS].', '', 'Вкл'],
-  ['4. О вилле', 'about_sec_3_title', 'Модальное окно: Раздел 3 Заголовок', 'Описание комнат и планировка', 'Description of the villa', 'Villanın Tanımı', '', 'Вкл'],
-  ['4. О вилле', 'about_sec_3_text', 'Модальное окно: Раздел 3 Текст', 'В самом центре Дальяна. Приватный бассейн. Полноценная кухня и гостиная. 4 большие спальни. Спальня на 1 этаже: 3 спальных места, ванная комната и кондиционер. Спальни на 2 этаже: 3 отдельные спальные комнаты, каждая со своей ванной комнатой и кондиционером.', 'The villa is located in the heart of Dalyan. Private pool, full kitchen and living room. 4 large bedrooms with en-suite bathrooms and air conditioning.', 'Villa Dalyan merkezinde yer almaktadır. Özel havuz, tam donanımlı mutfak ve oturma odası. Özel banyolu ve klimalı 4 geniş yatak odası.', '', 'Вкл'],
-  ['4. О вилле', 'about_sec_4_title', 'Модальное окно: Раздел 4 Заголовок', 'Что доступно гостю: 1 и 2 этажи', 'What is available to the guest', 'Misafirlerin kullanımına sunulan olanaklar', '', 'Вкл'],
-  ['4. О вилле', 'about_sec_4_text', 'Модальное окно: Раздел 4 Текст', 'Первый этаж: кухня, гостиная, Smart TV 55", спальня с ванной. Второй этаж: 3 спальни с собственными санузлами, стиральная машина.', 'First floor: kitchen, living room, Smart TV 55", bedroom with bathroom. Second floor: 3 bedrooms each with en-suite bathroom, washing machine.', 'Birinci kat: mutfak, oturma odası, 55 inç Smart TV, banyolu yatak odası. İkinci kat: özel banyolu 3 yatak odası, çamaşır makinesi.', '', 'Вкл'],
-  ['4. О вилле', 'about_sec_5_title', 'Модальное окно: Раздел 5 Заголовок', 'Бассейн и Сад', 'Pool and Garden', 'Havuz ve Bahçe', '', 'Вкл'],
-  ['4. О вилле', 'about_sec_5_text', 'Модальное окно: Раздел 5 Текст', '[POOL_CLEANING] [STREET_LIGHTS]', '[POOL_CLEANING] [STREET_LIGHTS]', '[POOL_CLEANING] [STREET_LIGHTS]', '', 'Вкл'],
-  ['4. О вилле', 'about_sec_6_title', 'Модальное окно: Раздел 6 Заголовок', 'Правила проживания', 'House Rules', 'Ev Kuralları', '', 'Вкл'],
-  ['4. О вилле', 'about_sec_6_text', 'Модальное окно: Раздел 6 Текст', 'Заезд после 16:00, выезд до 10:00. Курение в помещениях виллы строго запрещено.', 'Check-in after 4:00 PM, check-out before 10:00 AM. Smoking is strictly prohibited in the villa.', 'Giriş saati 16:00 sonrası, çıkış saati 10:00 öncesidir. Villada sigara içmek kesinlikle yasaktır.', '', 'Вкл'],
-  ['4. О вилле', 'about_sec_7_title', 'Модальное окно: Раздел 7 Заголовок', 'Регистрация KBS и KVKK', 'Registration [KBS/KVKK]', 'Kayıt [KBS/KVKK]', '', 'Вкл'],
-  ['4. О вилле', 'about_sec_7_text', 'Модальное окно: Раздел 7 Текст', 'Ваши данные защищены и используются исключительно для регистрации гостей в системе KBS согласно законам Турции.', 'Your data is protected and used solely for the purpose of registering guests in the KBS system in accordance with Turkish law.', 'Verileriniz korunmaktadır ve Türk kanunlarına uygun olarak yalnızca KBS sistemine misafir kaydı amacıyla kullanılmaktadır.', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_1_title', 'Модальное окно: Раздел 1 Заголовок', '1. Концепция объекта, геолокация и расширенные географические ориентиры', '1. Property Concept, Geolocation and Extended Landmarks', '1. Tesis Konsepti, Coğrafi Konum ve Genişletilmiş Önemli Noktalar', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_1_text', 'Модальное окно: Раздел 1 Текст', 'Dalyan Turaman [частный бассейн, 10 спальных мест] - это цифровая веб-платформа прямого онлайн-бронирования двухэтажной виллы премиум-класса в экологическом заповедном курорте Дальян [район Ортаджа, провинция Мугла, Турция], расположенном между рекой Дальян и озером Кёйджегиз.\n\nОфициальный адрес и навигация:\n* Адрес виллы: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Turkey.\n* Ссылка на геолокацию в Google Maps: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n* Точные координаты GPS: 36.8336° N, 28.6439° E.\n\nПолный реестр ключевых географических ориентиров:\n* Пешеходный центр Дальяна: всего 250 метров [3 минуты пешком] до главной пешеходной улицы с магазинами, рынками, аптеками и сувенирными лавками.\n* Речная набережная реки Дальян: 400 метров для утренних пробежек, вечерних прогулок и наблюдения за речными лодками.\n* Гастрономия: популярный ресторан высокой кухни La Boheme Dalyan - 350 метров; традиционный рыбный ресторан Çiçek Restoran - 500 метров.\n* Ликийские скальные гробницы королей Кауноса [IV век до н.э.]: панорамный вид с набережной Дальяна [450 метров], вечерняя подсветка скал и 10 минут на лодке.\n* Античный город Каунос, древний акрополь и амфитеатр: 1.5 км [переправа на весельной лодке через реку Дальян и пеший маршрут].\n* Всемирно известный песчаный пляж Изтузу [İztuzu]: 11 км [около 15 минут на машине или 30-40 минут на живописном речном катере-такси через лабиринты камышей]. Заповедная зона обитания гигантских морских черепах Caretta-Caretta.\n* Термальные радоновые источники и омолаживающие грязи Султание [Sultaniye Kaplıcaları]: 4 км по воде на озере Кёйджегиз.\n* Озеро Кёйджегиз [Köyceğiz Gölü]: 5 км до выхода из русла реки в открытую озерную акваторию.\n* Смотровая площадка Радар [Radar Tepesi]: 8 км [панорамный обзор 360° на всю дельту реки, озеро и косу пляжа Изтузу с высоты 500 метров].\n* Международный аэропорт Даламан [DLM]: 30 км [25-30 минут на машине или индивидуальном трансфере].\n* Субботний фермерский рынок Дальяна: 600 метров [свежие фермерские сыры, оливки, гранатовый сок, инжир и фрукты].\n* Морские курорты: город Мармарис - 85 км, город Фетхие и бухта Олюдениз - 60 км.', 'Dalyan Turaman [private pool, sleeps 10] is a direct online booking digital platform for a premium 2-story villa in the ecological nature resort of Dalyan [Ortaca district, Muğla province, Turkey], situated between the Dalyan River and Lake Köyceğiz.', 'Dalyan Turaman [özel havuz, 10 yatak] Dalyan Nehri ile Köyceğiz Gölü arasında yer alan lüks 2 katlı villanın doğrudan online rezervasyon platformudur [Ortaca, Muğla, Türkiye].', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_2_title', 'Модальное окно: Раздел 2 Заголовок', '2. Архитектура виллы и номерной фонд', '2. Villa Architecture and Bed Configuration', '2. Villa Mimarisi ve Oda Düzeni', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_2_text', 'Модальное окно: Раздел 2 Текст', 'Тип недвижимости: Дом / Вилла [в распоряжении гостей жилье целиком].\nПлощадь, этажность и год постройки: 240 кв. метров, 2 этажа, год постройки - 2013.\nВместимость: до 10 гостей [включая детей], 10 полноценных спальных мест.\nКонфигурация спален и санузлов: 4 большие спальни [каждая оборудована персональной ванной комнатой и автономным кондиционером] + гостевой туалет на первом этаже:\nПервый этаж: полноценная кухня Beko, просторная гостиная со Smart TV 55", гостевой туалет, прихожая, постирочная, Спальня 1 [квин-сайз + односпальная кровать, ванная с душем, кондиционер].\nВторой этаж: Спальня 2 [кинг-сайз, ванная с тропическим душем, кондиционер, балкон], Спальня 3 [квин-сайз, ванная, кондиционер, вид на горы], Спальня 4 [квин-сайз + односпальная кровать, ванная, кондиционер], вторая стиральная машина.\nИтоговая структура: 4 двуспальные кровати + 2 односпальные кровати + диван в гостиной = 10 спальных мест.', 'Property Type: Entire Villa. Area: 240 sqm, 2 floors, built 2013. Capacity: up to 10 guests, 10 beds. 4 en-suite bedrooms + guest WC.', 'Emlak Tipi: Müstakil Villa tamamı. 240 m², 2 kat, 2013 yapımı. Kapasite: 10 misafir, 10 yatak. 4 ebeveyn banyolu yatak odası + WC.', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_3_title', 'Модальное окно: Раздел 3 Заголовок', '3. Придомовая территория, бассейн и спа-комплекс', '3. Courtyard, Pool and Spa Complex', '3. Bahçe Alanı, Havuz ve Spa Kompleksi', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_3_text', 'Модальное окно: Раздел 3 Текст', 'Приватный бассейн с соленой водой: чаша 4×9 метров [площадь 36 кв. м], постоянная глубина 150 см. Без запаха хлора. Доступен с 1 мая по 1 ноября. Чистка в день заселения и каждые 7 дней. Подсветка бассейна: 20:00 - 01:00.\nУличное приватное джакузи: на 4 персоны, автоматический цикл [15 минут работы каждые 45 минут в период 10:00 - 17:00]. Подсветка джакузи: 20:00 - 01:00. Сезон: 1 мая - 1 ноября.\nОсвещение территории: автоматическое [20:00 - 01:00 и 04:00 - 06:00].\nПарковка: бесплатная закрытая частная парковка на территории на 2 авто.\nОткрытые зоны отдыха: огороженный сад, барбекю [BBQ], крыльцо с кофейными столиками, обеденный стол на 8 мест, шезлонги и летний душ.', 'Private saltwater pool 4x9 m [36 sqm, 150 cm depth, no chlorine, May 1 - Nov 1]. Outdoor jacuzzi for 4 [10:00-17:00, light 20:00-01:00]. Gated parking for 2 cars, BBQ, dining for 8.', '36 m² özel tuzlu su havuzu [1 Mayıs - 1 Kasım, aydınlatma 20:00-01:00]. 4 kişilik açık jakuzi [10:00-17:00]. 2 araçlık otopark, barbekü, 8 kişilik yemek masası.', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_4_title', 'Модальное окно: Раздел 4 Заголовок', '4. Юридический регламент, безопасность и доступная среда', '4. Legal Regulations, Safety and Accessible Environment', '4. Yasal Mevzuat, Güvenlik ve Engelsiz Erişim', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_4_text', 'Модальное окно: Раздел 4 Текст', 'Закон Турции № 7464 о краткосрочной аренде: обязательный договор аренды виллы с описью имущества при заселении.\nРегистрация в системе учета населения KBS: обязательное предоставление паспортов всех проживающих. Размещение незарегистрированных лиц строго запрещено.\nБезопасность дома: внешнее видеонаблюдение по периметру, детекторы дыма во всех спальнях и гостиной, огнетушитель, аптечка первой помощи.\nДоступная среда: выделенная парковка для инвалидов, ровный освещенный вход без ступеней, дверь от 81 см, подъемник для бассейна и джакузи.\nПолитика отмены: менее 28 ночей - Негибкие, от 28 ночей - Строгие. Опция невозвратного тарифа со скидкой 10% за 60 дней.', 'Turkish Law No. 7464 on short-term rental: mandatory lease contract with inventory. Mandatory police KBS passport registration. Perimeter CCTV, smoke detectors. Disabled parking, step-free access, door >= 81 cm, pool lift. Inflexible / Strict cancellation.', '7464 Sayılı Kanun gereği envanterli resmi kira sözleşmesi ve zorunlu KBS polis kaydı. Çevre güvenlik kamerası, duman dedektörleri. Engelli otoparkı, basamaksız giriş, 81 cm kapı, havuz asansörü.', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_5_title', 'Модальное окно: Раздел 5 Заголовок', '5. Профиль суперхозяина и мастер-доступ', '5. Superhost Profile and Master Access', '5. Süper Ev Sahibi Profili ve Ana Erişim', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_5_text', 'Модальное окно: Раздел 5 Текст', 'Владелец: Алексей Знаменский [Aleksei Znamenskii]. Проживает в Мармарисе, яхтсмен на пенсии. Жизненное кредо: «Хочешь сделать хорошо - сделай сам». Мечта: отправиться в Португалию и увидеть океан. Хобби: велоспорт, парусный спорт, природа. Штампы путешествий: Дубай [3 поездки], Абу-Даби [март 2026 г.]. Языки: русский, английский, турецкий. Налоговые реквизиты: Ortaca Vergi Dairesi, VKN: 9991120181.\nМастер-доступ суперхозяина: villaturaman@gmail.com, логин admin / пароль admin123, роль: Владелец [Финансы, Периоды, Блокировки, Окно брони, Чаты].', 'Owner: Aleksei Znamenskii, retired yachtsman living in Marmaris. Motto: "Do it yourself to do it well". Dream: Portugal. Hobbies: Cycling, Sailing, Nature. Stamps: Dubai [3], Abu Dhabi [March 2026]. Tax ID: VKN 9991120181. Master access: villaturaman@gmail.com / admin / admin123.', 'Ev Sahibi: Aleksei Znamenskii, emekli yatçı, Marmaris. İlke: "İyi yapmak istiyorsan kendin yap". Hayal: Portekiz. Hobiler: Bisiklet, Yelken, Doğa. VKN: 9991120181. Ana erişim: villaturaman@gmail.com / admin / admin123.', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_6_title', 'Модальное окно: Раздел 6 Заголовок', '6. Новая планировка Центра сообщений и CRM [HostInbox.js]', '6. New Message Center and CRM Layout [HostInbox.js]', '6. Yeni Mesaj Merkezi ve CRM Düzeni [HostInbox.js]', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_6_text', 'Модальное окно: Раздел 6 Текст', 'Просторное многострочное поле ввода ответа: минимальная высота увеличена до 90px с авто-расширением до 220px при наборе. Удобный скролл и контраст.\nОтдельная смарт-панель шаблонов без перекрытия чата: вынесена в независимый сайдбар, полный предпросмотр длинных ответов перед вставкой, кнопки «Вставить в поле» и «Отправить сразу», динамический счетчик шаблонов из Google Sheets.\nЛиквидация дергания экрана: изолированный скролл контейнера messagesContainerRef.current.scrollTop без глобальных прыжков страницы.', 'Spacious multiline reply input: min-h 90px expanding to 220px. Dedicated template panel in right sidebar without chat overlay, full preview before sending. Elimination of screen jitter via container scrollTop.', 'Genişletilmiş çok satırlı cevap alanı [90-220px]. Sohbeti kapatmayan bağımsız sağ şablon paneli, tam önizleme. Ekran kaymasını önleyen izole konteyner kaydırma.', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_7_title', 'Модальное окно: Раздел 7 Заголовок', '7. Размещение данных на витрине сайта и в стартовых файлах', '7. Showcase Data Placement and Startup Recovery Files', '7. Vitrin Veri Yerleşimi ve Başlangıç Kurtarma Dosyaları', '', 'Вкл'],
+  ['4. О вилле', 'about_sec_7_text', 'Модальное окно: Раздел 7 Текст', 'Витрина сайта [pages/index.js]: Hero-секция с приватным бассейном 36 кв. м и 10 спальными местами, интерактивные карточки 14 ориентиров Дальяна с расстояниями, блок 4 спален en-suite, технический блок спа-комплекса и джакузи 10:00-17:00, блок Закона № 7464, KBS и доступной среды, карточка суперхозяина Алексея Знаменского.\nСтартовые и восстановительные файлы: лист HOME [ID 101], GALLERY [ID 102], ACCOUNTS [ID 203: villaturaman@gmail.com, admin / admin123], LEGAL [ID 106], SETTINGS [ID 209].', 'Showcase [pages/index.js]: Hero with 36 sqm pool & 10 beds, 14 landmarks grid with distances, 4 en-suite bedrooms, spa & jacuzzi specs 10:00-17:00, Law 7464, KBS and accessible environment, superhost card. Recovery files: HOME, GALLERY, ACCOUNTS, LEGAL, SETTINGS.', 'Vitrin [pages/index.js]: 36 m² havuz ve 10 yatak, 14 önemli nokta kesin mesafeler, 4 ebeveyn banyolu oda, spa ve jakuzi çalışma saatleri, 7464 sayılı Kanun, KBS, engelsiz erişim, süper ev sahibi kartı. Başlangıç ve kurtarma dosyaları.', '', 'Вкл'],
 
   // --- БЛОК 5: СПАЛЬНЫЕ МЕСТА [SLEEPING ARRANGEMENTS] ---
   ['5. Спальни', 'sleeping_title', 'Заголовок секции спальных мест', 'Где вы будете спать • 10 спальных мест в 4 спальнях', 'Where you will sleep • 10 beds in 4 bedrooms', 'Nerede uyuyacaksınız • 4 yatak odasında 10 yatak', '', 'Вкл'],
@@ -236,7 +236,83 @@ const MASTER_HOME_ROWS = [
   ['9. Хозяин', 'host_card_response_time', 'Бейдж времени ответа на сообщения', 'Время ответа: в течение часа • Языки: RU, EN, TR', 'Response time: within an hour • Languages: RU, EN, TR', 'Yanıt süresi: bir saat içinde • Diller: RU, EN, TR', 'Clock', 'Вкл'],
   ['9. Хозяин', 'host_card_languages', 'Заголовок языков общения', 'Интересы: Велоспорт, Парусный спорт, Природа • Мечта: Португалия', 'Interests: Cycling, Sailing, Nature • Dream: Portugal', 'İlgi alanları: Bisiklet, Yelken, Doğa • Hayal: Portekiz', 'Globe2', 'Вкл'],
   ['9. Хозяин', 'host_card_help_text', 'Описание помощи гостям', 'Штампы путешествий: Дубай [3 поездки], Абу-Даби [март 2026 г.]. Помощь в организации трансфера, аренде авто и экскурсий.', 'Travel stamps: Dubai [3 trips], Abu Dhabi [March 2026]. Assistance with transfers, car rental and private tours.', 'Seyahat pulları: Dubai [3 seyahat], Abu Dabi [Mart 2026]. Transfer, araç kiralama ve turlarda destek.', '', 'Вкл'],
-  ['9. Хозяин', 'host_card_btn', 'Текст кнопки связи с хозяином', 'Написать хозяину', 'Message host', 'Ev sahibine mesaj gönder', 'MessageCircle', 'Вкл']
+  ['9. Хозяин', 'host_card_btn', 'Текст кнопки связи с хозяином', 'Написать хозяину', 'Message host', 'Ev sahibine mesaj gönder', 'MessageCircle', 'Вкл'],
+  ['9. Хозяин', 'host_card_credo', 'Жизненное кредо суперхозяина', '«Хочешь сделать хорошо - сделай сам»', '"Do it yourself to do it well"', '"İyi yapmak istiyorsan kendin yap"', 'Quote', 'Вкл'],
+  ['9. Хозяин', 'host_card_dream', 'Мечта и базирование', 'База: Мармарис • Мечта: Португалия и Атлантический океан', 'Base: Marmaris • Dream: Portugal and Atlantic Ocean', 'Üs: Marmaris • Hayal: Portekiz ve Atlantik Okyanusu', 'Compass', 'Вкл'],
+  ['9. Хозяин', 'host_card_hobbies', 'Хобби и спорт суперхозяина', 'Велоспорт, Парусный спорт, Живая природа Дальяна', 'Cycling, Sailing, Living Nature of Dalyan', 'Bisiklet, Yelken, Dalyan\'ın Doğası', 'Bike', 'Вкл'],
+  ['9. Хозяин', 'host_card_travel', 'Штампы путешествий', 'Дубай [3 поездки], Абу-Даби [март 2026 г.]', 'Dubai [3 trips], Abu Dhabi [March 2026]', 'Dubai [3 seyahat], Abu Dabi [Mart 2026]', 'PlaneTakeoff', 'Вкл'],
+  ['9. Хозяин', 'host_card_tax', 'Официальные налоговые реквизиты', 'Официальный налогоплательщик: Ortaca Vergi Dairesi, VKN: 9991120181', 'Official taxpayer: Ortaca Tax Office, VKN: 9991120181', 'Resmi vergi mükellefi: Ortaca Vergi Dairesi, VKN: 9991120181', 'FileCheck', 'Вкл'],
+
+  // --- БЛОК 10: 14 ГЕОГРАФИЧЕСКИХ ОРИЕНТИРОВ ДАЛЬЯНА [LANDMARKS] ---
+  ['10. Ориентиры', 'landmarks_title', 'Заголовок секции ориентиров', '14 географических ориентиров Дальяна', '14 Geographical Landmarks of Dalyan', 'Dalyan\'ın 14 Coğrafi İşareti', 'MapPin', 'Вкл'],
+  ['10. Ориентиры', 'landmarks_subtitle', 'Подзаголовок секции ориентиров', 'Точные расстояния и тайминг от виллы • Пешеходная доступность центра и заповедная природа', 'Exact distances and travel times from the villa • Walking access to center and nature reserve', 'Villadan kesin mesafeler ve ulaşım süreleri • Merkeze yürüme mesafesi ve koruma altındaki doğa', 'Navigation', 'Вкл'],
+  ['10. Ориентиры', 'landmarks_address', 'Официальный адрес виллы для навигатора', 'Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Turkey', 'Dalyan, Rodoslu Yasar Sunger Sk, NO 28/2, 48600 Ortaca / Mugla, Turkey', 'Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Türkiye', 'MapPin', 'Вкл'],
+  ['10. Ориентиры', 'landmarks_maps_url', 'Прямая ссылка на геолокацию в Google Maps', 'https://maps.app.goo.gl/tPgCjCwz4pzq28pE9', 'https://maps.app.goo.gl/tPgCjCwz4pzq28pE9', 'https://maps.app.goo.gl/tPgCjCwz4pzq28pE9', 'https://maps.app.goo.gl/tPgCjCwz4pzq28pE9', 'Вкл'],
+  ['10. Ориентиры', 'landmarks_gps', 'Координаты GPS виллы', '36.8336° N, 28.6439° E', '36.8336° N, 28.6439° E', '36.8336° N, 28.6439° E', 'Compass', 'Вкл'],
+  ['10. Ориентиры', 'landmark_1', 'Ориентир 1: Пешеходный центр Дальяна', 'Пешеходный центр Дальяна: главная улица, рестораны, кофейни, аптеки, банкоматы и сувенирные лавки', 'Pedestrian center of Dalyan: main street, restaurants, cafes, pharmacies, ATMs, shops', 'Dalyan yaya merkezi: ana cadde, restoranlar, kafeler, eczaneler, ATMler ve hediyelik dükkanlar', '250 м|3 мин пешком|walk|В шаговой доступности|Footprints', 'Вкл'],
+  ['10. Ориентиры', 'landmark_2', 'Ориентир 2: Речная набережная и причал', 'Речная набережная и центральный причал речных лодок-такси и экскурсионных катеров', 'River promenade and main pier for river water taxis and excursion boats', 'Nehir kordonu ve nehir taksi tekneleri ile tur teknelerinin ana iskelesi', '400 м|5 мин пешком|walk|Река Дальян|Compass', 'Вкл'],
+  ['10. Ориентиры', 'landmark_3', 'Ориентир 3: Ресторан La Boheme Dalyan Bistro', 'Ресторан авторской кухни La Boheme Dalyan Bistro: средиземноморская и европейская кухня', 'Gourmet restaurant La Boheme Dalyan Bistro: author Mediterranean and European cuisine', 'Özel lezzetler sunan La Boheme Dalyan Bistro: Akdeniz ve Avrupa mutfağı', '350 м|4 мин пешком|food|Гастрономия|Utensils', 'Вкл'],
+  ['10. Ориентиры', 'landmark_4', 'Ориентир 4: Ресторан Çiçek Restoran', 'Традиционный эгейский рыбный ресторан Çiçek Restoran: свежайшие морепродукты и домашние мезе', 'Traditional Aegean fish restaurant Çiçek Restoran: fresh seafood and homemade mezes', 'Geleneksel Ege balık restoranı Çiçek Restoran: taze deniz ürünleri ve ev yapımı mezeler', '500 м|6 мин пешком|food|Свежая рыба|Utensils', 'Вкл'],
+  ['10. Ориентиры', 'landmark_5', 'Ориентир 5: Субботний фермерский рынок', 'Субботний фермерский рынок Дальяна: деревенские сыры, оливки, свежие фрукты, специи и гранатовый сок', 'Dalyan Saturday Farmers Market: village cheeses, olives, fresh fruits, spices, pomegranate syrup', 'Dalyan Cumartesi Köy Pazarı: köy peynirleri, zeytinler, taze meyveler, baharatlar ve nar ekşisi', '600 м|7 мин пешком|walk|Суббота|ShoppingBag', 'Вкл'],
+  ['10. Ориентиры', 'landmark_6', 'Ориентир 6: Ликийские скальные гробницы', 'Ликийские скальные гробницы карийских царей IV века до н.э., высеченные в скале, с вечерней иллюминацией', 'Lycian rock tombs of Carian kings 4th century BC carved into rock cliff with evening lighting', 'M.Ö. 4. yüzyıl Karia krallarına ait sarp kayalara oyulmuş Likya Kaya Mezarları, akşam ışıklandırmalı', '450 м|Прямая видимость|nature|UNESCO Heritage|Mountain', 'Вкл'],
+  ['10. Ориентиры', 'landmark_7', 'Ориентир 7: Античный город Каунос', 'Античный город Каунос: амфитеатр, римские термы, агора, базилика и акрополь на вершине холма', 'Ancient city of Kaunos: amphitheater, Roman baths, agora, basilica, acropolis on hill', 'Antik Kaunos Kenti: amfitiyatro, Roma hamamları, agora, bazilika ve tepedeki akropol', '1.5 км|Лодка + 15 мин|nature|Античная история|Compass', 'Вкл'],
+  ['10. Ориентиры', 'landmark_8', 'Ориентир 8: Источники и грязи Султание', 'Радоновые термальные источники и целебные минеральные грязи Султание на берегу озера Кёйджегиз', 'Radon thermal hot springs and healing mineral mud baths of Sultaniye on Lake Koycegiz shore', 'Köyceğiz Gölü kıyısındaki şifalı radon termal kaplıcaları ve Sultaniye kükürtlü çamur banyoları', '4 км лодка / 12 км авто|15-20 мин|nature|Оздоровление|Waves', 'Вкл'],
+  ['10. Ориентиры', 'landmark_9', 'Ориентир 9: Песчаный черепаший пляж Изтузу', 'Заповедный песчаный черепаший пляж Изтузу: золотой песок 4.5 км, место гнездования черепах Caretta-Caretta', 'Protected sandy Iztuzu Turtle Beach: 4.5 km golden sand spit, nesting site of Caretta-Caretta turtles', 'Koruma altındaki İztuzu Kaplumbağa Plajı: 4.5 km altın kumsal, Caretta-Caretta yuvalama alanı', '11 км|15 мин авто / 35 мин лодка|beach|Заповедник|Sun', 'Вкл'],
+  ['10. Ориентиры', 'landmark_10', 'Ориентир 10: Пресноводное озеро Кёйджегиз', 'Пресноводное озеро Кёйджегиз: живописные заливы, водные прогулки на катерах, сапбординг и рыбалка', 'Freshwater Lake Koycegiz: picturesque bays, motorboat trips, paddleboarding and lake fishing', 'Tatlı su Köyceğiz Gölü: pitoresk koylar, motorlu tekne gezileri, SUP kürek sörfü ve balıkçılık', '5 км|10 мин авто / 25 мин катер|nature|Водный спорт|Waves', 'Вкл'],
+  ['10. Ориентиры', 'landmark_11', 'Ориентир 11: Смотровая площадка на горе Радар', 'Смотровая площадка на горе Радар: круговая панорама 360° на дельту реки Дальян, косу Изтузу и море', 'Radar Mountain Viewpoint: 360-degree circular panoramic view over Dalyan delta, Iztuzu spit and sea', 'Radar Tepesi Seyir Noktası: Dalyan deltası, İztuzu kordonu ve denizin 360 derece panoramik manzarası', '8 км|20 мин на авто|nature|Панорама 360°|Eye', 'Вкл'],
+  ['10. Ориентиры', 'landmark_12', 'Ориентир 12: Центр реабилитации черепах DEKAMER', 'Научно-исследовательский и реабилитационный центр спасения морских черепах DEKAMER на пляже Изтузу', 'DEKAMER Sea Turtle Research, Rescue and Rehabilitation Center located at Iztuzu Beach', 'İztuzu Plajı\'ndaki DEKAMER Deniz Kaplumbağaları Araştırma, Kurtarma ve Rehabilitasyon Merkezi', '12 км|18 мин на авто|nature|Экология|Compass', 'Вкл'],
+  ['10. Ориентиры', 'landmark_13', 'Ориентир 13: Международный аэропорт Даламан [DLM]', 'Международный аэропорт Даламан DLM: круглосуточный прием внутренних и международных рейсов', 'Dalaman International Airport DLM: 24/7 domestic and international flight reception', 'Dalaman Uluslararası Havalimanı DLM: iç ve dış hat uçuşları için 24 saat kesintisiz hizmet', '30 км|25-30 мин на авто|transport|Аэропорт|Plane', 'Вкл'],
+  ['10. Ориентиры', 'landmark_14', 'Ориентир 14: Морской курортный город Мармарис', 'Крупный морской порт и курортный город Мармарис: марины для суперяхт, набережная и шоппинг', 'Major maritime seaport and resort city of Marmaris: superyacht marinas, promenade, dining, shopping', 'Büyük liman ve turizm şehri Marmaris: süperyat marinaları, kordon boyu, restoranlar ve alışveriş', '85 км|1 час 15 мин на авто|city|Эгейская Ривьера|Car', 'Вкл'],
+
+  // --- БЛОК 11: 🌊 СПА-КОМПЛЕКС, БАССЕЙН С СОЛЕНОЙ ВОДОЙ И САД [SPA & POOL] ---
+  ['11. Спа и Бассейн', 'spa_title', 'Заголовок секции спа-комплекса', 'Спа-комплекс и бассейн с соленой водой', 'Spa Complex & Saltwater Pool', 'Spa Kompleksi ve Tuzlu Su Havuzu', 'Waves', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_subtitle', 'Подзаголовок секции спа-комплекса', 'Приватная закрытая территория, солевой бассейн 36 м², гидромассажное джакузи и лаунж-зона отдыха', 'Gated private territory, 36 sqm saltwater pool, hydro-massage jacuzzi and outdoor relaxation lounge', 'Özel korunaklı alan, 36 m² tuzlu su havuzu, hidromasajlı jakuzi ve açık dinlenme alanı', 'Sparkles', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_pool_title', 'Название карточки бассейна', 'Приватный бассейн с соленой водой', 'Private Saltwater Pool', 'Özel Tuzlu Su Havuzu', 'Waves', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_pool_desc', 'Характеристики и описание бассейна', 'Чаша 4 × 9 метров [площадь 36 кв. м], постоянная комфортная глубина 150 см по всей площади чаши. Мягкая природная минерализация исключает раздражение кожи и едкий запах хлора.', 'Pool bowl 4x9 meters [area 36 sqm], constant comfortable depth of 150 cm throughout. Gentle natural mineralization prevents skin irritation and chlorine smell.', '4x9 metre havuz ölçüsü [36 m² alan], tüm havuz boyunca sabit ve konforlu 150 cm derinlik. Yumuşak doğal mineralizasyon cilt tahrişini ve klor kokusunu önler.', 'Droplets', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_pool_badge', 'Бейдж бассейна', 'Соленая вода без хлора', 'Saltwater without chlorine', 'Klorsuz tuzlu su', '', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_pool_season', 'Сезон работы бассейна', 'Сезон работы: с 1 мая по 1 ноября', 'Operating season: May 1 to November 1', 'Çalışma sezonu: 1 Mayıs - 1 Kasım', 'Calendar', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_pool_lighting', 'График подсветки бассейна', 'Подводная ночная подсветка: 20:00 - 01:00', 'Underwater night lighting: 20:00 - 01:00', 'Gece sualtı aydınlatması: 20:00 - 01:00', 'Clock', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_pool_maintenance', 'Регламент очистки бассейна', 'График чистки: в день заселения и далее каждые 7 дней', 'Maintenance schedule: on check-in day and every 7 days', 'Temizlik takvimi: giriş gününde ve her 7 günde bir', 'Droplets', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_jacuzzi_title', 'Название карточки джакузи', 'Открытое уличное джакузи', 'Outdoor Open-Air Jacuzzi', 'Açık Hava Jakuzisi', 'Sparkles', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_jacuzzi_desc', 'Описание и функционал джакузи', 'Гидромассажная спа-ванна в зоне бассейна с подогревом и регулируемыми форсунками для глубокого расслабления на свежем воздухе.', 'Heated hydromassage spa tub in pool zone with adjustable jets for deep outdoor muscle relaxation.', 'Havuz alanında açık havada derin kas gevşemesi sağlayan ısıtmalı ve ayarlanabilir jetlere sahip hidromasajlı jakuzi.', 'Sparkles', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_jacuzzi_badge', 'Вместимость джакузи', 'Вместимость: 4 персоны', 'Capacity: 4 guests', 'Kapasite: 4 kişi', '', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_jacuzzi_schedule', 'Режим и алгоритм джакузи', 'Режим работы: 10:00 - 17:00 [15 мин каждые 45 мин]', 'Operating hours: 10:00 - 17:00 [15 min every 45 min]', 'Çalışma saatleri: 10:00 - 17:00 [45 dakikada bir 15 dk]', 'Clock', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_jacuzzi_lighting', 'Подсветка джакузи', 'Подсветка джакузи: 20:00 - 01:00', 'Jacuzzi lighting: 20:00 - 01:00', 'Jakuzi aydınlatması: 20:00 - 01:00', 'Moon', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_jacuzzi_season', 'Сезон работы джакузи', 'Период активности: с 1 мая по 1 ноября', 'Activity period: May 1 to November 1', 'Aktif dönem: 1 Mayıs - 1 Kasım', 'Calendar', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_street_lighting_title', 'Освещение территории', 'Освещение территории', 'Territory Lighting', 'Bahçe Aydınlatması', 'Moon', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_street_lighting_desc', 'График освещения сада', 'Автоматическое включение сада: 20:00 - 01:00 и 04:00 - 06:00', 'Automated garden lights: 20:00 - 01:00 and 04:00 - 06:00', 'Otomatik bahçe aydınlatması: 20:00 - 01:00 ve 04:00 - 06:00', '', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_parking_title', 'Приватная парковка', 'Приватная парковка', 'Private On-Site Parking', 'Özel Otopark', 'Car', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_parking_desc', 'Описание парковки', 'Закрытая бесплатная парковка на территории виллы на 2 автомобиля', 'Gated free parking on villa grounds for 2 vehicles', 'Villa mülkü içinde 2 araçlık ücretsiz kapalı otopark', '', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_bbq_title', 'Зона BBQ и лаунж', 'BBQ и обеденная зона', 'BBQ & Dining Area', 'Barbekü ve Yemek Alanı', 'Flame', 'Вкл'],
+  ['11. Спа и Бассейн', 'spa_bbq_desc', 'Описание зоны барбекю', 'Обеденный стол на 8 мест, гриль на углях, шезлонги и уличный душ', 'Outdoor dining table for 8, charcoal grill, sun loungers, poolside shower', '8 kişilik açık yemek masası, kömürlü ızgara, şezlonglar ve havuz duşu', '', 'Вкл'],
+
+  // --- БЛОК 12: ⚖️ БЕЗОПАСНОСТЬ, ЗАКОН № 7464 И ДОСТУПНАЯ СРЕДА [LAW, SAFETY & ACCESSIBILITY] ---
+  ['12. Безопасность', 'legal_safety_title', 'Заголовок секции безопасности и закона', 'Безопасность, Закон № 7464 и Доступная среда', 'Safety, Law No. 7464 & Accessible Environment', 'Güvenlik, 7464 Sayılı Kanun ve Engelsiz Erişim', 'ShieldCheck', 'Вкл'],
+  ['12. Безопасность', 'legal_safety_subtitle', 'Подзаголовок секции безопасности и закона', 'Полное соответствие законодательству Турции о краткосрочной аренде, защита гостей и безбарьерный доступ', 'Full compliance with Turkish short-term rental laws, guest protection and barrier-free access', 'Türkiye kısa dönem kiralama mevzuatına tam uyum, misafir güvenliği ve engelsiz erişim', 'FileText', 'Вкл'],
+  ['12. Безопасность', 'legal_law7464_title', 'Заголовок блока Закон 7464', 'Официальный договор и учет KBS', 'Official Contract & KBS Police Registration', 'Resmi Sözleşme ve KBS Polis Kaydı', 'FileText', 'Вкл'],
+  ['12. Безопасность', 'legal_law7464_desc', 'Описание блока Закон 7464', 'Вилла осуществляет деятельность в строгом соответствии с Законом № 7464 о краткосрочной туристической аренде в Турции.', 'Villa operates in strict accordance with Turkish Law No. 7464 on Short-Term Tourist Rentals.', 'Villa, Türkiye\'deki 7464 Sayılı Konutların Turizm Amaçlı Kiralanması Kanunu\'na tam uygun olarak işletilmektedir.', '', 'Вкл'],
+  ['12. Безопасность', 'legal_law7464_badge', 'Бейдж закона 7464', 'Закон Турции № 7464', 'Turkish Law No. 7464', 'Türkiye Kanunu No. 7464', '', 'Вкл'],
+  ['12. Безопасность', 'legal_law7464_item1', 'Пункт 1: Договор найма', 'Обязательный договор краткосрочного найма с описью имущества при заезде', 'Mandatory short-term rental agreement with property inventory upon check-in', 'Girişte demirbaş listesi içeren zorunlu kısa dönem kira sözleşmesi', 'CheckCircle2', 'Вкл'],
+  ['12. Безопасность', 'legal_law7464_item2', 'Пункт 2: Регистрация KBS', 'Регистрация паспортов всех проживающих гостей в полицейской системе KBS [Kimlik Bildirme Sistemi]', 'Registration of all residing guests in the Turkish Gendarmerie KBS police system', 'Tüm konaklayan misafirlerin jandarma KBS [Kimlik Bildirme Sistemi] sistemine kaydedilmesi', 'CheckCircle2', 'Вкл'],
+  ['12. Безопасность', 'legal_law7464_item3', 'Пункт 3: Запрет третьих лиц', 'Размещение лиц, не внесенных в государственную систему KBS, строго запрещено', 'Accommodation of third parties not registered in the official KBS system is strictly prohibited', 'Resmi KBS sistemine kaydedilmemiş kişilerin konaklaması kesinlikle yasaktır', 'AlertCircle', 'Вкл'],
+  ['12. Безопасность', 'legal_security_title', 'Заголовок блока безопасности', 'Безопасность дома и территории', 'Home & Territory Safety Standards', 'Ev ve Mülk Güvenlik Standartları', 'ShieldCheck', 'Вкл'],
+  ['12. Безопасность', 'legal_security_desc', 'Описание блока безопасности', 'Оснащение дома сертифицированными системами предупреждения и постоянного мониторинга.', 'Equipping the villa with certified emergency warning systems and 24/7 perimeter monitoring.', 'Villanın sertifikalı uyarı sistemleri ve 24/7 çevre izleme ile donatılması.', '', 'Вкл'],
+  ['12. Безопасность', 'legal_security_badge', 'Бейдж стандартов безопасности', 'Стандарты безопасности', 'Safety Standards', 'Güvenlik Standartları', '', 'Вкл'],
+  ['12. Безопасность', 'legal_security_item1', 'Пункт 1: Наружное видеонаблюдение', 'Наружные камеры видеонаблюдения установлены строго по периметру забора и у калитки [без съемки бассейна и террасы]', 'External perimeter CCTV security cameras strictly at fence and gate [no cameras in pool or patio]', 'Dış çevre güvenlik kameraları sadece çit ve bahçe kapısında [havuz ve verandada kamera yoktur]', 'Eye', 'Вкл'],
+  ['12. Безопасность', 'legal_security_item2', 'Пункт 2: Датчики дыма и газа', 'Сертифицированные автономные датчики дыма и угарного газа на обоих этажах виллы', 'Certified autonomous smoke and carbon monoxide detectors on both villa floors', 'Villanın her iki katında sertifikalı duman ve karbonmonoksit dedektörleri', 'Flame', 'Вкл'],
+  ['12. Безопасность', 'legal_security_item3', 'Пункт 3: Огнетушители и аптечка', 'Огнетушители на 1 и 2 этажах, укомплектованная медицинская аптечка первой помощи', 'Fire extinguishers on 1st and 2nd floors, fully equipped emergency first aid kit', '1. ve 2. katlarda yangın söndürücüler, tam donanımlı ilk yardım tıbbi çantası', 'ShieldCheck', 'Вкл'],
+  ['12. Безопасность', 'legal_accessible_title', 'Заголовок блока доступной среды', 'Инклюзивность и доступная среда', 'Inclusivity & Accessible Environment', 'Kapsayıcılık ve Engelsiz Erişim', 'Accessibility', 'Вкл'],
+  ['12. Безопасность', 'legal_accessible_desc', 'Описание доступной среды', 'Создание безбарьерных условий для комфортного отдыха гостей с ограниченной мобильностью.', 'Creating barrier-free environment for guests with reduced mobility and senior family members.', 'Hareket kısıtlılığı olan misafirler ve yaşlılar için engelsiz yaşam koşulları oluşturma.', '', 'Вкл'],
+  ['12. Безопасность', 'legal_accessible_badge', 'Бейдж безбарьерной среды', 'Безбарьерная среда', 'Barrier-free Access', 'Engelsiz Yaşam', '', 'Вкл'],
+  ['12. Безопасность', 'legal_accessible_item1', 'Пункт 1: Спальня 1 этажа', 'Безбарьерный доступ: спальня №1 на 1 этаже оборудована широкими дверными проемами без порогов', 'Barrier-free access: Bedroom 1 on ground floor has wide doorways and zero-threshold transitions', 'Engelsiz erişim: Giriş katındaki 1. yatak odası eşiksiz geçişler ve geniş kapılarla donatılmıştır', 'DoorOpen', 'Вкл'],
+  ['12. Безопасность', 'legal_accessible_item2', 'Пункт 2: Санузел для МГН', 'Санузел первого этажа спроектирован с возможностью комфортного использования гостями с ограниченной мобильностью', 'Ground floor bathroom designed for comfortable independent access by guests with limited mobility', 'Giriş katındaki banyo, hareket kısıtlılığı olan misafirlerin konforlu kullanımı için tasarlanmıştır', 'CheckCircle2', 'Вкл'],
+  ['12. Безопасность', 'legal_accessible_item3', 'Пункт 3: Подъемник в бассейн', 'Возможность установки мобильного подъемника для спуска в бассейн по предварительному запросу', 'Option to install a specialized mobile pool lift for water descent upon advance request', 'Önceden talep edilmesi durumunda havuza iniş için özel mobil asansör kurulum imkanı', 'Accessibility', 'Вкл'],
+  ['12. Безопасность', 'legal_cancellation_title', 'Заголовок политики отмены', 'Политика отмены и возврата', 'Cancellation & Refund Policy', 'İptal ve İade Politikası', 'Clock', 'Вкл'],
+  ['12. Безопасность', 'legal_cancellation_desc', 'Описание политики отмены', 'Прозрачные финансовые условия бронирования без скрытых штрафов.', 'Transparent booking financial conditions without hidden cancellation fees.', 'Gizli ceza olmaksızın şeffaf rezervasyon ve mali koşullar.', '', 'Вкл'],
+  ['12. Безопасность', 'legal_cancellation_badge', 'Бейдж возврата 100%', 'Возврат 100%', '100% Refund', '%100 İade', '', 'Вкл'],
+  ['12. Безопасность', 'legal_cancellation_item1', 'Пункт 1: 14 дней отмена', 'Полный 100% возврат предоплаты при отмене более чем за 14 суток до даты заезда', 'Full 100% refund of advance payment if canceled more than 14 days prior to check-in date', 'Giriş tarihinden 14 gün öncesine kadar yapılan iptallerde %100 kesintisiz ön ödeme iadesi', 'CheckCircle2', 'Вкл'],
+  ['12. Безопасность', 'legal_cancellation_item2', 'Пункт 2: Менее 14 дней', 'При отмене менее чем за 14 суток до заезда удерживается стоимость проживания за первые сутки', 'For cancellations less than 14 days before arrival, the cost of the first night is retained', 'Girişe 14 günden daha az süre kala yapılan iptallerde ilk gecelik konaklama ücreti tahsil edilir', 'AlertCircle', 'Вкл'],
+  ['12. Безопасность', 'legal_cancellation_item3', 'Пункт 3: Инвойс e-Arşiv Fatura', 'Официальное оформление e-Arşiv Fatura на имя гостя согласно VUK 213 Madde 230', 'Official issuance of e-Arşiv Fatura tax invoice in guest\'s name under VUK 213 Article 230', 'VUK 213 Madde 230 uyarınca misafir adına resmi e-Arşiv Fatura düzenlenmesi', 'FileText', 'Вкл']
 ];
 
 // Динамическое построение объекта MASTER_HOME_MAP из строк MASTER_HOME_ROWS
@@ -487,6 +563,249 @@ const MASTER_TASKS_ROWS = [
   ['TASK-003', '21.09.2026 10:30', 'Секретарь', 'Организация трансфера гостя через партнера Ahmet +90 543 335 80 70', 'В работе', 'https://drive.google.com/drive/folders/11xBSWA02NypliPFbziRSMfC9aAPclYF_', 'Секретарь-Помощник']
 ];
 
+// Построение производных структурированных коллекций для витрины виллы
+function buildHomeDerivedCollections(home) {
+  if (!home) return;
+
+  // 1. Спальни
+  if (!home.bedrooms || home.bedrooms.length === 0) {
+    const bedroomsList = [];
+    [1, 2, 3, 4].forEach((i) => {
+      const item = home[`bedroom_${i}`];
+      if (item && item.enabled !== false) {
+        const descItem = home[`bedroom_${i}_desc`];
+        const badgeItem = home[`bedroom_${i}_badge`];
+        bedroomsList.push({
+          id: i,
+          title: { ru: item.ru, en: item.en, tr: item.tr },
+          desc: {
+            ru: descItem?.ru || item.ru,
+            en: descItem?.en || item.en,
+            tr: descItem?.tr || item.tr
+          },
+          badge: {
+            ru: badgeItem?.ru || `Спальня ${i}`,
+            en: badgeItem?.en || `Bedroom ${i}`,
+            tr: badgeItem?.tr || `Yatak Odası ${i}`
+          },
+          image: item.media || '',
+          iconName: descItem?.media || 'BedDouble'
+        });
+      }
+    });
+    home.bedrooms = bedroomsList;
+  }
+
+  // 2. Удобства основные [Main Amenities]
+  if (!home.mainAmenities || home.mainAmenities.length === 0) {
+    const mainAmenitiesList = [];
+    for (let i = 1; i <= 20; i++) {
+      const item = home[`amenity_main_${i}`];
+      if (item && item.enabled !== false) {
+        mainAmenitiesList.push({
+          key: `amenity_main_${i}`,
+          label: { ru: item.ru, en: item.en, tr: item.tr },
+          icon: item.media || 'Check'
+        });
+      }
+    }
+    home.mainAmenities = mainAmenitiesList;
+  }
+
+  // 3. Удобства сгруппированные для модального окна [Grouped Amenities]
+  if (!home.amenitiesGrouped || home.amenitiesGrouped.length === 0) {
+    const groupedAmenitiesList = [];
+    for (let c = 1; c <= 10; c++) {
+      const catTitleItem = home[`amenity_cat${c}_title`];
+      if (catTitleItem && catTitleItem.enabled !== false) {
+        const items = [];
+        for (let it = 1; it <= 20; it++) {
+          const item = home[`amenity_cat${c}_item${it}`];
+          if (item && item.enabled !== false) {
+            items.push({
+              ru: item.ru,
+              en: item.en,
+              tr: item.tr
+            });
+          }
+        }
+        groupedAmenitiesList.push({
+          category: {
+            ru: catTitleItem.ru,
+            en: catTitleItem.en,
+            tr: catTitleItem.tr
+          },
+          icon: catTitleItem.media || 'Check',
+          items
+        });
+      }
+    }
+    home.amenitiesGrouped = groupedAmenitiesList;
+  }
+
+  // 4. Отзывы и критерии оценок [Reviews]
+  if (!home.reviewsData || !home.reviewsData.reviews || home.reviewsData.reviews.length === 0) {
+    const reviewCatsList = [];
+    for (let c = 1; c <= 10; c++) {
+      const item = home[`review_cat_${c}`];
+      if (item && item.enabled !== false) {
+        const parts = (item.media || '5.0|100').split('|');
+        const score = parts[0] || '5.0';
+        const percent = parseInt(parts[1], 10) || 100;
+        reviewCatsList.push({
+          label: { ru: item.ru, en: item.en, tr: item.tr },
+          score,
+          percent
+        });
+      }
+    }
+    const reviewCardsList = [];
+    for (let r = 1; r <= 10; r++) {
+      const authItem = home[`review_${r}_author`];
+      const textItem = home[`review_${r}_text`];
+      if (authItem && authItem.enabled !== false) {
+        reviewCardsList.push({
+          author: { ru: authItem.ru, en: authItem.en, tr: authItem.tr },
+          avatar: authItem.media || '',
+          comment: { ru: textItem?.ru || '', en: textItem?.en || '', tr: textItem?.tr || '' }
+        });
+      }
+    }
+    home.reviewsData = {
+      header: home.reviews_score_header,
+      categories: reviewCatsList,
+      reviews: reviewCardsList
+    };
+  }
+
+  // 5. Описание виллы и правила [About & Rules]
+  if (!home.aboutSections || home.aboutSections.length === 0) {
+    const aboutSectionsList = [];
+    for (let s = 1; s <= 10; s++) {
+      const titleItem = home[`about_sec_${s}_title`];
+      const textItem = home[`about_sec_${s}_text`];
+      if (titleItem && titleItem.enabled !== false) {
+        aboutSectionsList.push({
+          id: String(s),
+          title: { ru: titleItem.ru, en: titleItem.en, tr: titleItem.tr },
+          text: { ru: textItem?.ru || '', en: textItem?.en || '', tr: textItem?.tr || '' }
+        });
+      }
+    }
+    home.aboutSections = aboutSectionsList;
+  }
+
+  // 6. Географические ориентиры Дальяна [Landmarks] (14 локаций)
+  if (!home.landmarksList || home.landmarksList.length === 0) {
+    const landmarksList = [];
+    const landmarkCategoryMap = {
+      1: 'walk', 2: 'walk', 3: 'food', 4: 'food', 5: 'walk',
+      6: 'nature', 7: 'nature', 8: 'nature', 9: 'beach',
+      10: 'nature', 11: 'nature', 12: 'nature', 13: 'transport', 14: 'city'
+    };
+    const landmarkDefaultTitles = {
+      1: { ru: 'Пешеходный центр Дальяна', en: 'Dalyan Pedestrian Center', tr: 'Dalyan Yaya Merkezi' },
+      2: { ru: 'Речная набережная и причал', en: 'River Promenade & Pier', tr: 'Nehir Kordonu ve İskele' },
+      3: { ru: 'Ресторан La Boheme Dalyan Bistro', en: 'La Boheme Dalyan Bistro Restaurant', tr: 'La Boheme Dalyan Bistro Restoranı' },
+      4: { ru: 'Ресторан Çiçek Restoran', en: 'Çiçek Restoran Restaurant', tr: 'Çiçek Restoran' },
+      5: { ru: 'Субботний фермерский рынок', en: 'Saturday Farmers Market', tr: 'Cumartesi Köy Pazarı' },
+      6: { ru: 'Ликийские скальные гробницы', en: 'Lycian Rock Tombs', tr: 'Likya Kaya Mezarları' },
+      7: { ru: 'Античный город Каунос', en: 'Ancient City of Kaunos', tr: 'Antik Kaunos Kenti' },
+      8: { ru: 'Источники и грязи Султание', en: 'Sultaniye Thermal Springs & Mud Baths', tr: 'Sultaniye Kaplıcaları ve Çamur Banyoları' },
+      9: { ru: 'Песчаный черепаший пляж Изтузу', en: 'Protected Iztuzu Turtle Beach', tr: 'İztuzu Kaplumbağa Plajı' },
+      10: { ru: 'Пресноводное озеро Кёйджегиз', en: 'Freshwater Lake Koycegiz', tr: 'Tatlı su Köyceğiz Gölü' },
+      11: { ru: 'Смотровая площадка на горе Радар', en: 'Radar Mountain Viewpoint', tr: 'Radar Tepesi Seyir Noktası' },
+      12: { ru: 'Центр реабилитации черепах DEKAMER', en: 'DEKAMER Sea Turtle Rescue Center', tr: 'DEKAMER Kaplumbağa Kurtarma Merkezi' },
+      13: { ru: 'Международный аэропорт Даламан [DLM]', en: 'Dalaman International Airport [DLM]', tr: 'Dalaman Uluslararası Havalimanı [DLM]' },
+      14: { ru: 'Морской курортный город Мармарис', en: 'Resort City of Marmaris', tr: 'Liman Şehri Marmaris' }
+    };
+
+    for (let i = 1; i <= 14; i++) {
+      const item = home[`landmark_${i}`];
+      if (item && item.enabled !== false) {
+        const mediaParts = (item.media || '').split('|');
+        const distance = mediaParts[0] || '';
+        const time = mediaParts[1] || '';
+        const category = mediaParts[2] || landmarkCategoryMap[i] || 'nature';
+        const badge = mediaParts[3] || '';
+        const icon = mediaParts[4] || 'MapPin';
+        const titleObj = landmarkDefaultTitles[i] || { ru: `Ориентир ${i}`, en: `Landmark ${i}`, tr: `Nokta ${i}` };
+
+        landmarksList.push({
+          id: `landmark_${i}`,
+          index: i,
+          category,
+          icon,
+          distance,
+          time,
+          badge,
+          title: titleObj,
+          desc: { ru: item.ru, en: item.en, tr: item.tr }
+        });
+      }
+    }
+    home.landmarksList = landmarksList;
+  }
+
+  // 7. Спа-комплекс, бассейн и сад [Spa & Pool Data]
+  if (!home.spaData) {
+    home.spaData = {
+      title: home.spa_title || { ru: 'Спа-комплекс и бассейн с соленой водой', en: 'Spa Complex & Saltwater Pool', tr: 'Spa Kompleksi ve Tuzlu Su Havuzu' },
+      subtitle: home.spa_subtitle || { ru: 'Приватная закрытая территория, солевой бассейн 36 м², гидромассажное джакузи и лаунж-зона отдыха', en: 'Gated private territory, 36 sqm saltwater pool, hydro-massage jacuzzi and outdoor relaxation lounge', tr: 'Özel korunaklı alan, 36 m² tuzlu su havuzu, hidromasajlı jakuzi ve açık dinlenme alanı' },
+      poolTitle: home.spa_pool_title || { ru: 'Приватный бассейн с соленой водой', en: 'Private Saltwater Pool', tr: 'Özel Tuzlu Su Havuzu' },
+      poolDesc: home.spa_pool_desc || { ru: 'Чаша 4 × 9 метров [площадь 36 кв. м], постоянная комфортная глубина 150 см по всей площади чаши. Мягкая природная минерализация исключает раздражение кожи и едкий запах хлора.', en: 'Pool bowl 4x9 meters [area 36 sqm], constant comfortable depth of 150 cm throughout. Gentle natural mineralization prevents skin irritation and chlorine smell.', tr: '4x9 metre havuz ölçüsü [36 m² alan], tüm havuz boyunca sabit ve konforlu 150 cm derinlik. Yumuşak doğal mineralizasyon cilt tahrişini ve klor kokusunu önler.' },
+      poolBadge: home.spa_pool_badge || { ru: 'Соленая вода без хлора', en: 'Saltwater without chlorine', tr: 'Klorsuz tuzlu su' },
+      poolSeason: home.spa_pool_season || { ru: 'Сезон работы: с 1 мая по 1 ноября', en: 'Operating season: May 1 to November 1', tr: 'Çalışma sezonu: 1 Mayıs - 1 Kasım' },
+      poolLighting: home.spa_pool_lighting || { ru: 'Подводная ночная подсветка: 20:00 - 01:00', en: 'Underwater night lighting: 20:00 - 01:00', tr: 'Gece sualtı aydınlatması: 20:00 - 01:00' },
+      poolMaintenance: home.spa_pool_maintenance || { ru: 'График чистки: в день заселения и далее каждые 7 дней', en: 'Maintenance schedule: on check-in day and every 7 days', tr: 'Temizlik takvimi: giriş gününde ve her 7 günde bir' },
+      jacuzziTitle: home.spa_jacuzzi_title || { ru: 'Открытое уличное джакузи', en: 'Outdoor Open-Air Jacuzzi', tr: 'Açık Hava Jakuzisi' },
+      jacuzziDesc: home.spa_jacuzzi_desc || { ru: 'Гидромассажная спа-ванна в зоне бассейна с подогревом и регулируемыми форсунками для глубокого расслабления на свежем воздухе.', en: 'Heated hydromassage spa tub in pool zone with adjustable jets for deep outdoor muscle relaxation.', tr: 'Havuz alanında açık havada derin kas gevşemesi sağlayan ısıtmalı ve ayarlanabilir jetlere sahip hidromasajlı jakuzi.' },
+      jacuzziBadge: home.spa_jacuzzi_badge || { ru: 'Вместимость: 4 персоны', en: 'Capacity: 4 guests', tr: 'Kapasite: 4 kişi' },
+      jacuzziSchedule: home.spa_jacuzzi_schedule || { ru: 'Режим работы: 10:00 - 17:00 [15 мин каждые 45 мин]', en: 'Operating hours: 10:00 - 17:00 [15 min every 45 min]', tr: 'Çalışma saatleri: 10:00 - 17:00 [45 dakikada bir 15 dk]' },
+      jacuzziLighting: home.spa_jacuzzi_lighting || { ru: 'Подсветка джакузи: 20:00 - 01:00', en: 'Jacuzzi lighting: 20:00 - 01:00', tr: 'Jakuzi aydınlatması: 20:00 - 01:00' },
+      jacuzziSeason: home.spa_jacuzzi_season || { ru: 'Период активности: с 1 мая по 1 ноября', en: 'Activity period: May 1 to November 1', tr: 'Aktif dönem: 1 Mayıs - 1 Kasım' },
+      streetLightingTitle: home.spa_street_lighting_title || { ru: 'Освещение территории', en: 'Territory Lighting', tr: 'Bahçe Aydınlatması' },
+      streetLightingDesc: home.spa_street_lighting_desc || { ru: 'Автоматическое включение сада: 20:00 - 01:00 и 04:00 - 06:00', en: 'Automated garden lights: 20:00 - 01:00 and 04:00 - 06:00', tr: 'Otomatik bahçe aydınlatması: 20:00 - 01:00 ve 04:00 - 06:00' },
+      parkingTitle: home.spa_parking_title || { ru: 'Приватная парковка', en: 'Private On-Site Parking', tr: 'Özel Otopark' },
+      parkingDesc: home.spa_parking_desc || { ru: 'Закрытая бесплатная парковка на территории виллы на 2 автомобиля', en: 'Gated free parking on villa grounds for 2 vehicles', tr: 'Villa mülkü içinde 2 araçlık ücretsiz kapalı otopark' },
+      bbqTitle: home.spa_bbq_title || { ru: 'BBQ и обеденная зона', en: 'BBQ & Dining Area', tr: 'Barbekü ve Yemek Alanı' },
+      bbqDesc: home.spa_bbq_desc || { ru: 'Обеденный стол на 8 мест, гриль на углях, шезлонги и уличный душ', en: 'Outdoor dining table for 8, charcoal grill, sun loungers, poolside shower', tr: '8 kişilik açık yemek masası, kömürlü ızgara, şezlonglar ve havuz duşu' }
+    };
+  }
+
+  // 8. Безопасность, Закон № 7464 и доступная среда [Safety, Law 7464 & Accessibility]
+  if (!home.safetyData) {
+    home.safetyData = {
+      title: home.legal_safety_title || { ru: 'Безопасность, Закон № 7464 и Доступная среда', en: 'Safety, Law No. 7464 & Accessible Environment', tr: 'Güvenlik, 7464 Sayılı Kanun ve Engelsiz Erişim' },
+      subtitle: home.legal_safety_subtitle || { ru: 'Полное соответствие законодательству Турции о краткосрочной аренде, защита гостей и безбарьерный доступ', en: 'Full compliance with Turkish short-term rental laws, guest protection and barrier-free access', tr: 'Türkiye kısa dönem kiralama mevzuatına tam uyum, misafir güvenliği ve engelsiz erişim' },
+      law7464Title: home.legal_law7464_title || { ru: 'Официальный договор и учет KBS', en: 'Official Contract & KBS Police Registration', tr: 'Resmi Sözleşme ve KBS Polis Kaydı' },
+      law7464Desc: home.legal_law7464_desc || { ru: 'Вилла осуществляет деятельность в строгом соответствии с Законом № 7464 о краткосрочной туристической аренде в Турции.', en: 'Villa operates in strict accordance with Turkish Law No. 7464 on Short-Term Tourist Rentals.', tr: 'Villa, Türkiye\'deki 7464 Sayılı Konutların Turizm Amaçlı Kiralanması Kanunu\'na tam uygun olarak işletilmektedir.' },
+      law7464Badge: home.legal_law7464_badge || { ru: 'Закон Турции № 7464', en: 'Turkish Law No. 7464', tr: 'Türkiye Kanunu No. 7464' },
+      law7464Item1: home.legal_law7464_item1 || { ru: 'Обязательный договор краткосрочного найма с описью имущества при заезде', en: 'Mandatory short-term rental agreement with property inventory upon check-in', tr: 'Girişte demirbaş listesi içeren zorunlu kısa dönem kira sözleşmesi' },
+      law7464Item2: home.legal_law7464_item2 || { ru: 'Регистрация паспортов всех проживающих гостей в полицейской системе KBS [Kimlik Bildirme Sistemi]', en: 'Registration of all residing guests in the Turkish Gendarmerie KBS police system', tr: 'Tüm konaklayan misafirlerin jandarma KBS [Kimlik Bildirme Sistemi] sistemine kaydedilmesi' },
+      law7464Item3: home.legal_law7464_item3 || { ru: 'Размещение лиц, не внесенных в государственную систему KBS, строго запрещено', en: 'Accommodation of third parties not registered in the official KBS system is strictly prohibited', tr: 'Resmi KBS sistemine kaydedilmemiş kişilerin konaklaması kesinlikle yasaktır' },
+      securityTitle: home.legal_security_title || { ru: 'Безопасность дома и территории', en: 'Home & Territory Safety Standards', tr: 'Ev ve Mülk Güvenlik Standartları' },
+      securityDesc: home.legal_security_desc || { ru: 'Оснащение дома сертифицированными системами предупреждения и постоянного мониторинга.', en: 'Equipping the villa with certified emergency warning systems and 24/7 perimeter monitoring.', tr: 'Villanın sertifikalı uyarı sistemleri ve 24/7 çevre izleme ile donatılması.' },
+      securityBadge: home.legal_security_badge || { ru: 'Стандарты безопасности', en: 'Safety Standards', tr: 'Güvenlik Standartları' },
+      securityItem1: home.legal_security_item1 || { ru: 'Наружные камеры видеонаблюдения установлены строго по периметру забора и у калитки [без съемки бассейна и террасы]', en: 'External perimeter CCTV security cameras strictly at fence and gate [no cameras in pool or patio]', tr: 'Dış çevre güvenlik kameraları sadece çit ve bahçe kapısında [havuz ve verandada kamera yoktur]' },
+      securityItem2: home.legal_security_item2 || { ru: 'Сертифицированные автономные датчики дыма и угарного газа на обоих этажах виллы', en: 'Certified autonomous smoke and carbon monoxide detectors on both villa floors', tr: 'Villanın her iki katında sertifikalı duman ve karbonmonoksit dedektörleri' },
+      securityItem3: home.legal_security_item3 || { ru: 'Огнетушители на 1 и 2 этажах, укомплектованная медицинская аптечка первой помощи', en: 'Fire extinguishers on 1st and 2nd floors, fully equipped emergency first aid kit', tr: '1. ve 2. katlarda yangın söndürücüler, tam donanımlı ilk yardım tıbbi çantası' },
+      accessibleTitle: home.legal_accessible_title || { ru: 'Инклюзивность и доступная среда', en: 'Inclusivity & Accessible Environment', tr: 'Kapsayıcılık ve Engelsiz Erişim' },
+      accessibleDesc: home.legal_accessible_desc || { ru: 'Создание безбарьерных условий для комфортного отдыха гостей с ограниченной мобильностью.', en: 'Creating barrier-free environment for guests with reduced mobility and senior family members.', tr: 'Hareket kısıtlılığı olan misafirler ve yaşlılar için engelsiz yaşam koşulları oluşturma.' },
+      accessibleBadge: home.legal_accessible_badge || { ru: 'Безбарьерная среда', en: 'Barrier-free Access', tr: 'Engelsiz Yaşam' },
+      accessibleItem1: home.legal_accessible_item1 || { ru: 'Безбарьерный доступ: спальня №1 на 1 этаже оборудована широкими дверными проемами без порогов', en: 'Barrier-free access: Bedroom 1 on ground floor has wide doorways and zero-threshold transitions', tr: 'Engelsiz erişim: Giriş katındaki 1. yatak odası eşiksiz geçişler ve geniş kapılarla donatılmıştır' },
+      accessibleItem2: home.legal_accessible_item2 || { ru: 'Санузел первого этажа спроектирован с возможностью комфортного использования гостями с ограниченной мобильностью', en: 'Ground floor bathroom designed for comfortable independent access by guests with limited mobility', tr: 'Giriş katındaki banyo, hareket kısıtlılığı olan misafirlerin konforlu kullanımı için tasarlanmıştır' },
+      accessibleItem3: home.legal_accessible_item3 || { ru: 'Возможность установки мобильного подъемника для спуска в бассейн по предварительному запросу', en: 'Option to install a specialized mobile pool lift for water descent upon advance request', tr: 'Önceden talep edilmesi durumunda havuza iniş для спуска в бассейн по предварительному запросу', tr: 'Önceden talep edilmesi durumunda havuza iniş için özel mobil asansör kurulum imkanı' },
+      cancellationTitle: home.legal_cancellation_title || { ru: 'Политика отмены и возврата', en: 'Cancellation & Refund Policy', tr: 'İptal ve İade Politikası' },
+      cancellationDesc: home.legal_cancellation_desc || { ru: 'Прозрачные финансовые условия бронирования без скрытых штрафов.', en: 'Transparent booking financial conditions without hidden cancellation fees.', tr: 'Gizli ceza olmaksızın şeffaf rezervasyon ve mali koşullar.' },
+      cancellationBadge: home.legal_cancellation_badge || { ru: 'Возврат 100%', en: '100% Refund', tr: '%100 İade' },
+      cancellationItem1: home.legal_cancellation_item1 || { ru: 'Полный 100% возврат предоплаты при отмене более чем за 14 суток до даты заезда', en: 'Full 100% refund of advance payment if canceled more than 14 days prior to check-in date', tr: 'Giriş tarihinden 14 gün öncesine kadar yapılan iptallerde %100 kesintisiz ön ödeme iadesi' },
+      cancellationItem2: home.legal_cancellation_item2 || { ru: 'При отмене менее чем за 14 суток до заезда удерживается стоимость проживания за первые сутки', en: 'For cancellations less than 14 days before arrival, the cost of the first night is retained', tr: 'Girişe 14 günden daha az süre kala yapılan iptallerde ilk gecelik konaklama ücreti tahsil edilir' },
+      cancellationItem3: home.legal_cancellation_item3 || { ru: 'Официальное оформление e-Arşiv Fatura на имя гостя согласно VUK 213 Madde 230', en: 'Official issuance of e-Arşiv Fatura tax invoice in guest\'s name under VUK 213 Article 230', tr: 'VUK 213 Madde 230 uyarınca misafir adına resmi e-Arşiv Fatura düzenlenmesi' }
+    };
+  }
+}
+
 module.exports = {
   MASTER_ABOUT_SECTIONS,
   MASTER_HOME_MAP,
@@ -502,5 +821,6 @@ module.exports = {
   MASTER_ACCOUNTS_ROWS,
   MASTER_ORDERS_ROWS,
   MASTER_ACCESS_ROWS,
-  MASTER_TASKS_ROWS
+  MASTER_TASKS_ROWS,
+  buildHomeDerivedCollections
 };

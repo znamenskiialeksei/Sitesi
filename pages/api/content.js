@@ -10,7 +10,7 @@ import { google } from 'googleapis';
 import fs from 'fs';
 import path from 'path';
 import { getLiveSheetMap, resolveRange } from '../../utils/sheetsRegistry';
-import { MASTER_ABOUT_SECTIONS, MASTER_HOME_MAP } from '../../utils/masterSeedContent';
+import { MASTER_ABOUT_SECTIONS, MASTER_HOME_MAP, buildHomeDerivedCollections } from '../../utils/masterSeedContent';
 import { resolveTemplate } from '../../utils/templateResolver';
 
 // Очистка от битых формул Google Таблиц [#REF!, #VALUE!, #ERROR!, #N/A]
@@ -53,7 +53,17 @@ export default async function handler(req, res) {
     try {
       if (fs.existsSync(contentFilePath)) {
         const raw = fs.readFileSync(contentFilePath, 'utf8');
-        return JSON.parse(raw);
+        const parsed = JSON.parse(raw);
+        if (parsed.home) {
+          buildHomeDerivedCollections(parsed.home);
+          if (parsed.home.aboutSections && parsed.home.aboutSections.length > 0 && (!parsed.about || Object.keys(parsed.about).length === 0)) {
+            parsed.about = {};
+            parsed.home.aboutSections.forEach((sec) => {
+              parsed.about[sec.id] = { title: sec.title, text: sec.text };
+            });
+          }
+        }
+        return parsed;
       }
     } catch (e) {
       console.warn('⚠️ Ошибка чтения резервного content.json:', e.message);
@@ -289,123 +299,7 @@ export default async function handler(req, res) {
     });
 
     // Формирование структурированных коллекций для динамического рендеринга витрины
-    // 1. Спальни
-    const bedroomsList = [];
-    [1, 2, 3, 4].forEach((i) => {
-      const item = content.home[`bedroom_${i}`];
-      if (item && item.enabled !== false) {
-        const descItem = content.home[`bedroom_${i}_desc`];
-        const badgeItem = content.home[`bedroom_${i}_badge`];
-        bedroomsList.push({
-          id: i,
-          title: { ru: item.ru, en: item.en, tr: item.tr },
-          desc: {
-            ru: descItem?.ru || item.ru,
-            en: descItem?.en || item.en,
-            tr: descItem?.tr || item.tr
-          },
-          badge: {
-            ru: badgeItem?.ru || `Спальня ${i}`,
-            en: badgeItem?.en || `Bedroom ${i}`,
-            tr: badgeItem?.tr || `Yatak Odası ${i}`
-          },
-          image: item.media || '',
-          iconName: descItem?.media || 'BedDouble'
-        });
-      }
-    });
-    content.home.bedrooms = bedroomsList;
-
-    // 2. Удобства основные [Main Amenities]
-    const mainAmenitiesList = [];
-    for (let i = 1; i <= 20; i++) {
-      const item = content.home[`amenity_main_${i}`];
-      if (item && item.enabled !== false) {
-        mainAmenitiesList.push({
-          key: `amenity_main_${i}`,
-          label: { ru: item.ru, en: item.en, tr: item.tr },
-          icon: item.media || 'Check'
-        });
-      }
-    }
-    content.home.mainAmenities = mainAmenitiesList;
-
-    // 3. Удобства сгруппированные для модального окна [Grouped Amenities]
-    const groupedAmenitiesList = [];
-    for (let c = 1; c <= 10; c++) {
-      const catTitleItem = content.home[`amenity_cat${c}_title`];
-      if (catTitleItem && catTitleItem.enabled !== false) {
-        const items = [];
-        for (let it = 1; it <= 20; it++) {
-          const item = content.home[`amenity_cat${c}_item${it}`];
-          if (item && item.enabled !== false) {
-            items.push({
-              ru: item.ru,
-              en: item.en,
-              tr: item.tr
-            });
-          }
-        }
-        groupedAmenitiesList.push({
-          category: {
-            ru: catTitleItem.ru,
-            en: catTitleItem.en,
-            tr: catTitleItem.tr
-          },
-          icon: catTitleItem.media || 'Check',
-          items
-        });
-      }
-    }
-    content.home.amenitiesGrouped = groupedAmenitiesList;
-
-    // 4. Отзывы и критерии оценок [Reviews]
-    const reviewCatsList = [];
-    for (let c = 1; c <= 10; c++) {
-      const item = content.home[`review_cat_${c}`];
-      if (item && item.enabled !== false) {
-        const parts = (item.media || '5.0|100').split('|');
-        const score = parts[0] || '5.0';
-        const percent = parseInt(parts[1], 10) || 100;
-        reviewCatsList.push({
-          label: { ru: item.ru, en: item.en, tr: item.tr },
-          score,
-          percent
-        });
-      }
-    }
-    const reviewCardsList = [];
-    for (let r = 1; r <= 10; r++) {
-      const authItem = content.home[`review_${r}_author`];
-      const textItem = content.home[`review_${r}_text`];
-      if (authItem && authItem.enabled !== false) {
-        reviewCardsList.push({
-          author: { ru: authItem.ru, en: authItem.en, tr: authItem.tr },
-          avatar: authItem.media || '',
-          comment: { ru: textItem?.ru || '', en: textItem?.en || '', tr: textItem?.tr || '' }
-        });
-      }
-    }
-    content.home.reviewsData = {
-      header: content.home.reviews_score_header,
-      categories: reviewCatsList,
-      reviews: reviewCardsList
-    };
-
-    // 5. Описание виллы и правила [About & Rules]
-    const aboutSectionsList = [];
-    for (let s = 1; s <= 10; s++) {
-      const titleItem = content.home[`about_sec_${s}_title`];
-      const textItem = content.home[`about_sec_${s}_text`];
-      if (titleItem && titleItem.enabled !== false) {
-        aboutSectionsList.push({
-          id: String(s),
-          title: { ru: titleItem.ru, en: titleItem.en, tr: titleItem.tr },
-          text: { ru: textItem?.ru || '', en: textItem?.en || '', tr: textItem?.tr || '' }
-        });
-      }
-    }
-    content.home.aboutSections = aboutSectionsList;
+    buildHomeDerivedCollections(content.home);
 
     // 2. Описание виллы [ABOUT] наполняется напрямую из Блока 4 витрины [aboutSections]
     if (content.home.aboutSections && content.home.aboutSections.length > 0) {

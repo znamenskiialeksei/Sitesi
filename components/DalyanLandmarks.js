@@ -1,7 +1,8 @@
 // ==============================================================================
 // ГЕОГРАФИЧЕСКИЕ ОРИЕНТИРЫ ДАЛЬЯНА: DALYAN LANDMARKS
 // Файл: components/DalyanLandmarks.js
-// Назначение: Интерактивная витрина ориентиров, точных расстояний и карты Дальяна
+// Назначение: Интерактивная витрина 14 ориентиров Дальяна из Google Sheets
+// 100% SSOT: Все тексты, расстояния и тайминги загружаются из таблицы
 // ==============================================================================
 
 import React, { useState } from 'react';
@@ -23,160 +24,81 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../utils/language';
 
+const ICON_MAP = {
+  Footprints,
+  Compass,
+  Utensils,
+  ShoppingBag,
+  Mountain,
+  Waves,
+  Sun,
+  Eye,
+  Plane,
+  Car,
+  MapPin
+};
+
 export default function DalyanLandmarks({ homeData = null }) {
   const { t, lang } = useLanguage();
   const [filter, setFilter] = useState('all');
 
-  const officialAddress = 'Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Turkey';
-  const mapsUrl = 'https://maps.app.goo.gl/tPgCjCwz4pzq28pE9';
-  const gpsCoordinates = '36.8336° N, 28.6439° E';
+  const officialAddress =
+    homeData?.landmarksAddress ||
+    homeData?.address ||
+    'Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Turkey';
 
-  const landmarks = [
-    {
-      id: 'center',
-      category: 'walk',
-      icon: Footprints,
-      title: 'Пешеходный центр Дальяна',
-      distance: '250 м',
-      time: '3 мин пешком',
-      desc: 'Главная улица с ресторанами, кофейнями, аптеками, банкоматами и сувенирными лавками.',
-      badge: 'В шаговой доступности'
-    },
-    {
-      id: 'promenade',
-      category: 'walk',
-      icon: Compass,
-      title: 'Речная набережная и причал',
-      distance: '400 м',
-      time: '5 мин пешком',
-      desc: 'Живописная набережная вдоль реки Дальян, причалы речных лодок-такси и экскурсионных катеров.',
-      badge: 'Река Дальян'
-    },
-    {
-      id: 'la_boheme',
-      category: 'food',
-      icon: Utensils,
-      title: 'Ресторан La Boheme Dalyan Bistro',
-      distance: '350 м',
-      time: '4 мин пешком',
-      desc: 'Популярное гастрономическое заведение с авторской средиземноморской и европейской кухней.',
-      badge: 'Гастрономия'
-    },
-    {
-      id: 'cicek',
-      category: 'food',
-      icon: Utensils,
-      title: 'Ресторан Çiçek Restoran',
-      distance: '500 м',
-      time: '6 мин пешком',
-      desc: 'Традиционный эгейский рыбный ресторан со свежими морепродуктами и мезе.',
-      badge: 'Свежая рыба'
-    },
-    {
-      id: 'market',
-      category: 'walk',
-      icon: ShoppingBag,
-      title: 'Субботний фермерский рынок',
-      distance: '600 м',
-      time: '7 мин пешком',
-      desc: 'Еженедельный базар: домашние оливки, деревенские сыры, гранатовый сок, фрукты и специи.',
-      badge: 'Суббота'
-    },
-    {
-      id: 'tombs',
-      category: 'nature',
-      icon: Mountain,
-      title: 'Ликийские скальные гробницы',
-      distance: '450 м',
-      time: 'Прямая видимость',
-      desc: 'Величественные гробницы карийских царей IV века до н.э., высеченные в отвесной скале. Вечерняя подсветка.',
-      badge: 'UNESCO Heritage'
-    },
-    {
-      id: 'kaunos',
-      category: 'nature',
-      icon: Compass,
-      title: 'Античный город Каунос',
-      distance: '1.5 км',
-      time: 'Лодка + прогулка',
-      desc: 'Древний город с амфитеатром, римскими банями, базиликой и панорамой с акрополя.',
-      badge: 'Античность'
-    },
-    {
-      id: 'iztuzu',
-      category: 'nature',
-      icon: Sun,
-      title: 'Песчаный пляж Изтузу [Turtle Beach]',
-      distance: '11 км',
-      time: '15 мин авто / 35 мин катер',
-      desc: 'Знаменитый природный заповедник и место размножения морских черепах Caretta-Caretta.',
-      badge: 'Заповедный пляж'
-    },
-    {
-      id: 'sultaniye',
-      category: 'nature',
-      icon: Waves,
-      title: 'Термы и грязи Султание',
-      distance: '4 км',
-      time: 'По воде на катере',
-      desc: 'Горячие радоновые минеральные источники и омолаживающие лечебные грязи на берегу озера.',
-      badge: 'Spa & Wellness'
-    },
-    {
-      id: 'koycegiz',
-      category: 'nature',
-      icon: Waves,
-      title: 'Озеро Кёйджегиз [Köyceğiz]',
-      distance: '5 км',
-      time: 'Водный маршрут',
-      desc: 'Одно из крупнейших прибрежных озер Турции с кристальной водой и горными пейзажами.',
-      badge: 'Озерная гладь'
-    },
-    {
-      id: 'radar',
-      category: 'nature',
-      icon: Eye,
-      title: 'Смотровая площадка Радар',
-      distance: '8 км',
-      time: '20 мин на авто',
-      desc: 'Панорамный обзор 360° на весь Дальян, изгибы дельты реки и песчаную косу Изтузу.',
-      badge: 'Панорама 360°'
-    },
-    {
-      id: 'dlm',
-      category: 'transport',
-      icon: Plane,
-      title: 'Аэропорт Даламан [DLM]',
-      distance: '30 км',
-      time: '25-30 мин на авто',
-      desc: 'Ближайший международный аэропорт с прямыми рейсами из Европы и регулярным сообщением.',
-      badge: 'Авиасообщение'
-    },
-    {
-      id: 'fethiye',
-      category: 'transport',
-      icon: Car,
-      title: 'Фетхие и бухта Олюдениз',
-      distance: '60 км',
-      time: '55 мин на авто',
-      desc: 'Знаменитая Голубая лагуна, Ликийская тропа и мировой центр параглайдинга.',
-      badge: 'Маршрут на день'
-    },
-    {
-      id: 'marmaris',
-      category: 'transport',
-      icon: Car,
-      title: 'Город-курорт Мармарис',
-      distance: '85 км',
-      time: '1 ч 15 мин на авто',
-      desc: 'Крупнейшая яхтенная марина Эгейского моря, набережная и старинный замок.',
-      badge: 'Яхтенная столица'
-    }
-  ];
+  const mapsUrl =
+    homeData?.landmarksMapsUrl ||
+    homeData?.mapsUrl ||
+    'https://maps.app.goo.gl/tPgCjCwz4pzq28pE9';
+
+  const gpsCoordinates =
+    homeData?.landmarksGps ||
+    '36.8336° N, 28.6439° E';
+
+  const sectionTitle =
+    homeData?.landmarksTitle ||
+    t('landmarksSectionTitle') ||
+    '14 географических ориентиров Дальяна';
+
+  const sectionSubtitle =
+    homeData?.landmarksSubtitle ||
+    t('landmarksSectionSubtitle') ||
+    'Точные расстояния и тайминг от виллы • Пешеходная доступность центра и заповедная природа';
+
+  const rawLandmarks = (homeData?.landmarksList && homeData.landmarksList.length > 0)
+    ? homeData.landmarksList
+    : [];
+
+  const landmarks = rawLandmarks.map((item, idx) => {
+    const IconComp = ICON_MAP[item.icon] || MapPin;
+    const title = typeof item.title === 'object' ? (item.title[lang] || item.title.ru || '') : item.title;
+    const desc = typeof item.desc === 'object' ? (item.desc[lang] || item.desc.ru || '') : item.desc;
+    const badge = typeof item.badge === 'object' ? (item.badge[lang] || item.badge.ru || '') : item.badge;
+
+    return {
+      id: item.id || `landmark_${idx + 1}`,
+      category: item.category || 'nature',
+      icon: IconComp,
+      title,
+      distance: item.distance || '',
+      time: item.time || '',
+      desc,
+      badge
+    };
+  });
 
   const filteredLandmarks = filter === 'all'
     ? landmarks
     : landmarks.filter((l) => l.category === filter);
+
+  const filterButtons = [
+    { key: 'all', label: { ru: 'Все ориентиры [14]', en: 'All landmarks [14]', tr: 'Tüm noktalar [14]' } },
+    { key: 'walk', label: { ru: 'Пешком и покупки [3]', en: 'Walking & shopping [3]', tr: 'Yürüyüş ve alışveriş [3]' } },
+    { key: 'food', label: { ru: 'Рестораны [2]', en: 'Restaurants [2]', tr: 'Restoranlar [2]' } },
+    { key: 'nature', label: { ru: 'Природа и история [6]', en: 'Nature & history [6]', tr: 'Doğa ve tarih [6]' } },
+    { key: 'transport', label: { ru: 'Транспорт и города [3]', en: 'Transport & cities [3]', tr: 'Ulaşım ve şehirler [3]' } }
+  ];
 
   return (
     <div className="py-8 border-t border-white/10">
@@ -185,10 +107,10 @@ export default function DalyanLandmarks({ homeData = null }) {
         <div>
           <div className="flex items-center gap-2 text-rose-400 font-semibold text-xs tracking-wider uppercase mb-1">
             <Navigation className="w-4 h-4" />
-            <span>Геолокация и окрестности</span>
+            <span>{t('geolocationHeader') || 'Геолокация и окрестности'}</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-white">
-            Географические ориентиры Дальяна
+            {sectionTitle}
           </h2>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
             {officialAddress} • GPS: {gpsCoordinates}
@@ -203,20 +125,14 @@ export default function DalyanLandmarks({ homeData = null }) {
           className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition-all shadow-lg shadow-rose-600/20 shrink-0 self-start sm:self-auto"
         >
           <MapPin className="w-4 h-4" />
-          <span>Открыть на карте Google</span>
+          <span>{t('openOnGoogleMaps') || 'Открыть на карте Google'}</span>
           <ExternalLink className="w-3.5 h-3.5 opacity-80" />
         </a>
       </div>
 
       {/* Фильтры категорий */}
       <div className="flex flex-wrap gap-2 mb-6">
-        {[
-          { key: 'all', label: 'Все ориентиры [14]' },
-          { key: 'walk', label: 'Пешком и покупки [3]' },
-          { key: 'food', label: 'Рестораны [2]' },
-          { key: 'nature', label: 'Природа и история [6]' },
-          { key: 'transport', label: 'Транспорт и города [3]' }
-        ].map((btn) => (
+        {filterButtons.map((btn) => (
           <button
             key={btn.key}
             type="button"
@@ -227,7 +143,7 @@ export default function DalyanLandmarks({ homeData = null }) {
                 : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700/80 hover:text-white border border-white/5'
             }`}
           >
-            {btn.label}
+            {btn.label[lang] || btn.label.ru}
           </button>
         ))}
       </div>
@@ -246,9 +162,11 @@ export default function DalyanLandmarks({ homeData = null }) {
                   <div className="p-2 rounded-xl bg-slate-900 border border-white/10 text-rose-400 group-hover:text-rose-300 group-hover:border-rose-500/30 transition-colors shrink-0">
                     <IconComponent className="w-4 h-4" />
                   </div>
-                  <span className="text-[10px] font-bold text-slate-300 bg-slate-900/80 px-2 py-0.5 rounded-full border border-white/5">
-                    {item.badge}
-                  </span>
+                  {item.badge && (
+                    <span className="text-[10px] font-bold text-slate-300 bg-slate-900/80 px-2 py-0.5 rounded-full border border-white/5">
+                      {item.badge}
+                    </span>
+                  )}
                 </div>
 
                 <h3 className="font-bold text-white text-sm leading-snug group-hover:text-rose-200 transition-colors">
@@ -263,10 +181,12 @@ export default function DalyanLandmarks({ homeData = null }) {
                 <span className="font-extrabold text-rose-400">
                   {item.distance}
                 </span>
-                <span className="text-slate-400 flex items-center gap-1 text-[11px]">
-                  <Clock className="w-3 h-3 text-slate-500" />
-                  {item.time}
-                </span>
+                {item.time && (
+                  <span className="text-slate-400 flex items-center gap-1 text-[11px]">
+                    <Clock className="w-3 h-3 text-slate-500" />
+                    {item.time}
+                  </span>
+                )}
               </div>
             </div>
           );

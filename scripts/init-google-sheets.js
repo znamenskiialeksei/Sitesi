@@ -9,7 +9,7 @@ require('dotenv').config({ path: '.env.local' });
 const { google } = require('googleapis');
 const { SHEETS_REGISTRY, getLiveSheetMap, resolveRange } = require('../utils/sheetsRegistry');
 const { SMART_TEMPLATES } = require('../utils/templatesData');
-const { MASTER_ABOUT_SECTIONS, MASTER_SETTINGS_ROWS, MASTER_HOME_MAP, MASTER_TASKS_ROWS } = require('../utils/masterSeedContent');
+const { MASTER_ABOUT_SECTIONS, MASTER_SETTINGS_ROWS, MASTER_HOME_MAP, MASTER_HOME_ROWS, MASTER_TASKS_ROWS } = require('../utils/masterSeedContent');
 
 // Конфигурация структуры базы данных Google Таблиц
 const GOOGLE_CONFIG = {
@@ -398,57 +398,27 @@ const initializeSpreadsheet = async () => {
           }
 
           if (config.key === 'HOME') {
-            safeFormulasToInject.push({ range: `'${actualTitle}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-            safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+            const colsA_D = MASTER_HOME_ROWS.map((r) => [r[0], r[1], r[2], r[3]]);
+            const colsG_H = MASTER_HOME_ROWS.map((r) => [r[6] || '', r[7] || 'Вкл']);
 
             dataAppendRequests.push({
-              range: `'${actualTitle}'!A2:E17`,
-              values: [
-                ['heroTitle', 'Аренда Villa Turaman', '', '', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600'],
-                ['heroSubtitle', 'Ваш идеальный отдых в Дальяне. Прямое бронирование виллы, премиальный сервис и авторские видео-путеводители от Алексея Знаменского.', '', '', ''],
-                ['aboutTitle', 'О Вилле Turaman', '', '', ''],
-                ['aboutText', 'Villa Turaman — это гармоничное сочетание уединения, современного комфорта и первоклассного сервиса для незабываемого отпуска в сердце Дальяна с собственным бассейном, просторным садом и панорамным видом на Ликийские скальные гробницы.', '', '', ''],
-                ['heroImage', 'Главное фото фасада виллы', '', '', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600'],
-                ['hostHeader', 'Отдельная вилла целиком • Хозяин: Алексей Знаменский', '', '', ''],
-                ['hostName', 'Алексей Знаменский', '', '', ''],
-                ['hostAvatar', 'Аватар владельца виллы', '', '', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160'],
-                ['highlightSuperhostTitle', 'Опытный Суперхозяин (Superhost)', '', '', ''],
-                ['highlightSuperhostDesc', 'Алексей имеет рейтинг 4.98★ и стремится предоставить первоклассный сервис каждому гостю.', '', '', ''],
-                ['highlightCheckinTitle', 'Бесконтактное прибытие (Self check-in)', '', '', ''],
-                ['highlightCheckinDesc', 'Удобный электронный замок и персональный код доступа для заселения в любое удобное время с 16:00.', '', '', ''],
-                ['highlightCancellationTitle', 'Бесплатная отмена за 14 дней', '', '', ''],
-                ['highlightCancellationDesc', 'Полный возврат средств при отмене не позднее чем за 14 суток до даты заезда.', '', '', ''],
-                ['locationTitle', 'Расположение: Дальян, Ортаджа, Мугла, Турция', '', '', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200'],
-                ['locationDesc', 'Вилла расположена в тихом зеленом районе в 5 минутах ходьбы от набережной реки Дальян. В пешей доступности рестораны традиционной эгейской кухни, лодочные причалы для поездок на пляж Изтузу (пляж черепах Caretta Caretta) и термальные грязевые источники Султание.', '', '', ''],
-                ['bedroom_1', 'Спальня 1 • King Bed', 'Большая двуспальная кровать King Size, панорамные окна с видом на бассейн и сад, кондиционер', 'King Bed', 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600'],
-                ['bedroom_2', 'Спальня 2 • Queen Bed', 'Уютная двуспальная кровать Queen Size, балкон с видом на горы, кондиционер', 'Queen Bed', 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=600'],
-                ['bedroom_3', 'Спальня 3 • 2 Односпальные', 'Две раздельные комфортные кровати, рабочий стол, вид на сад', '2 Single Beds', 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=600'],
-                ['bedroom_4', 'Спальня 4 • Диван-кровать', 'Раскладной ортопедический диван-кровать в лаундж-зоне, кондиционер', 'Sofa Bed', 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600']
-              ]
+              range: `'${actualTitle}'!A2:D${colsA_D.length + 1}`,
+              values: colsA_D
             });
+            dataAppendRequests.push({
+              range: `'${actualTitle}'!G2:H${colsG_H.length + 1}`,
+              values: colsG_H
+            });
+
+            safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
           }
 
-          if (config.key === 'ABOUT' || config.key === 'LEGAL' || config.key === 'TEMPLATES') {
+          if (config.key === 'LEGAL' || config.key === 'TEMPLATES') {
             safeFormulasToInject.push({ range: `'${actualTitle}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
             safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
             safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
             safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-
-            if (config.key === 'ABOUT') {
-              const aboutRows = MASTER_ABOUT_SECTIONS.map((sec) => [
-                sec.id,
-                sec.title.ru,
-                sec.title.en,
-                sec.title.tr,
-                sec.text.ru,
-                sec.text.en,
-                sec.text.tr
-              ]);
-              dataAppendRequests.push({
-                range: `'${actualTitle}'!A2:G${aboutRows.length + 1}`,
-                values: aboutRows
-              });
-            }
 
             if (config.key === 'LEGAL') {
               dataAppendRequests.push({

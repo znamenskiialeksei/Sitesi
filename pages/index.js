@@ -54,6 +54,7 @@ import PresentationModal from '../components/Modals/PresentationModal';
 import ContactHostModal from '../components/Modals/ContactHostModal';
 import { parseDriveLink } from '../utils/media';
 import { parseDateRU } from '../utils/dates';
+import { buildHomeDerivedCollections } from '../utils/masterSeedContent';
 
 // ------------------------------------------------------------------------------
 // СТАТИЧЕСКАЯ ГЕНЕРАЦИЯ С ОНЛАЙН РЕВАЛИДАЦИЕЙ (Next.js ISR)
@@ -73,6 +74,9 @@ export async function getStaticProps() {
   try {
     if (fs.existsSync(contentPath)) {
       contentData = JSON.parse(fs.readFileSync(contentPath, 'utf8'));
+      if (contentData.home) {
+        buildHomeDerivedCollections(contentData.home);
+      }
     }
   } catch (err) {
     console.error('Ошибка чтения content.json при статической сборке:', err);
@@ -449,6 +453,50 @@ export default function HomeListing({ publicData, contentData }) {
       currentContentData.home?.host_card_btn?.[lang] ||
       currentContentData.home?.host_card_btn?.ru ||
       'Написать хозяину',
+    hostCardCredo:
+      currentContentData.home?.host_card_credo?.[lang] ||
+      currentContentData.home?.host_card_credo?.ru ||
+      '«Хочешь сделать хорошо - сделай сам»',
+    hostCardDream:
+      currentContentData.home?.host_card_dream?.[lang] ||
+      currentContentData.home?.host_card_dream?.ru ||
+      'База: Мармарис • Мечта: Португалия и Атлантический океан',
+    hostCardHobbies:
+      currentContentData.home?.host_card_hobbies?.[lang] ||
+      currentContentData.home?.host_card_hobbies?.ru ||
+      'Велоспорт, Парусный спорт, Живая природа Дальяна',
+    hostCardTravel:
+      currentContentData.home?.host_card_travel?.[lang] ||
+      currentContentData.home?.host_card_travel?.ru ||
+      'Дубай [3 поездки], Абу-Даби [март 2026 г.]',
+    hostCardTax:
+      currentContentData.home?.host_card_tax?.[lang] ||
+      currentContentData.home?.host_card_tax?.ru ||
+      'Официальный налогоплательщик: Ortaca Vergi Dairesi, VKN: 9991120181',
+    landmarksTitle:
+      currentContentData.home?.landmarks_title?.[lang] ||
+      currentContentData.home?.landmarks_title?.ru ||
+      '14 географических ориентиров Дальяна',
+    landmarksSubtitle:
+      currentContentData.home?.landmarks_subtitle?.[lang] ||
+      currentContentData.home?.landmarks_subtitle?.ru ||
+      'Точные расстояния и тайминг от виллы • Пешеходная доступность центра и заповедная природа',
+    landmarksAddress:
+      currentContentData.home?.landmarks_address?.[lang] ||
+      currentContentData.home?.landmarks_address?.ru ||
+      'Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Turkey',
+    landmarksMapsUrl:
+      currentContentData.home?.landmarks_maps_url?.[lang] ||
+      currentContentData.home?.landmarks_maps_url?.ru ||
+      currentContentData.home?.landmarks_maps_url?.media ||
+      'https://maps.app.goo.gl/tPgCjCwz4pzq28pE9',
+    landmarksGps:
+      currentContentData.home?.landmarks_gps?.[lang] ||
+      currentContentData.home?.landmarks_gps?.ru ||
+      '36.8336° N, 28.6439° E',
+    landmarksList: currentContentData.home?.landmarksList || [],
+    spaData: currentContentData.home?.spaData || null,
+    safetyData: currentContentData.home?.safetyData || null,
     bedrooms: currentContentData.home?.bedrooms && currentContentData.home.bedrooms.length > 0
       ? currentContentData.home.bedrooms
       : [1, 2, 3, 4].map((num) => {
