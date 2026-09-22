@@ -26,24 +26,34 @@ function checkCellClean(val, sheetName, rowIdx, colIdx) {
 }
 
 /**
+ * Вспомогательная функция очистки и парсинга приватного ключа RSA
+ */
+function parsePrivateKey(raw) {
+  if (!raw) return '';
+  let key = raw.replace(/^["']|["']$/g, '');
+  key = key.replace(/\\\\n/g, '\n').replace(/\\n/g, '\n');
+  key = key.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  return key.trim();
+}
+
+/**
  * Получение авторизованного клиента Google Sheets
  */
 function getSheetsClient() {
-  const email = process.env.GOOGLE_CLIENT_EMAIL;
-  let privateKey = process.env.GOOGLE_PRIVATE_KEY;
+  const email = (process.env.GOOGLE_CLIENT_EMAIL || '').trim();
+  const privateKey = (process.env.GOOGLE_PRIVATE_KEY || '').trim();
 
   if (!email || !privateKey) {
     throw new Error('Отсутствуют учетные данные GOOGLE_CLIENT_EMAIL или GOOGLE_PRIVATE_KEY в .env.local');
   }
 
-  privateKey = privateKey.replace(/\\n/g, '\n');
-
-  const auth = new google.auth.JWT(
-    email,
-    null,
-    privateKey,
-    ['https://www.googleapis.com/auth/spreadsheets.readonly']
-  );
+  const auth = new google.auth.GoogleAuth({
+    credentials: {
+      client_email: email,
+      private_key: parsePrivateKey(privateKey)
+    },
+    scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']
+  });
 
   return google.sheets({ version: 'v4', auth });
 }
