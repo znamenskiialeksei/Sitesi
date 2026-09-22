@@ -35,7 +35,7 @@ export default function Navbar() {
   const isHost = !!currentUser?.isHost;
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-slate-900/90 backdrop-blur-md border-b border-white/10 transition-all max-w-full overflow-x-clip">
+    <header className="sticky top-0 z-50 w-full bg-slate-900/95 backdrop-blur-md border-b border-white/10 transition-all max-w-full shadow-lg">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-2 sm:gap-4 max-w-full">
 
         {/* Логотип Villa Turaman */}

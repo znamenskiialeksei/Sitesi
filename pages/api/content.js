@@ -141,8 +141,8 @@ export default async function handler(req, res) {
       safeGet('SETTINGS', 'A:E'),
       safeGet('LEGAL', 'A:G'),
       safeGet('TEMPLATES', 'A:G'),
-      safeGet('SERVICES', 'A:Q'),
-      safeGet('GUIDES', 'A:Q'),
+      safeGet('SERVICES', 'A:R'),
+      safeGet('GUIDES', 'A:R'),
       safeGet('GALLERY', 'A:L')
     ]);
 
@@ -372,74 +372,119 @@ export default async function handler(req, res) {
       content.templates = fallbackData.templates;
     }
 
-    // 5. Каталог услуг [SERVICES]
+    // 5. Каталог услуг [SERVICES] с авто-определением колонки Цена [USD]
     if (productsRows.length > 1) {
+      const isServicesUsdHeader = (productsRows[0]?.[7] || '').toString().includes('USD');
       content.products = productsRows
         .slice(1)
-        .map((r) => ({
-          id: r[0],
-          name: {
-            ru: sanitizeText(r[1], ''),
-            en: sanitizeText(r[3], ''),
-            tr: sanitizeText(r[5], '')
-          },
-          desc: {
-            ru: sanitizeText(r[2], ''),
-            en: sanitizeText(r[4], ''),
-            tr: sanitizeText(r[6], '')
-          },
-          price: { eur: r[7] || '0', rub: r[8] || '0', try: r[9] || '0' },
-          images: (r[10] || '').split(',').map((s) => s.trim()).filter(Boolean),
-          videos: (r[13] || '').split(',').map((s) => s.trim()).filter(Boolean),
-          detailedDesc: {
-            ru: sanitizeText(r[14], ''),
-            en: sanitizeText(r[15], ''),
-            tr: sanitizeText(r[16], '')
-          },
-          type: {
-            ru: r[12] === 'Пакет' ? 'Пакет услуг' : 'Услуга',
-            en: r[12] === 'Пакет' ? 'Service Package' : 'Service',
-            tr: r[12] === 'Пакет' ? 'Hizmet Paketi' : 'Hizmet'
-          }
-        }))
+        .map((r) => {
+          const usdVal = isServicesUsdHeader ? (r[7] || '0') : (Math.round(Number(r[7] || 0) * 1.08).toString() || '0');
+          const eurVal = isServicesUsdHeader ? (r[8] || '0') : (r[7] || '0');
+          const rubVal = isServicesUsdHeader ? (r[9] || '0') : (r[8] || '0');
+          const tryVal = isServicesUsdHeader ? (r[10] || '0') : (r[9] || '0');
+          const imagesCol = isServicesUsdHeader ? (r[11] || '') : (r[10] || '');
+          const typeCol = isServicesUsdHeader ? (r[13] || '') : (r[12] || '');
+          const videosCol = isServicesUsdHeader ? (r[14] || '') : (r[13] || '');
+          const descRu = isServicesUsdHeader ? (r[15] || '') : (r[14] || '');
+          const descEn = isServicesUsdHeader ? (r[16] || '') : (r[15] || '');
+          const descTr = isServicesUsdHeader ? (r[17] || '') : (r[16] || '');
+
+          return {
+            id: r[0],
+            name: {
+              ru: sanitizeText(r[1], ''),
+              en: sanitizeText(r[3], ''),
+              tr: sanitizeText(r[5], '')
+            },
+            desc: {
+              ru: sanitizeText(r[2], ''),
+              en: sanitizeText(r[4], ''),
+              tr: sanitizeText(r[6], '')
+            },
+            price: { usd: usdVal, eur: eurVal, rub: rubVal, try: tryVal },
+            images: imagesCol.split(',').map((s) => s.trim()).filter(Boolean),
+            videos: videosCol.split(',').map((s) => s.trim()).filter(Boolean),
+            detailedDesc: {
+              ru: sanitizeText(descRu, ''),
+              en: sanitizeText(descEn, ''),
+              tr: sanitizeText(descTr, '')
+            },
+            type: {
+              ru: typeCol === 'Пакет' ? 'Пакет услуг' : 'Услуга',
+              en: typeCol === 'Пакет' ? 'Service Package' : 'Service',
+              tr: typeCol === 'Пакет' ? 'Hizmet Paketi' : 'Hizmet'
+            }
+          };
+        })
         .filter((p) => p.id && (p.name.ru || p.name.en));
     }
     if (content.products.length === 0 && fallbackData.products?.length > 0) {
-      content.products = fallbackData.products;
+      content.products = fallbackData.products.map((p) => ({
+        ...p,
+        price: {
+          usd: p.price?.usd || Math.round(Number(p.price?.eur || 0) * 1.08).toString(),
+          eur: p.price?.eur || '0',
+          rub: p.price?.rub || '0',
+          try: p.price?.try || '0'
+        }
+      }));
     }
 
-    // 6. Видео-путеводители [GUIDES]
+    // 6. Видео-путеводители [GUIDES] с авто-определением колонки Цена [USD]
     if (coursesRows.length > 1) {
+      const isGuidesUsdHeader = (coursesRows[0]?.[10] || '').toString().includes('USD');
       content.courses = coursesRows
         .slice(1)
-        .map((r) => ({
-          id: r[0],
-          name: {
-            ru: sanitizeText(r[1], ''),
-            en: sanitizeText(r[3], ''),
-            tr: sanitizeText(r[5], '')
-          },
-          desc: {
-            ru: sanitizeText(r[2], ''),
-            en: sanitizeText(r[4], ''),
-            tr: sanitizeText(r[6], '')
-          },
-          images: (r[7] || '').split(',').map((s) => s.trim()).filter(Boolean),
-          module: r[8] || 'Основной',
-          privateLink: r[9] || '',
-          price: { eur: r[10] || '0', rub: r[11] || '0', try: r[12] || '0' },
-          videos: (r[13] || '').split(',').map((s) => s.trim()).filter(Boolean),
-          detailedDesc: {
-            ru: sanitizeText(r[14], ''),
-            en: sanitizeText(r[15], ''),
-            tr: sanitizeText(r[16], '')
-          },
-          level: 'Для гостей'
-        }))
+        .map((r) => {
+          const imagesCol = r[7] || '';
+          const moduleCol = r[8] || 'Основной';
+          const privateLinkCol = r[9] || '';
+          const usdVal = isGuidesUsdHeader ? (r[10] || '0') : (Math.round(Number(r[10] || 0) * 1.08).toString() || '0');
+          const eurVal = isGuidesUsdHeader ? (r[11] || '0') : (r[10] || '0');
+          const rubVal = isGuidesUsdHeader ? (r[12] || '0') : (r[11] || '0');
+          const tryVal = isGuidesUsdHeader ? (r[13] || '0') : (r[12] || '0');
+          const videosCol = isGuidesUsdHeader ? (r[14] || '') : (r[13] || '');
+          const descRu = isGuidesUsdHeader ? (r[15] || '') : (r[14] || '');
+          const descEn = isGuidesUsdHeader ? (r[16] || '') : (r[15] || '');
+          const descTr = isGuidesUsdHeader ? (r[17] || '') : (r[16] || '');
+
+          return {
+            id: r[0],
+            name: {
+              ru: sanitizeText(r[1], ''),
+              en: sanitizeText(r[3], ''),
+              tr: sanitizeText(r[5], '')
+            },
+            desc: {
+              ru: sanitizeText(r[2], ''),
+              en: sanitizeText(r[4], ''),
+              tr: sanitizeText(r[6], '')
+            },
+            images: imagesCol.split(',').map((s) => s.trim()).filter(Boolean),
+            module: moduleCol,
+            privateLink: privateLinkCol,
+            price: { usd: usdVal, eur: eurVal, rub: rubVal, try: tryVal },
+            videos: videosCol.split(',').map((s) => s.trim()).filter(Boolean),
+            detailedDesc: {
+              ru: sanitizeText(descRu, ''),
+              en: sanitizeText(descEn, ''),
+              tr: sanitizeText(descTr, '')
+            },
+            level: 'Для гостей'
+          };
+        })
         .filter((c) => c.id && (c.name.ru || c.name.en));
     }
     if (content.courses.length === 0 && fallbackData.courses?.length > 0) {
-      content.courses = fallbackData.courses;
+      content.courses = fallbackData.courses.map((c) => ({
+        ...c,
+        price: {
+          usd: c.price?.usd || Math.round(Number(c.price?.eur || 0) * 1.08).toString(),
+          eur: c.price?.eur || '0',
+          rub: c.price?.rub || '0',
+          try: c.price?.try || '0'
+        }
+      }));
     }
 
     // 7. Фото и видео галерея [GALLERY]

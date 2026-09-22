@@ -802,8 +802,8 @@ export default async function handler(req, res) {
         return res.status(200).json({ success: true, products: [], courses: [], gallery: [] });
       }
 
-      const productsSheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'SERVICES', 'A:Q') });
-      const coursesSheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'GUIDES', 'A:Q') });
+      const productsSheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'SERVICES', 'A:R') });
+      const coursesSheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'GUIDES', 'A:R') });
       const gallerySheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'GALLERY', 'A:L') });
 
       const cleanField = (val) => {
@@ -813,53 +813,72 @@ export default async function handler(req, res) {
         return trimmed;
       };
 
-      const products = (productsSheet.data.values || []).slice(1).map((r) => {
+      const productsRows = productsSheet.data.values || [];
+      const isServicesUsdHeader = (productsRows[0]?.[7] || '').toString().includes('USD');
+      const products = productsRows.slice(1).map((r) => {
         const ruName = cleanField(r[1]);
         const enName = cleanField(r[3]);
         const trName = cleanField(r[5]);
         const ruDesc = cleanField(r[2]);
         const enDesc = cleanField(r[4]);
         const trDesc = cleanField(r[6]);
-        const ruDetailed = cleanField(r[14]);
-        const enDetailed = cleanField(r[15]);
-        const trDetailed = cleanField(r[16]);
+        const usdVal = isServicesUsdHeader ? cleanField(r[7]) : (Math.round(Number(cleanField(r[7]) || 0) * 1.08).toString() || '0');
+        const eurVal = isServicesUsdHeader ? cleanField(r[8]) : cleanField(r[7]);
+        const rubVal = isServicesUsdHeader ? cleanField(r[9]) : cleanField(r[8]);
+        const tryVal = isServicesUsdHeader ? cleanField(r[10]) : cleanField(r[9]);
+        const imagesCol = isServicesUsdHeader ? (r[11] || '') : (r[10] || '');
+        const typeCol = isServicesUsdHeader ? (r[13] || '') : (r[12] || '');
+        const videosCol = isServicesUsdHeader ? (r[14] || '') : (r[13] || '');
+        const ruDetailed = cleanField(isServicesUsdHeader ? r[15] : r[14]);
+        const enDetailed = cleanField(isServicesUsdHeader ? r[16] : r[15]);
+        const trDetailed = cleanField(isServicesUsdHeader ? r[17] : r[16]);
 
         return {
           id: r[0],
           name: { ru: ruName, en: enName, tr: trName },
           desc: { ru: ruDesc, en: enDesc, tr: trDesc },
-          price: { eur: r[7], rub: r[8], try: r[9] },
-          images: (r[10] || '').split(',').map((s) => s.trim()).filter(Boolean),
-          videos: (r[13] || '').split(',').map((s) => s.trim()).filter(Boolean),
+          price: { usd: usdVal, eur: eurVal, rub: rubVal, try: tryVal },
+          images: imagesCol.split(',').map((s) => s.trim()).filter(Boolean),
+          videos: videosCol.split(',').map((s) => s.trim()).filter(Boolean),
           detailedDesc: { ru: ruDetailed, en: enDetailed, tr: trDetailed },
           type: {
-            ru: r[12] === 'Пакет' ? 'Пакет услуг' : 'Услуга',
-            en: r[12] === 'Пакет' ? 'Service Package' : 'Service',
-            tr: r[12] === 'Пакет' ? 'Hizmet Paketi' : 'Hizmet'
+            ru: typeCol === 'Пакет' ? 'Пакет услуг' : 'Услуга',
+            en: typeCol === 'Пакет' ? 'Service Package' : 'Service',
+            tr: typeCol === 'Пакет' ? 'Hizmet Paketi' : 'Hizmet'
           }
         };
       }).filter((p) => p.id && (p.name?.ru || p.name?.en || p.name?.tr));
 
-      const courses = (coursesSheet.data.values || []).slice(1).map((r) => {
+      const coursesRows = coursesSheet.data.values || [];
+      const isGuidesUsdHeader = (coursesRows[0]?.[10] || '').toString().includes('USD');
+      const courses = coursesRows.slice(1).map((r) => {
         const ruName = cleanField(r[1]);
         const enName = cleanField(r[3]);
         const trName = cleanField(r[5]);
         const ruDesc = cleanField(r[2]);
         const enDesc = cleanField(r[4]);
         const trDesc = cleanField(r[6]);
-        const ruDetailed = cleanField(r[14]);
-        const enDetailed = cleanField(r[15]);
-        const trDetailed = cleanField(r[16]);
+        const imagesCol = r[7] || '';
+        const moduleCol = r[8] || 'Путеводитель';
+        const privateLinkCol = r[9] || '';
+        const usdVal = isGuidesUsdHeader ? cleanField(r[10]) : (Math.round(Number(cleanField(r[10]) || 0) * 1.08).toString() || '0');
+        const eurVal = isGuidesUsdHeader ? cleanField(r[11]) : cleanField(r[10]);
+        const rubVal = isGuidesUsdHeader ? cleanField(r[12]) : cleanField(r[11]);
+        const tryVal = isGuidesUsdHeader ? cleanField(r[13]) : cleanField(r[12]);
+        const videosCol = isGuidesUsdHeader ? (r[14] || '') : (r[13] || '');
+        const ruDetailed = cleanField(isGuidesUsdHeader ? r[15] : r[14]);
+        const enDetailed = cleanField(isGuidesUsdHeader ? r[16] : r[15]);
+        const trDetailed = cleanField(isGuidesUsdHeader ? r[17] : r[16]);
 
         return {
           id: r[0],
           name: { ru: ruName, en: enName, tr: trName },
           desc: { ru: ruDesc, en: enDesc, tr: trDesc },
-          images: (r[7] || '').split(',').map((s) => s.trim()).filter(Boolean),
-          module: r[8] || 'Путеводитель',
-          privateLink: r[9],
-          price: { eur: r[10], rub: r[11], try: r[12] },
-          videos: (r[13] || '').split(',').map((s) => s.trim()).filter(Boolean),
+          images: imagesCol.split(',').map((s) => s.trim()).filter(Boolean),
+          module: moduleCol,
+          privateLink: privateLinkCol,
+          price: { usd: usdVal, eur: eurVal, rub: rubVal, try: tryVal },
+          videos: videosCol.split(',').map((s) => s.trim()).filter(Boolean),
           detailedDesc: { ru: ruDetailed, en: enDetailed, tr: trDetailed },
           level: 'Для гостей'
         };

@@ -209,7 +209,8 @@ function parseCalendarSheetRows(calendarRows = []) {
     const col3 = (row[3] || '').toString().trim(); // Значение
     const col4 = (row[4] || '').toString().trim(); // Заметка
 
-    if (col2 === 'Настройки' || col0.includes('Глобальные правила')) {
+    // 1. Изоляция строки глобальных настроек [строка 2 таблицы]
+    if (col2 === 'Настройки' || col2 === 'Settings' || col0.includes('Глобальные правила') || col0.includes('Глобальные')) {
       try {
         const parsed = JSON.parse(col3);
         Object.assign(globalRules, parsed);
@@ -220,14 +221,21 @@ function parseCalendarSheetRows(calendarRows = []) {
           globalRules.minNights = parseInt(globalRules.minNights, 10) || 3;
         }
       } catch {
-        // Оставляем дефолтные параметры
+        const numVal = parseFloat(col3);
+        if (!isNaN(numVal) && numVal > 0) {
+          globalRules.basePrice = numVal;
+        }
       }
-    } else if (col2 === 'Цена') {
+      return; // Гарантированная изоляция: настройки никогда не попадут в интервалы дат
+    }
+
+    // 2. Интервальные правила переопределения тарифов
+    if (col2 === 'Цена') {
       const priceVal = parseFloat(col3) || 0;
-      if (priceVal > 0) {
+      if (priceVal > 0 && col0) {
         seasonalRates.push({
           startDate: col0,
-          endDate: col1,
+          endDate: col1 || col0,
           price: priceVal,
           note: col4
         });

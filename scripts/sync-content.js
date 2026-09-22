@@ -210,43 +210,74 @@ async function syncContent() {
       });
     }
 
-    // 3. Каталог дополнительных услуг (трансферы, аренда яхт, шеф-повар)
+    // 3. Каталог дополнительных услуг: трансферы, аренда яхт, шеф-повар
     console.log('Синхронизация услуг и видео-гидов...');
-    const productsSheet = await safeGet(resolveRange(sheetMap, 'SERVICES', 'A:Q'));
-    content.products = (productsSheet.data.values || [])
+    const productsSheet = await safeGet(resolveRange(sheetMap, 'SERVICES', 'A:R'));
+    const productsRows = productsSheet.data.values || [];
+    const isServicesUsdHeader = (productsRows[0]?.[7] || '').toString().includes('USD');
+    content.products = productsRows
       .slice(1)
-      .map((r) => ({
-        id: r[0],
-        name: { ru: r[1] || '', en: r[3] || '', tr: r[5] || '' },
-        desc: { ru: r[2] || '', en: r[4] || '', tr: r[6] || '' },
-        price: { eur: r[7] || '0', rub: r[8] || '0', try: r[9] || '0' },
-        images: (r[10] || '').split(',').map((s) => s.trim()).filter(Boolean),
-        videos: (r[13] || '').split(',').map((s) => s.trim()).filter(Boolean),
-        detailedDesc: { ru: r[14] || '', en: r[15] || '', tr: r[16] || '' },
-        type: {
-          ru: r[12] === 'Пакет' ? 'Пакет услуг' : 'Услуга',
-          en: r[12] === 'Пакет' ? 'Service Package' : 'Service',
-          tr: r[12] === 'Пакет' ? 'Hizmet Paketi' : 'Hizmet'
-        }
-      }))
+      .map((r) => {
+        const usdVal = isServicesUsdHeader ? (r[7] || '0') : (Math.round(Number(r[7] || 0) * 1.08).toString() || '0');
+        const eurVal = isServicesUsdHeader ? (r[8] || '0') : (r[7] || '0');
+        const rubVal = isServicesUsdHeader ? (r[9] || '0') : (r[8] || '0');
+        const tryVal = isServicesUsdHeader ? (r[10] || '0') : (r[9] || '0');
+        const imagesCol = isServicesUsdHeader ? (r[11] || '') : (r[10] || '');
+        const typeCol = isServicesUsdHeader ? (r[13] || '') : (r[12] || '');
+        const videosCol = isServicesUsdHeader ? (r[14] || '') : (r[13] || '');
+        const descRu = isServicesUsdHeader ? (r[15] || '') : (r[14] || '');
+        const descEn = isServicesUsdHeader ? (r[16] || '') : (r[15] || '');
+        const descTr = isServicesUsdHeader ? (r[17] || '') : (r[16] || '');
+
+        return {
+          id: r[0],
+          name: { ru: r[1] || '', en: r[3] || '', tr: r[5] || '' },
+          desc: { ru: r[2] || '', en: r[4] || '', tr: r[6] || '' },
+          price: { usd: usdVal, eur: eurVal, rub: rubVal, try: tryVal },
+          images: imagesCol.split(',').map((s) => s.trim()).filter(Boolean),
+          videos: videosCol.split(',').map((s) => s.trim()).filter(Boolean),
+          detailedDesc: { ru: descRu, en: descEn, tr: descTr },
+          type: {
+            ru: typeCol === 'Пакет' ? 'Пакет услуг' : 'Услуга',
+            en: typeCol === 'Пакет' ? 'Service Package' : 'Service',
+            tr: typeCol === 'Пакет' ? 'Hizmet Paketi' : 'Hizmet'
+          }
+        };
+      })
       .filter((p) => p.id && p.name.ru);
 
     // 4. Авторские видео-путеводители по Дальяну
-    const coursesSheet = await safeGet(resolveRange(sheetMap, 'GUIDES', 'A:Q'));
-    content.courses = (coursesSheet.data.values || [])
+    const coursesSheet = await safeGet(resolveRange(sheetMap, 'GUIDES', 'A:R'));
+    const coursesRows = coursesSheet.data.values || [];
+    const isGuidesUsdHeader = (coursesRows[0]?.[10] || '').toString().includes('USD');
+    content.courses = coursesRows
       .slice(1)
-      .map((r) => ({
-        id: r[0],
-        name: { ru: r[1] || '', en: r[3] || '', tr: r[5] || '' },
-        desc: { ru: r[2] || '', en: r[4] || '', tr: r[6] || '' },
-        images: (r[7] || '').split(',').map((s) => s.trim()).filter(Boolean),
-        module: r[8] || 'Основной',
-        privateLink: r[9] || '',
-        price: { eur: r[10] || '0', rub: r[11] || '0', try: r[12] || '0' },
-        videos: (r[13] || '').split(',').map((s) => s.trim()).filter(Boolean),
-        detailedDesc: { ru: r[14] || '', en: r[15] || '', tr: r[16] || '' },
-        level: 'Для гостей'
-      }))
+      .map((r) => {
+        const imagesCol = r[7] || '';
+        const moduleCol = r[8] || 'Основной';
+        const privateLinkCol = r[9] || '';
+        const usdVal = isGuidesUsdHeader ? (r[10] || '0') : (Math.round(Number(r[10] || 0) * 1.08).toString() || '0');
+        const eurVal = isGuidesUsdHeader ? (r[11] || '0') : (r[10] || '0');
+        const rubVal = isGuidesUsdHeader ? (r[12] || '0') : (r[11] || '0');
+        const tryVal = isGuidesUsdHeader ? (r[13] || '0') : (r[12] || '0');
+        const videosCol = isGuidesUsdHeader ? (r[14] || '') : (r[13] || '');
+        const descRu = isGuidesUsdHeader ? (r[15] || '') : (r[14] || '');
+        const descEn = isGuidesUsdHeader ? (r[16] || '') : (r[15] || '');
+        const descTr = isGuidesUsdHeader ? (r[17] || '') : (r[16] || '');
+
+        return {
+          id: r[0],
+          name: { ru: r[1] || '', en: r[3] || '', tr: r[5] || '' },
+          desc: { ru: r[2] || '', en: r[4] || '', tr: r[6] || '' },
+          images: imagesCol.split(',').map((s) => s.trim()).filter(Boolean),
+          module: moduleCol,
+          privateLink: privateLinkCol,
+          price: { usd: usdVal, eur: eurVal, rub: rubVal, try: tryVal },
+          videos: videosCol.split(',').map((s) => s.trim()).filter(Boolean),
+          detailedDesc: { ru: descRu, en: descEn, tr: descTr },
+          level: 'Для гостей'
+        };
+      })
       .filter((c) => c.id && c.name.ru);
 
     // 5. Фотогалерея виллы

@@ -207,17 +207,59 @@ function classifyIntent(guestMessage = '') {
 }
 
 /**
- * Классификатор жизненного цикла и вовлеченности гостя [Guest Lifecycle Stage]
- * @param {Object} context - Параметры бронирования гостя
- * @returns {string} 'STAGE_1_LEAD' | 'STAGE_2_HOLD_PENDING' | 'STAGE_3_BOOKED_PRE_ARRIVAL' | 'STAGE_4_IN_HOUSE' | 'STAGE_5_CHECKED_OUT'
+ * Нормализация индекса стадии гостя для оценки прав доступа [1-8]
+ */
+function normalizeStageIndex(stage) {
+  const s = (stage || '').toString().toUpperCase();
+  if (s.includes('STAGE_8') || s.includes('CHECKOUT') || s.includes('CHECKED_OUT')) return 8;
+  if (s.includes('STAGE_7') || s.includes('IN_HOUSE') || s.includes('STAGE_4_IN_HOUSE')) return 7;
+  if (s.includes('STAGE_6') || s.includes('CHECKIN_DAY')) return 6;
+  if (s.includes('STAGE_5') || s.includes('PRE_ARRIVAL')) return 5;
+  if (s.includes('STAGE_4') || s.includes('BOOKED_CONFIRMED') || s.includes('STAGE_3_BOOKED')) return 4;
+  if (s.includes('STAGE_3') || s.includes('HOLD') || s.includes('STAGE_2_HOLD')) return 3;
+  if (s.includes('STAGE_2') || s.includes('QUALIFIED')) return 2;
+  return 1;
+}
+
+/**
+ * Проверка соответствия уровня секретности узла текущей стадии гостя
+ * L1_PUBLIC: доступно всем стадиям [1-8]
+ * L2_QUALIFIED: доступно зарегистрированным гостям [стадии 2-8]
+ * L3_HOLD_OFFER: доступно на этапе брони и удержания [стадии 3-8]
+ * L4_BOOKED_PAID: доступно при оплаченной брони [стадии 4-8]
+ * L5_IN_HOUSE_ONLY: строго день заселения и проживание [стадии 6-7]
+ */
+function isNodeAllowedForStage(securityLevel, stage) {
+  const stageIdx = normalizeStageIndex(stage);
+  const sec = (securityLevel || 'L1_PUBLIC').toString().toUpperCase();
+  if (sec.includes('L5') || sec.includes('IN_HOUSE_ONLY')) {
+    return stageIdx === 6 || stageIdx === 7;
+  }
+  if (sec.includes('L4') || sec.includes('BOOKED_PAID')) {
+    return stageIdx >= 4;
+  }
+  if (sec.includes('L3') || sec.includes('HOLD_OFFER')) {
+    return stageIdx >= 3;
+  }
+  if (sec.includes('L2') || sec.includes('QUALIFIED')) {
+    return stageIdx >= 2;
+  }
+  return true;
+}
+
+/**
+ * Классификатор жизненного цикла и вовлеченности гостя [Guest Lifecycle 8-Stage Model]
+ * @param {Object} context - Параметры бронирования и профиля гостя
+ * @returns {string} Канонический ключ одной из 8 стадий
  */
 function classifyGuestStage(context = {}) {
   const status = (context.bookingStatus || context.status || '').toString().trim();
   const checkIn = context.checkIn || context.startDate || null;
   const checkOut = context.checkOut || context.endDate || null;
+  const isRegistered = !!context.isRegistered;
   const now = new Date();
 
-  // Оплаченные подтвержденные бронирования
+  // 1. Оплаченные подтвержденные бронирования
   if (
     status.includes('Оплачено') ||
     status.includes('Подтверждено') ||
@@ -230,18 +272,25 @@ function classifyGuestStage(context = {}) {
 
       if (!isNaN(inDate.getTime()) && !isNaN(outDate.getTime())) {
         if (now > outDate) {
-          return 'STAGE_5_CHECKED_OUT';
+          return 'STAGE_8_CHECKOUT_DEPARTURE';
         }
         if (now >= inDate && now <= outDate) {
-          return 'STAGE_4_IN_HOUSE';
+          return 'STAGE_7_IN_HOUSE';
         }
-        return 'STAGE_3_BOOKED_PRE_ARRIVAL';
+        const hoursUntilCheckin = (inDate.getTime() - now.getTime()) / (1000 * 60 * 60);
+        if (hoursUntilCheckin <= 24 && hoursUntilCheckin >= 0) {
+          return 'STAGE_6_CHECKIN_DAY';
+        }
+        if (hoursUntilCheckin <= 48 && hoursUntilCheckin > 24) {
+          return 'STAGE_5_PRE_ARRIVAL_48H';
+        }
+        return 'STAGE_4_BOOKED_CONFIRMED';
       }
     }
-    return 'STAGE_3_BOOKED_PRE_ARRIVAL';
+    return 'STAGE_4_BOOKED_CONFIRMED';
   }
 
-  // Ожидание оплаты, удержание HOLD или активное спецпредложение
+  // 2. Ожидание оплаты, удержание HOLD или активное спецпредложение
   if (
     status.includes('ОЖИДАЕТ') ||
     status.includes('Ожидает') ||
@@ -250,16 +299,21 @@ function classifyGuestStage(context = {}) {
     status.includes('HOLD') ||
     status.includes('hold')
   ) {
-    return 'STAGE_2_HOLD_PENDING';
+    return 'STAGE_3_OFFER_HOLD_24H';
   }
 
-  // По умолчанию: интересующийся посетитель без оформленной брони
-  return 'STAGE_1_LEAD';
+  // 3. Зарегистрированный гость с верифицированным контактом
+  if (isRegistered || context.verificationLevel === 'FULL' || context.verificationLevel === 'EMAIL') {
+    return 'STAGE_2_QUALIFIED_LEAD';
+  }
+
+  // 4. По умолчанию: новый холодный лид
+  return 'STAGE_1_COLD_LEAD';
 }
 
 /**
  * Модель Графа Знаний виллы Villa Turaman в оперативной памяти
- * Сквозная привязка ко всем листам Google Таблиц SSOT
+ * Сквозная привязка ко всем 15 листам Google Таблиц SSOT
  */
 class VillaKnowledgeGraph {
   constructor() {
@@ -270,6 +324,8 @@ class VillaKnowledgeGraph {
     this.guidesList = [];
     this.legalList = [];
     this.templatesList = [];
+    this.knowledgeGraphRows = [];
+    this.securityMatrix = new Map();
     this.calendarSnapshot = null;
     this.lastBuilt = null;
   }
@@ -312,7 +368,7 @@ class VillaKnowledgeGraph {
   /**
    * Построение графа из плоских данных Google Таблиц
    */
-  buildFromSheetsData({ settingsMap = {}, services = [], guides = [], legal = [], templates = [], calendarSnapshot = null }) {
+  buildFromSheetsData({ settingsMap = {}, services = [], guides = [], legal = [], templates = [], calendarSnapshot = null, knowledgeGraphRows = [] }) {
     this.nodes.clear();
     this.edges = [];
     this.rawSettings = settingsMap || {};
@@ -321,6 +377,24 @@ class VillaKnowledgeGraph {
     this.legalList = Array.isArray(legal) ? legal : [];
     this.templatesList = Array.isArray(templates) ? templates : [];
     this.calendarSnapshot = calendarSnapshot || null;
+    this.knowledgeGraphRows = Array.isArray(knowledgeGraphRows) ? knowledgeGraphRows : [];
+
+    // Заполнение матрицы безопасности из 15-го листа CRM
+    this.securityMatrix.clear();
+    this.knowledgeGraphRows.forEach((r) => {
+      const nodeId = (r[0] || '').toString().trim();
+      if (nodeId && nodeId !== 'ID Узла') {
+        this.securityMatrix.set(nodeId, {
+          nodeId,
+          type: (r[1] || '').toString().trim(),
+          securityLevel: (r[2] || 'L1_PUBLIC').toString().trim(),
+          allowedStages: (r[3] || '').toString().trim(),
+          crmSheet: (r[4] || '').toString().trim(),
+          desc: (r[5] || '').toString().trim(),
+          status: (r[6] || 'Активен').toString().trim()
+        });
+      }
+    });
 
     if (calendarSnapshot) {
       this.addEntity('unified_calendar', 'CALENDAR', calendarSnapshot, ['calendar', 'календарь', 'занятость', 'даты', 'ota']);
@@ -421,13 +495,30 @@ class VillaKnowledgeGraph {
   }
 
   /**
+   * Проверка прав доступа гостя к узлу графа на основе матрицы безопасности
+   */
+  canAccessNode(nodeId, guestStage = 'STAGE_1_COLD_LEAD') {
+    const rule = this.securityMatrix.get(nodeId);
+    if (!rule) {
+      if (nodeId === 'wifi_credentials' || nodeId === 'smart_lock_pin') {
+        return isNodeAllowedForStage('L5_IN_HOUSE_ONLY', guestStage);
+      }
+      return true;
+    }
+    if (rule.status && rule.status.toLowerCase().includes('приостановлен')) {
+      return false;
+    }
+    return isNodeAllowedForStage(rule.securityLevel, guestStage);
+  }
+
+  /**
    * Сборка целевого динамического микро-промпта на основе интента и стадии гостя
    * 100% Google Sheets SSOT: генерируется строго из живых массивов данных
    * @param {string} intent - Классифицированный интент
    * @param {string} guestStage - Стадия вовлеченности гостя
    * @param {Object} contextParams - Дополнительные параметры
    */
-  getContextForIntent(intent = 'GENERAL', guestStage = 'STAGE_1_LEAD', contextParams = {}) {
+  getContextForIntent(intent = 'GENERAL', guestStage = 'STAGE_1_COLD_LEAD', contextParams = {}) {
     const host = this.findEntity('host')?.data || {};
     const villa = this.findEntity('villa')?.data || {};
     const partner = this.findEntity('transfer_partner')?.data || {};
@@ -541,13 +632,16 @@ WHATSAPP: ${partner.whatsapp}
 
       // --- НАПРАВЛЕНИЕ 5: ЗАСЕЛЕНИЕ, ВЫЕЗД И ПРАВИЛА ДОМА ---
       case 'HOUSE_RULES_CHECKIN':
-        const isLead = guestStage === 'STAGE_1_LEAD';
-        const wifiInfo = isLead
-          ? `Сеть [Guest]. Пароль высылается автоматически сразу после оплаты и подтверждения бронирования.`
-          : `Сеть [${villa.wifiName || 'Guest'}], Пароль [${villa.wifiPass || 'villa2026'}].`;
-        const lockInfo = isLead
-          ? `Электронный смарт-замок и мини-сейф. Персональный код генерируется и направляется гостю в день заезда после подтверждения бронирования.`
-          : `${villa.checkinMethod || 'Электронный смарт-замок и мини-сейф с кодом'}.`;
+        const canViewWifi = this.canAccessNode('wifi_credentials', guestStage);
+        const canViewLock = this.canAccessNode('smart_lock_pin', guestStage);
+
+        const wifiInfo = canViewWifi
+          ? `Сеть [${villa.wifiName || 'Guest'}], Пароль [${villa.wifiPass || 'villa2026'}].`
+          : `Сеть [Guest]. Скоростной оптоволоконный Wi-Fi 100 Мбит/с. Точный пароль активируется сразу после подтверждения бронирования.`;
+
+        const lockInfo = canViewLock
+          ? `${villa.checkinMethod || 'Электронный смарт-замок и мини-сейф с кодом'}.`
+          : `Электронный смарт-замок и мини-сейф. Персональный код замка активируется в день заселения.`;
 
         context += `\n[ЦЕЛЕВОЙ МОДУЛЬ: ЗАСЕЛЕНИЕ И ПРАВИЛА ДОМА]
 ВРЕМЯ ЗАЕЗДА: ${rules.checkInTime || villa.checkinTime || '16:00'} [после 16:00]. ВЫЕЗД: до ${rules.checkOutTime || villa.checkoutTime || '10:00'}.
@@ -609,35 +703,46 @@ WI-FI: ${wifiInfo}
         break;
     }
 
-    // СТАДИЯ ГОСТЯ И РОЛЕВАЯ МАРШРУТИЗАЦИЯ
-    context += `\n\n[ЭТАП ВОВЛЕЧЕННОСТИ ГОСТЯ: ${guestStage}]`;
-    if (guestStage === 'STAGE_1_LEAD') {
-      context += `\n• Гость на этапе выбора и предварительных вопросов [до бронирования].
-• Твоя задача: радушно презентовать виллу [4 спальни, бассейн с соленой водой, джакузи, тихий сад], аргументировать цену, предложить выгодные варианты скидок в пределах коридора, показать свободные даты.
-• БЕЗОПАСНОСТЬ: Не раскрывай точные коды от смарт-замка и пароль от Wi-Fi до подтверждения бронирования.`;
-    } else if (guestStage === 'STAGE_2_HOLD_PENDING') {
-      context += `\n• Заявка гостя зафиксирована на 24 часа [HOLD / Спецпредложение].
-• Твоя задача: вежливо напомнить об открытом окне оплаты, зафиксированной спеццене, гарантии бронирования и помочь провести оплату через шлюзы Stripe [валюта] или Т-Банк [рубли].`;
-    } else if (guestStage === 'STAGE_3_BOOKED_PRE_ARRIVAL') {
-      context += `\n• Бронирование успешно оплачено и подтверждено!
-• Твоя задача: запросить паспортные данные для государственной системы KBS жандармерии Турции [Kimlik Bildirme Kanunu 1774], передать точную геолокацию Google Maps и предложить организацию трансфера с координатором Ahmet: +90 543 335 80 70.`;
-    } else if (guestStage === 'STAGE_4_IN_HOUSE') {
-      context += `\n• Гость в настоящее время проживает на вилле!
-• Твоя задача: проявить максимальную заботу, предоставить все пароли, ответить на бытовые вопросы по технике и бассейну, предложить заказ шеф-повара на виллу или лодочную прогулку с капитаном Адамом.`;
-    } else if (guestStage === 'STAGE_5_CHECKED_OUT') {
-      context += `\n• Гость завершил проживание и выехал.
-• Твоя задача: поблагодарить за выбор Villa Turaman, напомнить о сдаче ключей, помочь с трансфером в аэропорт, при необходимости сформировать e-Arşiv Fatura через бухгалтера и пригласить приехать снова.`;
+    // СТАДИЯ ГОСТЯ И 8-СТАДИЙНАЯ МАРШРУТИЗАЦИЯ
+    const stageIdx = normalizeStageIndex(guestStage);
+    context += `\n\n[ЭТАП ВОВЛЕЧЕННОСТИ ГОСТЯ: ${guestStage} | ИНДЕКС СТАДИИ: ${stageIdx}/8]`;
+
+    if (stageIdx === 1) {
+      context += `\n• Стадия 1: Новый посетитель [Холодный лид].
+• Задача: Радушно презентовать виллу [4 спальни, бассейн с соленой водой, джакузи, тихий сад], аргументировать цену, показать свободные даты.
+• БЕЗОПАСНОСТЬ [L1]: Пароль от Wi-Fi и код от замка строго замаскированы.`;
+    } else if (stageIdx === 2) {
+      context += `\n• Стадия 2: Зарегистрированный гость [Квалифицированный лид].
+• Задача: Предложить индивидуальные условия, объяснить скидки до ${maxDiscount}%, стимулировать переход к бронированию.`;
+    } else if (stageIdx === 3) {
+      context += `\n• Стадия 3: Заявка в ожидании оплаты [24ч HOLD / Спецпредложение].
+• Задача: Напомнить об открытом 24-часовом окне бронирования, зафиксированной спеццене и помочь провести оплату через Stripe или Т-Банк.`;
+    } else if (stageIdx === 4) {
+      context += `\n• Стадия 4: Оплаченное бронирование [Подтверждено, ожидание заезда].
+• Задача: Поздравить с успешной бронью, запросить паспортные данные для турецкой системы KBS полиции [Kimlik Bildirme Kanunu 1774] и предложить трансфер.`;
+    } else if (stageIdx === 5) {
+      context += `\n• Стадия 5: 48 часов до заезда [Финальная подготовка].
+• Задача: Сверить время прибытия рейса в Даламан DLM, подтвердить трансфер с Ahmet [+90 543 335 80 70], завершить регистрацию в KBS.`;
+    } else if (stageIdx === 6) {
+      context += `\n• Стадия 6: День заселения [Заезд после 16:00].
+• Задача: Предоставить точные инструкции заселения, код от смарт-замка, пароль от Wi-Fi и убедиться в комфортном прибытии.`;
+    } else if (stageIdx === 7) {
+      context += `\n• Стадия 7: Гость проживает на вилле [In-House].
+• Задача: Оказывать круглосуточную заботу 24/7, предоставить доступы к технике, предложить выезд на лодке с капитаном Адамом или ужин от шеф-повара.`;
+    } else if (stageIdx === 8) {
+      context += `\n• Стадия 8: День выезда и завершение [Выезд до 10:00].
+• Задача: Поблагодарить за выбор Villa Turaman, проконтролировать сдачу ключей, организовать трансфер в аэропорт, при необходимости оформить e-Arşiv Fatura через бухгалтера.`;
     }
 
     // ПОДБОРКА РЕЛЕВАНТНЫХ ШАБЛОНОВ ИЗ CRM
     if (this.templatesList && this.templatesList.length > 0) {
       const relevantTpls = this.templatesList.filter((t) => {
         const id = (t.id || '').toLowerCase();
-        if (guestStage === 'STAGE_1_LEAD') return id.startsWith('1.');
-        if (guestStage === 'STAGE_2_HOLD_PENDING') return id.startsWith('1.') || id.startsWith('2.');
-        if (guestStage === 'STAGE_3_BOOKED_PRE_ARRIVAL') return id.startsWith('2.') || id.startsWith('3.');
-        if (guestStage === 'STAGE_4_IN_HOUSE') return id.startsWith('4.');
-        if (guestStage === 'STAGE_5_CHECKED_OUT') return id.startsWith('5.');
+        if (stageIdx <= 2) return id.startsWith('1.');
+        if (stageIdx === 3) return id.startsWith('1.') || id.startsWith('2.');
+        if (stageIdx === 4 || stageIdx === 5) return id.startsWith('2.') || id.startsWith('3.');
+        if (stageIdx === 6 || stageIdx === 7) return id.startsWith('3.') || id.startsWith('4.');
+        if (stageIdx === 8) return id.startsWith('5.');
         return false;
       });
 
@@ -661,6 +766,8 @@ const globalKnowledgeGraph = new VillaKnowledgeGraph();
 module.exports = {
   classifyIntent,
   classifyGuestStage,
+  normalizeStageIndex,
+  isNodeAllowedForStage,
   VillaKnowledgeGraph,
   globalKnowledgeGraph
 };

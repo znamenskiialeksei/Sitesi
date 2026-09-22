@@ -84,9 +84,25 @@ export default async function handler(req, res) {
       });
     }
 
+    if (aiResult.isCachedFaq) {
+      return res.status(200).json({
+        success: true,
+        isRealAi: false,
+        isCachedFaq: true,
+        source: 'faq_cache_assembler',
+        aiMode,
+        model: 'faq_cache_assembler',
+        intent: aiResult.intent,
+        guestStage: aiResult.guestStage,
+        pricingCorridor: kb.pricingAnalysis?.discountCorridor || null,
+        reply: aiResult.replyText
+      });
+    }
+
     return res.status(200).json({
       success: true,
       isRealAi: true,
+      isCachedFaq: false,
       source: 'gemini_3.6_flash',
       aiMode,
       model: aiResult.model,

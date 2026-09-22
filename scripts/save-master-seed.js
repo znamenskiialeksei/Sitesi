@@ -232,11 +232,11 @@ async function saveMasterSeed() {
     : (existingSeed.MASTER_TEMPLATES_ROWS || []);
 
   // 5. Выгрузка листа SERVICES [Дополнительные услуги]
-  const rawServices = await safeFetchRows('SERVICES', 'A:Q');
+  const rawServices = await safeFetchRows('SERVICES', 'A:R');
   const masterServicesRows = rawServices.length > 1
     ? rawServices.slice(1).map((r) => {
         const row = [];
-        for (let i = 0; i < 17; i++) {
+        for (let i = 0; i < 18; i++) {
           row.push((r[i] || '').toString().trim());
         }
         return row;
@@ -244,11 +244,11 @@ async function saveMasterSeed() {
     : (existingSeed.MASTER_SERVICES_ROWS || []);
 
   // 6. Выгрузка листа GUIDES [Видео-путеводители]
-  const rawGuides = await safeFetchRows('GUIDES', 'A:Q');
+  const rawGuides = await safeFetchRows('GUIDES', 'A:R');
   const masterGuidesRows = rawGuides.length > 1
     ? rawGuides.slice(1).map((r) => {
         const row = [];
-        for (let i = 0; i < 17; i++) {
+        for (let i = 0; i < 18; i++) {
           row.push((r[i] || '').toString().trim());
         }
         return row;
@@ -266,6 +266,18 @@ async function saveMasterSeed() {
         return row;
       })
     : (existingSeed.MASTER_GALLERY_ROWS || []);
+
+  // 7.1 Выгрузка листа KNOWLEDGE_GRAPH [Граф Знаний и Безопасность]
+  const rawKnowledgeGraph = await safeFetchRows('KNOWLEDGE_GRAPH', 'A:G');
+  const masterKnowledgeGraphRows = rawKnowledgeGraph.length > 1
+    ? rawKnowledgeGraph.slice(1).map((r) => {
+        const row = [];
+        for (let i = 0; i < 7; i++) {
+          row.push((r[i] || '').toString().trim());
+        }
+        return row;
+      })
+    : (existingSeed.MASTER_KNOWLEDGE_GRAPH_ROWS || []);
 
   const masterBookingsRows = existingSeed.MASTER_BOOKINGS_ROWS || [];
   const masterCalendarRows = existingSeed.MASTER_CALENDAR_ROWS || [];
@@ -401,6 +413,8 @@ const MASTER_ACCESS_ROWS = ${JSON.stringify(masterAccessRows, null, 2)};
 
 const MASTER_TASKS_ROWS = ${JSON.stringify(masterTasksRows, null, 2)};
 
+const MASTER_KNOWLEDGE_GRAPH_ROWS = ${JSON.stringify(masterKnowledgeGraphRows, null, 2)};
+
 module.exports = {
   MASTER_ABOUT_SECTIONS,
   MASTER_HOME_MAP,
@@ -417,6 +431,7 @@ module.exports = {
   MASTER_ORDERS_ROWS,
   MASTER_ACCESS_ROWS,
   MASTER_TASKS_ROWS,
+  MASTER_KNOWLEDGE_GRAPH_ROWS,
   buildHomeDerivedCollections
 };
 `;

@@ -5263,6 +5263,135 @@ const MASTER_TASKS_ROWS = [
   ]
 ];
 
+const MASTER_KNOWLEDGE_GRAPH_ROWS = [
+  [
+    "host",
+    "PERSON",
+    "L1_PUBLIC",
+    "STAGE_1_COLD_LEAD, STAGE_2_QUALIFIED_LEAD, STAGE_3_OFFER_HOLD_24H, STAGE_4_BOOKED_CONFIRMED, STAGE_5_PRE_ARRIVAL_48H, STAGE_6_CHECKIN_DAY, STAGE_7_IN_HOUSE, STAGE_8_CHECKOUT_DEPARTURE",
+    "⚙️ Системные настройки ИИ Агентов",
+    "Профиль суперхозяина Алексея Знаменского, статус Airbnb Superhost 4.98",
+    "Активен"
+  ],
+  [
+    "villa",
+    "PROPERTY",
+    "L1_PUBLIC",
+    "STAGE_1_COLD_LEAD, STAGE_2_QUALIFIED_LEAD, STAGE_3_OFFER_HOLD_24H, STAGE_4_BOOKED_CONFIRMED, STAGE_5_PRE_ARRIVAL_48H, STAGE_6_CHECKIN_DAY, STAGE_7_IN_HOUSE, STAGE_8_CHECKOUT_DEPARTURE",
+    "⚙️ Системные настройки ИИ Агентов",
+    "Вилла Villa Turaman: 4 спальни, 10 мест, 2 этажа, концепция и геолокация",
+    "Активен"
+  ],
+  [
+    "pool_jacuzzi",
+    "AMENITY",
+    "L1_PUBLIC",
+    "STAGE_1_COLD_LEAD, STAGE_2_QUALIFIED_LEAD, STAGE_3_OFFER_HOLD_24H, STAGE_4_BOOKED_CONFIRMED, STAGE_5_PRE_ARRIVAL_48H, STAGE_6_CHECKIN_DAY, STAGE_7_IN_HOUSE, STAGE_8_CHECKOUT_DEPARTURE",
+    "⚙️ Системные настройки ИИ Агентов",
+    "Приватный бассейн с соленой водой 36м², уличное джакузи с авто-циклами",
+    "Активен"
+  ],
+  [
+    "transfer_partner",
+    "PARTNER",
+    "L1_PUBLIC",
+    "STAGE_1_COLD_LEAD, STAGE_2_QUALIFIED_LEAD, STAGE_3_OFFER_HOLD_24H, STAGE_4_BOOKED_CONFIRMED, STAGE_5_PRE_ARRIVAL_48H, STAGE_6_CHECKIN_DAY, STAGE_7_IN_HOUSE, STAGE_8_CHECKOUT_DEPARTURE",
+    "⚙️ Системные настройки ИИ Агентов",
+    "Партнер по трансферу Ahmet +90 543 335 80 70, Mercedes Vito VIP €50 / 1800 TRY",
+    "Активен"
+  ],
+  [
+    "boat_partner",
+    "PARTNER",
+    "L1_PUBLIC",
+    "STAGE_1_COLD_LEAD, STAGE_2_QUALIFIED_LEAD, STAGE_3_OFFER_HOLD_24H, STAGE_4_BOOKED_CONFIRMED, STAGE_5_PRE_ARRIVAL_48H, STAGE_6_CHECKIN_DAY, STAGE_7_IN_HOUSE, STAGE_8_CHECKOUT_DEPARTURE",
+    "⚙️ Системные настройки ИИ Агентов",
+    "Речные прогулки: Капитан Адам +90 544 588 58 09, круиз €250",
+    "Активен"
+  ],
+  [
+    "pricing_corridor",
+    "FINANCIAL_RULE",
+    "L2_QUALIFIED",
+    "STAGE_2_QUALIFIED_LEAD, STAGE_3_OFFER_HOLD_24H, STAGE_4_BOOKED_CONFIRMED, STAGE_5_PRE_ARRIVAL_48H, STAGE_6_CHECKIN_DAY, STAGE_7_IN_HOUSE, STAGE_8_CHECKOUT_DEPARTURE",
+    "📅 Календарь и Тарифы",
+    "Тарифный коридор: база $250, фин. барьер $180, глубина скидок до 28%",
+    "Активен"
+  ],
+  [
+    "hold_reservation",
+    "BOOKING_GUARD",
+    "L3_HOLD_OFFER",
+    "STAGE_3_OFFER_HOLD_24H, STAGE_4_BOOKED_CONFIRMED, STAGE_5_PRE_ARRIVAL_48H, STAGE_6_CHECKIN_DAY, STAGE_7_IN_HOUSE, STAGE_8_CHECKOUT_DEPARTURE",
+    "📋 Заявки и Бронирования",
+    "24-часовое удержание дат HOLD, ссылки на безопасную оплату Stripe и Т-Банк",
+    "Активен"
+  ],
+  [
+    "kbs_police_registration",
+    "LEGAL_REGIME",
+    "L4_BOOKED_PAID",
+    "STAGE_4_BOOKED_CONFIRMED, STAGE_5_PRE_ARRIVAL_48H, STAGE_6_CHECKIN_DAY, STAGE_7_IN_HOUSE, STAGE_8_CHECKOUT_DEPARTURE",
+    "⚙️ Системные настройки ИИ Агентов",
+    "Обязательная передача паспортов в систему KBS жандармерии по закону 1774",
+    "Активен"
+  ],
+  [
+    "wifi_credentials",
+    "SECURITY_SECRET",
+    "L5_IN_HOUSE_ONLY",
+    "STAGE_6_CHECKIN_DAY, STAGE_7_IN_HOUSE",
+    "⚙️ Системные настройки ИИ Агентов",
+    "Конфиденциальные данные Wi-Fi: сеть Guest, пароль villa2026. Строго скрыты на стадиях 1-5",
+    "Активен"
+  ],
+  [
+    "smart_lock_pin",
+    "SECURITY_SECRET",
+    "L5_IN_HOUSE_ONLY",
+    "STAGE_6_CHECKIN_DAY, STAGE_7_IN_HOUSE",
+    "⚙️ Системные настройки ИИ Агентов",
+    "Индивидуальный пин-код смарт-замка входной двери. Строго скрыт на стадиях 1-5",
+    "Активен"
+  ],
+  [
+    "tax_fatura_gib",
+    "LEGAL_REGIME",
+    "L4_BOOKED_PAID",
+    "STAGE_4_BOOKED_CONFIRMED, STAGE_5_PRE_ARRIVAL_48H, STAGE_6_CHECKIN_DAY, STAGE_7_IN_HOUSE, STAGE_8_CHECKOUT_DEPARTURE",
+    "⚙️ Системные настройки ИИ Агентов",
+    "Налоговый стандарт e-Arşiv Fatura: VKN 9991120181, VUK 213, KDV 20% + 1%",
+    "Активен"
+  ],
+  [
+    "services_catalog",
+    "SERVICE",
+    "L1_PUBLIC",
+    "STAGE_1_COLD_LEAD, STAGE_2_QUALIFIED_LEAD, STAGE_3_OFFER_HOLD_24H, STAGE_4_BOOKED_CONFIRMED, STAGE_5_PRE_ARRIVAL_48H, STAGE_6_CHECKIN_DAY, STAGE_7_IN_HOUSE, STAGE_8_CHECKOUT_DEPARTURE",
+    "🛎️ Дополнительные услуги",
+    "Каталог платных услуг: шеф-повар, BBQ, SPA, сапы, велосипеды, уборка",
+    "Активен"
+  ],
+  [
+    "guides_catalog",
+    "GUIDE",
+    "L1_PUBLIC",
+    "STAGE_1_COLD_LEAD, STAGE_2_QUALIFIED_LEAD, STAGE_3_OFFER_HOLD_24H, STAGE_4_BOOKED_CONFIRMED, STAGE_5_PRE_ARRIVAL_48H, STAGE_6_CHECKIN_DAY, STAGE_7_IN_HOUSE, STAGE_8_CHECKOUT_DEPARTURE",
+    "🗺️ Видео-путеводители",
+    "Каталог путеводителей: пляж Изтузу, Каунос, гробницы, озеро Кёйджегиз",
+    "Активен"
+  ],
+  [
+    "message_templates",
+    "TEMPLATE",
+    "L2_QUALIFIED",
+    "STAGE_2_QUALIFIED_LEAD, STAGE_3_OFFER_HOLD_24H, STAGE_4_BOOKED_CONFIRMED, STAGE_5_PRE_ARRIVAL_48H, STAGE_6_CHECKIN_DAY, STAGE_7_IN_HOUSE, STAGE_8_CHECKOUT_DEPARTURE",
+    "💬 Шаблоны сообщений",
+    "14 смарт-шаблонов для двухуровневого кэша быстрых ответов",
+    "Активен"
+  ]
+];
+
 module.exports = {
   MASTER_ABOUT_SECTIONS,
   MASTER_HOME_MAP,
@@ -5279,5 +5408,6 @@ module.exports = {
   MASTER_ORDERS_ROWS,
   MASTER_ACCESS_ROWS,
   MASTER_TASKS_ROWS,
+  MASTER_KNOWLEDGE_GRAPH_ROWS,
   buildHomeDerivedCollections
 };

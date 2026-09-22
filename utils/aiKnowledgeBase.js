@@ -27,7 +27,8 @@ const {
   MASTER_GUIDES_ROWS,
   MASTER_TEMPLATES_ROWS,
   MASTER_HOME_MAP,
-  MASTER_TASKS_ROWS
+  MASTER_TASKS_ROWS,
+  MASTER_KNOWLEDGE_GRAPH_ROWS
 } = require('./masterSeedContent');
 
 // Время жизни кэша базы знаний в миллисекундах [30 секунд]
@@ -92,6 +93,7 @@ function getLocalFallbackKnowledge() {
     id: r[0] || '',
     name: r[1] || '',
     desc: r[2] || '',
+    priceUsd: Math.round(Number(r[7] || 0) * 1.08).toString(),
     priceEur: r[7] || '',
     priceRub: r[8] || '',
     priceTry: r[9] || '',
@@ -112,6 +114,7 @@ function getLocalFallbackKnowledge() {
     id: r[0] || '',
     title: r[1] || '',
     desc: r[2] || '',
+    priceUsd: Math.round(Number(r[10] || 0) * 1.08).toString(),
     priceEur: r[10] || '',
     videoUrl: r[9] || ''
   }));
@@ -120,6 +123,16 @@ function getLocalFallbackKnowledge() {
     id: r[0] || '',
     title: { ru: r[1] || '', en: r[2] || '', tr: r[3] || '' },
     content: { ru: r[4] || '', en: r[5] || '', tr: r[6] || '' }
+  }));
+
+  const parsedKnowledgeGraph = (MASTER_KNOWLEDGE_GRAPH_ROWS || []).map((r) => ({
+    nodeId: r[0] || '',
+    type: r[1] || '',
+    securityLevel: r[2] || 'L1_PUBLIC',
+    allowedStages: r[3] || '',
+    crmSheet: r[4] || '',
+    desc: r[5] || '',
+    status: r[6] || 'Активен'
   }));
 
   const minPriceUsd = parseInt(settingsMap['min_night_price'] || '180', 10);
@@ -322,11 +335,11 @@ async function getAiKnowledgeBase(forceRefresh = false) {
     const fetchPromises = [];
 
     // Услуги
-    fetchPromises.push(isSheetAllowed('услуги') ? safeGet('SERVICES', 'A:Q') : Promise.resolve([]));
+    fetchPromises.push(isSheetAllowed('услуги') ? safeGet('SERVICES', 'A:R') : Promise.resolve([]));
     // Юридические документы
     fetchPromises.push(isSheetAllowed('юридическ') ? safeGet('LEGAL', 'A:G') : Promise.resolve([]));
     // Путеводители
-    fetchPromises.push(isSheetAllowed('путеводител') ? safeGet('GUIDES', 'A:Q') : Promise.resolve([]));
+    fetchPromises.push(isSheetAllowed('путеводител') ? safeGet('GUIDES', 'A:R') : Promise.resolve([]));
     // Шаблоны сообщений
     fetchPromises.push(isSheetAllowed('шаблон') ? safeGet('TEMPLATES', 'A:G') : Promise.resolve([]));
     // Главная витрина
@@ -337,6 +350,8 @@ async function getAiKnowledgeBase(forceRefresh = false) {
     fetchPromises.push(isSheetAllowed('задачи') ? safeGet('TASKS', 'A:G') : Promise.resolve([]));
     // Заявки и Бронирования для омни-календаря
     fetchPromises.push(safeGet('BOOKINGS', 'A:K'));
+    // 15-й лист: Граф Знаний и Безопасность
+    fetchPromises.push(safeGet('KNOWLEDGE_GRAPH', 'A:G'));
 
     const [
       servicesRows,
@@ -346,10 +361,12 @@ async function getAiKnowledgeBase(forceRefresh = false) {
       homeRows,
       calendarRows,
       tasksRows,
-      bookingsRows
+      bookingsRows,
+      knowledgeGraphRows
     ] = await Promise.all(fetchPromises);
 
     // 4. Парсинг каталога услуг
+    const isServicesUsdHeader = (servicesRows[0]?.[7] || '').toString().includes('USD');
     const parsedServices = servicesRows.length > 1
       ? servicesRows.slice(1).map((r) => ({
           id: r[0] || '',
@@ -359,14 +376,23 @@ async function getAiKnowledgeBase(forceRefresh = false) {
           descEn: r[4] || '',
           nameTr: r[5] || '',
           descTr: r[6] || '',
-          priceEur: r[7] || '',
-          priceRub: r[8] || '',
-          priceTry: r[9] || '',
-          available: r[11] || 'Да',
-          type: r[12] || '',
-          details: r[14] || ''
+          priceUsd: isServicesUsdHeader ? (r[7] || '') : (Math.round(Number(r[7] || 0) * 1.08).toString() || ''),
+          priceEur: isServicesUsdHeader ? (r[8] || '') : (r[7] || ''),
+          priceRub: isServicesUsdHeader ? (r[9] || '') : (r[8] || ''),
+          priceTry: isServicesUsdHeader ? (r[10] || '') : (r[9] || ''),
+          available: (isServicesUsdHeader ? r[12] : r[11]) || 'Да',
+          type: (isServicesUsdHeader ? r[13] : r[12]) || '',
+          details: (isServicesUsdHeader ? r[15] : r[14]) || ''
         })).filter((s) => s.id)
-      : (MASTER_SERVICES_ROWS || []).map((r) => ({ id: r[0], name: r[1], desc: r[2], priceEur: r[7], priceTry: r[9], details: r[14] }));
+      : (MASTER_SERVICES_ROWS || []).map((r) => ({
+          id: r[0],
+          name: r[1],
+          desc: r[2],
+          priceUsd: Math.round(Number(r[7] || 0) * 1.08).toString(),
+          priceEur: r[7],
+          priceTry: r[9],
+          details: r[14]
+        }));
 
     // 5. Парсинг юридических документов
     const parsedLegal = legalRows.length > 1
@@ -382,16 +408,26 @@ async function getAiKnowledgeBase(forceRefresh = false) {
       : (MASTER_LEGAL_ROWS || []).map((r) => ({ id: r[0], title: r[1], textRu: r[4] }));
 
     // 6. Парсинг видео-путеводителей
+    const isGuidesUsdHeader = (guidesRows[0]?.[10] || '').toString().includes('USD');
     const parsedGuides = guidesRows.length > 1
       ? guidesRows.slice(1).map((r) => ({
           id: r[0] || '',
           title: r[1] || '',
           desc: r[2] || '',
           videoUrl: r[9] || '',
-          priceEur: r[10] || '',
-          priceTry: r[12] || ''
+          priceUsd: isGuidesUsdHeader ? (r[10] || '') : (Math.round(Number(r[10] || 0) * 1.08).toString() || ''),
+          priceEur: isGuidesUsdHeader ? (r[11] || '') : (r[10] || ''),
+          priceRub: isGuidesUsdHeader ? (r[12] || '') : (r[11] || ''),
+          priceTry: isGuidesUsdHeader ? (r[13] || '') : (r[12] || '')
         })).filter((g) => g.id)
-      : (MASTER_GUIDES_ROWS || []).map((r) => ({ id: r[0], title: r[1], desc: r[2], videoUrl: r[9], priceEur: r[10] }));
+      : (MASTER_GUIDES_ROWS || []).map((r) => ({
+          id: r[0],
+          title: r[1],
+          desc: r[2],
+          videoUrl: r[9],
+          priceUsd: Math.round(Number(r[10] || 0) * 1.08).toString(),
+          priceEur: r[10]
+        }));
 
     // 7. Парсинг шаблонов сообщений
     const parsedTemplates = templatesRows.length > 1
@@ -402,7 +438,28 @@ async function getAiKnowledgeBase(forceRefresh = false) {
         })).filter((t) => t.id)
       : (MASTER_TEMPLATES_ROWS || []).map((r) => ({ id: r[0], title: { ru: r[1], en: r[2], tr: r[3] }, content: { ru: r[4], en: r[5], tr: r[6] } }));
 
-    // 8. Парсинг витрины
+    // 8. Парсинг 15-го листа: Граф Знаний и Безопасность
+    const parsedKnowledgeGraph = knowledgeGraphRows.length > 1
+      ? knowledgeGraphRows.slice(1).map((r) => ({
+          nodeId: r[0] || '',
+          type: r[1] || '',
+          securityLevel: r[2] || 'L1_PUBLIC',
+          allowedStages: r[3] || '',
+          crmSheet: r[4] || '',
+          desc: r[5] || '',
+          status: r[6] || 'Активен'
+        })).filter((k) => k.nodeId)
+      : (MASTER_KNOWLEDGE_GRAPH_ROWS || []).map((r) => ({
+          nodeId: r[0] || '',
+          type: r[1] || '',
+          securityLevel: r[2] || 'L1_PUBLIC',
+          allowedStages: r[3] || '',
+          crmSheet: r[4] || '',
+          desc: r[5] || '',
+          status: r[6] || 'Активен'
+        }));
+
+    // 9. Парсинг витрины
     const homeObj = {};
     if (homeRows.length > 1) {
       homeRows.slice(1).forEach((r) => {
@@ -418,7 +475,7 @@ async function getAiKnowledgeBase(forceRefresh = false) {
       });
     }
 
-    // 9. Парсинг задач секретаря
+    // 10. Парсинг задач секретаря
     const parsedTasks = tasksRows.length > 1
       ? tasksRows.slice(1).map((r) => ({
           id: r[0] || '',
@@ -433,7 +490,7 @@ async function getAiKnowledgeBase(forceRefresh = false) {
 
     const minPriceUsd = parseInt(settingsMap['min_night_price'] || '180', 10);
 
-    // 10. Агрегация омни-календаря: CRM + 6 внешних OTA-платформ
+    // 11. Агрегация омни-календаря: CRM + 6 внешних OTA-платформ
     let unifiedCalendar = null;
     try {
       unifiedCalendar = await getUnifiedCalendarSnapshot({
@@ -445,14 +502,15 @@ async function getAiKnowledgeBase(forceRefresh = false) {
       console.warn('[aiKnowledgeBase] Предупреждение формирования омни-календаря:', calErr.message);
     }
 
-    // 11. Актуализация графа знаний в оперативной памяти
+    // 12. Актуализация графа знаний в оперативной памяти
     globalKnowledgeGraph.buildFromSheetsData({
       settingsMap: { ...settingsMap, ...variablesObj, ...hostInfo, ...villaInfo, ...dialogStrategy, ...gibInvoice },
       services: parsedServices,
       guides: parsedGuides,
       legal: parsedLegal,
       templates: parsedTemplates,
-      calendarSnapshot: unifiedCalendar
+      calendarSnapshot: unifiedCalendar,
+      knowledgeGraphRows: knowledgeGraphRows.length > 1 ? knowledgeGraphRows.slice(1) : MASTER_KNOWLEDGE_GRAPH_ROWS
     });
 
     const aiMode = (settingsMap['ai_mode'] || 'copilot').toLowerCase();
@@ -491,6 +549,7 @@ async function getAiKnowledgeBase(forceRefresh = false) {
       legal: parsedLegal,
       guides: parsedGuides,
       templates: parsedTemplates,
+      knowledgeGraph: parsedKnowledgeGraph,
       home: Object.keys(homeObj).length > 0 ? homeObj : MASTER_HOME_MAP,
       calendar: calendarRows.slice(1),
       calendarData: unifiedCalendar,

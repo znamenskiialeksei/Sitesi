@@ -13,6 +13,7 @@
 import { getAiKnowledgeBase } from './aiKnowledgeBase';
 import { classifyIntent, classifyGuestStage, globalKnowledgeGraph } from './aiKnowledgeGraph';
 import { buildSparkRulesPromptSection } from './spark_rules_manifest';
+import { tryAssembleFaqReply } from './faqCacheEngine';
 
 const DEFAULT_MODEL = 'gemini-3.6-flash';
 
@@ -37,9 +38,36 @@ export async function generateConciergeReply({
   bookingContext = {}
 }) {
   const kb = providedKb || await getAiKnowledgeBase();
+  const effectiveStage = guestStage || classifyGuestStage(bookingContext);
+
+  // --- УРОВЕНЬ 1: ДВУХУРОВНЕВЫЙ КЭШ ТИПОВЫХ РЕШЕНИЙ FAQ CACHE ---
+  // Моментальная композитная сборка из шаблонов без расхода токенов и без задержек
+  const faqResult = tryAssembleFaqReply({
+    guestMessage,
+    guestName,
+    lang: bookingContext.lang || 'ru',
+    guestStage: effectiveStage,
+    bookingContext,
+    templates: kb.templates || [],
+    settingsMap: kb.variables || kb.blocks?.variables || {},
+    graph: kb.graph || globalKnowledgeGraph
+  });
+
+  if (faqResult.success && faqResult.replyText) {
+    return {
+      success: true,
+      isRealAi: false,
+      isCachedFaq: true,
+      replyText: faqResult.replyText,
+      intent: faqResult.matchedTopics?.[0] || 'FAQ_TEMPLATE',
+      guestStage: effectiveStage,
+      model: 'faq_cache_assembler'
+    };
+  }
+
+  // --- УРОВЕНЬ 2: ИНТЕЛЛЕКТУАЛЬНЫЙ ВЫЗОВ GEMINI 3.6 FLASH ---
   const apiKey = (process.env.GEMINI_API_KEY || '').trim();
   const model = (kb.geminiModel || process.env.GEMINI_MODEL || DEFAULT_MODEL).trim();
-  const effectiveStage = guestStage || classifyGuestStage(bookingContext);
 
   if (!apiKey) {
     return {

@@ -22,7 +22,9 @@ const {
   MASTER_CALENDAR_ROWS,
   MASTER_ACCOUNTS_ROWS,
   MASTER_ORDERS_ROWS,
-  MASTER_ACCESS_ROWS
+  MASTER_ACCESS_ROWS,
+  MASTER_TASKS_ROWS,
+  MASTER_KNOWLEDGE_GRAPH_ROWS
 } = require('../utils/masterSeedContent');
 
 async function restoreAllSheets() {
@@ -301,44 +303,68 @@ async function restoreAllSheets() {
 
         if (config.key === 'SERVICES') {
           const colsA_C = MASTER_SERVICES_ROWS.map((r) => [r[0], r[1], r[2]]);
-          const colsH_O = MASTER_SERVICES_ROWS.map((r) => [r[7] || '', r[8] || '', r[9] || '', r[10] || '', r[11] || '', r[12] || '', r[13] || '', r[14] || '']);
+          const colsH_P = MASTER_SERVICES_ROWS.map((r) => {
+            const hasUsd = r.length >= 18;
+            const usd = hasUsd ? r[7] : Math.round(Number(r[7] || 0) * 1.08).toString();
+            const eur = hasUsd ? r[8] : (r[7] || '');
+            const rub = hasUsd ? r[9] : (r[8] || '');
+            const tryCur = hasUsd ? r[10] : (r[9] || '');
+            const images = hasUsd ? r[11] : (r[10] || '');
+            const available = hasUsd ? r[12] : (r[11] || '');
+            const type = hasUsd ? r[13] : (r[12] || '');
+            const videos = hasUsd ? r[14] : (r[13] || '');
+            const detailedRu = hasUsd ? r[15] : (r[14] || '');
+            return [usd, eur, rub, tryCur, images, available, type, videos, detailedRu];
+          });
 
           dataAppendRequests.push({
             range: `'${actualTitle}'!A2:C${colsA_C.length + 1}`,
             values: colsA_C
           });
           dataAppendRequests.push({
-            range: `'${actualTitle}'!H2:O${colsH_O.length + 1}`,
-            values: colsH_O
+            range: `'${actualTitle}'!H2:P${colsH_P.length + 1}`,
+            values: colsH_P
           });
 
           safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!P2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!R2`, values: [['=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
         }
 
         if (config.key === 'GUIDES') {
           const colsA_C = MASTER_GUIDES_ROWS.map((r) => [r[0], r[1], r[2]]);
-          const colsH_O = MASTER_GUIDES_ROWS.map((r) => [r[7] || '', r[8] || '', r[9] || '', r[10] || '', r[11] || '', r[12] || '', r[13] || '', r[14] || '']);
+          const colsH_P = MASTER_GUIDES_ROWS.map((r) => {
+            const hasUsd = r.length >= 18;
+            const images = r[7] || '';
+            const module = r[8] || '';
+            const link = r[9] || '';
+            const usd = hasUsd ? r[10] : Math.round(Number(r[10] || 0) * 1.08).toString();
+            const eur = hasUsd ? r[11] : (r[10] || '');
+            const rub = hasUsd ? r[12] : (r[11] || '');
+            const tryCur = hasUsd ? r[13] : (r[12] || '');
+            const videos = hasUsd ? r[14] : (r[13] || '');
+            const detailedRu = hasUsd ? r[15] : (r[14] || '');
+            return [images, module, link, usd, eur, rub, tryCur, videos, detailedRu];
+          });
 
           dataAppendRequests.push({
             range: `'${actualTitle}'!A2:C${colsA_C.length + 1}`,
             values: colsA_C
           });
           dataAppendRequests.push({
-            range: `'${actualTitle}'!H2:O${colsH_O.length + 1}`,
-            values: colsH_O
+            range: `'${actualTitle}'!H2:P${colsH_P.length + 1}`,
+            values: colsH_P
           });
 
           safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!P2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!R2`, values: [['=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
         }
 
         if (config.key === 'LEGAL') {
@@ -418,6 +444,20 @@ async function restoreAllSheets() {
           dataAppendRequests.push({
             range: `'${actualTitle}'!A2:E${MASTER_SETTINGS_ROWS.length + 1}`,
             values: MASTER_SETTINGS_ROWS
+          });
+        }
+
+        if (config.key === 'TASKS' && MASTER_TASKS_ROWS && MASTER_TASKS_ROWS.length > 0) {
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:G${MASTER_TASKS_ROWS.length + 1}`,
+            values: MASTER_TASKS_ROWS
+          });
+        }
+
+        if (config.key === 'KNOWLEDGE_GRAPH' && MASTER_KNOWLEDGE_GRAPH_ROWS && MASTER_KNOWLEDGE_GRAPH_ROWS.length > 0) {
+          dataAppendRequests.push({
+            range: `'${actualTitle}'!A2:G${MASTER_KNOWLEDGE_GRAPH_ROWS.length + 1}`,
+            values: MASTER_KNOWLEDGE_GRAPH_ROWS
           });
         }
       }
