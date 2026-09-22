@@ -4,7 +4,7 @@
 // Назначение: Эталонный источник истины [SSOT] для всех 15 листов Google Таблиц.
 // Защищен от случайного затирания. Обеспечивает 100% самоисцеление при удалении листов.
 // Сгенерировано автоматически через scripts/save-master-seed.js
-// Дата фиксации: 2026-09-22T12:21:22.044Z
+// Дата фиксации: 2026-09-22T18:36:50.213Z
 // 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
@@ -233,7 +233,7 @@ const MASTER_HOME_MAP = {
     "ru": "Аватар владельца виллы",
     "en": "Avatar of the villa owner",
     "tr": "Villa sahibinin avatarı",
-    "media": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160",
+    "media": "https://drive.google.com/file/d/1NjSHRDa5eJpQTzO9268e8LMRzDVmYtX7/view?usp=sharing,https://drive.google.com/file/d/1IZMH6wtfLHZ6ibKHfmBhPGMFntZ_fXKU/view?usp=drive_link",
     "status": "Вкл",
     "enabled": true
   },
@@ -263,9 +263,9 @@ const MASTER_HOME_MAP = {
     "block": "2. Характеристики",
     "key": "spec_beds",
     "desc": "Счетчик спальных мест [кроватей]",
-    "ru": "10 спальных мест",
-    "en": "10 sleeping places",
-    "tr": "10 uyku yeri",
+    "ru": "6 кроватей 10 спальных мест",
+    "en": "6 beds 10 sleeping places",
+    "tr": "6 yatak, 10 uyku yeri",
     "media": "Bed",
     "status": "Вкл",
     "enabled": true
@@ -2271,7 +2271,7 @@ const MASTER_HOME_ROWS = [
     "Аватар владельца виллы",
     "Avatar of the villa owner",
     "Villa sahibinin avatarı",
-    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160",
+    "https://drive.google.com/file/d/1NjSHRDa5eJpQTzO9268e8LMRzDVmYtX7/view?usp=sharing,https://drive.google.com/file/d/1IZMH6wtfLHZ6ibKHfmBhPGMFntZ_fXKU/view?usp=drive_link",
     "Вкл"
   ],
   [
@@ -2298,9 +2298,9 @@ const MASTER_HOME_ROWS = [
     "2. Характеристики",
     "spec_beds",
     "Счетчик спальных мест [кроватей]",
-    "10 спальных мест",
-    "10 sleeping places",
-    "10 uyku yeri",
+    "6 кроватей 10 спальных мест",
+    "6 beds 10 sleeping places",
+    "6 yatak, 10 uyku yeri",
     "Bed",
     "Вкл"
   ],
@@ -4708,6 +4708,7 @@ const MASTER_SERVICES_ROWS = [
     "Comfortable Mercedes Vito with air conditioning and drinks",
     "Dalaman Havalimanından VIP Transfer [DLM]",
     "Klimalı ve içecek servisi bulunan konforlu Mercedes Vito.",
+    "54",
     "50",
     "5000",
     "1800",
@@ -4727,6 +4728,7 @@ const MASTER_SERVICES_ROWS = [
     "Traditional Wooden Boat: Captain Adam, Lycian Tombs",
     "Dalyan Nehri ve İztuzu Plajı'nda Özel Yat Gezisi",
     "Geleneksel Ahşap Tekne: Kaptan Adam, Likya Mezarları",
+    "270",
     "250",
     "25000",
     "9000",
@@ -4746,6 +4748,7 @@ const MASTER_SERVICES_ROWS = [
     "4-course poolside dinner: traditional Turkish meze and seafood",
     "Villada Özel Şef Eşliğinde Akşam Yemeği",
     "Havuz başında 4 çeşit yemekten oluşan akşam yemeği: geleneksel Türk mezeleri ve deniz ürünleri.",
+    "130",
     "120",
     "12000",
     "4300",
@@ -4765,6 +4768,7 @@ const MASTER_SERVICES_ROWS = [
     "Ribeye steaks, lamb rack on the bone and grilled vegetables",
     "Villanın bahçesinde kömür ateşinde enfes bir barbekü akşamı.",
     "Antrikot biftek, kemikli kuzu pirzola ve ızgara sebzeler",
+    "175",
     "160",
     "16000",
     "5800",
@@ -4784,6 +4788,7 @@ const MASTER_SERVICES_ROWS = [
     "Rejuvenating mineral baths and thermal springs of Lake Köyceğiz",
     "Sultaniye Kaplıcaları ve Çamur Kaplıcaları Turu",
     "Köyceğiz Gölü'nün canlandırıcı mineral banyoları ve termal kaynakları",
+    "75",
     "70",
     "7000",
     "2500",
@@ -4803,6 +4808,7 @@ const MASTER_SERVICES_ROWS = [
     "2 stable SUP boards and a two-seater expedition kayak",
     "SUP ve çift kişilik kano kiralama",
     "2 adet sağlam SUP tahtası ve iki kişilik bir keşif kayığı",
+    "85",
     "80",
     "8000",
     "2900",
@@ -4822,6 +4828,7 @@ const MASTER_SERVICES_ROWS = [
     "2 modern electric bikes with a range of up to 60 km",
     "Dalyan'ı keşfetmek için elektrikli bisiklet kiralama",
     "60 km'ye kadar menzile sahip 2 adet modern elektrikli bisiklet.",
+    "45",
     "40",
     "4000",
     "1500",
@@ -4835,12 +4842,13 @@ const MASTER_SERVICES_ROWS = [
   ],
   [
     "prod-8",
-    "Дополнительная экспресс-уборка и смена белья",
+    "Уборка и смена белья",
     "Внеплановая влажная уборка виллы, замена полотенец и постельного белья",
-    "Additional express cleaning and linen change",
+    "Cleaning and linen change",
     "Unscheduled wet cleaning of the villa, change of towels and bed linen",
-    "Ek ekspres temizlik ve nevresim değişimi",
+    "Temizlik ve nevresim değişimi",
     "Villanın planlanmamış ıslak temizliği, havlu ve nevresim değişimi.",
+    "65",
     "60",
     "6000",
     "2200",
@@ -4861,11 +4869,12 @@ const MASTER_GUIDES_ROWS = [
     "Эксклюзивный 40-минутный 4K видео-гид от Алексея Знаменского",
     "Secret Routes of the Dalyan River and Iztuzu Turtle Beach",
     "An exclusive 40-minute 4K video guide from Alexey Znamensky",
-    "Dalyan Nehri ve İztuzu Kaplumbağa Plajı'nın Gizli Rotaları",
+    "Dalyan Nehri'nin Gizli Rotaları ve İztuzu Kaplumbağa Plajı",
     "Alexey Znamensky'den özel 40 dakikalık 4K video rehberi.",
     "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200",
     "Локации",
     "https://youtube.com/watch?v=guide1",
+    "22",
     "20",
     "2000",
     "700",
@@ -4885,6 +4894,7 @@ const MASTER_GUIDES_ROWS = [
     "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200",
     "История",
     "https://youtube.com/watch?v=guide2",
+    "27",
     "25",
     "2500",
     "900",
@@ -4904,6 +4914,7 @@ const MASTER_GUIDES_ROWS = [
     "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200",
     "Гастрономия",
     "https://youtube.com/watch?v=guide3",
+    "16",
     "15",
     "1500",
     "550",
@@ -4923,6 +4934,7 @@ const MASTER_GUIDES_ROWS = [
     "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200",
     "Здоровье",
     "https://youtube.com/watch?v=guide4",
+    "22",
     "20",
     "2000",
     "700",
@@ -4942,6 +4954,7 @@ const MASTER_GUIDES_ROWS = [
     "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200",
     "Трекинг",
     "https://youtube.com/watch?v=guide5",
+    "16",
     "15",
     "1500",
     "550",
@@ -4961,6 +4974,7 @@ const MASTER_GUIDES_ROWS = [
     "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=1200",
     "Шоппинг",
     "https://youtube.com/watch?v=guide6",
+    "11",
     "10",
     "1000",
     "350",
@@ -5089,6 +5103,15 @@ const MASTER_BOOKINGS_ROWS = [
 ];
 
 const MASTER_CALENDAR_ROWS = [
+  [
+    "Глобальные правила",
+    "Все даты",
+    "Настройки",
+    "{\"basePrice\":250,\"currency\":\"USD\",\"minNights\":3,\"maxNights\":30,\"bookingWindowMonths\":18,\"advanceNoticeDays\":2,\"bookingMode\":\"instant\",\"verificationMode\":\"progressive\",\"checkInTime\":\"16:00\",\"checkOutTime\":\"10:00\"}",
+    "Изменение тарифов",
+    "admin",
+    "20.09.2026 12:00"
+  ],
   [
     "01.05.2026",
     "31.05.2026",

@@ -675,18 +675,19 @@ export default async function handler(req, res) {
         });
       }
 
-      // Добавление базовых настроек календаря по умолчанию (15000 RUB)
+      // Добавление базовых настроек календаря по умолчанию: 250 USD
       const calDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'CALENDAR', 'A:A') });
       if ((calDb.data.values || []).length <= 1) {
         const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
         const defaultRules = {
-          basePrice: 15000,
-          currency: 'RUB',
+          basePrice: 250,
+          currency: 'USD',
           minNights: 3,
           maxNights: 30,
           bookingWindowMonths: 18,
           advanceNoticeDays: 2,
           bookingMode: 'instant',
+          verificationMode: 'progressive',
           checkInTime: '16:00',
           checkOutTime: '10:00'
         };
@@ -908,7 +909,7 @@ export default async function handler(req, res) {
       if (!sheets || !spreadsheetId) {
         return res.status(200).json({
           success: true,
-          globalRules: { basePrice: 15000, currency: 'RUB', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', verificationMode: 'progressive', checkInTime: '16:00', checkOutTime: '10:00' },
+          globalRules: { basePrice: 250, currency: 'USD', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', verificationMode: 'progressive', checkInTime: '16:00', checkOutTime: '10:00' },
           dateRules: []
         });
       }
@@ -951,14 +952,14 @@ export default async function handler(req, res) {
 
       const result = {
         success: true,
-        globalRules: globalRules || { basePrice: 15000, currency: 'RUB', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', verificationMode: 'progressive', checkInTime: '16:00', checkOutTime: '10:00' },
+        globalRules: globalRules || { basePrice: 250, currency: 'USD', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', verificationMode: 'progressive', checkInTime: '16:00', checkOutTime: '10:00' },
         dateRules,
         variablesDict
       };
       await safeCacheSet('settings_cache', result, { ex: 1800 });
       return res.status(200).json(result);
     } catch (e) {
-      return res.status(200).json({ success: true, globalRules: { basePrice: 15000, currency: 'RUB', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', verificationMode: 'progressive', checkInTime: '16:00', checkOutTime: '10:00' }, dateRules: [] });
+      return res.status(200).json({ success: true, globalRules: { basePrice: 250, currency: 'USD', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', verificationMode: 'progressive', checkInTime: '16:00', checkOutTime: '10:00' }, dateRules: [] });
     }
   }
 

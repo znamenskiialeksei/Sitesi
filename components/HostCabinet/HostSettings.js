@@ -116,8 +116,8 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
   };
 
   const [form, setForm] = useState({
-    basePrice: globalRules.basePrice !== undefined ? globalRules.basePrice : 15000,
-    currency: globalRules.currency || 'RUB',
+    basePrice: globalRules.basePrice !== undefined ? globalRules.basePrice : 250,
+    currency: globalRules.currency || 'USD',
     minNights: globalRules.minNights || 3,
     maxNights: globalRules.maxNights || 30,
     bookingWindowMonths: globalRules.bookingWindowMonths || 18,
@@ -127,12 +127,12 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
     checkOutTime: globalRules.checkOutTime || '10:00'
   });
 
-  // Синхронизация формы при асинхронной загрузке настроек из Google Sheets (CalendarSettings)
+  // Синхронизация формы при асинхронной загрузке настроек из Google Sheets [CalendarSettings]
   useEffect(() => {
     if (globalRules && Object.keys(globalRules).length > 0) {
       setForm({
-        basePrice: globalRules.basePrice !== undefined ? globalRules.basePrice : 15000,
-        currency: globalRules.currency || 'RUB',
+        basePrice: globalRules.basePrice !== undefined ? globalRules.basePrice : 250,
+        currency: globalRules.currency || 'USD',
         minNights: globalRules.minNights !== undefined ? globalRules.minNights : 3,
         maxNights: globalRules.maxNights !== undefined ? globalRules.maxNights : 30,
         bookingWindowMonths: globalRules.bookingWindowMonths !== undefined ? globalRules.bookingWindowMonths : 18,
@@ -305,10 +305,10 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
             onChange={handleChange}
             className="w-full bg-slate-800 border border-white/10 p-3 rounded-xl text-sm font-bold text-white outline-none"
           >
-            <option value="RUB">RUB (₽)</option>
-            <option value="EUR">EUR (€)</option>
-            <option value="TRY">TRY (₺)</option>
-            <option value="USD">USD ($)</option>
+            <option value="USD">USD [$]</option>
+            <option value="EUR">EUR [€]</option>
+            <option value="RUB">RUB [₽]</option>
+            <option value="TRY">TRY [₺]</option>
           </select>
         </div>
 

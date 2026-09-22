@@ -112,7 +112,7 @@ export default function HomeListing({ publicData, contentData }) {
   const [currentContentData, setCurrentContentData] = useState(contentData);
   const [currentPublicData, setCurrentPublicData] = useState(publicData);
 
-  // Состояние выбранной презентации (видео-гид или консьерж-сервис)
+  // Состояние выбранной презентации: видео-гид или консьерж-сервис
   const [selectedPresentation, setSelectedPresentation] = useState(null);
   const [selectedPresentationType, setSelectedPresentationType] = useState('service');
   const [aboutModalOpen, setAboutModalOpen] = useState(false);
@@ -127,14 +127,15 @@ export default function HomeListing({ publicData, contentData }) {
   // События iCal для отображения цветных полосок в виджете-календаре
   const [apiEvents, setApiEvents] = useState([]);
   const [dynamicRules, setDynamicRules] = useState({
-    basePrice: 15000,
-    currency: 'RUB',
+    basePrice: 250,
+    currency: 'USD',
     minNights: 3,
     maxNights: 30,
     maxTotalGuests: 10,
     bookingWindowMonths: 18,
     advanceNoticeDays: 2,
     bookingMode: 'instant',
+    verificationMode: 'progressive',
     checkInTime: '16:00',
     checkOutTime: '10:00'
   });

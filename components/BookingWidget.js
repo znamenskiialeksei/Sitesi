@@ -135,12 +135,12 @@ export default function BookingWidget({
   safeMinDate.setHours(0, 0, 0, 0);
 
   // Базовые параметры бронирования виллы, установленные хозяином в CalendarSettings
-  const villaCurrency = dynamicRules.currency || 'RUB';
-  const basePrice = Number(dynamicRules.basePrice) || 15000;
+  const villaCurrency = dynamicRules.currency || 'USD';
+  const basePrice = Number(dynamicRules.basePrice) || 250;
   const maxTotalGuests = 10;
   const totalGuests = adults + children;
 
-  // Форматирование стоимости виллы с конвертацией из базовой валюты виллы (villaCurrency) в выбранную гостем (currency)
+  // Форматирование стоимости виллы с конвертацией из базовой валюты виллы [villaCurrency] в выбранную гостем [currency]
   const formatVillaMoney = (amount) => {
     return formatMoney(amount, currency, villaCurrency);
   };
@@ -155,7 +155,7 @@ export default function BookingWidget({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Проверка ручной блокировки дат из Google Таблицы (CalendarSettings)
+  // Проверка ручной блокировки дат из Google Таблицы [CalendarSettings]
   const isManualBlocked = (date) => {
     if (!dateRules || !Array.isArray(dateRules)) return false;
     for (let i = dateRules.length - 1; i >= 0; i--) {
@@ -170,7 +170,7 @@ export default function BookingWidget({
     return false;
   };
 
-  // Получение цены для конкретного дня с гарантией числового значения (в валюте виллы villaCurrency)
+  // Получение цены для конкретного дня с гарантией числового значения: в валюте виллы villaCurrency
   const getPriceForDate = (date) => {
     if (!date) return basePrice;
     if (!dateRules || !Array.isArray(dateRules)) return basePrice;
@@ -192,7 +192,7 @@ export default function BookingWidget({
     return basePrice;
   };
 
-  // Получение минимального срока проживания для даты (с приоритетом последних правил)
+  // Получение минимального срока проживания для даты: с приоритетом последних правил
   const getMinNightsForDate = (date) => {
     const defaultMin = dynamicRules.minNights || 3;
     if (!date) return defaultMin;
@@ -209,7 +209,7 @@ export default function BookingWidget({
     return defaultMin;
   };
 
-  // Определение режима бронирования (мгновенное или по запросу)
+  // Определение режима бронирования: мгновенное или по запросу
   const getBookingModeForRange = (sDate, eDate) => {
     const defaultMode = dynamicRules.bookingMode || 'instant';
     if (!sDate) return defaultMode;

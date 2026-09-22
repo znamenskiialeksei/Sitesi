@@ -22,15 +22,31 @@ export default function Navbar() {
   const langRef = useRef(null);
   const profileRef = useRef(null);
 
-  // Закрытие выпадающих меню при клике вне области
+  // Закрытие выпадающих меню при клике вне области с защитой от мгновенного схлопывания на мобильных устройствах
   useEffect(() => {
+    if (!langMenuOpen && !profileMenuOpen) return;
+
     const handleClickOutside = (e) => {
-      if (langRef.current && !langRef.current.contains(e.target)) setLangMenuOpen(false);
-      if (profileRef.current && !profileRef.current.contains(e.target)) setProfileMenuOpen(false);
+      if (langRef.current && !langRef.current.contains(e.target)) {
+        setLangMenuOpen(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setProfileMenuOpen(false);
+      }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+
+    // Задержка в 50 мс гарантирует, что синтетические события mousedown и click от тапа не закроют меню
+    const timer = setTimeout(() => {
+      document.addEventListener('click', handleClickOutside);
+      document.addEventListener('touchend', handleClickOutside, { passive: true });
+    }, 50);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('touchend', handleClickOutside);
+    };
+  }, [langMenuOpen, profileMenuOpen]);
 
   const isHost = !!currentUser?.isHost;
 
@@ -101,10 +117,15 @@ export default function Navbar() {
           )}
 
           {/* Переключатель языка и валюты */}
-          <div className="relative" ref={langRef}>
+          <div className="relative z-50" ref={langRef}>
             <button
-              onClick={() => setLangMenuOpen(!langMenuOpen)}
-              className="flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-full bg-slate-800/80 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-white/10 transition-colors"
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setLangMenuOpen((prev) => !prev);
+              }}
+              className="flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-full bg-slate-800/80 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-white/10 transition-colors cursor-pointer"
               title="Сменить язык и валюту"
             >
               <Globe className="w-4 h-4 text-slate-400" />
@@ -115,10 +136,13 @@ export default function Navbar() {
             </button>
 
             {langMenuOpen && (
-              <div className="absolute right-0 mt-2 w-56 max-w-[calc(100vw-24px)] bg-slate-800 rounded-2xl shadow-2xl border border-white/10 p-3 z-50 fade-in flex flex-col gap-3">
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="absolute right-0 mt-2 w-56 max-w-[calc(100vw-24px)] bg-slate-800 rounded-2xl shadow-2xl border border-white/10 p-3 z-50 fade-in flex flex-col gap-3"
+              >
                 <div>
                   <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-2 px-2">
-                    Язык (Language)
+                    Язык [Language]
                   </div>
                   <div className="grid grid-cols-3 gap-1">
                     {[
@@ -128,11 +152,12 @@ export default function Navbar() {
                     ].map((item) => (
                       <button
                         key={item.code}
+                        type="button"
                         onClick={() => {
                           changeLanguage(item.code);
                           setLangMenuOpen(false);
                         }}
-                        className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors ${lang === item.code ? 'bg-rose-600 text-white' : 'bg-slate-900 text-slate-300 hover:bg-slate-700'
+                        className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${lang === item.code ? 'bg-rose-600 text-white' : 'bg-slate-900 text-slate-300 hover:bg-slate-700'
                           }`}
                       >
                         {item.code.toUpperCase()}
@@ -143,17 +168,18 @@ export default function Navbar() {
 
                 <div className="border-t border-white/10 pt-2">
                   <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-2 px-2">
-                    Валюта (Currency)
+                    Валюта [Currency]
                   </div>
                   <div className="grid grid-cols-4 gap-1">
                     {['RUB', 'EUR', 'TRY', 'USD'].map((c) => (
                       <button
                         key={c}
+                        type="button"
                         onClick={() => {
                           changeCurrency(c);
                           setLangMenuOpen(false);
                         }}
-                        className={`px-2 py-1.5 rounded-xl text-xs font-bold transition-colors ${currency === c ? 'bg-rose-600 text-white' : 'bg-slate-900 text-slate-300 hover:bg-slate-700'
+                        className={`px-2 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${currency === c ? 'bg-rose-600 text-white' : 'bg-slate-900 text-slate-300 hover:bg-slate-700'
                           }`}
                       >
                         {CURRENCY_SYMBOLS[c] || c}
@@ -174,11 +200,16 @@ export default function Navbar() {
             <MessageCircle className="w-4 h-4 text-emerald-400" />
           </Link>
 
-          {/* Меню профиля пользователя (AirBnB Pill) */}
-          <div className="relative shrink-0" ref={profileRef}>
+          {/* Меню профиля пользователя [AirBnB Pill] */}
+          <div className="relative shrink-0 z-50" ref={profileRef}>
             <button
-              onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-              className="flex items-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 sm:pl-3 rounded-full bg-slate-800 hover:bg-slate-700 border border-white/10 transition-all shadow-inner shrink-0"
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setProfileMenuOpen((prev) => !prev);
+              }}
+              className="flex items-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 sm:pl-3 rounded-full bg-slate-800 hover:bg-slate-700 border border-white/10 transition-all shadow-inner shrink-0 cursor-pointer"
             >
               <Menu className="w-4 h-4 text-slate-400 shrink-0" />
               <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
@@ -187,7 +218,51 @@ export default function Navbar() {
             </button>
 
             {profileMenuOpen && (
-              <div className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-16px)] bg-slate-800 rounded-2xl shadow-2xl border border-white/10 p-2 z-50 fade-in flex flex-col">
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-16px)] bg-slate-800 rounded-2xl shadow-2xl border border-white/10 p-2 z-50 fade-in flex flex-col"
+              >
+                {/* Мобильная навигация по ключевым секциям листинга для смартфонов */}
+                <div className="md:hidden border-b border-white/10 pb-2 mb-2 space-y-0.5">
+                  <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-1 px-3">
+                    Навигация по вилле
+                  </div>
+                  <Link
+                    href={router.pathname === '/' ? '#about' : '/#about'}
+                    onClick={() => setProfileMenuOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                  >
+                    <Home className="w-3.5 h-3.5 text-rose-400" /> {t('navAbout')}
+                  </Link>
+                  <Link
+                    href={router.pathname === '/' ? '#amenities' : '/#amenities'}
+                    onClick={() => setProfileMenuOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" /> {t('navAmenities')}
+                  </Link>
+                  <Link
+                    href={router.pathname === '/' ? '#reviews' : '/#reviews'}
+                    onClick={() => setProfileMenuOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5 text-emerald-400" /> {t('navReviews')}
+                  </Link>
+                  <Link
+                    href={router.pathname === '/' ? '#gallery' : '/#gallery'}
+                    onClick={() => setProfileMenuOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                  >
+                    <Compass className="w-3.5 h-3.5 text-blue-400" /> {t('galleryTitle') || 'Галерея'}
+                  </Link>
+                  <Link
+                    href={router.pathname === '/' ? '#catalog' : '/#catalog'}
+                    onClick={() => setProfileMenuOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-purple-400" /> {t('navCatalog')}
+                  </Link>
+                </div>
                 {currentUser ? (
                   <>
                     <div className="px-4 py-3 border-b border-white/10 mb-1">
@@ -307,6 +382,18 @@ export default function Navbar() {
 
         </div>
       </div>
+
+      {/* Фоновая подложка для гарантированного закрытия выпадающих меню на мобильных устройствах */}
+      {(profileMenuOpen || langMenuOpen) && (
+        <div
+          className="fixed inset-0 z-40 bg-black/20 sm:bg-transparent backdrop-blur-[1px] sm:backdrop-blur-none cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation();
+            setProfileMenuOpen(false);
+            setLangMenuOpen(false);
+          }}
+        />
+      )}
     </header>
   );
 }

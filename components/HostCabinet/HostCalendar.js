@@ -34,11 +34,11 @@ export default function HostCalendar({
   const [editBookingMode, setEditBookingMode] = useState('');
   const [editNote, setEditNote] = useState('');
 
-  const hostCurrency = dynamicRules.currency || 'RUB';
-  const basePrice = Number(dynamicRules.basePrice) || 15000;
+  const hostCurrency = dynamicRules.currency || 'USD';
+  const basePrice = Number(dynamicRules.basePrice) || 250;
   const defaultMinNights = dynamicRules.minNights || 3;
 
-  // Определение динамической цены на дату (в валюте виллы hostCurrency)
+  // Определение динамической цены на дату: в валюте виллы hostCurrency
   const getPriceForDate = (date) => {
     if (!date) return basePrice;
     if (!dateRules || !Array.isArray(dateRules)) return basePrice;
@@ -60,7 +60,7 @@ export default function HostCalendar({
     return basePrice;
   };
 
-  // Определение минимального срока проживания (с приоритетом последних правил)
+  // Определение минимального срока проживания: с приоритетом последних правил
   const getMinNightsForDate = (date) => {
     if (!dateRules || !Array.isArray(dateRules)) return defaultMinNights;
     for (let i = dateRules.length - 1; i >= 0; i--) {

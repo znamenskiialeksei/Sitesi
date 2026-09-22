@@ -9,7 +9,17 @@ require('dotenv').config({ path: '.env.local' });
 const { google } = require('googleapis');
 const { SHEETS_REGISTRY, getLiveSheetMap, resolveRange } = require('../utils/sheetsRegistry');
 const { SMART_TEMPLATES } = require('../utils/templatesData');
-const { MASTER_ABOUT_SECTIONS, MASTER_SETTINGS_ROWS, MASTER_HOME_MAP, MASTER_HOME_ROWS, MASTER_TASKS_ROWS } = require('../utils/masterSeedContent');
+const {
+  MASTER_ABOUT_SECTIONS,
+  MASTER_SETTINGS_ROWS,
+  MASTER_HOME_MAP,
+  MASTER_HOME_ROWS,
+  MASTER_TASKS_ROWS,
+  MASTER_SERVICES_ROWS,
+  MASTER_GUIDES_ROWS,
+  MASTER_CALENDAR_ROWS,
+  MASTER_KNOWLEDGE_GRAPH_ROWS
+} = require('../utils/masterSeedContent');
 
 // Конфигурация структуры базы данных Google Таблиц
 const GOOGLE_CONFIG = {
@@ -28,13 +38,15 @@ const GOOGLE_CONFIG = {
   aboutSheetName: '📖 О вилле и Правила',
   legalSheetName: '⚖️ Юридические документы',
   templatesSheetName: '💬 Шаблоны сообщений',
-  variablesSheetName: '🧩 Словарь переменных',
+  variablesSheetName: '⚙️ Системные настройки ИИ Агентов',
+  tasksSheetName: '📋 Задачи и Поручения Секретаря',
+  knowledgeGraphSheetName: '🧠 Граф Знаний и Безопасность',
 
-  homeHeaders: ['Ключ (ID)', 'RU', 'EN', 'TR', 'Медиа/Картинка'],
+  homeHeaders: ['Ключ [ID]', 'RU', 'EN', 'TR', 'Медиа/Картинка'],
   headers: [
     'Дата заявки',
     'Имя клиента',
-    'Контакт (Tel/TG)',
+    'Контакт [Tel/TG]',
     'Старт',
     'Завершение',
     'Ночей',
@@ -44,7 +56,7 @@ const GOOGLE_CONFIG = {
     'Итоговая стоимость',
     'Статус оплаты'
   ],
-  accountHeaders: ['Дата регистрации', 'Имя', 'Контакт (Логин)', 'Пароль', 'Блок: Сайт', 'Блок: Аккаунт', 'Блок: Чат'],
+  accountHeaders: ['Дата регистрации', 'Имя', 'Контакт [Логин]', 'Пароль', 'Блок: Сайт', 'Блок: Аккаунт', 'Блок: Чат'],
   masterHeaders: [
     'ФИО',
     'Телефон',
@@ -63,7 +75,7 @@ const GOOGLE_CONFIG = {
   calendarSettingsHeaders: [
     'Дата старта',
     'Дата завершения',
-    'Тип (Блокировка/Цена/Мин. дней/Заметка/Тип записи/Настройки)',
+    'Тип [Блокировка/Цена/Мин. дней/Заметка/Тип записи/Настройки]',
     'Значение',
     'Заметка',
     'Автор изменения',
@@ -72,62 +84,66 @@ const GOOGLE_CONFIG = {
   chatHeaders: ['Дата и Время', 'Отправитель', 'Оригинал', 'RU', 'EN', 'TR', 'Ссылка на вложение'],
   productsHeaders: [
     'ID',
-    'Название услуги (RU)',
-    'Описание (RU)',
-    'Название услуги (EN)',
-    'Описание (EN)',
-    'Название услуги (TR)',
-    'Описание (TR)',
-    'Цена (EUR)',
-    'Цена (RUB)',
-    'Цена (TRY)',
-    'Изображения (через запятую)',
-    'Наличие (Да/Нет)',
-    'Тип (Услуга/Пакет)',
-    'Видео презентации (через запятую)',
-    'Подробное описание (RU)',
-    'Подробное описание (EN)',
-    'Подробное описание (TR)'
+    'Название услуги [RU]',
+    'Описание [RU]',
+    'Название услуги [EN]',
+    'Описание [EN]',
+    'Название услуги [TR]',
+    'Описание [TR]',
+    'Цена [USD]',
+    'Цена [EUR]',
+    'Цена [RUB]',
+    'Цена [TRY]',
+    'Изображения [через запятую]',
+    'Наличие [Да/Нет]',
+    'Тип [Услуга/Пакет]',
+    'Видео презентации [через запятую]',
+    'Подробное описание [RU]',
+    'Подробное описание [EN]',
+    'Подробное описание [TR]'
   ],
   coursesHeaders: [
     'ID',
-    'Название путеводителя (RU)',
-    'Описание (RU)',
-    'Название путеводителя (EN)',
-    'Описание (EN)',
-    'Название путеводителя (TR)',
-    'Описание (TR)',
-    'Изображения (через запятую)',
+    'Название путеводителя [RU]',
+    'Описание [RU]',
+    'Название путеводителя [EN]',
+    'Описание [EN]',
+    'Название путеводителя [TR]',
+    'Описание [TR]',
+    'Изображения [через запятую]',
     'Категория',
     'Ссылка на видео',
-    'Цена (EUR)',
-    'Цена (RUB)',
-    'Цена (TRY)',
-    'Видео презентации (через запятую)',
-    'Подробное описание (RU)',
-    'Подробное описание (EN)',
-    'Подробное описание (TR)'
+    'Цена [USD]',
+    'Цена [EUR]',
+    'Цена [RUB]',
+    'Цена [TRY]',
+    'Видео презентации [через запятую]',
+    'Подробное описание [RU]',
+    'Подробное описание [EN]',
+    'Подробное описание [TR]'
   ],
-  studentsHeaders: ['Дата', 'Гость (Контакт)', 'Гид ID', 'Категория', 'Статус оплаты', 'Доступ (Да/Нет)', 'Прогресс'],
-  ordersHeaders: ['Дата заказа', 'Контакт', 'Тип (Гид/Услуга/Аренда)', 'Сумма', 'Статус оплаты', 'Детали'],
+  studentsHeaders: ['Дата', 'Гость [Контакт]', 'Гид ID', 'Категория', 'Статус оплаты', 'Доступ [Да/Нет]', 'Прогресс'],
+  ordersHeaders: ['Дата заказа', 'Контакт', 'Тип [Гид/Услуга/Аренда]', 'Сумма', 'Статус оплаты', 'Детали'],
   galleryHeaders: [
     'ID',
-    'Группа (RU)',
-    'Описание группы (RU)',
-    'Группа (EN)',
-    'Описание группы (EN)',
-    'Группа (TR)',
-    'Описание группы (TR)',
-    'Тип (Фото/Видео/Карусель)',
-    'Медиа (ссылки/iframes через запятую)',
-    'Подпись (RU)',
-    'Подпись (EN)',
-    'Подпись (TR)'
+    'Группа [RU]',
+    'Описание группы [RU]',
+    'Группа [EN]',
+    'Описание группы [EN]',
+    'Группа [TR]',
+    'Описание группы [TR]',
+    'Тип [Фото/Видео/Карусель]',
+    'Медиа [ссылки/iframes через запятую]',
+    'Подпись [RU]',
+    'Подпись [EN]',
+    'Подпись [TR]'
   ],
-  aboutHeaders: ['ID Раздела', 'Название (RU)', 'Название (EN)', 'Название (TR)', 'Текст (RU)', 'Текст (EN)', 'Текст (TR)'],
-  legalHeaders: ['ID Раздела', 'Название (RU)', 'Название (EN)', 'Название (TR)', 'Текст (RU)', 'Текст (EN)', 'Текст (TR)'],
-  templatesHeaders: ['ID Раздела', 'Название (RU)', 'Название (EN)', 'Название (TR)', 'Текст (RU)', 'Текст (EN)', 'Текст (TR)'],
-  variablesHeaders: ['Плейсхолдер', 'Системный ключ', 'Описание переменной', 'Значение по умолчанию (Тест)']
+  aboutHeaders: ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'],
+  legalHeaders: ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'],
+  templatesHeaders: ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'],
+  variablesHeaders: ['Плейсхолдер', 'Системный ключ', 'Описание переменной', 'Значение по умолчанию [Тест]'],
+  tasksHeaders: ['ID Задачи', 'Дата и Время', 'Канал / Источник', 'Текст Задачи / Поручения', 'Статус Исполнения', 'Ответственный Модуль', 'Результат / Заметка'],
+  knowledgeGraphHeaders: ['ID Узла', 'Тип Сущности', 'Уровень Секретности', 'Разрешенные Стадии Гостя', 'Связанный Лист CRM', 'Описание Сущности / Правило Доступа', 'Статус Узла']
 };
 
 const initializeSpreadsheet = async () => {
@@ -331,28 +347,23 @@ const initializeSpreadsheet = async () => {
           // ВАЖНО: Канонический синтаксис формул Google Sheets со СТРОГОЙ ТОЧКОЙ С ЗАПЯТОЙ (;)
           // В русскоязычной локали Google Таблиц разделителем аргументов ВСЕГДА является точка с запятой (;).
           if (config.key === 'SERVICES') {
-            // Перевод названий (B -> D, F)
+            // Перевод названий [B -> D, F]
             safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
             safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-            // Перевод кратких описаний (C -> E, G)
+            // Перевод кратких описаний [C -> E, G]
             safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
             safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-            // Перевод подробных описаний (O -> P, Q)
-            safeFormulasToInject.push({ range: `'${actualTitle}'!P2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-            safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+            // Перевод подробных описаний [P -> Q, R]
+            safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!R2`, values: [['=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
 
-            // Посев начальных услуг
-            dataAppendRequests.push({
-              range: `'${actualTitle}'!A2:O7`,
-              values: [
-                ['prod-1', 'Индивидуальный VIP-трансфер из аэропорта Даламан (DLM)', 'Mercedes Vito с кондиционером и напитками', '', '', '', '', '50', '5000', '1800', 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1200', 'Да', 'Услуга', '', 'Встреча в зоне прилета аэропорта Даламан (25 минут до виллы). В салоне Wi-Fi.'],
-                ['prod-2', 'Приватный круиз на яхте по реке Дальян и пляжу Изтузу', 'Традиционная деревянная лодка: Ликийские гробницы и черепахи', '', '', '', '', '250', '25000', '9000', 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200', 'Да', 'Пакет', '', 'Эксклюзивный маршрут на весь день со свежеприготовленным обедом от капитана.'],
-                ['prod-3', 'Ужин от персонального шеф-повара на вилле', '4-курсовой ужин у бассейна: турецкие мезе и морепродукты', '', '', '', '', '120', '12000', '4300', 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200', 'Да', 'Услуга', '', 'Шеф лично закупает фермерские продукты на рынке Дальяна и сервирует стол.'],
-                ['prod-4', 'Премиальный BBQ-вечер на углях в саду', 'Стейки рибай, каре ягненка и овощи гриль', '', '', '', '', '160', '16000', '5800', 'https://images.unsplash.com/photo-1544025162-d76694265947?w=1200', 'Да', 'Пакет', '', 'Включает угли, розжиг, маринованное фермерское мясо и мастера на 3 часа.'],
-                ['prod-5', 'СПА-тур и грязевые источники Султание', 'Омолаживающие минеральные термы озера Кёйджегиз', '', '', '', '', '70', '7000', '2500', 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200', 'Да', 'Услуга', '', 'Трансфер на моторной лодке от причала виллы. Входные билеты включены.'],
-                ['prod-6', 'Аренда сапбордов (SUP) и каяков', '2 устойчивых SUP-борда и двухместный каяк', '', '', '', '', '80', '8000', '2900', 'https://images.unsplash.com/photo-1517404215738-15263e9f9178?w=1200', 'Да', 'Услуга', '', 'Доставка прямо к вилле на весь период проживания для утренних заплывов.']
-              ]
-            });
+            // Посев 18-колоночного каталога услуг с ценой USD
+            if (MASTER_SERVICES_ROWS) {
+              dataAppendRequests.push({
+                range: `'${actualTitle}'!A2:R${MASTER_SERVICES_ROWS.length + 1}`,
+                values: MASTER_SERVICES_ROWS
+              });
+            }
           }
 
           if (config.key === 'GUIDES') {
@@ -360,19 +371,16 @@ const initializeSpreadsheet = async () => {
             safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
             safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
             safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-            safeFormulasToInject.push({ range: `'${actualTitle}'!P2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-            safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(O2:O; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+            safeFormulasToInject.push({ range: `'${actualTitle}'!R2`, values: [['=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
 
-            // Посев начальных путеводителей
-            dataAppendRequests.push({
-              range: `'${actualTitle}'!A2:O5`,
-              values: [
-                ['guide-1', 'Секретные маршруты реки Дальян и черепаший пляж Изтузу', 'Эксклюзивный 40-минутный 4K видео-гид от Алексея Знаменского', '', '', '', '', 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200', 'Локации', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '20', '2000', '700', '', 'Где встретить гигантских черепах Caretta Caretta и как арендовать лодку со скидкой.'],
-                ['guide-2', 'Ликийские скальные гробницы и древний город Каунос', 'Историческое погружение в тайны Ликийского царства и акрополя', '', '', '', '', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200', 'История', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '25', '2500', '900', '', 'Маршрут подъема к Кауносу, расшифровка надписей и лучшие видовые точки на закате.'],
-                ['guide-3', 'Гастрономический гид: топ ресторанов и гранатовые сады', 'Где попробовать настоящую турецкую кухню и свежую рыбу', '', '', '', '', 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200', 'Гастрономия', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '15', '1500', '550', '', 'Список 10 проверенных ресторанов со специальными привилегиями для гостей виллы.'],
-                ['guide-4', 'Термальные источники Султание и озеро Кёйджегиз', 'Как получить максимум от целебных минеральных источников', '', '', '', '', 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200', 'Здоровье', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '20', '2000', '700', '', 'Секретные часы посещения без туристических групп и рекомендации врачей.']
-              ]
-            });
+            // Посев 18-колоночного каталога путеводителей с ценой USD
+            if (MASTER_GUIDES_ROWS) {
+              dataAppendRequests.push({
+                range: `'${actualTitle}'!A2:R${MASTER_GUIDES_ROWS.length + 1}`,
+                values: MASTER_GUIDES_ROWS
+              });
+            }
           }
 
           if (config.key === 'GALLERY') {
@@ -499,6 +507,22 @@ const initializeSpreadsheet = async () => {
             dataAppendRequests.push({
               range: `'${actualTitle}'!A2:G${MASTER_TASKS_ROWS.length + 1}`,
               values: MASTER_TASKS_ROWS
+            });
+          }
+
+          // Посев онтологического графа знаний и правил безопасности
+          if (config.key === 'KNOWLEDGE_GRAPH' && MASTER_KNOWLEDGE_GRAPH_ROWS) {
+            dataAppendRequests.push({
+              range: `'${actualTitle}'!A2:G${MASTER_KNOWLEDGE_GRAPH_ROWS.length + 1}`,
+              values: MASTER_KNOWLEDGE_GRAPH_ROWS
+            });
+          }
+
+          // Посев календаря и тарифов с ручными настройками хозяина
+          if (config.key === 'CALENDAR' && MASTER_CALENDAR_ROWS) {
+            dataAppendRequests.push({
+              range: `'${actualTitle}'!A2:G${MASTER_CALENDAR_ROWS.length + 1}`,
+              values: MASTER_CALENDAR_ROWS
             });
           }
         }

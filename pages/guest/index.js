@@ -179,8 +179,8 @@ export default function GuestDashboard() {
   // Переход к оплате одобренной заявки или спецпредложения
   const handlePayRequest = async (req) => {
     try {
-      const priceNum = parseInt(String(req.price).replace(/[^\d]/g, ''), 10) || 15000;
-      const effectiveCurrency = String(req.price).includes('RUB') || String(req.price).includes('₽') ? 'RUB' : (currency || 'EUR');
+      const priceNum = parseInt(String(req.price).replace(/[^\d]/g, ''), 10) || 250;
+      const effectiveCurrency = String(req.price).includes('RUB') || String(req.price).includes('₽') ? 'RUB' : (String(req.price).includes('USD') || String(req.price).includes('$') ? 'USD' : (currency || 'USD'));
       const paymentGateway = effectiveCurrency === 'RUB' ? 'tbank' : 'stripe';
 
       const res = await axios.post('/api/payment', {
