@@ -205,7 +205,7 @@ async function getLiveSheetMap(sheets, spreadsheetId) {
  * Пример: resolveRange(map, 'HOME', 'A:E') -> "'🏠 Главная витрина'!A:E"
  */
 function resolveRange(sheetMap, key, rangeSuffix) {
-  const sheetName = sheetMap[key] || SHEETS_REGISTRY[key]?.defaultName || key;
+  const sheetName = sheetMap?.[key] || SHEETS_REGISTRY?.[key]?.defaultName || key;
   return `'${sheetName}'!${rangeSuffix}`;
 }
 
@@ -215,3 +215,9 @@ module.exports = {
   getLiveSheetMap,
   resolveRange
 };
+module.exports.SHEETS_REGISTRY = SHEETS_REGISTRY;
+module.exports.clearSheetsCache = clearSheetsCache;
+module.exports.getLiveSheetMap = getLiveSheetMap;
+module.exports.resolveRange = resolveRange;
+module.exports.default = module.exports;
+module.exports.__esModule = true;

@@ -72,7 +72,7 @@ async function saveMasterSeed() {
 
   // Вспомогательная функция безопасного чтения диапазона
   const safeFetchRows = async (key, rangeSuffix) => {
-    const sheetName = sheetMap[key] || SHEETS_REGISTRY[key]?.defaultName || key;
+    const sheetName = sheetMap?.[key] || SHEETS_REGISTRY?.[key]?.defaultName || key;
     const range = resolveRange(sheetMap, key, rangeSuffix);
     try {
       console.log(`[save-master-seed] Чтение листа: "${sheetName}" [${range}]...`);
@@ -94,7 +94,7 @@ async function saveMasterSeed() {
   };
 
   // 1. Выгрузка листа HOME [Главная витрина: 8 колонок A:H]
-  const homeSheetName = sheetMap.HOME || SHEETS_REGISTRY.HOME.defaultName;
+  const homeSheetName = sheetMap?.HOME || SHEETS_REGISTRY?.HOME?.defaultName || '🏠 Главная витрина';
   const rawHomeRows = await safeFetchRows('HOME', 'A:H');
 
   if (rawHomeRows.length <= 1) {
