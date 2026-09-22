@@ -207,6 +207,57 @@ function classifyIntent(guestMessage = '') {
 }
 
 /**
+ * Классификатор жизненного цикла и вовлеченности гостя [Guest Lifecycle Stage]
+ * @param {Object} context - Параметры бронирования гостя
+ * @returns {string} 'STAGE_1_LEAD' | 'STAGE_2_HOLD_PENDING' | 'STAGE_3_BOOKED_PRE_ARRIVAL' | 'STAGE_4_IN_HOUSE' | 'STAGE_5_CHECKED_OUT'
+ */
+function classifyGuestStage(context = {}) {
+  const status = (context.bookingStatus || context.status || '').toString().trim();
+  const checkIn = context.checkIn || context.startDate || null;
+  const checkOut = context.checkOut || context.endDate || null;
+  const now = new Date();
+
+  // Оплаченные подтвержденные бронирования
+  if (
+    status.includes('Оплачено') ||
+    status.includes('Подтверждено') ||
+    status.includes('ОПЛАЧЕНО') ||
+    status.includes('ПОДТВЕРЖДЕНО')
+  ) {
+    if (checkIn && checkOut) {
+      const inDate = new Date(checkIn);
+      const outDate = new Date(checkOut);
+
+      if (!isNaN(inDate.getTime()) && !isNaN(outDate.getTime())) {
+        if (now > outDate) {
+          return 'STAGE_5_CHECKED_OUT';
+        }
+        if (now >= inDate && now <= outDate) {
+          return 'STAGE_4_IN_HOUSE';
+        }
+        return 'STAGE_3_BOOKED_PRE_ARRIVAL';
+      }
+    }
+    return 'STAGE_3_BOOKED_PRE_ARRIVAL';
+  }
+
+  // Ожидание оплаты, удержание HOLD или активное спецпредложение
+  if (
+    status.includes('ОЖИДАЕТ') ||
+    status.includes('Ожидает') ||
+    status.includes('СПЕЦПРЕДЛОЖЕНИЕ') ||
+    status.includes('Спецпредложение') ||
+    status.includes('HOLD') ||
+    status.includes('hold')
+  ) {
+    return 'STAGE_2_HOLD_PENDING';
+  }
+
+  // По умолчанию: интересующийся посетитель без оформленной брони
+  return 'STAGE_1_LEAD';
+}
+
+/**
  * Модель Графа Знаний виллы Villa Turaman в оперативной памяти
  * Сквозная привязка ко всем листам Google Таблиц SSOT
  */
@@ -219,6 +270,7 @@ class VillaKnowledgeGraph {
     this.guidesList = [];
     this.legalList = [];
     this.templatesList = [];
+    this.calendarSnapshot = null;
     this.lastBuilt = null;
   }
 
@@ -260,7 +312,7 @@ class VillaKnowledgeGraph {
   /**
    * Построение графа из плоских данных Google Таблиц
    */
-  buildFromSheetsData({ settingsMap = {}, services = [], guides = [], legal = [], templates = [] }) {
+  buildFromSheetsData({ settingsMap = {}, services = [], guides = [], legal = [], templates = [], calendarSnapshot = null }) {
     this.nodes.clear();
     this.edges = [];
     this.rawSettings = settingsMap || {};
@@ -268,6 +320,12 @@ class VillaKnowledgeGraph {
     this.guidesList = Array.isArray(guides) ? guides : [];
     this.legalList = Array.isArray(legal) ? legal : [];
     this.templatesList = Array.isArray(templates) ? templates : [];
+    this.calendarSnapshot = calendarSnapshot || null;
+
+    if (calendarSnapshot) {
+      this.addEntity('unified_calendar', 'CALENDAR', calendarSnapshot, ['calendar', 'календарь', 'занятость', 'даты', 'ota']);
+      this.addEntity('pricing_engine', 'PRICING', calendarSnapshot.pricingAnalysis || {}, ['pricing', 'rates', 'скидки', 'тарифы']);
+    }
 
     // 1. Узел: Хозяин [Host]
     this.addEntity('host', 'PERSON', {
@@ -363,21 +421,40 @@ class VillaKnowledgeGraph {
   }
 
   /**
-   * Сборка целевого динамического микро-промпта на основе интента
+   * Сборка целевого динамического микро-промпта на основе интента и стадии гостя
    * 100% Google Sheets SSOT: генерируется строго из живых массивов данных
+   * @param {string} intent - Классифицированный интент
+   * @param {string} guestStage - Стадия вовлеченности гостя
+   * @param {Object} contextParams - Дополнительные параметры
    */
-  getContextForIntent(intent = 'GENERAL') {
+  getContextForIntent(intent = 'GENERAL', guestStage = 'STAGE_1_LEAD', contextParams = {}) {
     const host = this.findEntity('host')?.data || {};
     const villa = this.findEntity('villa')?.data || {};
     const partner = this.findEntity('transfer_partner')?.data || {};
     const boatPartner = this.findEntity('boat_partner')?.data || {};
     const pool = this.findEntity('pool')?.data || {};
     const taxes = this.findEntity('tax_standard')?.data || {};
+    const cal = this.findEntity('unified_calendar')?.data || this.calendarSnapshot || {};
+    const pricing = this.findEntity('pricing_engine')?.data || cal.pricingAnalysis || {};
+    const rules = pricing.rules || cal.globalRules || {};
+
+    const basePrice = pricing.currentBasePrice || rules.basePrice || 250;
+    const minPrice = pricing.minBarrierPrice || villa.minPrice || 180;
+    const maxDiscount = pricing.maxDiscountPercent || 28;
 
     // Базовый защитный скелет: всегда присутствует [50-80 токенов]
     let context = `СУПЕРХОЗЯИН: ${host.name} [рейтинг 4.98, Airbnb Superhost].
 ВИЛЛА: Villa Turaman [Дальян, Мугла, Турция]. Вместимость: ${villa.capacity}, ${villa.bedrooms}, ${villa.beds}, ${villa.bathrooms}.
-МИНИМАЛЬНАЯ ЦЕНА: $${villa.minPrice}/ночь [ниже опускать строго запрещено].\n`;
+ТАРИФНЫЙ КОРИДОР: Базовая ставка $${basePrice}/ночь, Финансовый минимум: $${minPrice}/ночь [ниже опускать строго запрещено]. Скидочный диапазон: до ${maxDiscount}%.
+СИНХРОНИЗАЦИЯ OTA: Календарь синхронизирован с 6 платформами: Airbnb, Booking.com, Vrbo, Avito, Agoda, Google Calendar. Прямое бронирование на официальном сайте экономит гостю 15-20% сборов посредников.\n`;
+
+    if (cal.availableGaps && cal.availableGaps.length > 0) {
+      context += `БЛИЖАЙШИЕ СВОБОДНЫЕ СТЫКОВОЧНЫЕ ОКНА:\n`;
+      cal.availableGaps.forEach((g) => {
+        context += `• ${g.start}${g.end ? ` - ${g.end}` : ''} [${g.nights} ночей]\n`;
+      });
+      context += `\n`;
+    }
 
     switch (intent) {
       // --- НАПРАВЛЕНИЕ 1: ТРАНСФЕР И ТАКСИ ---
@@ -464,10 +541,18 @@ WHATSAPP: ${partner.whatsapp}
 
       // --- НАПРАВЛЕНИЕ 5: ЗАСЕЛЕНИЕ, ВЫЕЗД И ПРАВИЛА ДОМА ---
       case 'HOUSE_RULES_CHECKIN':
+        const isLead = guestStage === 'STAGE_1_LEAD';
+        const wifiInfo = isLead
+          ? `Сеть [Guest]. Пароль высылается автоматически сразу после оплаты и подтверждения бронирования.`
+          : `Сеть [${villa.wifiName || 'Guest'}], Пароль [${villa.wifiPass || 'villa2026'}].`;
+        const lockInfo = isLead
+          ? `Электронный смарт-замок и мини-сейф. Персональный код генерируется и направляется гостю в день заезда после подтверждения бронирования.`
+          : `${villa.checkinMethod || 'Электронный смарт-замок и мини-сейф с кодом'}.`;
+
         context += `\n[ЦЕЛЕВОЙ МОДУЛЬ: ЗАСЕЛЕНИЕ И ПРАВИЛА ДОМА]
-ВРЕМЯ ЗАЕЗДА: ${villa.checkinTime} [после 16:00]. ВЫЕЗД: до ${villa.checkoutTime}.
-СПОСОБ ЗАСЕЛЕНИЯ: ${villa.checkinMethod} с персональным кодом доступа.
-WI-FI: Сеть [${villa.wifiName}], Пароль [${villa.wifiPass}].
+ВРЕМЯ ЗАЕЗДА: ${rules.checkInTime || villa.checkinTime || '16:00'} [после 16:00]. ВЫЕЗД: до ${rules.checkOutTime || villa.checkoutTime || '10:00'}.
+СПОСОБ ЗАСЕЛЕНИЯ: ${lockInfo}
+WI-FI: ${wifiInfo}
 ТОЧНЫЙ АДРЕС: ${villa.address}. Локация Google Maps: ${villa.mapsUrl}.
 ПРАВИЛА: Курение внутри виллы строго запрещено. Тихий час с 23:00 до 08:00. Вместимость строго до 10 человек. Животные только по предварительному согласованию.`;
         break;
@@ -486,10 +571,18 @@ WI-FI: Сеть [${villa.wifiName}], Пароль [${villa.wifiPass}].
       // --- НАПРАВЛЕНИЕ 7: ТАРИФЫ И БРОНИРОВАНИЕ ---
       case 'PRICING_BOOKING':
         context += `\n[ЦЕЛЕВОЙ МОДУЛЬ: ТАРИФЫ И БРОНИРОВАНИЕ]
-МИНИМАЛЬНЫЙ БАРЬЕР: $${villa.minPrice}/ночь. Ниже опускать строго запрещено.
-СКИДКА ЗА НЕВОЗВРАТНЫЙ ТАРИФ: 10% при бронировании на даты до 60 дней.
-ПОЛИТИКА ОТМЕНЫ: Бесплатная отмена за 14 суток до даты заезда со 100% возвратом средств.
-ПРЯМОЕ БРОНИРОВАНИЕ: Официальное прямое бронирование от владельца без скрытых комиссий сторонних агрегаторов.`;
+АКТУАЛЬНАЯ БАЗОВАЯ ЦЕНА: $${basePrice} USD/ночь.
+МИНИМАЛЬНЫЙ ФИНАНСОВЫЙ БАРЬЕР: $${minPrice} USD/ночь. Ниже этой суммы опускать цену КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО.
+ВАРИАТИВНОСТЬ ПРИМЕНЕНИЯ СКИДОК [КОРИДОР ДО ${maxDiscount}%]:
+1. Невозвратный тариф: скидка 10% [$${Math.max(minPrice, Math.round(basePrice * 0.9))} USD/ночь] при бронировании на даты до 60 дней.
+2. Длительное проживание от 7 ночей: скидка 15% [$${Math.max(minPrice, Math.round(basePrice * 0.85))} USD/ночь].
+3. Спецпредложение на свободные стыковочные окна между бронями OTA: скидка до 20% [$${Math.max(minPrice, Math.round(basePrice * 0.8))} USD/ночь].
+ПРАВИЛА БРОНИРОВАНИЯ:
+• Минимальный срок: ${rules.minNights || 3} ночей.
+• Предварительное уведомление: минимум за ${rules.advanceNoticeDays || 2} дня до заезда.
+• Политика отмены: бесплатная отмена за 14 суток до даты заезда со 100% возвратом средств.
+• Защита от овербукинга: сверка занятости с Airbnb, Booking.com, Vrbo, Avito, Agoda, Google Calendar.
+• Прямое бронирование: гарантия лучшей цены Best Rate Guarantee без комиссий OTA [15-20% выгоды гостя].`;
         break;
 
       // --- НАПРАВЛЕНИЕ 8: НАЛОГИ И E-ARŞİV FATURA GİB ---
@@ -511,10 +604,51 @@ WI-FI: Сеть [${villa.wifiName}], Пароль [${villa.wifiPass}].
 • Речные прогулки на лодке: Капитан Адам [Телефон / WhatsApp: ${boatPartner.phone}].
 • Проверенный ресторан Дальяна: Çiçek Restaurant [Rodoslu Yaşar Sünger Sk, баранина, сибас].
 • Бассейн с соленой водой 36м² и уличное джакузи [09:00-18:00].
-• Wi-Fi: сеть [${villa.wifiName}], пароль [${villa.wifiPass}].
 • Заезд после 16:00, выезд до 10:00.
 • Официальный Telegram суперхозяина: ${host.telegram || '@villaturaman'}.`;
         break;
+    }
+
+    // СТАДИЯ ГОСТЯ И РОЛЕВАЯ МАРШРУТИЗАЦИЯ
+    context += `\n\n[ЭТАП ВОВЛЕЧЕННОСТИ ГОСТЯ: ${guestStage}]`;
+    if (guestStage === 'STAGE_1_LEAD') {
+      context += `\n• Гость на этапе выбора и предварительных вопросов [до бронирования].
+• Твоя задача: радушно презентовать виллу [4 спальни, бассейн с соленой водой, джакузи, тихий сад], аргументировать цену, предложить выгодные варианты скидок в пределах коридора, показать свободные даты.
+• БЕЗОПАСНОСТЬ: Не раскрывай точные коды от смарт-замка и пароль от Wi-Fi до подтверждения бронирования.`;
+    } else if (guestStage === 'STAGE_2_HOLD_PENDING') {
+      context += `\n• Заявка гостя зафиксирована на 24 часа [HOLD / Спецпредложение].
+• Твоя задача: вежливо напомнить об открытом окне оплаты, зафиксированной спеццене, гарантии бронирования и помочь провести оплату через шлюзы Stripe [валюта] или Т-Банк [рубли].`;
+    } else if (guestStage === 'STAGE_3_BOOKED_PRE_ARRIVAL') {
+      context += `\n• Бронирование успешно оплачено и подтверждено!
+• Твоя задача: запросить паспортные данные для государственной системы KBS жандармерии Турции [Kimlik Bildirme Kanunu 1774], передать точную геолокацию Google Maps и предложить организацию трансфера с координатором Ahmet: +90 543 335 80 70.`;
+    } else if (guestStage === 'STAGE_4_IN_HOUSE') {
+      context += `\n• Гость в настоящее время проживает на вилле!
+• Твоя задача: проявить максимальную заботу, предоставить все пароли, ответить на бытовые вопросы по технике и бассейну, предложить заказ шеф-повара на виллу или лодочную прогулку с капитаном Адамом.`;
+    } else if (guestStage === 'STAGE_5_CHECKED_OUT') {
+      context += `\n• Гость завершил проживание и выехал.
+• Твоя задача: поблагодарить за выбор Villa Turaman, напомнить о сдаче ключей, помочь с трансфером в аэропорт, при необходимости сформировать e-Arşiv Fatura через бухгалтера и пригласить приехать снова.`;
+    }
+
+    // ПОДБОРКА РЕЛЕВАНТНЫХ ШАБЛОНОВ ИЗ CRM
+    if (this.templatesList && this.templatesList.length > 0) {
+      const relevantTpls = this.templatesList.filter((t) => {
+        const id = (t.id || '').toLowerCase();
+        if (guestStage === 'STAGE_1_LEAD') return id.startsWith('1.');
+        if (guestStage === 'STAGE_2_HOLD_PENDING') return id.startsWith('1.') || id.startsWith('2.');
+        if (guestStage === 'STAGE_3_BOOKED_PRE_ARRIVAL') return id.startsWith('2.') || id.startsWith('3.');
+        if (guestStage === 'STAGE_4_IN_HOUSE') return id.startsWith('4.');
+        if (guestStage === 'STAGE_5_CHECKED_OUT') return id.startsWith('5.');
+        return false;
+      });
+
+      if (relevantTpls.length > 0) {
+        context += `\n\n[РЕКОМЕНДОВАННЫЕ ШАБЛОНЫ СООБЩЕНИЙ ДЛЯ ЭТОГО ЭТАПА]:\n`;
+        relevantTpls.slice(0, 3).forEach((t) => {
+          const title = t.title?.ru || t.title || t.id;
+          const body = t.content?.ru || t.content || '';
+          context += `• ${title}: "${body}"\n`;
+        });
+      }
     }
 
     return context;
@@ -526,6 +660,7 @@ const globalKnowledgeGraph = new VillaKnowledgeGraph();
 
 module.exports = {
   classifyIntent,
+  classifyGuestStage,
   VillaKnowledgeGraph,
   globalKnowledgeGraph
 };

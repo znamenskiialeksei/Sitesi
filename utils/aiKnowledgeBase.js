@@ -19,6 +19,7 @@
 const { google } = require('googleapis');
 const { getLiveSheetMap, resolveRange } = require('./sheetsRegistry');
 const { globalKnowledgeGraph } = require('./aiKnowledgeGraph');
+const { getUnifiedCalendarSnapshot } = require('./calendarAggregator');
 const {
   MASTER_SETTINGS_ROWS,
   MASTER_SERVICES_ROWS,
@@ -121,13 +122,51 @@ function getLocalFallbackKnowledge() {
     content: { ru: r[4] || '', en: r[5] || '', tr: r[6] || '' }
   }));
 
+  const minPriceUsd = parseInt(settingsMap['min_night_price'] || '180', 10);
+  const fallbackCalendar = {
+    globalRules: {
+      basePrice: 250,
+      currency: 'USD',
+      minNights: 3,
+      maxNights: 30,
+      advanceNoticeDays: 2,
+      bookingMode: 'instant',
+      checkInTime: '16:00',
+      checkOutTime: '10:00'
+    },
+    seasonalRates: [
+      { startDate: '01.05.2026', endDate: '31.05.2026', price: 180, note: 'Май: Низкий сезон' },
+      { startDate: '01.06.2026', endDate: '30.06.2026', price: 220, note: 'Июнь: Стандартный сезон' },
+      { startDate: '01.07.2026', endDate: '31.08.2026', price: 320, note: 'Июль-Август: Высокий пик' },
+      { startDate: '01.09.2026', endDate: '30.09.2026', price: 240, note: 'Сентябрь: Бархатный сезон' },
+      { startDate: '01.10.2026', endDate: '31.10.2026', price: 180, note: 'Октябрь: Закрытие сезона' }
+    ],
+    pricingAnalysis: {
+      currentBasePrice: 250,
+      minBarrierPrice: minPriceUsd,
+      currency: 'USD',
+      delta: Math.max(0, 250 - minPriceUsd),
+      maxDiscountPercent: 28,
+      rules: { minNights: 3, maxNights: 30, advanceNoticeDays: 2, checkInTime: '16:00', checkOutTime: '10:00' },
+      packages: [
+        { name: 'Стандартный тариф', discountPercent: 0, pricePerNight: 250, cancellation: 'Бесплатная отмена за 14 суток' },
+        { name: 'Невозвратный тариф', discountPercent: 10, pricePerNight: 225, cancellation: 'Без возврата средств при отмене' },
+        { name: 'Длительное проживание от 7 ночей', discountPercent: 15, pricePerNight: 212, cancellation: 'Бесплатная отмена за 14 суток' },
+        { name: 'Горящее спецпредложение на свободные окна', discountPercent: 20, pricePerNight: 200, cancellation: 'Спецусловия' }
+      ]
+    },
+    sourcesList: ['Airbnb', 'Booking.com', 'Vrbo', 'Avito', 'Agoda', 'Google Calendar', 'Villa Turaman Direct'],
+    availableGaps: []
+  };
+
   // Построение графа знаний
   globalKnowledgeGraph.buildFromSheetsData({
     settingsMap: { ...settingsMap, ...variablesObj, ...hostInfo, ...villaInfo, ...dialogStrategy, ...gibInvoice },
     services: parsedServices,
     guides: parsedGuides,
     legal: parsedLegal,
-    templates: parsedTemplates
+    templates: parsedTemplates,
+    calendarSnapshot: fallbackCalendar
   });
 
   return {
@@ -135,7 +174,7 @@ function getLocalFallbackKnowledge() {
     aiMode: settingsMap['ai_mode'] || 'copilot',
     aiEnabled: true,
     geminiModel: settingsMap['ai_model'] || process.env.GEMINI_MODEL || 'gemini-3.6-flash',
-    minPriceUsd: parseInt(settingsMap['min_night_price'] || '180', 10),
+    minPriceUsd,
     systemPrompt: agentRoles['Консьерж-Мастер']?.prompt || '',
     blocks: {
       system: settingsMap,
@@ -163,6 +202,8 @@ function getLocalFallbackKnowledge() {
     templates: parsedTemplates,
     home: MASTER_HOME_MAP || {},
     tasks: MASTER_TASKS_ROWS || [],
+    calendarData: fallbackCalendar,
+    pricingAnalysis: fallbackCalendar.pricingAnalysis,
     graph: globalKnowledgeGraph
   };
 }
@@ -294,6 +335,8 @@ async function getAiKnowledgeBase(forceRefresh = false) {
     fetchPromises.push(isSheetAllowed('календар') ? safeGet('CALENDAR', 'A:G') : Promise.resolve([]));
     // Задачи секретаря
     fetchPromises.push(isSheetAllowed('задачи') ? safeGet('TASKS', 'A:G') : Promise.resolve([]));
+    // Заявки и Бронирования для омни-календаря
+    fetchPromises.push(safeGet('BOOKINGS', 'A:K'));
 
     const [
       servicesRows,
@@ -302,7 +345,8 @@ async function getAiKnowledgeBase(forceRefresh = false) {
       templatesRows,
       homeRows,
       calendarRows,
-      tasksRows
+      tasksRows,
+      bookingsRows
     ] = await Promise.all(fetchPromises);
 
     // 4. Парсинг каталога услуг
@@ -387,19 +431,33 @@ async function getAiKnowledgeBase(forceRefresh = false) {
         }))
       : (MASTER_TASKS_ROWS || []).map((r) => ({ id: r[0], timestamp: r[1], direction: r[2], taskText: r[3], status: r[4], resultUrl: r[5], assignee: r[6] }));
 
-    // 10. Актуализация графа знаний в памяти
+    const minPriceUsd = parseInt(settingsMap['min_night_price'] || '180', 10);
+
+    // 10. Агрегация омни-календаря: CRM + 6 внешних OTA-платформ
+    let unifiedCalendar = null;
+    try {
+      unifiedCalendar = await getUnifiedCalendarSnapshot({
+        calendarRows,
+        bookingRows: bookingsRows,
+        minNightPriceSetting: minPriceUsd
+      });
+    } catch (calErr) {
+      console.warn('[aiKnowledgeBase] Предупреждение формирования омни-календаря:', calErr.message);
+    }
+
+    // 11. Актуализация графа знаний в оперативной памяти
     globalKnowledgeGraph.buildFromSheetsData({
       settingsMap: { ...settingsMap, ...variablesObj, ...hostInfo, ...villaInfo, ...dialogStrategy, ...gibInvoice },
       services: parsedServices,
       guides: parsedGuides,
       legal: parsedLegal,
-      templates: parsedTemplates
+      templates: parsedTemplates,
+      calendarSnapshot: unifiedCalendar
     });
 
     const aiMode = (settingsMap['ai_mode'] || 'copilot').toLowerCase();
     const aiEnabled = aiMode !== 'off';
     const geminiModel = settingsMap['ai_model'] || process.env.GEMINI_MODEL || 'gemini-3.6-flash';
-    const minPriceUsd = parseInt(settingsMap['min_night_price'] || '180', 10);
     const systemPrompt = agentRoles['Консьерж-Мастер']?.prompt || '';
 
     const knowledgeBase = {
@@ -435,6 +493,8 @@ async function getAiKnowledgeBase(forceRefresh = false) {
       templates: parsedTemplates,
       home: Object.keys(homeObj).length > 0 ? homeObj : MASTER_HOME_MAP,
       calendar: calendarRows.slice(1),
+      calendarData: unifiedCalendar,
+      pricingAnalysis: unifiedCalendar?.pricingAnalysis || null,
       tasks: parsedTasks,
       graph: globalKnowledgeGraph
     };

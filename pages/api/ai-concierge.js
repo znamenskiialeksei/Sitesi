@@ -23,6 +23,8 @@ export default async function handler(req, res) {
       contact = '',
       lang = 'ru',
       chatHistory = [],
+      guestStage = null,
+      bookingContext = {},
       context = {}
     } = req.body;
 
@@ -54,11 +56,20 @@ export default async function handler(req, res) {
       });
     }
 
+    const mergedBookingContext = {
+      ...context,
+      ...bookingContext,
+      contact: contact || bookingContext.contact || context.contact || '',
+      guestName: guestName || bookingContext.guestName || context.guestName || 'Гость'
+    };
+
     const aiResult = await generateConciergeReply({
       guestMessage,
       guestName,
       contact,
       chatHistory,
+      guestStage,
+      bookingContext: mergedBookingContext,
       providedKb: kb
     });
 
@@ -80,6 +91,8 @@ export default async function handler(req, res) {
       aiMode,
       model: aiResult.model,
       intent: aiResult.intent,
+      guestStage: aiResult.guestStage,
+      pricingCorridor: kb.pricingAnalysis?.discountCorridor || null,
       reply: aiResult.replyText
     });
   } catch (err) {

@@ -53,7 +53,9 @@ export default async function handler(req, res) {
         guides: kb.guides || [],
         tasks: kb.tasks || [],
         home: kb.home || {},
-        about: kb.about || {}
+        about: kb.about || {},
+        calendarData: kb.calendarData || {},
+        pricingAnalysis: kb.pricingAnalysis || {}
       }
     });
   } catch (error) {

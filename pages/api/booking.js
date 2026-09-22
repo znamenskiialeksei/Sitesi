@@ -1230,11 +1230,41 @@ export default async function handler(req, res) {
             const aiMode = (kb.aiMode || 'copilot').toLowerCase();
 
             if (aiMode === 'autopilot') {
+              // Определение контекста бронирования гостя для жизненного цикла и тарифов
+              let bookingContext = {
+                contact: data.contact || '',
+                guestName: data.sender || 'Гость'
+              };
+              try {
+                const sheetMap = await getLiveSheetMap(sheets, targetChatId);
+                const bookingsRange = resolveRange(sheetMap, 'BOOKINGS', 'A:K');
+                const bRes = await sheets.spreadsheets.values.get({ spreadsheetId: targetChatId, range: bookingsRange });
+                const bRows = (bRes.data.values || []).slice(1);
+                const guestContactNorm = (data.contact || '').toLowerCase().trim();
+                const matchedRow = bRows.slice().reverse().find(r => {
+                  const cNorm = (r[2] || '').toLowerCase().trim();
+                  return guestContactNorm && cNorm && (guestContactNorm.includes(cNorm) || cNorm.includes(guestContactNorm));
+                });
+                if (matchedRow) {
+                  bookingContext = {
+                    contact: data.contact || '',
+                    guestName: matchedRow[1] || data.sender || 'Гость',
+                    checkInDate: matchedRow[3] || '',
+                    checkOutDate: matchedRow[4] || '',
+                    paymentStatus: matchedRow[10] || '',
+                    bookingId: matchedRow[0] || ''
+                  };
+                }
+              } catch (bCtxErr) {
+                // Игнорируем некритичную ошибку чтения контекста
+              }
+
               const aiResult = await generateConciergeReply({
                 guestMessage: msgText,
                 guestName: data.sender || 'Гость',
                 contact: data.contact || '',
                 chatHistory: existingCache.slice(-8),
+                bookingContext,
                 providedKb: kb
               });
 

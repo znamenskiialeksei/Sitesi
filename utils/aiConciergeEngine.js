@@ -11,7 +11,7 @@
 // ==============================================================================
 
 import { getAiKnowledgeBase } from './aiKnowledgeBase';
-import { classifyIntent, globalKnowledgeGraph } from './aiKnowledgeGraph';
+import { classifyIntent, classifyGuestStage, globalKnowledgeGraph } from './aiKnowledgeGraph';
 import { buildSparkRulesPromptSection } from './spark_rules_manifest';
 
 const DEFAULT_MODEL = 'gemini-3.6-flash';
@@ -24,17 +24,22 @@ const DEFAULT_MODEL = 'gemini-3.6-flash';
  * @param {string} params.contact - Контакт гостя [телефон или email]
  * @param {Array} params.chatHistory - Предыдущие сообщения в чате
  * @param {Object} [params.providedKb] - Опциональная предзагруженная база знаний
+ * @param {string} [params.guestStage] - Стадия вовлеченности гостя
+ * @param {Object} [params.bookingContext] - Контекст бронирования гостя
  */
 export async function generateConciergeReply({
   guestMessage = '',
   guestName = 'Гость',
   contact = '',
   chatHistory = [],
-  providedKb = null
+  providedKb = null,
+  guestStage = null,
+  bookingContext = {}
 }) {
   const kb = providedKb || await getAiKnowledgeBase();
   const apiKey = (process.env.GEMINI_API_KEY || '').trim();
   const model = (kb.geminiModel || process.env.GEMINI_MODEL || DEFAULT_MODEL).trim();
+  const effectiveStage = guestStage || classifyGuestStage(bookingContext);
 
   if (!apiKey) {
     return {
@@ -96,18 +101,59 @@ export async function generateConciergeReply({
     systemInstruction = 'Ты: персональный ИИ-консьерж суперхозяина Алексея Знаменского на вилле Villa Turaman в Дальяне, Турция. Твоя миссия: гостеприимно, дипломатично, точно и авторитетно отвечать гостям на языке их обращения [RU, EN, TR]. Все факты берутся строго из Google Таблиц экосистемы.';
   }
 
-  // Финансовый регламент
-  systemInstruction += `\n\nФИНАНСОВЫЙ БАРЬЕР: Минимальный тариф за сутки: ${minPrice} USD. Скидка 10% только при невозвратном тарифе на даты до 60 дней. Скидки ниже ${minPrice} USD строго запрещены.`;
+  // 4.1. Динамический финансовый регламент и тарифный коридор
+  const pa = kb.pricingAnalysis || {};
+  const corridor = pa.discountCorridor || {};
+  const baseP = pa.basePriceUsd || 250;
+  const floorP = pa.minNightFloorUsd || minPrice;
+  const maxDiscPct = corridor.maxDiscountPercent || 28;
+  const flexP = corridor.standardFlexiblePrice || baseP;
+  const nonRefP = corridor.nonRefundable10Percent || Math.max(floorP, Math.round(baseP * 0.9));
+  const weeklyP = corridor.weeklyStay15Percent || Math.max(floorP, Math.round(baseP * 0.85));
+  const gapP = corridor.gapSpecial20Percent || Math.max(floorP, Math.round(baseP * 0.8));
 
-  // Официальные контакты и реквизиты объекта
+  systemInstruction += `\n\nТАРИФНЫЙ КОРИДОР И ЦЕНОВАЯ ПОЛИТИКА:`;
+  systemInstruction += `\n• Базовая цена: ${baseP} USD за сутки [стандартный гибкий тариф: ${flexP} USD].`;
+  systemInstruction += `\n• АБСОЛЮТНЫЙ МИНИМАЛЬНЫЙ ПОРОГ: ${floorP} USD за сутки. Любая цена ниже ${floorP} USD КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНА.`;
+  systemInstruction += `\n• Коридор скидок: разница между базой ${baseP} USD и порогом ${floorP} USD составляет до ${maxDiscPct}%.`;
+  systemInstruction += `\n• Пакеты скидок:`;
+  systemInstruction += `\n  - Невозвратный тариф [скидка 10%]: ${nonRefP} USD / сутки;`;
+  systemInstruction += `\n  - Проживание от 7 ночей [скидка 15%]: ${weeklyP} USD / сутки;`;
+  systemInstruction += `\n  - Заполнение свободных окон между бронированиями [скидка до 20%]: от ${gapP} USD / сутки;`;
+  systemInstruction += `\n  - Прямое бронирование на нашем сайте: экономия 15-20% относительно комиссий OTA платформ [Airbnb, Booking.com, Vrbo, Avito, Agoda]. Гарантия лучшей цены Best Rate Guarantee!`;
+
+  // 4.2. Омни-календарь 6 OTA платформ и доступность
+  const cal = kb.calendarData || {};
+  const gaps = cal.availableGaps || [];
+  const holds = cal.activeHolds || [];
+  const extResCount = (cal.externalReservations || []).length;
+  systemInstruction += `\n\nОМНИ-КАЛЕНДАРЬ И 6 СИНХРОНИЗИРОВАННЫХ OTA ПЛАТФОРМ:`;
+  systemInstruction += `\n• Все даты синхронизируются в реальном времени с 6 внешними каналами: Airbnb, Booking.com, Vrbo, Avito, Agoda, Google Calendar.`;
+  systemInstruction += `\n• Внешних бронирований на контроле: ${extResCount}. Овербукинг исключен на 100%.`;
+  if (holds.length > 0) {
+    systemInstruction += `\n• Текущие активные блокировки [HOLD на 24 часа в ожидании оплаты]: ${holds.length} шт.`;
+  }
+  if (gaps.length > 0) {
+    const gapList = gaps.slice(0, 3).map((g) => `${g.start} - ${g.end} [${g.nights} ноч.]`).join(', ');
+    systemInstruction += `\n• Ближайшие свободные окна для заезда: ${gapList}. При заполнении окон предлагай гостю спецусловия от ${gapP} USD!`;
+  }
+
+  // 4.3. Официальные реквизиты и контакты объекта с маскировкой по стадии
   systemInstruction += `\n\nОФИЦИАЛЬНЫЕ РЕКВИЗИТЫ И КОНТАКТЫ ЭКОСИСТЕМЫ:`;
   systemInstruction += `\n• Адрес виллы: ${address}`;
-  systemInstruction += `\n• Wi-Fi: Сеть ${wifiName}, Пароль ${wifiPass}`;
-  systemInstruction += `\n• Стандартный заезд: 16:00, Стандартный выезд: 10:00`;
+  if (effectiveStage === 'STAGE_1_LEAD') {
+    systemInstruction += `\n• БЕЗОПАСНОСТЬ [СТАДИЯ ЛИД ДО ОПЛАТЫ]: Пароль от Wi-Fi и индивидуальный пин-код замка виллы СТРОГО СКРЫТЫ. Сообщай гостю, что скоростной Wi-Fi 100 Мбит/с и смарт-код двери активируются сразу после подтверждения бронирования.`;
+  } else {
+    systemInstruction += `\n• Wi-Fi: Сеть ${wifiName}, Пароль ${wifiPass}`;
+  }
+  systemInstruction += `\n• Стандартный заезд: ${cal.settings?.checkInTime || '16:00'}, Стандартный выезд: ${cal.settings?.checkOutTime || '10:00'}`;
   systemInstruction += `\n• Суперхозяин: Алексей Знаменский [${hostContactInfo}]`;
   systemInstruction += `\n• Проверенный партнер по трансферу: ${transferPartnerName} [Координатор: ${transferPartnerContact}, Телефон: ${transferPartnerPhone}, WhatsApp: ${transferPartnerWhatsapp}, Авто: Mercedes Vito VIP, Тариф: 50 EUR / 1800 TRY]`;
   systemInstruction += `\n• Проверенный партнер по лодке: Капитан Адам [Телефон / WhatsApp: +90 544 588 58 09]`;
   systemInstruction += `\n• Рекомендованный семейный ресторан: Çiçek Restaurant [Dalyan, Rodoslu Yaşar Sünger Sk, баранина, сибас, мезе]`;
+
+  // 4.4. Стадия жизненного цикла гостя
+  systemInstruction += `\n\nТЕКУЩАЯ СТАДИЯ ГОСТЯ: [${effectiveStage}]`;
 
   // Регламент KBS
   if (kb.kbs && Object.keys(kb.kbs).length > 0) {
@@ -118,8 +164,8 @@ export async function generateConciergeReply({
   systemInstruction += `\n\n${buildSparkRulesPromptSection()}`;
 
   // Микроконтекст графа знаний
-  const microContext = (kb.graph || globalKnowledgeGraph).getContextForIntent(intent);
-  systemInstruction += `\n\nЦЕЛЕВОЙ МОДУЛЬ ЗНАНИЙ [ТЕМА: ${intent}]:\n${microContext}`;
+  const microContext = (kb.graph || globalKnowledgeGraph).getContextForIntent(intent, effectiveStage, bookingContext);
+  systemInstruction += `\n\nЦЕЛЕВОЙ МОДУЛЬ ЗНАНИЙ [ТЕМА: ${intent} | СТАДИЯ: ${effectiveStage}]:\n${microContext}`;
 
   // 5. БЕЗУСЛОВНЫЙ ИМПЕРАТИВНЫЙ ПРИКАЗ ПО ТРАНСФЕРУ
   if (intent === 'TRANSFER_TRANSPORT') {
@@ -186,6 +232,7 @@ export async function generateConciergeReply({
       isRealAi: true,
       replyText,
       intent,
+      guestStage: effectiveStage,
       model
     };
   } catch (err) {

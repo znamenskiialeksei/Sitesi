@@ -35,7 +35,8 @@ import {
   CornerDownLeft,
   Bot,
   ArrowLeft,
-  Info
+  Info,
+  Clock
 } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../Toast';
@@ -91,6 +92,44 @@ export default function HostInbox({
   const [templateLang, setTemplateLang] = useState('ru');
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [inboxCountdown, setInboxCountdown] = useState({});
+  const [pricingCorridor, setPricingCorridor] = useState(null);
+
+  // Классификация стадии гостя по 5 этапам жизненного цикла
+  const guestStageInfo = useMemo(() => {
+    const curReq = activeChat?.activeRequests?.[0] || {};
+    const status = (curReq.status || '').toUpperCase();
+    const now = new Date();
+
+    let isPastCheckOut = false;
+    let isInHouse = false;
+
+    if (curReq.checkIn && curReq.checkOut) {
+      try {
+        const [dIn, mIn, yIn] = curReq.checkIn.split('.').map(Number);
+        const [dOut, mOut, yOut] = curReq.checkOut.split('.').map(Number);
+        const inDate = new Date(yIn, mIn - 1, dIn, 16, 0);
+        const outDate = new Date(yOut, mOut - 1, dOut, 10, 0);
+        if (now > outDate) isPastCheckOut = true;
+        else if (now >= inDate && now <= outDate) isInHouse = true;
+      } catch (e) {
+        // Игнорируем несовпадение формата даты
+      }
+    }
+
+    if (isPastCheckOut) {
+      return { id: 'STAGE_5_CHECKED_OUT', label: 'Выезд [Этап 5]', badge: 'bg-purple-950/70 border-purple-500/40 text-purple-300' };
+    }
+    if (isInHouse) {
+      return { id: 'STAGE_4_IN_HOUSE', label: 'Проживание [Этап 4]', badge: 'bg-emerald-950/70 border-emerald-500/40 text-emerald-300' };
+    }
+    if (status.includes('ОПЛАЧЕНО') || status.includes('ПОДТВЕРЖДЕНО')) {
+      return { id: 'STAGE_3_BOOKED_PRE_ARRIVAL', label: 'Бронь подтверждена [Этап 3]', badge: 'bg-blue-950/70 border-blue-500/40 text-blue-300' };
+    }
+    if (status.includes('ОЖИДАЕТ') || status.includes('СПЕЦПРЕДЛОЖЕНИЕ') || status.includes('HOLD')) {
+      return { id: 'STAGE_2_HOLD_PENDING', label: 'Ожидает оплаты [Этап 2]', badge: 'bg-amber-950/70 border-amber-500/40 text-amber-300' };
+    }
+    return { id: 'STAGE_1_LEAD', label: 'Лид [Этап 1]', badge: 'bg-slate-800 border-white/10 text-slate-300' };
+  }, [activeChat]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -124,6 +163,7 @@ export default function HostInbox({
         try {
           const cachedTmpl = localStorage.getItem('villa_ai_templates_cache');
           const cachedVars = localStorage.getItem('villa_ai_variables_cache');
+          const cachedCorridor = localStorage.getItem('villa_pricing_corridor_cache');
           if (cachedTmpl) {
             const parsed = JSON.parse(cachedTmpl);
             if (Array.isArray(parsed) && parsed.length > 0) {
@@ -133,6 +173,9 @@ export default function HostInbox({
           }
           if (cachedVars) {
             setKnowledgeVariables(JSON.parse(cachedVars));
+          }
+          if (cachedCorridor) {
+            setPricingCorridor(JSON.parse(cachedCorridor));
           }
         } catch (storageErr) {
           console.warn('[HostInbox] Предупреждение чтения localStorage:', storageErr.message);
@@ -144,7 +187,7 @@ export default function HostInbox({
       const res = await axios.get(url);
 
       if (res.data?.success && res.data?.data) {
-        const { templates, variables } = res.data.data;
+        const { templates, variables, pricingAnalysis } = res.data.data;
         if (Array.isArray(templates) && templates.length > 0) {
           setLiveTemplates(templates);
           if (typeof window !== 'undefined') {
@@ -155,6 +198,12 @@ export default function HostInbox({
           setKnowledgeVariables(variables);
           if (typeof window !== 'undefined') {
             localStorage.setItem('villa_ai_variables_cache', JSON.stringify(variables));
+          }
+        }
+        if (pricingAnalysis && typeof pricingAnalysis === 'object') {
+          setPricingCorridor(pricingAnalysis);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('villa_pricing_corridor_cache', JSON.stringify(pricingAnalysis));
           }
         }
         setIsKnowledgeFromCache(false);
@@ -264,15 +313,28 @@ export default function HostInbox({
         contact: activeChat.clientContact,
         lang: templateLang,
         chatHistory: activeChat.messages || [],
+        guestStage: guestStageInfo.id,
+        bookingContext: {
+          checkInDate: curReq.checkIn,
+          checkOutDate: curReq.checkOut,
+          price: curReq.price,
+          status: curReq.status,
+          contact: activeChat.clientContact,
+          guestName: activeChat.clientName
+        },
         context: {
           checkIn: curReq.checkIn,
           checkOut: curReq.checkOut,
-          price: curReq.price
+          price: curReq.price,
+          status: curReq.status
         }
       });
       if (res.data?.success && res.data.reply) {
         setMessageInput(res.data.reply);
-        toast.success(`ИИ-Помощник [${res.data.model || 'Gemini'}]: полный ответ подготовлен`);
+        if (res.data.pricingCorridor && !pricingCorridor) {
+          setPricingCorridor({ discountCorridor: res.data.pricingCorridor });
+        }
+        toast.success(`ИИ-Помощник [${res.data.model || 'Gemini'}]: ответ для ${guestStageInfo.label} подготовлен`);
         if (textareaRef.current) {
           textareaRef.current.focus();
         }
@@ -539,11 +601,18 @@ export default function HostInbox({
                 <ArrowLeft className="w-4 h-4" />
               </button>
               <div className="min-w-0">
-                <span className="text-xs sm:text-sm font-bold text-white block truncate">
-                  {isBroadcastMode
-                    ? t('massBroadcastRecipients').replace('{count}', selectedMultiSheets.length)
-                    : t('chatWithGuest').replace('{name}', activeChat?.clientName || t('guestLabel'))}
-                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs sm:text-sm font-bold text-white block truncate">
+                    {isBroadcastMode
+                      ? t('massBroadcastRecipients').replace('{count}', selectedMultiSheets.length)
+                      : t('chatWithGuest').replace('{name}', activeChat?.clientName || t('guestLabel'))}
+                  </span>
+                  {!isBroadcastMode && (
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${guestStageInfo.badge}`}>
+                      {guestStageInfo.label}
+                    </span>
+                  )}
+                </div>
                 <span className="text-[10px] sm:text-[11px] text-slate-400 block truncate">{activeChat?.clientContact}</span>
               </div>
             </div>
@@ -761,6 +830,38 @@ export default function HostInbox({
                   <div className="space-y-2 text-xs">
                     <p className="text-slate-400">{t('nameFieldLabel')} <b className="text-white">{activeChat?.clientName || t('guestLabel')}</b></p>
                     <p className="text-slate-400">{t('contactFieldLabel')} <b className="text-white">{activeChat?.clientContact || '-'}</b></p>
+                  </div>
+
+                  {/* Карточка стадии гостя и тарифов */}
+                  <div className="p-3 bg-slate-900 rounded-2xl border border-white/5 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                        Стадия клиента
+                      </span>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${guestStageInfo.badge}`}>
+                        {guestStageInfo.label}
+                      </span>
+                    </div>
+
+                    {pricingCorridor && (
+                      <div className="border-t border-white/5 pt-2 space-y-1 text-[11px]">
+                        <div className="flex justify-between text-slate-300">
+                          <span>Базовый тариф:</span>
+                          <span className="font-bold text-white">${pricingCorridor.basePriceUsd || pricingCorridor.discountCorridor?.standardFlexiblePrice || 250}/сут</span>
+                        </div>
+                        <div className="flex justify-between text-amber-300">
+                          <span>Порог безопасности:</span>
+                          <span className="font-bold">${pricingCorridor.minNightFloorUsd || pricingCorridor.discountCorridor?.absoluteFloor || 180}/сут</span>
+                        </div>
+                        <div className="flex justify-between text-emerald-400">
+                          <span>Макс. скидка:</span>
+                          <span className="font-bold">до {pricingCorridor.discountCorridor?.maxDiscountPercent || 28}%</span>
+                        </div>
+                        <div className="text-[10px] text-slate-500 pt-0.5">
+                          Синхронизация: 6 OTA платформ [Airbnb, Booking, Vrbo, Avito, Agoda, Google]
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Активные брони гостя */}
