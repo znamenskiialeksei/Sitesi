@@ -267,7 +267,7 @@ export default function HomeListing({ publicData, contentData }) {
       currentContentData.home?.hero_title?.ru ||
       currentContentData.home?.heroTitle?.[lang] ||
       currentContentData.home?.heroTitle?.ru ||
-      'Villa Turaman Luxury Waterfront',
+      'Dalyan Turaman [частный бассейн, 10 спальных мест]',
     subtitle:
       currentContentData.home?.hero_subtitle?.[lang] ||
       currentContentData.home?.hero_subtitle?.ru ||
@@ -736,6 +736,17 @@ export default function HomeListing({ publicData, contentData }) {
               </button>
             </div>
 
+            {/* Мобильная форма бронирования: закреплена сразу после раздела О вилле */}
+            <div className="block lg:hidden pt-2 pb-6">
+              <BookingWidget
+                dynamicRules={dynamicRules}
+                dateRules={dateRules}
+                occupiedDates={occupiedDates}
+                apiEvents={apiEvents}
+                onBookingSubmit={handleBookingSubmit}
+              />
+            </div>
+
             {/* Спальные места: Sleeping Arrangements */}
             <SleepingArrangements homeData={homeData} customBedrooms={homeData.bedrooms} />
 
@@ -796,8 +807,8 @@ export default function HomeListing({ publicData, contentData }) {
 
           </div>
 
-          {/* Правая колонка — Плавающий интерактивный виджет бронирования (Sticky Sidebar) */}
-          <div className="lg:col-span-4 relative">
+          {/* Правая колонка — Плавающий интерактивный виджет бронирования [Sticky Sidebar для десктопа] */}
+          <div className="hidden lg:block lg:col-span-4 relative">
             <div className="sticky top-28">
               <BookingWidget
                 dynamicRules={dynamicRules}

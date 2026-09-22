@@ -214,6 +214,15 @@ export default async function handler(req, res) {
 
     const fallbackData = readFallbackFile();
 
+    // Базовое наполнение SSOT: гарантируем наличие всех ключей мастер-эталона
+    const baseHomeMap = { ...MASTER_HOME_MAP };
+    if (fallbackData.home && typeof fallbackData.home === 'object') {
+      Object.keys(fallbackData.home).forEach((k) => {
+        baseHomeMap[k] = fallbackData.home[k];
+      });
+    }
+    content.home = { ...baseHomeMap };
+
     // 1. Главная страница [HOME] : Парсер конструктора витрины [8 колонок] с поддержкой устаревшего формата [5 колонок]
     if (homeRows.length > 1) {
       const headerRow = homeRows[0] || [];
@@ -243,30 +252,25 @@ export default async function handler(req, res) {
 
         const isEnabled = !status.toLowerCase().startsWith('выкл') && status.toLowerCase() !== 'off' && status.toLowerCase() !== 'false';
 
-        const rawRu = sanitizeText(ru, fallbackData.home?.[key]?.ru || MASTER_HOME_MAP[key]?.ru || '');
-        const rawEn = sanitizeText(en, fallbackData.home?.[key]?.en || MASTER_HOME_MAP[key]?.en || '');
-        const rawTr = sanitizeText(tr, fallbackData.home?.[key]?.tr || MASTER_HOME_MAP[key]?.tr || '');
+        const fallbackItem = baseHomeMap[key] || {};
+        const rawRu = sanitizeText(ru, fallbackItem.ru || '');
+        const rawEn = sanitizeText(en, fallbackItem.en || fallbackItem.ru || '');
+        const rawTr = sanitizeText(tr, fallbackItem.tr || fallbackItem.ru || '');
 
         const rowObj = {
-          block,
+          block: block || fallbackItem.block || '',
           key,
-          desc,
+          desc: desc || fallbackItem.desc || '',
           ru: resolveTemplate(rawRu, ssotContext),
           en: resolveTemplate(rawEn, ssotContext),
           tr: resolveTemplate(rawTr, ssotContext),
-          media: sanitizeText(media, fallbackData.home?.[key]?.media || MASTER_HOME_MAP[key]?.media || ''),
+          media: sanitizeText(media, fallbackItem.media || ''),
           status: isEnabled ? 'Вкл' : 'Выкл',
           enabled: isEnabled
         };
 
         content.home[key] = rowObj;
       });
-    }
-
-    if (Object.keys(content.home).length === 0) {
-      content.home = fallbackData.home && Object.keys(fallbackData.home).length > 0
-        ? fallbackData.home
-        : { ...MASTER_HOME_MAP };
     }
 
     // Синхронизация алиасов для совместимости

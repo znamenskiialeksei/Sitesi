@@ -434,7 +434,7 @@ export default function HostInbox({
       <div className="grid grid-cols-1 md:grid-cols-12 flex-1 overflow-hidden">
 
         {/* Левая колонка: Список диалогов с гостями [4 колонки] */}
-        <div className={`col-span-12 md:col-span-4 border-r border-white/10 flex flex-col bg-slate-950/50 ${mobileActiveView !== 'list' ? 'hidden md:flex' : 'flex'}`}>
+        <div className={`col-span-12 md:col-span-4 border-r border-white/10 flex flex-col bg-slate-950/50 min-h-0 h-full overflow-hidden ${mobileActiveView !== 'list' ? 'hidden md:flex' : 'flex'}`}>
           <div className="p-3 border-b border-white/5">
             <div className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -458,7 +458,7 @@ export default function HostInbox({
           )}
 
           {/* Список гостей с гарантией сохранения структуры карточек при росте числа диалогов */}
-          <div className="flex-1 overflow-y-auto divide-y divide-white/5">
+          <div className="flex-1 min-h-0 overflow-y-auto divide-y divide-white/5 custom-scrollbar overscroll-contain max-h-[calc(100vh-220px)] md:max-h-none">
             {filteredChats.map((c, idx) => {
               const isSelected = isBroadcastMode
                 ? selectedMultiSheets.includes(c.sheetName)

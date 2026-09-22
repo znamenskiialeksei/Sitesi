@@ -14,7 +14,7 @@ export default function Hero({ homeData }) {
   const { t } = useLanguage();
   const toast = useToast();
 
-  const title = homeData?.title || 'Villa Turaman Luxury Waterfront';
+  const title = homeData?.title || 'Dalyan Turaman [частный бассейн, 10 спальных мест]';
   const subtitle = homeData?.subtitle || '';
   const rating = homeData?.rating || '4.98';
   const reviewsCount = homeData?.reviewsCount || '48 отзывов';

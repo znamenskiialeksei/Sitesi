@@ -1589,6 +1589,27 @@ export default async function handler(req, res) {
             };
           });
 
+          // Пакетная загрузка всех листов чатов за 1 сетевой запрос [batchGet]
+          const ranges = chatSheets.map((s) => `'${s.properties.title}'!A:G`);
+          const batchMap = {};
+          if (ranges.length > 0) {
+            try {
+              const batchRes = await sheets.spreadsheets.values.batchGet({
+                spreadsheetId: targetChatId,
+                ranges
+              });
+              const valueRanges = batchRes.data.valueRanges || [];
+              valueRanges.forEach((vr, idx) => {
+                const sheetTitle = chatSheets[idx]?.properties?.title;
+                if (sheetTitle) {
+                  batchMap[sheetTitle] = vr.values || [];
+                }
+              });
+            } catch (batchErr) {
+              console.warn('[master_get_chats batchGet Warning]:', batchErr.message);
+            }
+          }
+
           for (const s of chatSheets) {
             const title = s.properties.title;
             const parts = title.split('_');
@@ -1596,20 +1617,18 @@ export default async function handler(req, res) {
             const clientContact = parts.slice(2).join('_') || parts[2] || '';
 
             let messages = [];
-            try {
-              const msgsDb = await sheets.spreadsheets.values.get({ spreadsheetId: targetChatId, range: `'${title}'!A:G` });
-              const rows = msgsDb.data.values || [];
-              const hasHeader = rows.length > 0 && rows[0][0] === 'Дата и Время';
+            const rows = batchMap[title] || [];
+            const hasHeader = rows.length > 0 && rows[0][0] === 'Дата и Время';
 
-              // Если шапки нет, в фоновом режиме лечим структуру листа
-              if (!hasHeader && rows.length > 0) {
-                await ensureStyledChatSheet(sheets, targetChatId, title);
+            const rawMsgs = hasHeader ? rows.slice(1) : rows;
+            messages = rawMsgs.map(parseMessageRow);
+
+            // Если из таблицы сообщений не пришло, мгновенно подтягиваем из кэша
+            if (messages.length === 0 && clientContact) {
+              const cached = await safeCacheGet(`chat_msgs_${clientContact.toLowerCase()}`);
+              if (cached && Array.isArray(cached)) {
+                messages = cached;
               }
-
-              const rawMsgs = hasHeader ? rows.slice(1) : rows;
-              messages = rawMsgs.map(parseMessageRow);
-            } catch (mErr) {
-              console.warn(`[master_get_chats messages Warning for ${title}]:`, mErr.message);
             }
 
             const userReqs = allReqs.filter((r) => (r.contact || '').toLowerCase() === clientContact.toLowerCase());

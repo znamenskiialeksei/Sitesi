@@ -32,7 +32,7 @@ export default function PhotoGrid({ photos = [], gallery = [], heroImage = '' })
     if (heroImage) {
       list.push({
         url: parseDriveLink(heroImage, 'image'),
-        caption: 'Villa Turaman Luxury Waterfront',
+        caption: 'Dalyan Turaman [частный бассейн, 10 спальных мест]',
         group: 'Фасад виллы'
       });
     }

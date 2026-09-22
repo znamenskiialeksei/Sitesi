@@ -109,7 +109,7 @@ export default function HostDashboardPage() {
       fetchLmsModules();
       const interval = setInterval(() => {
         fetchMasterChats();
-      }, 30000);
+      }, 5000);
       return () => clearInterval(interval);
     }
   }, [currentUser]);
@@ -259,6 +259,29 @@ export default function HostDashboardPage() {
 
   // 7. Отправка сообщения в чат
   const handleSendMessage = async (sheetName, message, file) => {
+    // Оптимистичное отображение в интерфейсе без ожидания ответа сети
+    const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
+    const optimisticMsg = {
+      date: timestamp,
+      sender: 'Владелец',
+      original: message,
+      ru: message,
+      en: message,
+      tr: message,
+      file: file ? file.name : ''
+    };
+    setChats((prevChats) =>
+      prevChats.map((c) => {
+        if (c.sheetName === sheetName) {
+          return {
+            ...c,
+            messages: [...(c.messages || []), optimisticMsg]
+          };
+        }
+        return c;
+      })
+    );
+
     try {
       await axios.post('/api/booking', {
         action: 'master_send_chats',
@@ -270,6 +293,7 @@ export default function HostDashboardPage() {
       fetchMasterChats();
     } catch (err) {
       toast.error(t('messageSendErrorToast'));
+      fetchMasterChats();
     }
   };
 

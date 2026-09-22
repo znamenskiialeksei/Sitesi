@@ -64,7 +64,7 @@ export default function GuestCabinetPage() {
   useEffect(() => {
     if (currentUser) {
       fetchGuestData();
-      const interval = setInterval(fetchGuestData, 30000); // Опрос раз в 30 секунд
+      const interval = setInterval(fetchGuestData, 5000); // Опрос раз в 5 секунд
       return () => clearInterval(interval);
     }
   }, [currentUser]);
