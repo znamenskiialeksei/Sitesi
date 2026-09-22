@@ -22,30 +22,30 @@ export default function SleepingArrangements({ homeData = null, customBedrooms =
   const defaultBedrooms = [
     {
       icon: BedDouble,
-      title: 'Спальня 1 • King Bed',
-      desc: 'Большая двуспальная кровать King Size, панорамные окна с видом на бассейн и сад, кондиционер',
-      badge: 'King Bed',
+      title: 'Спальня 1 • 1 этаж',
+      desc: '1 двуспальная Queen Bed [160x200] + 1 односпальная кровать [90x200], свой санузел с душем, кондиционер, шкаф. До 3 гостей',
+      badge: 'Queen + Single [3 спальных места]',
       image: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600'
     },
     {
       icon: BedDouble,
-      title: 'Спальня 2 • Queen Bed',
-      desc: 'Уютная двуспальная кровать Queen Size, балкон с видом на горы, кондиционер',
-      badge: 'Queen Bed',
+      title: 'Спальня 2 • Master Suite 2 этаж',
+      desc: '1 большая двуспальная King Bed [180x200], свой санузел с ванной и душем, выход на балкон с видом на бассейн, кондиционер. До 2 гостей',
+      badge: 'King Bed [2 спальных места]',
       image: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=600'
     },
     {
-      icon: Bed,
-      title: 'Спальня 3 • 2 Односпальные',
-      desc: 'Две раздельные комфортные кровати, рабочий стол, вид на сад',
-      badge: '2 Single Beds',
+      icon: BedDouble,
+      title: 'Спальня 3 • 2 этаж',
+      desc: '1 двуспальная Queen Bed [160x200], свой санузел с душем, кондиционер, вид на сад и горы. До 2 гостей',
+      badge: 'Queen Bed [2 спальных места]',
       image: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=600'
     },
     {
-      icon: Sofa,
-      title: 'Спальня 4 • Диван-кровать',
-      desc: 'Раскладной ортопедический диван-кровать в лаундж-зоне, кондиционер',
-      badge: 'Sofa Bed',
+      icon: BedDouble,
+      title: 'Спальня 4 • 2 этаж',
+      desc: '1 двуспальная Queen Bed [160x200] + 1 односпальная кровать [90x200], свой санузел с душем, кондиционер. До 3 гостей',
+      badge: 'Queen + Single [3 спальных места]',
       image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600'
     }
   ];

@@ -1,15 +1,15 @@
 {
   "home": {
     "heroTitle": {
-      "ru": "Villa Turaman",
-      "en": "Villa Turaman",
-      "tr": "Villa Turaman",
+      "ru": "Dalyan Turaman [частный бассейн, 10 спальных мест]",
+      "en": "Dalyan Turaman [private pool, sleeps 10]",
+      "tr": "Dalyan Turaman [özel havuz, 10 kişilik]",
       "media": ""
     },
     "heroSubtitle": {
-      "ru": "Ваш идеальный отдых в Дальяне. Бронирование виллы, премиальный сервис и авторские видео-путеводители от Алексея Знаменского.",
-      "en": "Your perfect Dalyan vacation. Villa reservations, premium service, and personalized video guides from Alexey Znamensky.",
-      "tr": "Mükemmel Dalyan tatiliniz. Alexey Znamensky'den villa rezervasyonları, birinci sınıf hizmet ve kişiselleştirilmiş video rehberleri.",
+      "ru": "Двухэтажная вилла 240 кв.м с бассейном с соленой водой 36 кв.м и уличным джакузи в тихом центре Дальяна [250 м до центра]. 4 спальни en-suite, 10 спальных мест. Официальная аренда по Закону № 7464.",
+      "en": "Two-story villa of 240 sqm with 36 sqm saltwater pool and outdoor jacuzzi in quiet center of Dalyan [250m to center]. 4 en-suite bedrooms, 10 beds. Official Law No. 7464 rental.",
+      "tr": "Dalyan'ın sessiz merkezinde 240 m² 2 katlı villa, 36 m² tuzlu su havuzu ve açık jakuzi [merkeze 250 m]. 4 ebeveyn banyolu yatak odası, 10 yatak kapasitesi. 7464 sayılı Kanun kapsamında resmi kiralama.",
       "media": ""
     },
     "aboutTitle": {
@@ -69,14 +69,14 @@
       "tr": "Saat 16:00'dan sonra dilediğiniz zaman giriş için pratik elektronik kilit ve kişisel şifre."
     },
     "highlightCancellationTitle": {
-      "ru": "Бесплатная отмена за 14 дней",
-      "en": "Free cancellation 14 days prior",
-      "tr": "14 gün öncesine kadar ücretsiz iptal"
+      "ru": "Правила отмены и Закон № 7464",
+      "en": "Cancellation Policy & Law No. 7464",
+      "tr": "İptal Kuralları ve 7464 Sayılı Kanun"
     },
     "highlightCancellationDesc": {
-      "ru": "Полный возврат средств при отмене не позднее чем за 14 суток до даты заезда.",
-      "en": "Full refund if cancelled at least 14 days before arrival date.",
-      "tr": "Giriş tarihinden en az 14 gün önce yapılan iptallerde tam iade."
+      "ru": "Невозвратная скидка 10% или гибкая отмена. Обязательный договор аренды с описью имущества и регистрация KBS.",
+      "en": "10% non-refundable option or flexible cancellation. Mandatory rental contract with inventory and KBS registration.",
+      "tr": "%10 iadesiz indirim veya esnek iptal. Zorunlu demirbaşlı kira sözleşmesi ve KBS kaydı."
     },
     "locationTitle": {
       "ru": "Расположение: Дальян, Ортаджа, Мугла, Турция",
@@ -85,32 +85,32 @@
       "media": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200"
     },
     "locationDesc": {
-      "ru": "Вилла расположена в тихом зеленом районе в 5 минутах ходьбы от набережной реки Дальян. В пешей доступности рестораны традиционной эгейской кухни, лодочные причалы для поездок на пляж Изтузу и термальные грязевые источники Султание.",
-      "en": "The villa is located in a quiet green area just a 5-minute walk from the Dalyan River promenade. Traditional Aegean restaurants, boat docks for trips to Iztuzu Beach, and Sultaniye mud springs are all within easy walking distance.",
-      "tr": "Villa, Dalyan Nehri kordonuna 5 dakikalık yürüme mesafesinde, sessiz ve yeşil bir bölgede yer almaktadır. Geleneksel Ege restoranları, İztuzu Plajı tekne iskeleleri ve Sultaniye kaplıcaları yürüme mesafesindedir."
+      "ru": "Вилла Turaman находится в самом центре Дальяна: всего 250 метров до пешеходной улицы, 400 метров до речной набережной, 350 метров до ресторана La Boheme Dalyan. Песчаный пляж Изтузу - 11 км [15 минут на машине или лодке], аэропорт Даламан - 30 км. В пешей доступности древний город Каунос и Ликийские гробницы.",
+      "en": "Villa Turaman is located in the heart of Dalyan: only 250 meters to the pedestrian street, 400 meters to the river promenade, 350 meters to La Boheme Dalyan restaurant. Sandy Iztuzu beach is 11 km [15 min by car or boat], Dalaman airport is 30 km. Ancient Kaunos and Lycian Tombs are within easy reach.",
+      "tr": "Villa Turaman, Dalyan merkezinde yer almaktadır: yaya caddesine 250 metre, nehir kordonuna 400 metre, La Boheme Dalyan restoranına 350 metre. İztuzu plajı 11 km [arabayla veya tekneyle 15 dk], Dalaman havalimanı 30 km. Antik Kaunos ve Likya Kaya Mezarları çok yakındır."
     },
     "bedroom_1": {
-      "ru": "Спальня 1 • King Bed",
-      "en": "Большая двуспальная кровать King Size, панорамные окна с видом на бассейн и сад, кондиционер",
-      "tr": "King Bed",
+      "ru": "Спальня 1 • 1 этаж",
+      "en": "1 Queen Bed [160x200] + 1 односпальная кровать [90x200], свой санузел с душем, кондиционер. До 3 гостей",
+      "tr": "Queen + Single [3 спальных места]",
       "media": "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600"
     },
     "bedroom_2": {
-      "ru": "Спальня 2 • Queen Bed",
-      "en": "Уютная двуспальная кровать Queen Size, балкон с видом на горы, кондиционер",
-      "tr": "Queen Bed",
+      "ru": "Спальня 2 • Master Suite 2 этаж",
+      "en": "1 King Bed [180x200], свой санузел с ванной и душем, выход на балкон с видом на бассейн, кондиционер. До 2 гостей",
+      "tr": "King Bed [2 спальных места]",
       "media": "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=600"
     },
     "bedroom_3": {
-      "ru": "Спальня 3 • 2 Односпальные",
-      "en": "Две раздельные комфортные кровати, рабочий стол, вид на сад",
-      "tr": "2 Single Beds",
+      "ru": "Спальня 3 • 2 этаж",
+      "en": "1 Queen Bed [160x200], свой санузел с душем, кондиционер, вид на сад и горы. До 2 гостей",
+      "tr": "Queen Bed [2 спальных места]",
       "media": "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=600"
     },
     "bedroom_4": {
-      "ru": "Спальня 4 • Диван-кровать",
-      "en": "Раскладной ортопедический диван-кровать в лаундж-зоне, кондиционер",
-      "tr": "Sofa Bed",
+      "ru": "Спальня 4 • 2 этаж",
+      "en": "1 Queen Bed [160x200] + 1 односпальная кровать [90x200], свой санузел с душем, кондиционер. До 3 гостей",
+      "tr": "Queen + Single [3 спальных места]",
       "media": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600"
     },
     "hero_rating": { "ru": "4.98", "en": "4.98", "tr": "4.98", "media": "Star" },
@@ -121,19 +121,19 @@
     "hero_favorite_btn": { "ru": "В избранное", "en": "Save", "tr": "Kaydet", "media": "Heart" },
     "spec_guests": { "ru": "10 гостей", "en": "10 guests", "tr": "10 misafir", "media": "Users" },
     "spec_bedrooms": { "ru": "4 спальни", "en": "4 bedrooms", "tr": "4 yatak odasi", "media": "Bed" },
-    "spec_beds": { "ru": "5 кроватей", "en": "5 beds", "tr": "5 yatak", "media": "Bed" },
-    "spec_baths": { "ru": "4 ванные комнаты", "en": "4 bathrooms", "tr": "4 banyo", "media": "Bath" },
+    "spec_beds": { "ru": "10 спальных мест", "en": "10 beds", "tr": "10 yatak", "media": "Bed" },
+    "spec_baths": { "ru": "4 ванные комнаты + WC", "en": "4 bathrooms + WC", "tr": "4 banyo + WC", "media": "Bath" },
     "about_btn_more": { "ru": "Показать больше об объекте", "en": "Show more about property", "tr": "Tesis hakkinda daha fazla goster", "media": "ChevronRight" },
     "sleeping_title": { "ru": "Где вы будете спать", "en": "Where you will sleep", "tr": "Nerede uyuyacaksiniz", "media": "" },
     "amenities_title": { "ru": "Что есть в этом жилье", "en": "What this place offers", "tr": "Bu mekanin sunduklari", "media": "" },
     "amenities_btn_all": { "ru": "Показать все удобства", "en": "Show all amenities", "tr": "Tum olanaklari goster", "media": "" },
-    "location_badge": { "ru": "GPS: 36.8336° N, 28.6439° E • 25 минут от аэропорта Даламан [DLM]", "en": "GPS: 36.8336° N, 28.6439° E • 25 min from Dalaman Airport [DLM]", "tr": "GPS: 36.8336° N, 28.6439° E • Dalaman Havalimani 25 dakika", "media": "Navigation" },
+    "location_badge": { "ru": "GPS: 36.8336° N, 28.6439° E • 250м до центра • 11 км до пляжа Изтузу • 30 км до DLM", "en": "GPS: 36.8336° N, 28.6439° E • 250m to center • 11 km to Iztuzu Beach • 30 km to DLM", "tr": "GPS: 36.8336° N, 28.6439° E • Merkeze 250m • Iztuzu Plaji 11 km • DLM 30 km", "media": "Navigation" },
     "host_card_title": { "ru": "Хозяин: Алексей Знаменский", "en": "Host: Aleksei Znamenskii", "tr": "Ev Sahibi: Aleksei Znamenskii", "media": "" },
-    "host_card_subtitle": { "ru": "Суперхозяин на Airbnb • Более 5 лет приема гостей", "en": "Superhost on Airbnb • 5+ years hosting", "tr": "Airbnb Super Ev Sahibi • 5+ yildir ev sahibi", "media": "Award" },
-    "host_card_verified": { "ru": "Личность подтверждена", "en": "Identity verified", "tr": "Kimlik dogrulandi", "media": "ShieldCheck" },
+    "host_card_subtitle": { "ru": "Суперхозяин на Airbnb • Яхтсмен на пенсии • Живет в Мармарисе", "en": "Superhost on Airbnb • Retired yachtsman • Lives in Marmaris", "tr": "Airbnb Super Ev Sahibi • Emekli yatci • Marmaris'te yasiyor", "media": "Award" },
+    "host_card_verified": { "ru": "Личность подтверждена • Девиз: «Хочешь сделать хорошо - сделай сам»", "en": "Identity verified • Motto: 'Do it yourself to do it well'", "tr": "Kimlik dogrulandi • Ilke: 'Iyi yapmak istiyorsan kendin yap'", "media": "ShieldCheck" },
     "host_card_response_time": { "ru": "Время ответа: в течение часа", "en": "Response time: within an hour", "tr": "Yanit suresi: bir saat icinde", "media": "Clock" },
-    "host_card_languages": { "ru": "Языки: Русский, English, Türkçe", "en": "Languages: Russian, English, Turkish", "tr": "Diller: Rusca, Ingilizce, Turkce", "media": "Globe2" },
-    "host_card_help_text": { "ru": "Помощь в организации трансфера, персональных туров по озеру Кёйджегиз и бронирования ресторанов", "en": "Assistance with airport transfers, private tours on Lake Koycegiz and restaurant reservations", "tr": "Havalimani transferi, Koycegiz Golu ozel tekne turlari ve restoran rezervasyonlarinda destek", "media": "" },
+    "host_card_languages": { "ru": "Интересы: Велоспорт, Парусный спорт, Природа • Мечта: Португалия", "en": "Interests: Cycling, Sailing, Nature • Dream: Portugal", "tr": "Ilgi alanlari: Bisiklet, Yelken, Doga • Hayal: Portekiz", "media": "Globe2" },
+    "host_card_help_text": { "ru": "Штампы путешествий: Дубай [3 поездки], Абу-Даби [март 2026 г.]. Помощь в организации трансфера, аренде авто и экскурсий.", "en": "Travel stamps: Dubai [3 trips], Abu Dhabi [March 2026]. Assistance with transfers, car rental and private tours.", "tr": "Seyahat pullari: Dubai [3 seyahat], Abu Dabi [Mart 2026]. Transfer, arac kiralama ve turlarda destek.", "media": "" },
     "host_card_btn": { "ru": "Написать хозяину", "en": "Message host", "tr": "Ev sahibine mesaj gonder", "media": "MessageCircle" }
   },
   "about": {

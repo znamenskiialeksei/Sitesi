@@ -123,7 +123,7 @@ export default function HostReservations({
                 )}
               </div>
 
-              {/* Кнопки управления заявкой */}
+              {/* Кнопки управления заявкой на любой активной стадии */}
               <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
                 {req.status === 'ЗАПРОС' && (
                   <>
@@ -142,18 +142,11 @@ export default function HostReservations({
                     >
                       <Tag className="w-4 h-4" /> {t('specialOfferBtn')}
                     </button>
-
-                    <button
-                      disabled={loading}
-                      onClick={() => onReject(req)}
-                      className="px-4 py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-300 font-bold text-xs transition-colors border border-red-500/20 flex items-center gap-1.5"
-                    >
-                      <XCircle className="w-4 h-4" /> {t('rejectRequestBtn')}
-                    </button>
                   </>
                 )}
 
-                {isHold && (
+                {/* Возможность отозвать заявку на любой активной стадии */}
+                {(req.status === 'ЗАПРОС' || isHold) && (
                   <button
                     disabled={loading}
                     onClick={() => onRevoke(req)}
@@ -162,6 +155,14 @@ export default function HostReservations({
                     <Undo2 className="w-4 h-4" /> {t('revokeOfferBtn')}
                   </button>
                 )}
+
+                <button
+                  disabled={loading}
+                  onClick={() => onReject(req)}
+                  className="px-4 py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-300 font-bold text-xs transition-colors border border-red-500/20 flex items-center gap-1.5"
+                >
+                  <XCircle className="w-4 h-4" /> {t('rejectRequestBtn')}
+                </button>
               </div>
 
             </div>

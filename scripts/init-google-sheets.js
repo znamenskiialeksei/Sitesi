@@ -190,20 +190,15 @@ const initializeSpreadsheet = async () => {
     const existingSheets = ss.data.sheets || [];
     const existingTitles = existingSheets.map((s) => s.properties.title.trim());
 
-    // Очистка устаревших англоязычных листов-дубликатов BookingRequests и Placeholders
+    // Очистка устаревших англоязычных листов-дубликатов
     const deleteOldRequests = [];
-    const bookingReqSheet = existingSheets.find((s) => s.properties.title.trim().toLowerCase() === 'bookingrequests');
-    const canonBookingsSheet = existingSheets.find((s) => s.properties.title.trim() === SHEETS_REGISTRY.BOOKINGS.defaultName);
-    if (bookingReqSheet && canonBookingsSheet && bookingReqSheet.properties.sheetId !== canonBookingsSheet.properties.sheetId) {
-      console.log('Обнаружен устаревший лист BookingRequests при наличии канонического листа. Удаляем дубликат...');
-      deleteOldRequests.push({ deleteSheet: { sheetId: bookingReqSheet.properties.sheetId } });
-    }
-
-    const placeholdersSheet = existingSheets.find((s) => s.properties.title.trim().toLowerCase() === 'placeholders');
-    const canonVarsSheet = existingSheets.find((s) => s.properties.title.trim() === SHEETS_REGISTRY.VARIABLES.defaultName);
-    if (placeholdersSheet && canonVarsSheet && placeholdersSheet.properties.sheetId !== canonVarsSheet.properties.sheetId) {
-      console.log('Обнаружен устаревший лист Placeholders при наличии канонического листа. Удаляем дубликат...');
-      deleteOldRequests.push({ deleteSheet: { sheetId: placeholdersSheet.properties.sheetId } });
+    const obsoleteEnglishTitles = ['bookingrequests', 'placeholders', 'videoguides', 'extraservices', 'about', 'legal', 'templates', 'variables'];
+    for (const sheet of existingSheets) {
+      const lower = sheet.properties.title.trim().toLowerCase();
+      if (obsoleteEnglishTitles.includes(lower)) {
+        console.log(`Обнаружен устаревший лист [${sheet.properties.title}]. Удаляем...`);
+        deleteOldRequests.push({ deleteSheet: { sheetId: sheet.properties.sheetId } });
+      }
     }
 
     if (deleteOldRequests.length > 0) {

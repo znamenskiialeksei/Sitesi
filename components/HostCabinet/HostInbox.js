@@ -12,6 +12,7 @@ import axios from 'axios';
 import {
   Send,
   Users,
+  User,
   Search,
   Sparkles,
   MessageSquare,
@@ -66,14 +67,16 @@ export default function HostInbox({
   const [messageInput, setMessageInput] = useState('');
   const [attachedFile, setAttachedFile] = useState(null);
 
-  // Сворачиваемая правая боковая панель с деталями бронирования для расширения зоны чата
+  // Сворачиваемая правая боковая панель с вкладками Деталей и Умных шаблонов
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [rightPanelTab, setRightPanelTab] = useState('details'); // 'details' | 'templates'
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   // Мобильный режим отображения: список диалогов, активный чат или детали бронирования
   const [mobileActiveView, setMobileActiveView] = useState('list'); // 'list' | 'chat' | 'details'
 
   const activeChat = chats.find((c) => c.sheetName === selectedSheet) || chats[0];
   const chatBottomRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const textareaRef = useRef(null);
 
   // Динамические шаблоны и база знаний из Google Таблиц с офлайн-памятью
@@ -132,7 +135,7 @@ export default function HostInbox({
         }
         setIsKnowledgeFromCache(false);
         if (forceRefresh) {
-          toast.success('База знаний и 14 шаблонов успешно обновлены из Google Таблиц!');
+          toast.success(`База знаний и ${templates.length} шаблонов успешно обновлены из Google Таблиц!`);
         }
       }
     } catch (err) {
@@ -150,9 +153,11 @@ export default function HostInbox({
     loadKnowledgeBase(false);
   }, []);
 
-  // Автоскролл к последнему сообщению
+  // Автоскролл к последнему сообщению внутри изолированного контейнера: предотвращает дергание экрана
   useEffect(() => {
-    chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   }, [activeChat?.messages]);
 
   // Фильтрация чатов по поиску
@@ -334,7 +339,7 @@ export default function HostInbox({
   };
 
   return (
-    <div className="bg-slate-900 border border-white/10 rounded-3xl overflow-hidden shadow-2xl h-[86vh] min-h-[640px] max-h-[920px] flex flex-col fade-in">
+    <div className="bg-slate-900 border border-white/10 rounded-3xl overflow-hidden shadow-2xl h-[calc(100vh-140px)] min-h-[660px] max-h-[940px] flex flex-col fade-in">
 
       {/* Верхняя панель управления инбоксом */}
       <div className="p-3 sm:p-4 bg-slate-800/80 border-b border-white/10 flex flex-wrap items-center justify-between gap-2 sm:gap-4">
@@ -366,7 +371,7 @@ export default function HostInbox({
           <button
             onClick={() => loadKnowledgeBase(true)}
             disabled={isSyncingKnowledge}
-            title="Обновить 14 шаблонов и переменные напрямую из Google Таблицы"
+            title="Обновить шаблоны и переменные напрямую из Google Таблицы"
             className="p-2 sm:px-3 sm:py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:text-white border border-white/10 hover:border-cyan-500/50 disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-cyan-400 ${isSyncingKnowledge ? 'animate-spin' : ''}`} />
@@ -533,8 +538,8 @@ export default function HostInbox({
             </div>
           </div>
 
-          {/* Сообщения активного диалога */}
-          <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-950/30">
+          {/* Сообщения активного диалога: изолированный скролл без дергания экрана */}
+          <div ref={messagesContainerRef} className="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-950/30">
             {activeChat?.messages?.map((m, mIdx) => {
               const isOwner = m.sender === 'Владелец' || m.sender === 'Система';
               return (
@@ -587,12 +592,12 @@ export default function HostInbox({
             <div className="flex items-start gap-2">
               <textarea
                 ref={textareaRef}
-                rows={2}
+                rows={3}
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Напишите ответ гостю или выберите один из 14 сценариев ниже... [Shift+Enter для новой строки]"
-                className="flex-1 bg-slate-800 border border-white/10 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm text-white outline-none focus:border-rose-500 resize-none min-h-[80px] max-h-[220px] overflow-y-auto leading-relaxed"
+                placeholder="Напишите ответ гостю или выберите один из шаблонов справа... [Shift+Enter для новой строки]"
+                className="flex-1 bg-slate-800 border border-white/10 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm text-white outline-none focus:border-rose-500 resize-none min-h-[96px] max-h-[220px] overflow-y-auto leading-relaxed"
               />
 
               <div className="flex flex-col gap-2 shrink-0">
@@ -623,151 +628,62 @@ export default function HostInbox({
             </div>
           </form>
 
-          {/* ПАНЕЛЬ СНИЗУ ПОЛЯ ВВОДА: 14 УМНЫХ ОТВЕТОВ ИЗ GOOGLE ТАБЛИЦ */}
-          <div className="bg-slate-950 border-t border-white/10 p-2.5 space-y-2">
-            <div className="flex items-center justify-between gap-2 overflow-x-auto">
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsTemplatesOpen(!isTemplatesOpen)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
-                    isTemplatesOpen
-                      ? 'bg-rose-600 text-white shadow-md'
-                      : 'bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white border border-white/10'
-                  }`}
-                >
-                  <FileText className="w-3.5 h-3.5 text-rose-400" />
-                  <span>14 умных ответов</span>
-                  <span className="px-1.5 py-0.2 rounded-full bg-black/40 text-[10px] font-mono">
-                    {displayedTemplates.length}
-                  </span>
-                  {isTemplatesOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                </button>
+          {/* НИЖНЯЯ ПАНЕЛЬ ДЕЙСТВИЙ И БЫСТРОГО ДОСТУПА К ШАБЛОНАМ */}
+          <div className="bg-slate-950 border-t border-white/10 px-3 py-2 flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSidebarCollapsed(false);
+                  setRightPanelTab('templates');
+                  if (mobileActiveView === 'chat') setMobileActiveView('details');
+                }}
+                className="px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white border border-white/10 shadow-sm"
+                title="Открыть панель умных шаблонов справа без перекрытия чата"
+              >
+                <FileText className="w-3.5 h-3.5 text-rose-400" />
+                <span>Умные шаблоны [{liveTemplates.length}]</span>
+              </button>
 
-                {/* Быстрые переключатели языка шаблонов */}
-                <div className="flex items-center bg-slate-900 rounded-lg p-0.5 border border-white/10 shrink-0">
-                  {['ru', 'en', 'tr'].map((l) => (
-                    <button
-                      key={l}
-                      type="button"
-                      onClick={() => setTemplateLang(l)}
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-all ${
-                        templateLang === l
-                          ? 'bg-rose-600 text-white shadow-sm'
-                          : 'text-slate-400 hover:text-slate-200'
-                      }`}
-                    >
-                      {l}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="text-[11px] text-slate-400 hidden sm:inline">
-                  {isKnowledgeFromCache ? 'Кэш браузера' : 'Синхронизировано с Таблицей'}
-                </span>
+              {/* Быстрые переключатели языка шаблонов */}
+              <div className="flex items-center bg-slate-900 rounded-lg p-0.5 border border-white/10 shrink-0">
+                {['ru', 'en', 'tr'].map((l) => (
+                  <button
+                    key={l}
+                    type="button"
+                    onClick={() => setTemplateLang(l)}
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-all ${
+                      templateLang === l
+                        ? 'bg-rose-600 text-white shadow-sm'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    {l}
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* РАСКРЫВАЮЩИЙСЯ ВНИЗ МОДУЛЬ 14 ШАБЛОНОВ: ПОЛНОРАЗМЕРНЫЙ ПРОСМОТР И ДЕЙСТВИЯ */}
-            {isTemplatesOpen && (
-              <div className="pt-2 border-t border-white/10 space-y-2.5 max-h-[300px] overflow-y-auto pr-1">
-                {/* Фильтр по этапам */}
-                <div className="flex gap-1.5 overflow-x-auto pb-1">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedStage('all')}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 transition-all ${
-                      selectedStage === 'all'
-                        ? 'bg-white/20 text-white border border-white/30'
-                        : 'bg-slate-900 text-slate-400 hover:text-white border border-white/5'
-                    }`}
-                  >
-                    Все 14 сценариев
-                  </button>
-                  {TEMPLATE_STAGES.map((st) => (
-                    <button
-                      key={st.id}
-                      type="button"
-                      onClick={() => setSelectedStage(st.id)}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 transition-all ${
-                        selectedStage === st.id
-                          ? 'bg-rose-600 text-white shadow-sm'
-                          : 'bg-slate-900 text-slate-400 hover:text-white border border-white/5'
-                      }`}
-                    >
-                      {st.title?.[lang] || st.title?.ru || st.name}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Список шаблонов выбранного этапа */}
-                <div className="space-y-2">
-                  {displayedTemplates.map((tItem) => {
-                    const resolvedText = getResolvedTemplateText(tItem, templateLang);
-
-                    return (
-                      <div
-                        key={tItem.id}
-                        className="p-3 rounded-2xl border transition-all text-xs space-y-2 bg-slate-900/90 border-white/10 hover:border-white/20"
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <span className="px-1.5 py-0.5 rounded bg-slate-800 text-rose-400 font-mono text-[10px] font-bold border border-white/5">
-                              {tItem.id}
-                            </span>
-                            <span className="font-bold text-white truncate">
-                              {tItem.title?.[templateLang] || tItem.title?.ru}
-                            </span>
-                            {isAiMatched && (
-                              <span className="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[9px] font-bold border border-amber-500/30 flex items-center gap-1">
-                                <Sparkles className="w-2.5 h-2.5" />
-                                <span>Рекомендация ИИ</span>
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Полный текст шаблона с возможностью прочтения без урезания */}
-                        <div className="p-2.5 bg-slate-950/90 rounded-xl border border-white/5 text-slate-200 font-sans text-xs whitespace-pre-wrap leading-relaxed max-h-[140px] overflow-y-auto">
-                          {resolvedText}
-                        </div>
-
-                        {/* Кнопки действий: вставить для правки или отправить сразу */}
-                        <div className="flex flex-wrap sm:flex-nowrap items-center justify-end gap-2 pt-1">
-                          <button
-                            type="button"
-                            onClick={() => handleApplyTemplate(tItem, templateLang)}
-                            className="flex-1 sm:flex-initial px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-colors border border-white/10 flex items-center justify-center gap-1.5"
-                          >
-                            <FileText className="w-3.5 h-3.5 text-rose-400" />
-                            <span>Вставить в поле</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDirectSendTemplate(tItem, templateLang)}
-                            className="flex-1 sm:flex-initial px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-1.5"
-                          >
-                            <Send className="w-3.5 h-3.5" />
-                            <span>Отправить сразу</span>
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
+            <div className="flex items-center gap-2 text-[11px]">
+              {isKnowledgeFromCache ? (
+                <span className="text-amber-400 flex items-center gap-1">
+                  <WifiOff className="w-3 h-3" /> Офлайн-память
+                </span>
+              ) : (
+                <span className="text-emerald-400 flex items-center gap-1">
+                  <Wifi className="w-3 h-3" /> Таблица онлайн
+                </span>
+              )}
+            </div>
           </div>
 
         </div>
 
-        {/* Правая колонка: Детали гостя, текущая бронь и выдача LMS видео-гидов [3 колонки] */}
-        {/* Скрывается плавно при активации режима полного экрана на десктопе, а на мобильных доступна как отдельный экран */}
+        {/* Правая колонка: Детали гостя, текущая бронь / Умная панель шаблонов */}
         {(!isSidebarCollapsed || mobileActiveView === 'details') && (
-          <div className={`${mobileActiveView === 'details' ? 'flex col-span-12' : 'hidden md:flex md:col-span-3'} border-l border-white/10 bg-slate-950/60 p-4 flex-col justify-between overflow-y-auto space-y-6`}>
-            <div className="space-y-4">
+          <div className={`${mobileActiveView === 'details' ? 'flex col-span-12' : 'hidden md:flex md:col-span-3'} border-l border-white/10 bg-slate-950/60 p-3.5 flex-col justify-between overflow-y-auto space-y-4`}>
+            <div className="space-y-4 flex-1">
+              {/* Переключатель вкладок правого сайдбара */}
               <div className="flex items-center justify-between border-b border-white/10 pb-2">
                 <div className="flex items-center gap-2">
                   <button
@@ -778,99 +694,228 @@ export default function HostInbox({
                   >
                     <ArrowLeft className="w-4 h-4" />
                   </button>
-                  <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white">
-                    {t('guestInfoTitle')}
-                  </h4>
+                  <div className="flex items-center bg-slate-900 p-0.5 rounded-xl border border-white/10">
+                    <button
+                      type="button"
+                      onClick={() => setRightPanelTab('details')}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                        rightPanelTab === 'details'
+                          ? 'bg-rose-600 text-white shadow-sm'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      <User className="w-3.5 h-3.5" />
+                      <span>{t('guestInfoTitle')}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setRightPanelTab('templates')}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                        rightPanelTab === 'templates'
+                          ? 'bg-rose-600 text-white shadow-sm'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      <FileText className="w-3.5 h-3.5 text-rose-300" />
+                      <span>Шаблоны [{liveTemplates.length}]</span>
+                    </button>
+                  </div>
                 </div>
+
                 <button
                   onClick={() => setIsSidebarCollapsed(true)}
-                  title="Свернуть панель деталей"
+                  title="Свернуть панель"
                   className="hidden md:block text-slate-400 hover:text-white transition-colors"
                 >
                   <PanelRightClose className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="space-y-2 text-xs">
-                <p className="text-slate-400">{t('nameFieldLabel')} <b className="text-white">{activeChat?.clientName || t('guestLabel')}</b></p>
-                <p className="text-slate-400">{t('contactFieldLabel')} <b className="text-white">{activeChat?.clientContact || '—'}</b></p>
-              </div>
+              {/* ВКЛАДКА 1: ДЕТАЛИ ГОСТЯ И БРОНИРОВАНИЯ */}
+              {rightPanelTab === 'details' && (
+                <div className="space-y-4">
+                  <div className="space-y-2 text-xs">
+                    <p className="text-slate-400">{t('nameFieldLabel')} <b className="text-white">{activeChat?.clientName || t('guestLabel')}</b></p>
+                    <p className="text-slate-400">{t('contactFieldLabel')} <b className="text-white">{activeChat?.clientContact || '-'}</b></p>
+                  </div>
 
-              {/* Активные брони гостя */}
-              {activeChat?.activeRequests && activeChat.activeRequests.length > 0 && (
-                <div className="p-3 bg-slate-900 rounded-2xl border border-white/5 space-y-2">
-                  <span className="text-[10px] uppercase font-bold text-rose-400 tracking-wider block">
-                    {t('currentBookingTitle')}
-                  </span>
-                  {activeChat.activeRequests.map((r, rIdx) => (
-                    <div key={rIdx} className="text-xs space-y-1">
-                      <p className="font-bold text-white">{r.checkIn} — {r.checkOut}</p>
-                      <p className="text-emerald-400 font-bold">{r.price}</p>
-                      <p className="text-slate-400 text-[11px]">{t('statusFieldLabel')} {r.status}</p>
+                  {/* Активные брони гостя */}
+                  {activeChat?.activeRequests && activeChat.activeRequests.length > 0 && (
+                    <div className="p-3 bg-slate-900 rounded-2xl border border-white/5 space-y-2">
+                      <span className="text-[10px] uppercase font-bold text-rose-400 tracking-wider block">
+                        {t('currentBookingTitle')}
+                      </span>
+                      {activeChat.activeRequests.map((r, rIdx) => (
+                        <div key={rIdx} className="text-xs space-y-1">
+                          <p className="font-bold text-white">{r.checkIn} - {r.checkOut}</p>
+                          <p className="text-emerald-400 font-bold">{r.price}</p>
+                          <p className="text-slate-400 text-[11px]">{t('statusFieldLabel')} {r.status}</p>
 
-                      {/* Кнопки управления заявкой */}
-                      {(r.status === 'ЗАПРОС' || (r.status && r.status.includes('ОЖИДАЕТ'))) && (
-                        <div className="grid grid-cols-2 gap-1.5 pt-1.5">
-                          <button
-                            onClick={() => onApprove && onApprove(r)}
-                            disabled={loading}
-                            title={t('approve24hBtn')}
-                            className="flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold transition-all disabled:opacity-40"
-                          >
-                            <CheckCircle className="w-3 h-3" /> {t('approve24hBtn')}
-                          </button>
-                          <button
-                            onClick={() => onSpecialOffer && onSpecialOffer({ rowIndex: r.rowIndex, contact: r.contact, name: r.name, checkIn: r.checkIn, checkOut: r.checkOut, chatSheetName: `Chat_${r.name}_${r.contact}` })}
-                            disabled={loading}
-                            title={t('specialOfferShortBtn')}
-                            className="flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-purple-600/20 hover:bg-purple-600/40 text-purple-400 border border-purple-500/30 text-[10px] font-bold transition-all disabled:opacity-40"
-                          >
-                            <Gift className="w-3 h-3" /> {t('specialOfferShortBtn')}
-                          </button>
-                          <button
-                            onClick={() => onRevoke && onRevoke(r)}
-                            disabled={loading}
-                            title={t('revokeShortBtn')}
-                            className="flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-amber-600/20 hover:bg-amber-600/40 text-amber-400 border border-amber-500/30 text-[10px] font-bold transition-all disabled:opacity-40"
-                          >
-                            <RotateCcw className="w-3 h-3" /> {t('revokeShortBtn')}
-                          </button>
-                          <button
-                            onClick={() => onReject && onReject(r)}
-                            disabled={loading}
-                            title={t('declineShortBtn')}
-                            className="flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-red-600/20 hover:bg-red-600/40 text-red-400 border border-red-500/30 text-[10px] font-bold transition-all disabled:opacity-40"
-                          >
-                            <XCircle className="w-3 h-3" /> {t('declineShortBtn')}
-                          </button>
+                          {/* Кнопки управления заявкой на всех активных стадиях */}
+                          {['ЗАПРОС', 'ОЖИДАЕТ ОПЛАТЫ', 'СПЕЦПРЕДЛОЖЕНИЕ'].some((st) => r.status && r.status.includes(st)) && (
+                            <div className="grid grid-cols-2 gap-1.5 pt-1.5">
+                              {r.status === 'ЗАПРОС' && (
+                                <button
+                                  onClick={() => onApprove && onApprove(r)}
+                                  disabled={loading}
+                                  title={t('approve24hBtn')}
+                                  className="flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold transition-all disabled:opacity-40"
+                                >
+                                  <CheckCircle className="w-3 h-3" /> {t('approve24hBtn')}
+                                </button>
+                              )}
+                              {r.status === 'ЗАПРОС' && (
+                                <button
+                                  onClick={() => onSpecialOffer && onSpecialOffer({ rowIndex: r.rowIndex, contact: r.contact, name: r.name, checkIn: r.checkIn, checkOut: r.checkOut, chatSheetName: `Chat_${r.name}_${r.contact}` })}
+                                  disabled={loading}
+                                  title={t('specialOfferShortBtn')}
+                                  className="flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-purple-600/20 hover:bg-purple-600/40 text-purple-400 border border-purple-500/30 text-[10px] font-bold transition-all disabled:opacity-40"
+                                >
+                                  <Gift className="w-3 h-3" /> {t('specialOfferShortBtn')}
+                                </button>
+                              )}
+                              <button
+                                onClick={() => onRevoke && onRevoke(r)}
+                                disabled={loading}
+                                title={t('revokeShortBtn')}
+                                className="flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-amber-600/20 hover:bg-amber-600/40 text-amber-400 border border-amber-500/30 text-[10px] font-bold transition-all disabled:opacity-40"
+                              >
+                                <RotateCcw className="w-3 h-3" /> {t('revokeShortBtn')}
+                              </button>
+                              <button
+                                onClick={() => onReject && onReject(r)}
+                                disabled={loading}
+                                title={t('declineShortBtn')}
+                                className="flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-red-600/20 hover:bg-red-600/40 text-red-400 border border-red-500/30 text-[10px] font-bold transition-all disabled:opacity-40"
+                              >
+                                <XCircle className="w-3 h-3" /> {t('declineShortBtn')}
+                              </button>
+                            </div>
+                          )}
                         </div>
-                      )}
+                      ))}
                     </div>
-                  ))}
+                  )}
+
+                  {/* Блок отправки путеводителя */}
+                  <div className="space-y-2 pt-2 border-t border-white/5">
+                    <span className="text-[10px] uppercase font-bold text-purple-400 tracking-wider flex items-center gap-1">
+                      <PlayCircle className="w-3.5 h-3.5" /> {t('grantGuideAccessTitle')}
+                    </span>
+                    <select
+                      onChange={(e) => {
+                        const lesson = lmsModules.find((m) => m.privateLink === e.target.value);
+                        if (lesson) handleSendLessonLink(lesson);
+                        e.target.value = '';
+                      }}
+                      className="w-full bg-slate-800 border border-white/10 p-2 rounded-xl text-xs text-white font-bold outline-none cursor-pointer"
+                    >
+                      <option value="">{t('selectVideoGuidePlaceholder')}</option>
+                      {lmsModules.map((m, mIdx) => (
+                        <option key={mIdx} value={m.privateLink}>
+                          {m.name?.[lang] || m.name?.ru || m.name?.en || m.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               )}
 
-              {/* Блок отправки путеводителя */}
-              <div className="space-y-2 pt-2 border-t border-white/5">
-                <span className="text-[10px] uppercase font-bold text-purple-400 tracking-wider flex items-center gap-1">
-                  <PlayCircle className="w-3.5 h-3.5" /> {t('grantGuideAccessTitle')}
-                </span>
-                <select
-                  onChange={(e) => {
-                    const lesson = lmsModules.find((m) => m.privateLink === e.target.value);
-                    if (lesson) handleSendLessonLink(lesson);
-                    e.target.value = '';
-                  }}
-                  className="w-full bg-slate-800 border border-white/10 p-2 rounded-xl text-xs text-white font-bold outline-none cursor-pointer"
-                >
-                  <option value="">{t('selectVideoGuidePlaceholder')}</option>
-                  {lmsModules.map((m, mIdx) => (
-                    <option key={mIdx} value={m.privateLink}>
-                      {m.name?.[lang] || m.name?.ru || m.name?.en || m.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {/* ВКЛАДКА 2: УМНАЯ ПАНЕЛЬ ШАБЛОНОВ БЕЗ ПЕРЕКРЫТИЯ ЧАТА С ПОЛНЫМ ПРОСМОТРОМ */}
+              {rightPanelTab === 'templates' && (
+                <div className="space-y-3">
+                  {/* Фильтр по этапам */}
+                  <div className="flex flex-wrap gap-1 pb-1">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedStage('all')}
+                      className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all ${
+                        selectedStage === 'all'
+                          ? 'bg-rose-600 text-white shadow-sm'
+                          : 'bg-slate-900 text-slate-400 hover:text-white border border-white/5'
+                      }`}
+                    >
+                      Все [{liveTemplates.length}]
+                    </button>
+                    {TEMPLATE_STAGES.map((st) => (
+                      <button
+                        key={st.id}
+                        type="button"
+                        onClick={() => setSelectedStage(st.id)}
+                        className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all ${
+                          selectedStage === st.id
+                            ? 'bg-rose-600 text-white shadow-sm'
+                            : 'bg-slate-900 text-slate-400 hover:text-white border border-white/5'
+                        }`}
+                      >
+                        {st.title?.[lang] || st.title?.ru || st.name}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Список карточек шаблонов */}
+                  <div className="space-y-3 max-h-[calc(100vh-320px)] overflow-y-auto pr-1">
+                    {displayedTemplates.map((tItem) => {
+                      const curReq = activeChat?.activeRequests?.[0] || {};
+                      const isAiMatched = Boolean(
+                        curReq?.status &&
+                        tItem?.stageId &&
+                        curReq.status.toLowerCase().includes(tItem.stageId.toLowerCase())
+                      );
+                      const resolvedText = getResolvedTemplateText(tItem, templateLang);
+
+                      return (
+                        <div
+                          key={tItem.id}
+                          className="p-3 rounded-2xl border transition-all text-xs space-y-2 bg-slate-900 border-white/10 hover:border-white/20 shadow-md"
+                        >
+                          <div className="flex items-center justify-between gap-1.5">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <span className="px-1.5 py-0.5 rounded bg-slate-800 text-rose-400 font-mono text-[10px] font-bold border border-white/5 shrink-0">
+                                {tItem.id}
+                              </span>
+                              <span className="font-bold text-white truncate text-xs">
+                                {tItem.title?.[templateLang] || tItem.title?.ru}
+                              </span>
+                            </div>
+                            {isAiMatched && (
+                              <span className="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[9px] font-bold border border-amber-500/30 flex items-center gap-1 shrink-0">
+                                <Sparkles className="w-2.5 h-2.5" />
+                                <span>Рекомендация ИИ</span>
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Полный текст шаблона без урезания с прокруткой */}
+                          <div className="p-2.5 bg-slate-950 rounded-xl border border-white/5 text-slate-200 font-sans text-xs whitespace-pre-wrap leading-relaxed max-h-[140px] overflow-y-auto">
+                            {resolvedText}
+                          </div>
+
+                          {/* Кнопки действий: вставить для правки или отправить сразу */}
+                          <div className="grid grid-cols-2 gap-1.5 pt-1">
+                            <button
+                              type="button"
+                              onClick={() => handleApplyTemplate(tItem, templateLang)}
+                              className="py-1.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-[11px] transition-colors border border-white/10 flex items-center justify-center gap-1"
+                            >
+                              <FileText className="w-3 h-3 text-rose-400" />
+                              <span>Вставить</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDirectSendTemplate(tItem, templateLang)}
+                              className="py-1.5 px-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-[11px] transition-colors shadow-sm flex items-center justify-center gap-1"
+                            >
+                              <Send className="w-3 h-3" />
+                              <span>Отправить</span>
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="text-[10px] text-slate-500 border-t border-white/5 pt-3">

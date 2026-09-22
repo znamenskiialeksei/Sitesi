@@ -296,11 +296,11 @@ export default function HomeListing({ publicData, contentData }) {
     specBeds:
       currentContentData.home?.spec_beds?.[lang] ||
       currentContentData.home?.spec_beds?.ru ||
-      '5 кроватей',
+      '10 спальных мест',
     specBaths:
       currentContentData.home?.spec_baths?.[lang] ||
       currentContentData.home?.spec_baths?.ru ||
-      '4 ванные комнаты',
+      '4 ванные комнаты + WC',
     aboutTitle:
       currentContentData.home?.about_title?.[lang] ||
       currentContentData.home?.about_title?.ru ||
