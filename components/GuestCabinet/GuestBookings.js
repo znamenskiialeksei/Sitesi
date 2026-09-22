@@ -89,10 +89,11 @@ export default function GuestBookings({ activeRequests = [], timeLefter = {}, on
 
   return (
     <div className="space-y-6 fade-in">
-      {activeRequests.map((req, idx) => {
-        const remaining = timeLefter[req.rowIndex];
-        const isAwaitingPay = req.status === 'ОЖИДАЕТ ОПЛАТЫ' || req.status === 'СПЕЦПРЕДЛОЖЕНИЕ';
+      {(activeRequests || []).filter(Boolean).map((req, idx) => {
+        const remaining = timeLefter?.[req.rowIndex] || null;
+        const isAwaitingPay = req.status && (req.status.includes('ОЖИДАЕТ ОПЛАТЫ') || req.status.includes('СПЕЦПРЕДЛОЖЕНИЕ'));
         const isOffer = req.status && req.status.includes('СПЕЦПРЕДЛОЖЕНИЕ');
+        const isExpired = remaining === 'EXPIRED';
 
         return (
           <div
@@ -140,7 +141,7 @@ export default function GuestBookings({ activeRequests = [], timeLefter = {}, on
                   {req.checkIn} - {req.checkOut}
                 </p>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  {req.nights} ночей • {req.guests || (req.adults + req.children)} гостей
+                  {req.nights || 1} ночей • {req.guests || (Number(req.adults || 0) + Number(req.children || 0)) || 2} гостей
                 </p>
               </div>
 

@@ -135,9 +135,14 @@ const replacePlaceholders = (templateText, dataObj) => {
   return result;
 };
 
+// Кэш проверенных и стилизованных листов диалогов для защиты от исчерпания квоты Google Sheets API
+const styledSheetsCache = {};
+
 // Интеллектуальное создание и смарт-стилизация листа диалога Google Sheets
 const ensureStyledChatSheet = async (sheets, targetChatId, sheetTitle) => {
   if (!sheets || !targetChatId || !sheetTitle) return;
+  const cacheKey = `${targetChatId}_${sheetTitle}`;
+  if (styledSheetsCache[cacheKey]) return;
   try {
     const meta = await sheets.spreadsheets.get({ spreadsheetId: targetChatId });
     const existingSheet = (meta.data.sheets || []).find((s) => s.properties.title === sheetTitle);
@@ -315,6 +320,7 @@ const ensureStyledChatSheet = async (sheets, targetChatId, sheetTitle) => {
         });
       }
     }
+    styledSheetsCache[cacheKey] = true;
   } catch (err) {
     console.warn(`[ensureStyledChatSheet Warning for ${sheetTitle}]:`, err.message);
   }
@@ -1319,8 +1325,9 @@ export default async function handler(req, res) {
         }
       }
 
-      // Получение истории сообщений
+      // Получение истории сообщений с защитой от сбоев квоты
       let messages = [];
+      const cacheKey = `chat_msgs_${safeContact}`;
       if (sheets && targetChatId) {
         try {
           const chatDb = await sheets.spreadsheets.values.get({ spreadsheetId: targetChatId, range: `'${chatSheetName}'!A:G` });
@@ -1328,18 +1335,24 @@ export default async function handler(req, res) {
           const hasHeader = rows.length > 0 && rows[0][0] === 'Дата и Время';
           const rawMsgs = hasHeader ? rows.slice(1) : rows;
           messages = rawMsgs.map(parseMessageRow);
-        } catch (e) { }
+          if (messages.length > 0) {
+            await safeCacheSet(cacheKey, messages, { ex: 86400 * 7 });
+          }
+        } catch (e) {
+          console.warn('[Chat Fetch Sheets Warning]:', e.message);
+        }
       }
 
-      // Если Google Sheets не вернул сообщений (демо-режим или задержка), подтягиваем из кэша
+      // Если Google Sheets временно не вернул сообщений [лимит квоты или таймаут], мгновенно берем из кэша
       if (messages.length === 0) {
-        const cached = await safeCacheGet(`chat_msgs_${safeContact}`);
-        if (cached && Array.isArray(cached)) {
+        const cached = await safeCacheGet(cacheKey);
+        if (cached && Array.isArray(cached) && cached.length > 0) {
           messages = cached;
         }
       }
 
-      // Получение активных заявок гостя
+      // Получение активных заявок гостя с защитой от сбоев квоты
+      const reqCacheKey = `user_bookings_${safeContact}`;
       let activeRequests = [];
       if (sheets && spreadsheetId) {
         try {
@@ -1369,7 +1382,21 @@ export default async function handler(req, res) {
               expiresAt
             };
           }).filter((r) => (r.contact || '').toLowerCase() === safeContact);
-        } catch (e) { }
+
+          if (activeRequests.length > 0) {
+            await safeCacheSet(reqCacheKey, activeRequests, { ex: 86400 * 7 });
+          }
+        } catch (e) {
+          console.warn('[Bookings Fetch Sheets Warning]:', e.message);
+        }
+      }
+
+      // Если чтение бронирований не удалось из-за квоты 429, отдаем кэшированные заявки гостя
+      if (activeRequests.length === 0) {
+        const cachedReqs = await safeCacheGet(reqCacheKey);
+        if (cachedReqs && Array.isArray(cachedReqs) && cachedReqs.length > 0) {
+          activeRequests = cachedReqs;
+        }
       }
 
       return res.status(200).json({ success: true, messages, activeRequests });

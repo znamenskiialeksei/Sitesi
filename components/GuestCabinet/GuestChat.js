@@ -59,9 +59,9 @@ export default function GuestChat({
     setFile(null);
   };
 
-  const activeOffer = activeRequests.find((r) => r.status && (r.status.includes('СПЕЦПРЕДЛОЖЕНИЕ') || r.status.includes('ОЖИДАЕТ')));
-  const remaining = activeOffer ? timeLefter[activeOffer.rowIndex] : null;
-  const isOffer = activeOffer && activeOffer.status.includes('СПЕЦПРЕДЛОЖЕНИЕ');
+  const activeOffer = (activeRequests || []).find((r) => r && r.status && (String(r.status).includes('СПЕЦПРЕДЛОЖЕНИЕ') || String(r.status).includes('ОЖИДАЕТ')));
+  const remaining = activeOffer ? timeLefter?.[activeOffer.rowIndex] || null : null;
+  const isOffer = activeOffer && String(activeOffer.status || '').includes('СПЕЦПРЕДЛОЖЕНИЕ');
 
   return (
     <div className="bg-slate-900 border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[650px] fade-in">
@@ -141,13 +141,13 @@ export default function GuestChat({
 
       {/* Лента сообщений */}
       <div className="flex-1 p-5 overflow-y-auto space-y-4 bg-slate-950/40">
-        {messages.length === 0 ? (
+        {!messages || messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-slate-500 text-xs">
             <MessageCircle className="w-10 h-10 mb-2 opacity-30" />
             <p>Диалог пуст. Напишите сообщение хозяину виллы!</p>
           </div>
         ) : (
-          messages.map((m, idx) => {
+          messages.filter(Boolean).map((m, idx) => {
             const isHost = m.sender === 'Владелец' || m.sender === 'Алексей Знаменский' || m.sender === 'Admin' || m.sender === 'Owner';
             const isAi = (m.sender || '').includes('ИИ') || (m.sender || '').includes('Gemini');
             const isSystem = m.sender === 'Система';
@@ -198,7 +198,7 @@ export default function GuestChat({
                   )}
 
                   {/* Интерактивная кнопка оплаты прямо в сообщении спецпредложения */}
-                  {((m.original && m.original.includes('специальное предложение')) || (m.ru && m.ru.includes('специальное предложение'))) && activeOffer && remaining !== 'EXPIRED' && onPayRequest && (
+                  {String(m.original || m.ru || '').toLowerCase().includes('специальное предложение') && activeOffer && remaining !== 'EXPIRED' && onPayRequest && (
                     <div className="mt-3 pt-3 border-t border-white/15 flex flex-wrap items-center justify-between gap-2">
                       <span className="text-[11px] font-bold text-amber-300 flex items-center gap-1">
                         <Gift className="w-3.5 h-3.5 text-amber-400" /> Спецпредложение активно

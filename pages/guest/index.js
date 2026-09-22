@@ -4,7 +4,7 @@
 // Назначение: Управление бронированиями гостя, прямой чат с хозяином, видео-гиды
 // ==============================================================================
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -23,10 +23,10 @@ import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../../components/Toast';
 
-export default function GuestCabinetPage() {
+export default function GuestDashboard() {
   const router = useRouter();
+  const { currentUser, authLoading, setAuthModalOpen, setContactModalOpen, updateCurrentUser, logout } = useAuth();
   const { t, lang, currency } = useLanguage();
-  const { currentUser, authLoading, setAuthModalOpen, setContactModalOpen, updateCurrentUser } = useAuth();
   const toast = useToast();
 
   const [activeTab, setActiveTab] = useState('trips'); // 'trips', 'chat', 'guides', 'profile'
@@ -35,17 +35,37 @@ export default function GuestCabinetPage() {
   const [timeLefter, setTimeLefter] = useState({});
   const [loadingChat, setLoadingChat] = useState(false);
   const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
+  const isFetchingRef = useRef(false);
 
-  // Синхронизация активной вкладки с URL query (?tab=chat)
+  // Синхронизация активной вкладки с URL query [?tab=chat]
   useEffect(() => {
     if (router.query.tab && ['trips', 'chat', 'guides', 'profile'].includes(router.query.tab)) {
       setActiveTab(router.query.tab);
     }
   }, [router.query.tab]);
 
-  // Загрузка сообщений чата и активных заявок гостя
+  // Загрузка локально сохраненных данных при монтировании для мгновенного рендера
+  useEffect(() => {
+    if (currentUser?.contact && typeof window !== 'undefined') {
+      try {
+        const savedMsgs = localStorage.getItem(`guest_chat_${currentUser.contact}`);
+        if (savedMsgs) {
+          const parsed = JSON.parse(savedMsgs);
+          if (Array.isArray(parsed) && parsed.length > 0) setChatMessages(parsed);
+        }
+        const savedReqs = localStorage.getItem(`guest_reqs_${currentUser.contact}`);
+        if (savedReqs) {
+          const parsed = JSON.parse(savedReqs);
+          if (Array.isArray(parsed) && parsed.length > 0) setActiveRequests(parsed);
+        }
+      } catch (e) { }
+    }
+  }, [currentUser?.contact]);
+
+  // Загрузка сообщений чата и активных заявок гостя с защитой от мерцания
   const fetchGuestData = async () => {
-    if (!currentUser) return;
+    if (!currentUser || isFetchingRef.current) return;
+    isFetchingRef.current = true;
     try {
       const res = await axios.post('/api/booking', {
         action: 'chat',
@@ -53,11 +73,29 @@ export default function GuestCabinetPage() {
         sender: currentUser.name
       });
       if (res.data && res.data.success) {
-        setChatMessages(res.data.messages || []);
-        setActiveRequests(res.data.activeRequests || []);
+        // Защита от исчезновения данных: если сервер вернул непустой список сообщений, обновляем
+        if (Array.isArray(res.data.messages) && res.data.messages.length > 0) {
+          setChatMessages(res.data.messages);
+          if (typeof window !== 'undefined' && currentUser.contact) {
+            try {
+              localStorage.setItem(`guest_chat_${currentUser.contact}`, JSON.stringify(res.data.messages));
+            } catch (e) { }
+          }
+        }
+        // Защита активных заявок от временных сбоев API
+        if (Array.isArray(res.data.activeRequests) && res.data.activeRequests.length > 0) {
+          setActiveRequests(res.data.activeRequests);
+          if (typeof window !== 'undefined' && currentUser.contact) {
+            try {
+              localStorage.setItem(`guest_reqs_${currentUser.contact}`, JSON.stringify(res.data.activeRequests));
+            } catch (e) { }
+          }
+        }
       }
     } catch (err) {
-      console.warn('Ошибка загрузки данных гостя:', err);
+      console.warn('Ошибка загрузки данных гостя:', err?.message || err);
+    } finally {
+      isFetchingRef.current = false;
     }
   };
 
