@@ -120,9 +120,7 @@ export default function BookingWidget({
     guestPhone &&
     currentUser.phone.replace(/\D/g, '') === guestPhone.replace(/\D/g, '')
   );
-  const isFullyVerified = verificationMode === 'strict'
-    ? (isEmailVerified && isPhoneVerified)
-    : isEmailVerified;
+  const isFullyVerified = Boolean(isEmailVerified);
 
   const { agreedKVKK, agreedContract, agreedPrivacy, allAgreed } = useLegalConsent();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -888,11 +886,11 @@ export default function BookingWidget({
         </div>
       )}
 
-      {/* Модальное окно пошаговой верификации Email и Телефона гостя */}
+      {/* Модальное окно подтверждения Email гостя */}
       <VerificationModal
         isOpen={isVerificationModalOpen}
         onClose={() => setIsVerificationModalOpen(false)}
-        mode={dynamicRules.verificationMode || 'progressive'}
+        targetChannel="email"
         guestData={{
           name: guestName.trim() || 'Гость',
           email: guestEmail.trim(),

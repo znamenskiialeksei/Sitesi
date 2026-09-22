@@ -76,20 +76,46 @@ export const sendEmailVerificationCode = async ({ to, code, name }) => {
   // 1. Отправка через Google Apps Script Gmail Relay при наличии GOOGLE_APPS_SCRIPT_URL
   if (process.env.GOOGLE_APPS_SCRIPT_URL) {
     try {
-      const gasRes = await fetch(process.env.GOOGLE_APPS_SCRIPT_URL, {
+      const payload = {
+        action: 'send_verification_email',
+        to,
+        code,
+        name: name || 'Гость',
+        subject,
+        htmlBody: htmlContent
+      };
+
+      // Дублирование параметров в URL для надежного прохождения 302/307 редиректов Node.js fetch
+      let fetchUrl = process.env.GOOGLE_APPS_SCRIPT_URL;
+      try {
+        const urlObj = new URL(fetchUrl);
+        urlObj.searchParams.set('action', 'send_verification_email');
+        urlObj.searchParams.set('to', to);
+        urlObj.searchParams.set('code', code);
+        if (name) urlObj.searchParams.set('name', name);
+        fetchUrl = urlObj.toString();
+      } catch (urlErr) {
+        // Используем базовый URL если парсинг строки дал сбой
+      }
+
+      const gasRes = await fetch(fetchUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'send_verification_email',
-          to,
-          code,
-          name: name || 'Гость',
-          subject,
-          htmlBody: htmlContent
-        })
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload),
+        redirect: 'follow'
       });
-      const gasData = await gasRes.json().catch(() => ({}));
-      if (gasRes.ok && (gasData.success !== false)) {
+
+      const gasText = await gasRes.text();
+      let gasData = {};
+      try {
+        gasData = JSON.parse(gasText);
+      } catch (jsonErr) {
+        if (gasText.includes('Письмо с кодом успешно отправлено') || gasText.includes('"success":true')) {
+          gasData = { success: true };
+        }
+      }
+
+      if (gasRes.ok && gasData.success !== false) {
         emailSent = true;
         providerUsed = 'google_apps_script';
       }
@@ -148,11 +174,11 @@ export const sendEmailVerificationCode = async ({ to, code, name }) => {
     }
   }
 
-  // 4. Мгновенное дублирование в Telegram владельца виллы
+  // 4. Служебное оповещение суперхозяина в Telegram [строго внутренний лог владельца]
   if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
     try {
       const guestLabel = name || 'Гость';
-      const tgMsg = `🔐 ВЕРИФИКАЦИЯ EMAIL: Код для гостя\n👤 Гость: ${guestLabel}\n📧 Email: ${to}\n🔢 КОД: ${code}\n⏱ Срок действия: 10 минут`;
+      const tgMsg = `🔔 [СЛУЖЕБНОЕ ОПОВЕЩЕНИЕ СУПЕРХОЗЯИНУ]\nЗапрошена верификация Email гостя\n👤 Гость: ${guestLabel}\n📧 Email: ${to}\n🔢 Код подтверждения: ${code}\n⏱ Срок действия: 10 минут\nСтатус доставки: ${emailSent ? 'Отправлено через ' + providerUsed : 'Шлюз в процессе подключения'}`;
       const tgRes = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -168,28 +194,29 @@ export const sendEmailVerificationCode = async ({ to, code, name }) => {
 
   console.log(`[AUTH CODE EMAIL]: Для ${to} сгенерирован проверочный код: ${code}`);
 
-  const isDevMode = !emailSent && !telegramSent;
+  // isDevMode истинен только если реальное письмо гостю не было доставлено
+  const isDevMode = !emailSent;
   return {
     success: true,
     isDevMode,
-    provider: emailSent ? providerUsed : (telegramSent ? 'telegram' : 'dev_local'),
+    provider: emailSent ? providerUsed : 'dev_local',
     code,
     emailSent,
     telegramSent,
-    message: isDevMode
-      ? 'Почтовый шлюз и Telegram еще не настроены в .env.local'
-      : (emailSent ? 'Письмо с кодом успешно отправлено на email' : 'Код успешно отправлен в Telegram владельца')
+    message: emailSent
+      ? 'Письмо с проверочным кодом успешно отправлено на email'
+      : 'Почтовый шлюз настраивается: используйте проверочный код из панели отладки'
   };
 };
 
 export const sendPhoneVerificationCode = async ({ phone, code, name }) => {
   let telegramSent = false;
 
-  // Отправка SMS-сообщения или кода в Telegram владельца для тестирования
+  // Служебное оповещение суперхозяина в Telegram о запросе кода для телефона
   if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
     try {
       const guestLabel = name || 'Гость';
-      const tgMsg = `📱 ВЕРИФИКАЦИЯ ТЕЛЕФОНА: Код для гостя\n👤 Гость: ${guestLabel}\n📞 Телефон: ${phone}\n🔢 КОД: ${code}\n⏱ Срок действия: 10 минут`;
+      const tgMsg = `🔔 [СЛУЖЕБНОЕ ОПОВЕЩЕНИЕ СУПЕРХОЗЯИНУ]\nЗапрошена верификация телефона гостя\n👤 Гость: ${guestLabel}\n📞 Телефон: ${phone}\n🔢 Код подтверждения: ${code}\n⏱ Срок действия: 10 минут`;
       const tgRes = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -205,15 +232,14 @@ export const sendPhoneVerificationCode = async ({ phone, code, name }) => {
 
   console.log(`[AUTH CODE PHONE]: Для ${phone} сгенерирован проверочный код: ${code}`);
 
-  const isDevMode = !telegramSent;
+  // Режим ожидания прямого SMS шлюза: код доступен в панели тестирования
+  const isDevMode = true;
   return {
     success: true,
     isDevMode,
-    provider: telegramSent ? 'telegram' : 'dev_local',
+    provider: 'dev_local',
     code,
     telegramSent,
-    message: isDevMode
-      ? 'SMS шлюз и Telegram еще не настроены в .env.local'
-      : 'Код для телефона успешно отправлен в Telegram владельца'
+    message: 'Код подтверждения для номера телефона сформирован'
   };
 };

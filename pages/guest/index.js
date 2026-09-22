@@ -35,6 +35,7 @@ export default function GuestDashboard() {
   const [timeLefter, setTimeLefter] = useState({});
   const [loadingChat, setLoadingChat] = useState(false);
   const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const isFetchingRef = useRef(false);
 
   // Синхронизация активной вкладки с URL query [?tab=chat]
@@ -243,10 +244,14 @@ export default function GuestDashboard() {
                     {t('emailVerifiedBadge') || 'Email подтвержден'}
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] font-semibold">
+                  <button
+                    type="button"
+                    onClick={() => setIsEmailModalOpen(true)}
+                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 text-[11px] font-semibold transition-colors"
+                  >
                     <Mail className="w-3 h-3" />
-                    {t('verifyEmailPrompt') || 'Email не подтвержден'}
-                  </span>
+                    {currentUser.email ? (t('verifyEmailPrompt') || 'Подтвердить Email') : 'Указать и подтвердить Email'}
+                  </button>
                 )}
                 {currentUser.phoneVerified ? (
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-semibold">
@@ -260,7 +265,7 @@ export default function GuestDashboard() {
                     className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 text-[11px] font-semibold transition-colors"
                   >
                     <Phone className="w-3 h-3" />
-                    {t('verifyPhonePrompt') || 'Подтвердить телефон'}
+                    {currentUser.phone ? (t('verifyPhonePrompt') || 'Подтвердить телефон') : 'Указать и подтвердить телефон'}
                   </button>
                 )}
               </div>
@@ -393,20 +398,49 @@ export default function GuestDashboard() {
 
       </main>
 
+      {/* Модальное окно подтверждения Email гостя */}
+      {currentUser && (
+        <VerificationModal
+          isOpen={isEmailModalOpen}
+          onClose={() => setIsEmailModalOpen(false)}
+          targetChannel="email"
+          guestData={{
+            name: currentUser.name || 'Гость',
+            email: currentUser.email || (currentUser.contact?.includes('@') ? currentUser.contact : ''),
+            phone: currentUser.phone || ''
+          }}
+          onSuccess={(res) => {
+            setIsEmailModalOpen(false);
+            if (updateCurrentUser) {
+              updateCurrentUser({
+                emailVerified: true,
+                email: res.email || currentUser.email
+              });
+            }
+            toast.success(t('verifySuccess') || 'Email успешно подтвержден!');
+          }}
+        />
+      )}
+
       {/* Модальное окно подтверждения номера телефона гостя */}
       {currentUser && (
         <VerificationModal
           isOpen={isPhoneModalOpen}
           onClose={() => setIsPhoneModalOpen(false)}
-          mode="strict"
+          targetChannel="phone"
           guestData={{
             name: currentUser.name || 'Гость',
             email: currentUser.email || '',
-            phone: currentUser.phone || currentUser.contact || ''
+            phone: currentUser.phone || (!currentUser.contact?.includes('@') ? currentUser.contact : '')
           }}
-          onSuccess={() => {
+          onSuccess={(res) => {
             setIsPhoneModalOpen(false);
-            updateCurrentUser({ phoneVerified: true });
+            if (updateCurrentUser) {
+              updateCurrentUser({
+                phoneVerified: true,
+                phone: res.phone || currentUser.phone
+              });
+            }
             toast.success(t('verifySuccess') || 'Номер телефона успешно подтвержден!');
           }}
         />

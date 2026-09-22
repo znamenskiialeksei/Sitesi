@@ -91,8 +91,9 @@ function onOpen() {
 
   // 4. Блок 4: Каталог услуг и путеводителей
   var catalogMenu = ui.createMenu("🛍️ 4. Каталог и Путеводители")
-    .addItem("🔄 Обновить автопереводы услуг: RU ➔ EN / TR", "refreshCatalogTranslations")
-    .addItem("🖼️ Проверить прямые превью ссылок Google Drive", "auditDriveMediaLinks");
+    .addItem("🔄 1. Обновить автопереводы услуг: RU ➔ EN / TR", "refreshCatalogTranslations")
+    .addItem("💱 2. Пересчитать все валюты по заполненным ценам", "recalculateAllCatalogCurrencies")
+    .addItem("🖼️ 3. Проверить прямые превью ссылок Google Drive", "auditDriveMediaLinks");
 
   // 5. Блок 5: Гостевой сервис и CRM-мессенджер
   var crmMenu = ui.createMenu("💬 5. CRM & Сообщения")
@@ -111,7 +112,8 @@ function onOpen() {
     .addItem("🛠️ 7. Восстановить все листы и наполнить эталонным контентом", "ensureAllSystemSheets")
     .addItem("💾 8. Зафиксировать текущие таблицы как эталон SSOT на сайте", "saveMasterSeedInteractive")
     .addSeparator()
-    .addItem("📧 9. Инструкция по развертыванию Gmail Relay", "showGmailRelayDeployHelp");
+    .addItem("📧 9. Инструкция по развертыванию Gmail Relay", "showGmailRelayDeployHelp")
+    .addItem("🧪 10. Тестовая отправка письма через Gmail Relay", "testGmailRelayInteractive");
 
   // Сборка первого главного меню верхнего уровня: 🏡 Villa Turaman Suite
   ui.createMenu("🏡 Villa Turaman Suite")
@@ -1265,14 +1267,28 @@ function setupDefaultScriptProperties() {
 }
 
 // ==============================================================================
-// GMAIL RELAY И WEB APPLICATION
+// GMAIL RELAY И WEB APPLICATION [УНИВЕРСАЛЬНЫЙ ШЛЮЗ: doGet И doPost]
 // ==============================================================================
 
+function doGet(e) {
+  return handleWebhookRequest_(e);
+}
+
 function doPost(e) {
+  return handleWebhookRequest_(e);
+}
+
+function handleWebhookRequest_(e) {
   try {
     var data = {};
     if (e && e.postData && e.postData.contents) {
-      data = JSON.parse(e.postData.contents);
+      try {
+        data = JSON.parse(e.postData.contents);
+      } catch (pe) {
+        data = e.parameter || {};
+      }
+    } else if (e && e.parameter) {
+      data = e.parameter;
     }
 
     if (data.action === 'send_verification_email') {
@@ -1297,11 +1313,39 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
+    if (data.action === 'ping') {
+      return ContentService.createTextOutput(JSON.stringify({ success: true, message: 'Шлюз Villa Turaman Gmail Relay активен' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Неизвестное действие' }))
       .setMimeType(ContentService.MimeType.JSON);
   } catch (err) {
     return ContentService.createTextOutput(JSON.stringify({ success: false, error: err.toString() }))
       .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function testGmailRelayInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var recipient = "villaturaman@gmail.com";
+  var testCode = Math.floor(1000 + Math.random() * 9000).toString();
+  try {
+    MailApp.sendEmail({
+      to: recipient,
+      subject: "Тестовая проверка Gmail Relay Villa Turaman: " + testCode,
+      htmlBody: "<div style='font-family:sans-serif;padding:24px;background:#0f172a;color:#ffffff;border-radius:16px;'>" +
+        "<h2 style='color:#fb7185;margin-top:0;'>Villa Turaman : Проверка почтового шлюза</h2>" +
+        "<p style='color:#cbd5e1;font-size:14px;'>Почтовый шлюз Gmail Relay успешно авторизован под учетной записью владельца и готов отправлять письма гостям.</p>" +
+        "<div style='background:#1e293b;padding:16px;border-radius:12px;display:inline-block;margin:12px 0;'>" +
+        "<span style='font-size:28px;font-weight:bold;letter-spacing:6px;color:#38bdf8;'>" + testCode + "</span>" +
+        "</div>" +
+        "<p style='color:#94a3b8;font-size:12px;margin-bottom:0;'>Отправлено автоматически из меню таблицы Villa Turaman Suite.</p>" +
+        "</div>"
+    });
+    ui.alert("📧 Gmail Relay работает", "Тестовое письмо с кодом " + testCode + " успешно отправлено на " + recipient, ui.ButtonSet.OK);
+  } catch (err) {
+    ui.alert("❌ Ошибка отправки", "Не удалось отправить тестовое письмо: " + err.toString() + "\n\nПроверьте разрешения скрипта на отправку почты.", ui.ButtonSet.OK);
   }
 }
 
@@ -1316,6 +1360,176 @@ function showGmailRelayDeployHelp() {
     "6. Скопируйте полученный URL веб-приложения и вставьте в .env.local: GOOGLE_APPS_SCRIPT_URL=...";
 
   ui.alert("📧 Настройка Gmail Relay", message, ui.ButtonSet.OK);
+}
+
+// ==============================================================================
+// МУЛЬТИВАЛЮТНАЯ АВТОКОНВЕРТАЦИЯ ПРИ ВВОДЕ В ЛЮБУЮ КОЛОНКУ [USD / EUR / RUB / TRY]
+// ==============================================================================
+
+/**
+ * Получение актуальных курсов валют к USD.
+ * Приоритет:
+ * 1. Чтение из системных ячеек листа SETTINGS;
+ * 2. Резервные стабильные коэффициенты.
+ */
+function getCurrencyRatesToUSD_(ss) {
+  var rates = { EUR: 0.92, RUB: 92.5, TRY: 38.0 };
+  try {
+    var settingsSheet = findSheetByConfigKey(ss, 'SETTINGS');
+    if (settingsSheet) {
+      var data = settingsSheet.getDataRange().getValues();
+      for (var r = 0; r < data.length; r++) {
+        var key = (data[r][0] || '').toString().trim().toUpperCase();
+        var val = parseFloat(data[r][1]);
+        if (!isNaN(val) && val > 0) {
+          if (key === 'RATE_USD_EUR' || key === 'USDEUR') rates.EUR = val;
+          if (key === 'RATE_USD_RUB' || key === 'USDRUB') rates.RUB = val;
+          if (key === 'RATE_USD_TRY' || key === 'USDTRY') rates.TRY = val;
+        }
+      }
+    }
+  } catch (e) {
+    // Резервный режим
+  }
+  return rates;
+}
+
+/**
+ * Обработчик события изменения ячейки в таблице:
+ * Свободный ввод в любую колонку валюты для Услуг и Путеводителей.
+ */
+function onEdit(e) {
+  if (!e || !e.range) return;
+  var range = e.range;
+  var sheet = range.getSheet();
+  var sheetName = sheet.getName();
+  var row = range.getRow();
+  var col = range.getColumn();
+
+  // Защита от редактирования строки заголовков
+  if (row < 2) return;
+
+  var ss = sheet.getParent();
+  var srvSheet = findSheetByConfigKey(ss, 'SERVICES');
+  var gSheet = findSheetByConfigKey(ss, 'GUIDES');
+
+  var isServices = srvSheet && srvSheet.getName() === sheetName;
+  var isGuides = gSheet && gSheet.getName() === sheetName;
+
+  if (!isServices && !isGuides) return;
+
+  // Определение колонок валют в зависимости от листа
+  // SERVICES: Col 8 [USD], Col 9 [EUR], Col 10 [RUB], Col 11 [TRY]
+  // GUIDES: Col 11 [USD], Col 12 [EUR], Col 13 [RUB], Col 14 [TRY]
+  var startCol = isServices ? 8 : 11;
+  var endCol = isServices ? 11 : 14;
+
+  if (col < startCol || col > endCol) return;
+
+  var rawValue = range.getValue();
+  var cleanStr = rawValue ? rawValue.toString().replace(/[^\d.,]/g, '').replace(',', '.') : '';
+  var numVal = parseFloat(cleanStr);
+
+  // Если ячейку очистили: очищаем остальные 3 валютные ячейки в этой строке
+  if (!rawValue || isNaN(numVal) || numVal <= 0) {
+    for (var c = startCol; c <= endCol; c++) {
+      if (c !== col) {
+        sheet.getRange(row, c).setValue('');
+      }
+    }
+    return;
+  }
+
+  // Определяем, какую именно валюту ввел пользователь
+  var offset = col - startCol; // 0: USD, 1: EUR, 2: RUB, 3: TRY
+  var rates = getCurrencyRatesToUSD_(ss);
+
+  // Переводим введенное значение в базовый USD
+  var usdAmount = numVal;
+  if (offset === 1) {
+    // Ввели EUR
+    usdAmount = rates.EUR > 0 ? numVal / rates.EUR : numVal;
+  } else if (offset === 2) {
+    // Ввели RUB
+    usdAmount = rates.RUB > 0 ? numVal / rates.RUB : numVal;
+  } else if (offset === 3) {
+    // Ввели TRY
+    usdAmount = rates.TRY > 0 ? numVal / rates.TRY : numVal;
+  }
+
+  // Рассчитываем значения для всех 4 валют с округлением до целых чисел
+  var calculated = [
+    Math.round(usdAmount),
+    Math.round(usdAmount * rates.EUR),
+    Math.round(usdAmount * rates.RUB),
+    Math.round(usdAmount * rates.TRY)
+  ];
+
+  // Заполняем остальные три колонки
+  for (var targetCol = startCol; targetCol <= endCol; targetCol++) {
+    if (targetCol !== col) {
+      sheet.getRange(row, targetCol).setValue(calculated[targetCol - startCol]);
+    }
+  }
+}
+
+/**
+ * Пакетный пересчет всех валют для всех строк Услуг и Путеводителей.
+ */
+function recalculateAllCatalogCurrencies() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var rates = getCurrencyRatesToUSD_(ss);
+  var updatedCount = 0;
+
+  var targets = [
+    { configKey: 'SERVICES', startCol: 8, endCol: 11 },
+    { configKey: 'GUIDES', startCol: 11, endCol: 14 }
+  ];
+
+  for (var t = 0; t < targets.length; t++) {
+    var tgt = targets[t];
+    var sheet = findSheetByConfigKey(ss, tgt.configKey);
+    if (!sheet) continue;
+
+    var lastRow = sheet.getLastRow();
+    if (lastRow < 2) continue;
+
+    var range = sheet.getRange(2, tgt.startCol, lastRow - 1, 4);
+    var values = range.getValues();
+
+    for (var r = 0; r < values.length; r++) {
+      var rowVals = values[r];
+      var baseIndex = -1;
+      var baseVal = 0;
+
+      // Ищем первое заполненное положительное число
+      for (var i = 0; i < 4; i++) {
+        var num = parseFloat(rowVals[i]);
+        if (!isNaN(num) && num > 0) {
+          baseIndex = i;
+          baseVal = num;
+          break;
+        }
+      }
+
+      if (baseIndex !== -1) {
+        var usdAmount = baseVal;
+        if (baseIndex === 1 && rates.EUR > 0) usdAmount = baseVal / rates.EUR;
+        else if (baseIndex === 2 && rates.RUB > 0) usdAmount = baseVal / rates.RUB;
+        else if (baseIndex === 3 && rates.TRY > 0) usdAmount = baseVal / rates.TRY;
+
+        rowVals[0] = Math.round(usdAmount);
+        rowVals[1] = Math.round(usdAmount * rates.EUR);
+        rowVals[2] = Math.round(usdAmount * rates.RUB);
+        rowVals[3] = Math.round(usdAmount * rates.TRY);
+        updatedCount++;
+      }
+    }
+
+    range.setValues(values);
+  }
+
+  SpreadsheetApp.getActive().toast("Пересчитано позиций каталога: " + updatedCount, "💱 Автоконвертация валют", 5);
 }
 
 // ==============================================================================
