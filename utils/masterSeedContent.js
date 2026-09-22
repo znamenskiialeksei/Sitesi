@@ -672,7 +672,7 @@ function buildHomeDerivedCollections(home) {
       }
     }
     home.reviewsData = {
-      header: home.reviews_score_header,
+      header: home.reviews_score_header || null,
       categories: reviewCatsList,
       reviews: reviewCardsList
     };
@@ -795,7 +795,7 @@ function buildHomeDerivedCollections(home) {
       accessibleBadge: home.legal_accessible_badge || { ru: 'Безбарьерная среда', en: 'Barrier-free Access', tr: 'Engelsiz Yaşam' },
       accessibleItem1: home.legal_accessible_item1 || { ru: 'Безбарьерный доступ: спальня №1 на 1 этаже оборудована широкими дверными проемами без порогов', en: 'Barrier-free access: Bedroom 1 on ground floor has wide doorways and zero-threshold transitions', tr: 'Engelsiz erişim: Giriş katındaki 1. yatak odası eşiksiz geçişler ve geniş kapılarla donatılmıştır' },
       accessibleItem2: home.legal_accessible_item2 || { ru: 'Санузел первого этажа спроектирован с возможностью комфортного использования гостями с ограниченной мобильностью', en: 'Ground floor bathroom designed for comfortable independent access by guests with limited mobility', tr: 'Giriş katındaki banyo, hareket kısıtlılığı olan misafirlerin konforlu kullanımı için tasarlanmıştır' },
-      accessibleItem3: home.legal_accessible_item3 || { ru: 'Возможность установки мобильного подъемника для спуска в бассейн по предварительному запросу', en: 'Option to install a specialized mobile pool lift for water descent upon advance request', tr: 'Önceden talep edilmesi durumunda havuza iniş для спуска в бассейн по предварительному запросу', tr: 'Önceden talep edilmesi durumunda havuza iniş için özel mobil asansör kurulum imkanı' },
+      accessibleItem3: home.legal_accessible_item3 || { ru: 'Возможность установки мобильного подъемника для спуска в бассейн по предварительному запросу', en: 'Option to install a specialized mobile pool lift for water descent upon advance request', tr: 'Önceden talep edilmesi durumunda havuza iniş için özel mobil asansör kurulum imkanı' },
       cancellationTitle: home.legal_cancellation_title || { ru: 'Политика отмены и возврата', en: 'Cancellation & Refund Policy', tr: 'İptal ve İade Politikası' },
       cancellationDesc: home.legal_cancellation_desc || { ru: 'Прозрачные финансовые условия бронирования без скрытых штрафов.', en: 'Transparent booking financial conditions without hidden cancellation fees.', tr: 'Gizli ceza olmaksızın şeffaf rezervasyon ve mali koşullar.' },
       cancellationBadge: home.legal_cancellation_badge || { ru: 'Возврат 100%', en: '100% Refund', tr: '%100 İade' },

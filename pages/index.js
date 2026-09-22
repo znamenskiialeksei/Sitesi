@@ -82,14 +82,20 @@ export async function getStaticProps() {
     console.error('Ошибка чтения content.json при статической сборке:', err);
   }
 
+  // Гарантия JSON-сериализации для Next.js SSG: устранение любых значений undefined
+  const safeContentData = JSON.parse(JSON.stringify(contentData));
+  const safePublicData = JSON.parse(
+    JSON.stringify({
+      products: safeContentData.products || [],
+      courses: safeContentData.courses || [],
+      gallery: safeContentData.gallery || []
+    })
+  );
+
   return {
     props: {
-      publicData: {
-        products: contentData.products || [],
-        courses: contentData.courses || [],
-        gallery: contentData.gallery || []
-      },
-      contentData
+      publicData: safePublicData,
+      contentData: safeContentData
     },
     // Ревалидация статического кэша каждые 60 секунд
     revalidate: 60
