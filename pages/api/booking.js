@@ -1318,12 +1318,12 @@ export default async function handler(req, res) {
             let statusFull = r[10] || '';
             let status = statusFull;
             let expiresAt = null;
-            if (statusFull.startsWith('СПЕЦПРЕДЛОЖЕНИЕ|')) {
+            if (statusFull.includes('СПЕЦПРЕДЛОЖЕНИЕ')) {
               status = 'СПЕЦПРЕДЛОЖЕНИЕ';
-              expiresAt = statusFull.split('|')[1];
-            } else if (statusFull.startsWith('ОЖИДАЕТ ОПЛАТЫ|')) {
+              expiresAt = statusFull.split('|')[1] ? statusFull.split('|')[1].trim() : null;
+            } else if (statusFull.includes('ОЖИДАЕТ ОПЛАТЫ')) {
               status = 'ОЖИДАЕТ ОПЛАТЫ';
-              expiresAt = statusFull.split('|')[1];
+              expiresAt = statusFull.split('|')[1] ? statusFull.split('|')[1].trim() : null;
             }
             return {
               rowIndex: i + 1,
@@ -1569,12 +1569,12 @@ export default async function handler(req, res) {
             let statusFull = r[10] || '';
             let status = statusFull;
             let expiresAt = null;
-            if (statusFull.startsWith('СПЕЦПРЕДЛОЖЕНИЕ|')) {
+            if (statusFull.includes('СПЕЦПРЕДЛОЖЕНИЕ')) {
               status = 'СПЕЦПРЕДЛОЖЕНИЕ';
-              expiresAt = statusFull.split('|')[1];
-            } else if (statusFull.startsWith('ОЖИДАЕТ ОПЛАТЫ|')) {
+              expiresAt = statusFull.split('|')[1] ? statusFull.split('|')[1].trim() : null;
+            } else if (statusFull.includes('ОЖИДАЕТ ОПЛАТЫ')) {
               status = 'ОЖИДАЕТ ОПЛАТЫ';
-              expiresAt = statusFull.split('|')[1];
+              expiresAt = statusFull.split('|')[1] ? statusFull.split('|')[1].trim() : null;
             }
             return {
               rowIndex: i + 1,
@@ -1725,10 +1725,12 @@ export default async function handler(req, res) {
           requestBody: { values: [ruleRow] }
         });
 
-        const msg = `🎁 Для вас сформировано специальное предложение!\nДаты проживания: ${data.checkIn} - ${data.checkOut}\nОбновленная стоимость: ${data.price}\nПожалуйста, перейдите к оплате в карточке бронирования. Окно оплаты открыто до: ${deadlineStr}.`;
-        const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
-        const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
-        const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
+        const guestCount = data.guests || ((parseInt(data.adults, 10) || 0) + (parseInt(data.children, 10) || 0)) || '2';
+        const nightsCount = data.nights || 1;
+        const msg = `🎁 Для вас сформировано специальное предложение!\n\n📅 Даты проживания: ${data.checkIn} - ${data.checkOut} [${nightsCount} ноч.]\n👥 Количество гостей: ${guestCount}\n💰 Обновленная стоимость со скидкой: ${data.price}\n⏳ Окно оплаты открыто до: ${deadlineStr}\n\nВилла заблокирована за вами на 24 часа. Чтобы завершить бронирование по специальной цене, перейдите к оплате в карточке бронирования или в верхней плашке чата.`;
+        const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "ru")';
+        const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "en")';
+        const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "tr")';
 
         await ensureStyledChatSheet(sheets, targetChatId, data.chatSheetName);
         await sheets.spreadsheets.values.append({

@@ -375,22 +375,10 @@ export default function HostDashboardPage() {
             </p>
             <button
               onClick={() => setAuthModalOpen(true)}
-              className="w-full py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm shadow-lg transition-all"
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2"
             >
-              {t('loginAsOwnerBtn')}
-            </button>
-
-            <button
-              onClick={() => {
-                const hostUser = { name: 'Aleksei Znamenskii', contact: 'admin@villaturaman.com', isHost: true, role: 'Главный' };
-                localStorage.setItem('villa_user', JSON.stringify(hostUser));
-                localStorage.setItem('owner_session', 'verified_token_host');
-                window.location.reload();
-              }}
-              className="w-full mt-3 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-white/10 transition-all flex items-center justify-center gap-2"
-            >
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              {t('quickOwnerLoginBtn')}
+              <Shield className="w-4 h-4" />
+              <span>{t('loginAsOwnerBtn')}</span>
             </button>
           </div>
         ) : (

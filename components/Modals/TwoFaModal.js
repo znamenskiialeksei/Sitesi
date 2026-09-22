@@ -5,7 +5,7 @@
 // ==============================================================================
 
 import React, { useState, useEffect } from 'react';
-import { Shield, KeyRound, X, CheckCircle2 } from 'lucide-react';
+import { Shield, KeyRound, X, CheckCircle2, Copy } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../Toast';
 
@@ -83,8 +83,24 @@ export default function TwoFaModal() {
           </div>
         )}
 
-        <div className="text-[11px] text-slate-400 mb-6 bg-slate-800/80 p-3 rounded-xl border border-white/5 font-mono select-all">
-          Секретный ключ: <span className="text-amber-300 font-bold">{twoFaSecret}</span>
+        <div className="mb-6 bg-slate-800/80 p-3 rounded-2xl border border-white/5 flex items-center justify-between gap-2">
+          <div className="text-left font-mono truncate text-xs text-slate-300">
+            <span className="text-[10px] text-slate-400 block">Ключ для мобильного:</span>
+            <span className="text-amber-300 font-bold select-all">{twoFaSecret}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof navigator !== 'undefined' && navigator.clipboard) {
+                navigator.clipboard.writeText(twoFaSecret);
+                toast.success('Ключ скопирован в буфер!');
+              }
+            }}
+            className="px-3 py-1.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-amber-300 font-bold text-xs flex items-center gap-1.5 shrink-0 transition-colors"
+          >
+            <Copy className="w-3.5 h-3.5" />
+            <span>Скопировать</span>
+          </button>
         </div>
 
         <form onSubmit={handleVerify} className="space-y-4">
@@ -92,6 +108,8 @@ export default function TwoFaModal() {
             <KeyRound className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
             <input
               type="text"
+              inputMode="numeric"
+              autoComplete="one-time-code"
               required
               maxLength={6}
               value={token}

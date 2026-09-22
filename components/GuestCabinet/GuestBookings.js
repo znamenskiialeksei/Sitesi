@@ -6,7 +6,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Calendar, Clock, CreditCard, Download, Wifi, KeyRound, ShieldAlert, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, CreditCard, Download, Wifi, KeyRound, ShieldAlert, CheckCircle2, AlertCircle, Gift } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../Toast';
 
@@ -32,8 +32,8 @@ export default function GuestBookings({ activeRequests = [], timeLefter = {}, on
     }
     if (st.includes('СПЕЦПРЕДЛОЖЕНИЕ')) {
       return (
-        <span className="inline-flex items-center gap-1 text-xs font-bold text-purple-300 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">
-          <KeyRound className="w-3.5 h-3.5 text-purple-400" /> {t('tripStatusOffer')}
+        <span className="inline-flex items-center gap-1.5 text-xs font-extrabold text-purple-200 bg-purple-600/30 px-3.5 py-1.5 rounded-full border border-purple-400/40 shadow-md shadow-purple-900/30">
+          <Gift className="w-3.5 h-3.5 text-purple-300" /> {t('tripStatusOffer') || 'Специальное предложение от хозяина'}
         </span>
       );
     }
@@ -92,12 +92,16 @@ export default function GuestBookings({ activeRequests = [], timeLefter = {}, on
       {activeRequests.map((req, idx) => {
         const remaining = timeLefter[req.rowIndex];
         const isAwaitingPay = req.status === 'ОЖИДАЕТ ОПЛАТЫ' || req.status === 'СПЕЦПРЕДЛОЖЕНИЕ';
-        const isExpired = remaining === 'EXPIRED';
+        const isOffer = req.status && req.status.includes('СПЕЦПРЕДЛОЖЕНИЕ');
 
         return (
           <div
             key={idx}
-            className="bg-slate-800/80 border border-white/10 rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden"
+            className={`border rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden transition-all ${
+              isOffer
+                ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-purple-950/40 border-purple-500/40 shadow-purple-950/20'
+                : 'bg-slate-800/80 border-white/10'
+            }`}
           >
             {/* Верхняя строка статуса */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-white/10">
@@ -108,12 +112,21 @@ export default function GuestBookings({ activeRequests = [], timeLefter = {}, on
                 </span>
               </div>
 
-              {/* Таймер удержания 24ч */}
+              {/* Живой таймер обратного отсчета */}
               {isAwaitingPay && !isExpired && remaining && (
-                <div className="flex items-center gap-2 text-xs font-bold text-rose-300 bg-rose-950/60 px-3.5 py-1.5 rounded-full border border-rose-500/30 animate-pulse">
-                  <Clock className="w-3.5 h-3.5 text-rose-400" />
-                  <span>{t('timeRemainingToPay')} {remaining}</span>
+                <div className={`flex items-center gap-2 text-xs font-bold px-3.5 py-1.5 rounded-full border animate-pulse ${
+                  isOffer
+                    ? 'text-purple-200 bg-purple-950/80 border-purple-400/40'
+                    : 'text-rose-300 bg-rose-950/60 border-rose-500/30'
+                }`}>
+                  <Clock className={`w-3.5 h-3.5 ${isOffer ? 'text-purple-300' : 'text-rose-400'}`} />
+                  <span>{isOffer ? 'Спецпредложение действует:' : t('timeRemainingToPay')} {remaining}</span>
                 </div>
+              )}
+              {isAwaitingPay && isExpired && (
+                <span className="text-xs font-bold text-rose-400 bg-rose-950/60 px-3 py-1 rounded-full border border-rose-500/30">
+                  Время оплаты истекло
+                </span>
               )}
             </div>
 
@@ -124,7 +137,7 @@ export default function GuestBookings({ activeRequests = [], timeLefter = {}, on
                   Даты проживания
                 </span>
                 <p className="text-lg font-bold text-white">
-                  {req.checkIn} — {req.checkOut}
+                  {req.checkIn} - {req.checkOut}
                 </p>
                 <p className="text-xs text-slate-400 mt-0.5">
                   {req.nights} ночей • {req.guests || (req.adults + req.children)} гостей
@@ -133,7 +146,7 @@ export default function GuestBookings({ activeRequests = [], timeLefter = {}, on
 
               <div>
                 <span className="text-[11px] uppercase font-bold text-slate-400 tracking-wider block mb-1">
-                  Итоговая стоимость
+                  {isOffer ? 'Специальная стоимость' : 'Итоговая стоимость'}
                 </span>
                 <p className="text-xl font-black text-emerald-400">
                   {req.price}
@@ -152,7 +165,7 @@ export default function GuestBookings({ activeRequests = [], timeLefter = {}, on
                   </div>
                   <div className="flex items-center gap-1.5 text-slate-300">
                     <Wifi className="w-3.5 h-3.5 text-blue-400" />
-                    <span>Wi-Fi: VillaTuraman_5G (Код в ваучере)</span>
+                    <span>Wi-Fi: VillaTuraman_5G [Код в ваучере]</span>
                   </div>
                 </div>
               </div>
@@ -171,10 +184,14 @@ export default function GuestBookings({ activeRequests = [], timeLefter = {}, on
               {isAwaitingPay && !isExpired && (
                 <button
                   onClick={() => onPayRequest(req)}
-                  className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold text-xs sm:text-sm transition-all shadow-lg shadow-rose-500/30 flex items-center gap-2"
+                  className={`px-6 py-3.5 rounded-2xl text-white font-bold text-xs sm:text-sm transition-all shadow-lg flex items-center gap-2 ${
+                    isOffer
+                      ? 'bg-gradient-to-r from-purple-600 via-rose-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 shadow-purple-600/30'
+                      : 'bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 shadow-rose-500/30'
+                  }`}
                 >
                   <CreditCard className="w-4 h-4" />
-                  <span>{t('proceedToPayBtn')} ({req.price})</span>
+                  <span>{isOffer ? 'Принять спецпредложение и оплатить' : t('proceedToPayBtn')} [{req.price}]</span>
                 </button>
               )}
             </div>

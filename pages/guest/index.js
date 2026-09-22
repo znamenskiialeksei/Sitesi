@@ -25,7 +25,7 @@ import { useToast } from '../../components/Toast';
 
 export default function GuestCabinetPage() {
   const router = useRouter();
-  const { t } = useLanguage();
+  const { t, lang, currency } = useLanguage();
   const { currentUser, authLoading, setAuthModalOpen, setContactModalOpen, updateCurrentUser } = useAuth();
   const toast = useToast();
 
@@ -138,14 +138,17 @@ export default function GuestCabinetPage() {
     }
   };
 
-  // Переход к оплате одобренной заявки
+  // Переход к оплате одобренной заявки или спецпредложения
   const handlePayRequest = async (req) => {
     try {
       const priceNum = parseInt(String(req.price).replace(/[^\d]/g, ''), 10) || 15000;
+      const effectiveCurrency = String(req.price).includes('RUB') || String(req.price).includes('₽') ? 'RUB' : (currency || 'EUR');
+      const paymentGateway = effectiveCurrency === 'RUB' ? 'tbank' : 'stripe';
+
       const res = await axios.post('/api/payment', {
-        gateway: 'stripe',
+        gateway: paymentGateway,
         amount: priceNum,
-        currency: 'EUR',
+        currency: effectiveCurrency,
         origin: typeof window !== 'undefined' ? window.location.origin : '',
         bookingDetails: {
           action: 'booking',
@@ -334,6 +337,9 @@ export default function GuestCabinetPage() {
                 messages={chatMessages}
                 onSendMessage={handleSendMessage}
                 loading={loadingChat}
+                activeRequests={activeRequests}
+                timeLefter={timeLefter}
+                onPayRequest={handlePayRequest}
               />
             )}
 

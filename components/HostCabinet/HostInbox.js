@@ -90,6 +90,30 @@ export default function HostInbox({
   const [selectedStage, setSelectedStage] = useState('all');
   const [templateLang, setTemplateLang] = useState('ru');
   const [isAiLoading, setIsAiLoading] = useState(false);
+  const [inboxCountdown, setInboxCountdown] = useState({});
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (!activeChat?.activeRequests) return;
+      const newTimes = {};
+      activeChat.activeRequests.forEach((req) => {
+        if (req.expiresAt) {
+          const diff = new Date(req.expiresAt).getTime() - Date.now();
+          if (diff <= 0) {
+            newTimes[req.rowIndex] = 'EXPIRED';
+          } else {
+            const h = Math.floor(diff / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            newTimes[req.rowIndex] = `${h}ч ${m}м ${s}с`;
+          }
+        }
+      });
+      setInboxCountdown(newTimes);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [activeChat]);
 
   // Загрузка базы знаний и 14 шаблонов из Google Sheets с локальной офлайн-памятью
   const loadKnowledgeBase = async (forceRefresh = false) => {
@@ -750,6 +774,22 @@ export default function HostInbox({
                           <p className="font-bold text-white">{r.checkIn} - {r.checkOut}</p>
                           <p className="text-emerald-400 font-bold">{r.price}</p>
                           <p className="text-slate-400 text-[11px]">{t('statusFieldLabel')} {r.status}</p>
+
+                          {r.expiresAt && ['ОЖИДАЕТ ОПЛАТЫ', 'СПЕЦПРЕДЛОЖЕНИЕ'].some((st) => r.status && r.status.includes(st)) && (
+                            <div className="py-1">
+                              {inboxCountdown[r.rowIndex] && inboxCountdown[r.rowIndex] !== 'EXPIRED' ? (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-950/70 border border-rose-500/40 text-[10px] font-bold text-rose-300 animate-pulse font-mono">
+                                  <Clock className="w-3 h-3 text-rose-400" />
+                                  <span>До закрытия: {inboxCountdown[r.rowIndex]}</span>
+                                </span>
+                              ) : inboxCountdown[r.rowIndex] === 'EXPIRED' ? (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-950/60 border border-red-500/30 text-[10px] font-bold text-red-400 font-mono">
+                                  <Clock className="w-3 h-3" />
+                                  <span>Время оплаты истекло</span>
+                                </span>
+                              ) : null}
+                            </div>
+                          )}
 
                           {/* Кнопки управления заявкой на всех активных стадиях */}
                           {['ЗАПРОС', 'ОЖИДАЕТ ОПЛАТЫ', 'СПЕЦПРЕДЛОЖЕНИЕ'].some((st) => r.status && r.status.includes(st)) && (

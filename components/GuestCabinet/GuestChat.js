@@ -5,12 +5,19 @@
 // ==============================================================================
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Paperclip, X, MessageCircle, User, Shield, FileText, Sparkles } from 'lucide-react';
+import { Send, Paperclip, X, MessageCircle, User, Shield, FileText, Sparkles, Clock, CreditCard, Gift, Calendar } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../Toast';
 
-export default function GuestChat({ messages = [], onSendMessage, loading = false }) {
+export default function GuestChat({
+  messages = [],
+  onSendMessage,
+  loading = false,
+  activeRequests = [],
+  timeLefter = {},
+  onPayRequest
+}) {
   const { t, lang } = useLanguage();
   const { currentUser } = useAuth();
   const toast = useToast();
@@ -52,6 +59,10 @@ export default function GuestChat({ messages = [], onSendMessage, loading = fals
     setFile(null);
   };
 
+  const activeOffer = activeRequests.find((r) => r.status && (r.status.includes('СПЕЦПРЕДЛОЖЕНИЕ') || r.status.includes('ОЖИДАЕТ')));
+  const remaining = activeOffer ? timeLefter[activeOffer.rowIndex] : null;
+  const isOffer = activeOffer && activeOffer.status.includes('СПЕЦПРЕДЛОЖЕНИЕ');
+
   return (
     <div className="bg-slate-900 border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[650px] fade-in">
       
@@ -67,7 +78,7 @@ export default function GuestChat({ messages = [], onSendMessage, loading = fals
             </h3>
             <span className="text-[11px] text-emerald-400 flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-              Владелец Villa Turaman (Онлайн)
+              Владелец Villa Turaman [Онлайн]
             </span>
           </div>
         </div>
@@ -76,6 +87,57 @@ export default function GuestChat({ messages = [], onSendMessage, loading = fals
           Авто-перевод: {lang.toUpperCase()}
         </span>
       </div>
+
+      {/* Закрепленная плашка специального предложения или ожидания оплаты */}
+      {activeOffer && (
+        <div className={`p-4 border-b flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-lg transition-all ${
+          isOffer
+            ? 'bg-gradient-to-r from-purple-950/90 via-slate-900 to-rose-950/80 border-purple-500/30'
+            : 'bg-gradient-to-r from-amber-950/80 via-slate-900 to-rose-950/80 border-amber-500/30'
+        }`}>
+          <div className="space-y-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className={`inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${
+                isOffer
+                  ? 'bg-purple-500/20 text-purple-300 border-purple-500/30'
+                  : 'bg-rose-500/20 text-rose-300 border-rose-500/30'
+              }`}>
+                {isOffer ? <Gift className="w-3.5 h-3.5 text-purple-400" /> : <Clock className="w-3.5 h-3.5 text-rose-400" />}
+                {isOffer ? 'Специальное предложение от хозяина' : 'Ожидает оплаты: 24ч HOLD'}
+              </span>
+              <span className="text-xs font-bold text-white flex items-center gap-1">
+                <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                {activeOffer.checkIn} - {activeOffer.checkOut} [{activeOffer.nights} ноч.]
+              </span>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-300">
+              <span>Стоимость: <b className="text-emerald-400 font-extrabold text-sm">{activeOffer.price}</b></span>
+              {remaining && remaining !== 'EXPIRED' && (
+                <div className="flex items-center gap-1.5 text-xs font-bold text-rose-300 bg-rose-950/90 px-3 py-1 rounded-full border border-rose-500/40 animate-pulse">
+                  <Clock className="w-3.5 h-3.5 text-rose-400" />
+                  <span>Осталось: {remaining}</span>
+                </div>
+              )}
+              {remaining === 'EXPIRED' && (
+                <span className="text-xs font-bold text-rose-400 bg-rose-950/60 px-2.5 py-0.5 rounded-full border border-rose-500/30">
+                  Время оплаты истекло
+                </span>
+              )}
+            </div>
+          </div>
+
+          {remaining !== 'EXPIRED' && onPayRequest && (
+            <button
+              onClick={() => onPayRequest(activeOffer)}
+              className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold text-xs shadow-lg shadow-rose-500/30 flex items-center justify-center gap-2 transition-all hover:scale-105 shrink-0"
+            >
+              <CreditCard className="w-4 h-4" />
+              <span>Оплатить {activeOffer.price}</span>
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Лента сообщений */}
       <div className="flex-1 p-5 overflow-y-auto space-y-4 bg-slate-950/40">
@@ -132,6 +194,22 @@ export default function GuestChat({ messages = [], onSendMessage, loading = fals
                     <div className="mt-2.5 p-2 bg-black/20 rounded-xl flex items-center gap-2 text-xs font-semibold text-rose-200">
                       <Paperclip className="w-3.5 h-3.5" />
                       <span>{m.file}</span>
+                    </div>
+                  )}
+
+                  {/* Интерактивная кнопка оплаты прямо в сообщении спецпредложения */}
+                  {((m.original && m.original.includes('специальное предложение')) || (m.ru && m.ru.includes('специальное предложение'))) && activeOffer && remaining !== 'EXPIRED' && onPayRequest && (
+                    <div className="mt-3 pt-3 border-t border-white/15 flex flex-wrap items-center justify-between gap-2">
+                      <span className="text-[11px] font-bold text-amber-300 flex items-center gap-1">
+                        <Gift className="w-3.5 h-3.5 text-amber-400" /> Спецпредложение активно
+                      </span>
+                      <button
+                        onClick={() => onPayRequest(activeOffer)}
+                        className="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-slate-950 font-black text-xs transition-all flex items-center gap-1.5 shadow-md shadow-emerald-500/20"
+                      >
+                        <CreditCard className="w-3.5 h-3.5" />
+                        <span>Оплатить {activeOffer.price}</span>
+                      </button>
                     </div>
                   )}
                 </div>

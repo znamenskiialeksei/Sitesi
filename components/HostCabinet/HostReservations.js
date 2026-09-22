@@ -4,8 +4,8 @@
 // Назначение: Модерация заявок: одобрение (24h HOLD), спецпредложение, отклонение, отзыв
 // ==============================================================================
 
-import React, { useState } from 'react';
-import { Clock, CheckCircle2, XCircle, Tag, Undo2, User, Phone, Calendar, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Clock, CheckCircle2, XCircle, Tag, Undo2, User, Phone, Calendar, AlertCircle, Gift } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../Toast';
 
@@ -27,6 +27,29 @@ export default function HostReservations({
   const [offerPrice, setOfferPrice] = useState('');
   const [offerCheckIn, setOfferCheckIn] = useState('');
   const [offerCheckOut, setOfferCheckOut] = useState('');
+  const [countdownMap, setCountdownMap] = useState({});
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newMap = {};
+      requests.forEach((req) => {
+        if (req.expiresAt) {
+          const diff = new Date(req.expiresAt).getTime() - Date.now();
+          if (diff <= 0) {
+            newMap[req.rowIndex] = 'EXPIRED';
+          } else {
+            const h = Math.floor(diff / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            newMap[req.rowIndex] = `${h}ч ${m}м ${s}с`;
+          }
+        }
+      });
+      setCountdownMap(newMap);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [requests]);
 
   const openSpecialOfferModal = (req) => {
     setSelectedReq(req);
@@ -111,15 +134,28 @@ export default function HostReservations({
                 </div>
 
                 <div className="text-xs text-slate-300 flex flex-wrap items-center gap-4">
-                  <span>{t('periodLabel')} <b className="text-white">{req.checkIn} — {req.checkOut}</b> ({req.nights} {t('nightsWord')})</span>
+                  <span>{t('periodLabel')} <b className="text-white">{req.checkIn} - {req.checkOut}</b> [{req.nights} {t('nightsWord')}]</span>
                   <span>{t('guestsCountLabel')} <b className="text-white">{req.guests || (req.adults + req.children)}</b></span>
                   <span>{t('amountLabel')} <b className="text-emerald-400 font-bold">{req.price}</b></span>
                 </div>
 
                 {req.expiresAt && isHold && (
-                  <p className="text-[11px] text-amber-300 flex items-center gap-1 font-mono">
-                    <Clock className="w-3.5 h-3.5" /> {t('paymentWindowOpenUntil')} {new Date(req.expiresAt).toLocaleString()}
-                  </p>
+                  <div className="flex flex-wrap items-center gap-2 pt-1 font-mono text-xs">
+                    {countdownMap[req.rowIndex] && countdownMap[req.rowIndex] !== 'EXPIRED' ? (
+                      <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-950/70 border border-rose-500/40 text-rose-300 font-bold animate-pulse">
+                        <Clock className="w-3.5 h-3.5 text-rose-400" />
+                        <span>До закрытия окна оплаты: {countdownMap[req.rowIndex]}</span>
+                      </span>
+                    ) : countdownMap[req.rowIndex] === 'EXPIRED' ? (
+                      <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-950/60 border border-red-500/30 text-red-400 font-bold">
+                        <Clock className="w-3.5 h-3.5" />
+                        <span>Время оплаты истекло [требуется отзыв]</span>
+                      </span>
+                    ) : null}
+                    <span className="text-[11px] text-slate-400">
+                      до {new Date(req.expiresAt).toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' })}
+                    </span>
+                  </div>
                 )}
               </div>
 

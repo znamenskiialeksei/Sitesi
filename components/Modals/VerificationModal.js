@@ -354,8 +354,8 @@ export default function VerificationModal({
               </div>
             )}
 
-            {/* Тестовый режим при отсутствии внешнего почтового шлюза */}
-            {devCode && (
+            {/* Тестовый режим при отсутствии внешнего почтового шлюза : только в среде разработки */}
+            {process.env.NODE_ENV !== 'production' && devCode && (
               <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex flex-col gap-2 text-xs text-amber-300 mb-5">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-amber-200">Тестовый режим : шлюз в .env.local еще не задан</span>
@@ -371,7 +371,7 @@ export default function VerificationModal({
               </div>
             )}
 
-            {/* 4 раздельных инпута для OTP кода */}
+            {/* 4 раздельных инпута для OTP кода с поддержкой автозаполнения на смартфонах */}
             <div className="flex justify-center gap-3 sm:gap-4 mb-5" onPaste={handlePaste}>
               {otpDigits.map((digit, idx) => (
                 <input
@@ -379,6 +379,7 @@ export default function VerificationModal({
                   ref={inputRefs[idx]}
                   type="text"
                   inputMode="numeric"
+                  autoComplete={idx === 0 ? 'one-time-code' : 'off'}
                   pattern="[0-9]*"
                   maxLength={1}
                   value={digit}
