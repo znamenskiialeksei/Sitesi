@@ -1210,6 +1210,7 @@ export default async function handler(req, res) {
           file: data.fileName || ''
         });
         await safeCacheSet(cacheKey, existingCache, { ex: 86400 * 7 });
+        await safeCacheDel('master_all_chats_swr_cache');
 
         // Мгновенное Telegram-уведомление хозяину о новом сообщении гостя с интерактивными кнопками
         if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
@@ -1613,6 +1614,12 @@ export default async function handler(req, res) {
       let allChats = [];
       let allReqs = [];
 
+      // 1. Проверяем серверный SWR-кэш для защиты от перегрузки Google Sheets API
+      const cachedMaster = await safeCacheGet('master_all_chats_swr_cache');
+      if (cachedMaster && cachedMaster.timestamp && (Date.now() - cachedMaster.timestamp < 3500) && Array.isArray(cachedMaster.chats) && cachedMaster.chats.length > 0) {
+        return res.status(200).json({ success: true, chats: cachedMaster.chats, allRequests: cachedMaster.allRequests || [] });
+      }
+
       if (sheets && targetChatId) {
         try {
           const chatMetadata = await sheets.spreadsheets.get({ spreadsheetId: targetChatId });
@@ -1756,8 +1763,26 @@ export default async function handler(req, res) {
         }
       }
 
+      // 2. Если данные успешно получены, сохраняем снимок в серверный кэш
+      if (allChats.length > 0) {
+        await safeCacheSet('master_all_chats_swr_cache', { chats: allChats, allRequests: allReqs, timestamp: Date.now() }, { ex: 60 });
+      } else if (cachedMaster && Array.isArray(cachedMaster.chats) && cachedMaster.chats.length > 0) {
+        // Защита от мерцания: при сбое Google API возвращаем данные из кэша вместо пустого массива
+        allChats = cachedMaster.chats;
+        if (allReqs.length === 0 && cachedMaster.allRequests) {
+          allReqs = cachedMaster.allRequests;
+        }
+      }
+
       return res.status(200).json({ success: true, chats: allChats, allRequests: allReqs });
     } catch (e) {
+      // При критическом сбое пытаемся вернуть кэш перед падением в 500
+      try {
+        const cachedFallback = await safeCacheGet('master_all_chats_swr_cache');
+        if (cachedFallback && Array.isArray(cachedFallback.chats) && cachedFallback.chats.length > 0) {
+          return res.status(200).json({ success: true, chats: cachedFallback.chats, allRequests: cachedFallback.allRequests || [] });
+        }
+      } catch (fallbackErr) {}
       return res.status(500).json({ success: false, error: e.message });
     }
   }

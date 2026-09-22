@@ -261,7 +261,7 @@ export default function CatalogSection({
                   </div>
 
                   <div className="p-5">
-                    <h3 className="text-base font-bold text-white mb-2 line-clamp-1">{name}</h3>
+                    <h3 className="text-base font-bold text-white mb-2 line-clamp-2 min-h-[2.75rem] leading-snug">{name}</h3>
                     <p className="text-xs text-slate-400 leading-relaxed line-clamp-3">{desc}</p>
                   </div>
                 </div>
@@ -329,7 +329,7 @@ export default function CatalogSection({
                   </div>
 
                   <div className="p-5">
-                    <h3 className="text-base font-bold text-white mb-2 line-clamp-1">{name}</h3>
+                    <h3 className="text-base font-bold text-white mb-2 line-clamp-2 min-h-[2.75rem] leading-snug">{name}</h3>
                     <p className="text-xs text-slate-400 leading-relaxed line-clamp-3">{desc}</p>
                   </div>
                 </div>

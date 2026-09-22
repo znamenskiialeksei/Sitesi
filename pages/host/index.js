@@ -4,7 +4,7 @@
 // Назначение: Управление бронированиями, ценами, iCal, сообщениями и 2FA безопасность
 // ==============================================================================
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -36,12 +36,32 @@ export default function HostDashboardPage() {
   const [dynamicRules, setDynamicRules] = useState({});
   const [dateRules, setDateRules] = useState([]);
   const [apiEvents, setApiEvents] = useState([]);
-  const [chats, setChats] = useState([]);
+  // Данные хоста с мгновенной подгрузкой из офлайн-памяти для исключения белого экрана
+  const [chats, setChats] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('villa_host_master_chats_cache');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (storageErr) {}
+    }
+    return [];
+  });
   const [allRequestsList, setAllRequestsList] = useState([]);
   const [lmsModules, setLmsModules] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isAssistantModalOpen, setIsAssistantModalOpen] = useState(false);
-  const [selectedChatSheet, setSelectedChatSheet] = useState(null);
+  const [selectedChatSheet, setSelectedChatSheet] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        return localStorage.getItem('villa_host_selected_sheet') || null;
+      } catch (storageErr) {}
+    }
+    return null;
+  });
+  const isFetchingChatsRef = useRef(false);
 
   // Синхронизация таба из query
   useEffect(() => {
@@ -75,18 +95,49 @@ export default function HostDashboardPage() {
     }
   };
 
-  // Загрузка всех чатов и заявок для админ-панели
+  // Загрузка всех чатов и заявок для админ-панели с защитой от мерцания и перезаписи
   const fetchMasterChats = async () => {
+    if (isFetchingChatsRef.current) return;
+    isFetchingChatsRef.current = true;
     try {
       const res = await axios.post('/api/booking', { action: 'master_get_chats' });
       if (res.data && res.data.success) {
-        setChats(res.data.chats || []);
-        if (res.data.allRequests) {
-          setAllRequestsList(res.data.allRequests);
+        if (Array.isArray(res.data.chats) && res.data.chats.length > 0) {
+          setChats((prevChats) => {
+            // Умное сравнение: если данные не изменились, сохраняем ссылку для предотвращения ре-рендеров
+            if (JSON.stringify(prevChats) === JSON.stringify(res.data.chats)) {
+              return prevChats;
+            }
+            if (typeof window !== 'undefined') {
+              try {
+                localStorage.setItem('villa_host_master_chats_cache', JSON.stringify(res.data.chats));
+              } catch (storageErr) {}
+            }
+            return res.data.chats;
+          });
+        }
+        if (Array.isArray(res.data.allRequests) && res.data.allRequests.length > 0) {
+          setAllRequestsList((prevReqs) => {
+            if (JSON.stringify(prevReqs) === JSON.stringify(res.data.allRequests)) {
+              return prevReqs;
+            }
+            return res.data.allRequests;
+          });
         }
       }
     } catch (err) {
       console.warn('Ошибка загрузки чатов хозяина:', err);
+    } finally {
+      isFetchingChatsRef.current = false;
+    }
+  };
+
+  const handleSelectChat = (sheetName) => {
+    setSelectedChatSheet(sheetName);
+    if (typeof window !== 'undefined' && sheetName) {
+      try {
+        localStorage.setItem('villa_host_selected_sheet', sheetName);
+      } catch (storageErr) {}
     }
   };
 
@@ -513,6 +564,7 @@ export default function HostDashboardPage() {
                 chats={chats}
                 lmsModules={lmsModules}
                 initialSelectedSheet={selectedChatSheet}
+                onSelectChat={handleSelectChat}
                 onSendMessage={handleSendMessage}
                 onBroadcast={handleBroadcast}
                 onApprove={handleApproveRequest}

@@ -48,6 +48,7 @@ export default function HostInbox({
   chats = [],
   lmsModules = [],
   initialSelectedSheet = null,
+  onSelectChat,
   onSendMessage,
   onBroadcast,
   onApprove,
@@ -60,7 +61,16 @@ export default function HostInbox({
   const { t, lang } = useLanguage();
   const toast = useToast();
 
-  const [selectedSheet, setSelectedSheet] = useState(initialSelectedSheet || chats[0]?.sheetName || null);
+  const [selectedSheet, setSelectedSheet] = useState(() => {
+    if (initialSelectedSheet) return initialSelectedSheet;
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('villa_host_selected_sheet');
+        if (saved) return saved;
+      } catch (storageErr) {}
+    }
+    return chats[0]?.sheetName || null;
+  });
   const [selectedMultiSheets, setSelectedMultiSheets] = useState([]);
   const [isBroadcastMode, setIsBroadcastMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -78,20 +88,76 @@ export default function HostInbox({
   // Мобильный режим отображения: список диалогов, активный чат или детали бронирования
   const [mobileActiveView, setMobileActiveView] = useState('list'); // 'list' | 'chat' | 'details'
 
-  const activeChat = chats.find((c) => c.sheetName === selectedSheet) || chats[0];
+  // Вычисление активного диалога с защитой от сброса на chats[0]
+  const activeChat = useMemo(() => {
+    if (!Array.isArray(chats) || chats.length === 0) return null;
+    if (selectedSheet) {
+      const found = chats.find((c) => c.sheetName === selectedSheet);
+      if (found) return found;
+    }
+    let saved = null;
+    if (typeof window !== 'undefined') {
+      try {
+        saved = localStorage.getItem('villa_host_selected_sheet');
+      } catch (storageErr) {}
+    }
+    if (saved) {
+      const foundSaved = chats.find((c) => c.sheetName === saved);
+      if (foundSaved) return foundSaved;
+    }
+    return chats[0] || null;
+  }, [chats, selectedSheet]);
+
   const chatBottomRef = useRef(null);
   const messagesContainerRef = useRef(null);
   const textareaRef = useRef(null);
   const userScrolledUpRef = useRef(false);
   const isHostSendingRef = useRef(false);
+  const prevMsgCountRef = useRef(0);
 
-  // Синхронизация выбора чата при переходе из карточки бронирования
+  // Синхронизация и удержание выбранного диалога при загрузке или обновлении
   useEffect(() => {
     if (initialSelectedSheet) {
       setSelectedSheet(initialSelectedSheet);
       setMobileActiveView('chat');
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem('villa_host_selected_sheet', initialSelectedSheet);
+        } catch (storageErr) {}
+      }
+      return;
     }
-  }, [initialSelectedSheet]);
+
+    if (Array.isArray(chats) && chats.length > 0) {
+      if (!selectedSheet) {
+        let restored = null;
+        if (typeof window !== 'undefined') {
+          try {
+            restored = localStorage.getItem('villa_host_selected_sheet');
+          } catch (storageErr) {}
+        }
+        const exists = restored && chats.some((c) => c.sheetName === restored);
+        const target = exists ? restored : chats[0]?.sheetName;
+        if (target) {
+          setSelectedSheet(target);
+          if (onSelectChat) onSelectChat(target);
+        }
+      } else {
+        const exists = chats.some((c) => c.sheetName === selectedSheet);
+        if (!exists) {
+          let saved = null;
+          if (typeof window !== 'undefined') {
+            try {
+              saved = localStorage.getItem('villa_host_selected_sheet');
+            } catch (storageErr) {}
+          }
+          if (saved && chats.some((c) => c.sheetName === saved)) {
+            setSelectedSheet(saved);
+          }
+        }
+      }
+    }
+  }, [initialSelectedSheet, chats]);
 
   // Динамические шаблоны и база знаний из Google Таблиц с офлайн-памятью
   const [liveTemplates, setLiveTemplates] = useState(SMART_TEMPLATES);
@@ -240,10 +306,19 @@ export default function HostInbox({
   }, []);
 
   // Интеллектуальный скролл сообщений без дергания экрана:
-  // Сохраняет позицию скролла там где ее оставил хозяин, автоскроллит вниз только если хозяин у самого низа (< 120px) или только что сам отправил сообщение
+  // Сохраняет позицию скролла там где ее оставил хозяин, автоскроллит вниз только при новых сообщениях
   useEffect(() => {
     const container = messagesContainerRef.current;
     if (!container) return;
+
+    const currentMsgCount = activeChat?.messages?.length || 0;
+    const isNewMessage = currentMsgCount > prevMsgCountRef.current;
+    prevMsgCountRef.current = currentMsgCount;
+
+    // Если количество сообщений не изменилось и это не отправка хозяином, скролл не трогаем
+    if (!isHostSendingRef.current && !isNewMessage) {
+      return;
+    }
 
     const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 120;
 
@@ -674,6 +749,12 @@ export default function HostInbox({
                       toggleSelectMulti(c.sheetName);
                     } else {
                       setSelectedSheet(c.sheetName);
+                      if (typeof window !== 'undefined') {
+                        try {
+                          localStorage.setItem('villa_host_selected_sheet', c.sheetName);
+                        } catch (storageErr) {}
+                      }
+                      if (onSelectChat) onSelectChat(c.sheetName);
                       setMobileActiveView('chat');
                     }
                   }}
