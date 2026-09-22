@@ -39,6 +39,9 @@ import PhotoGrid from '../components/PhotoGrid';
 import BookingWidget from '../components/BookingWidget';
 import Amenities from '../components/Amenities';
 import SleepingArrangements from '../components/SleepingArrangements';
+import SpaPoolSection from '../components/SpaPoolSection';
+import DalyanLandmarks from '../components/DalyanLandmarks';
+import LawSafetyAccessibility from '../components/LawSafetyAccessibility';
 import HostProfileCard from '../components/HostProfileCard';
 import ReviewsSection from '../components/ReviewsSection';
 import CatalogSection from '../components/CatalogSection';
@@ -682,28 +685,16 @@ export default function HomeListing({ publicData, contentData }) {
             {/* Спальные места: Sleeping Arrangements */}
             <SleepingArrangements homeData={homeData} customBedrooms={homeData.bedrooms} />
 
+            {/* Спа-комплекс и бассейн с соленой водой */}
+            <SpaPoolSection homeData={homeData} />
+
             {/* Удобства виллы: Amenities */}
             <Amenities homeData={homeData} customAmenitiesGrouped={homeData.amenitiesGrouped} customMainAmenities={homeData.mainAmenities} />
 
-            {/* Дополнительные услуги и видео-путеводители из Google Sheets */}
-            <CatalogSection
-              products={currentPublicData.products}
-              courses={currentPublicData.courses}
-              onSelectPresentation={(item, type) => {
-                setSelectedPresentation(item);
-                setSelectedPresentationType(type);
-              }}
-            />
+            {/* Географические ориентиры Дальяна: Dalyan Landmarks */}
+            <DalyanLandmarks homeData={homeData} />
 
-            {/* Полноценная категоризированная галерея виллы из Google Sheets */}
-            <GallerySection
-              gallery={currentPublicData.gallery}
-            />
-
-            {/* Отзывы и оценки гостей по категориям */}
-            <ReviewsSection homeData={homeData} />
-
-            {/* Локация и окрестности Дальяна */}
+            {/* Локация и окрестности Дальяна: панорама */}
             <div className="space-y-4 pt-4 border-t border-white/10">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-rose-400" /> {homeData.locationTitle}
@@ -724,6 +715,27 @@ export default function HomeListing({ publicData, contentData }) {
                 </div>
               </div>
             </div>
+
+            {/* Безопасность, Закон № 7464 и Доступная среда */}
+            <LawSafetyAccessibility homeData={homeData} />
+
+            {/* Дополнительные услуги и видео-путеводители из Google Sheets */}
+            <CatalogSection
+              products={currentPublicData.products}
+              courses={currentPublicData.courses}
+              onSelectPresentation={(item, type) => {
+                setSelectedPresentation(item);
+                setSelectedPresentationType(type);
+              }}
+            />
+
+            {/* Полноценная категоризированная галерея виллы из Google Sheets */}
+            <GallerySection
+              gallery={currentPublicData.gallery}
+            />
+
+            {/* Отзывы и оценки гостей по категориям */}
+            <ReviewsSection homeData={homeData} />
 
             {/* Карточка хоста: Aleksei Znamenskii */}
             <HostProfileCard homeData={homeData} />
