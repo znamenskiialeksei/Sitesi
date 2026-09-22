@@ -28,7 +28,17 @@
       }
     },
     {
-      "label": "📦 2. Сборка Проекта - Next.js Build",
+      "label": "🧹 2. Освободить Порт 3000 - Free Port 3000",
+      "type": "shell",
+      "command": "pwsh -ExecutionPolicy Bypass -Command \"Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }\"",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "📦 3. Сборка Проекта - Next.js Build",
       "type": "shell",
       "command": "npm run build",
       "problemMatcher": [],
@@ -38,7 +48,7 @@
       }
     },
     {
-      "label": "⚡ 3. Запуск Продакшн Сервера - Next.js Start",
+      "label": "⚡ 4. Запуск Продакшн Сервера - Next.js Start",
       "type": "shell",
       "command": "npm start",
       "isBackground": true,
@@ -49,57 +59,7 @@
       }
     },
     {
-      "label": "📊 4. Синхронизация Контента - Google Sheets -> content.json",
-      "type": "shell",
-      "command": "node scripts/sync-content.js",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      }
-    },
-    {
-      "label": "🏛️ 5. Инициализация Структуры CRM Таблиц - Google Sheets",
-      "type": "shell",
-      "command": "node scripts/init-google-sheets.js",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      }
-    },
-    {
-      "label": "🧹 6. Освободить Порт 3000 - Free Port 3000",
-      "type": "shell",
-      "command": "powershell -Command \"Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }\"",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      }
-    },
-    {
-      "label": "📱 7. Полный Стартер PowerShell - deploy_and_run.ps1",
-      "type": "shell",
-      "command": "pwsh -ExecutionPolicy Bypass -File .\\deploy_and_run.ps1",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "new"
-      }
-    },
-    {
-      "label": "🗂️ 8. Миграция Листов Google Таблиц на Русские Названия",
-      "type": "shell",
-      "command": "npm run migrate-sheets",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      }
-    },
-    {
-      "label": "📥 9. Установка Зависимостей - npm install",
+      "label": "📥 5. Установка Зависимостей - npm install",
       "type": "shell",
       "command": "npm install",
       "problemMatcher": [],
@@ -109,7 +69,81 @@
       }
     },
     {
-      "label": "⏸️ 10. Перевести сайт в режим обслуживания - Vercel Pause",
+      "label": "💾 6. Зафиксировать текущие таблицы как эталон SSOT на сайте",
+      "type": "shell",
+      "command": "node scripts/save-master-seed.js",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "💾 7. SPARK: Универсальное создание двухуровневого бэкапа и сохранение версии",
+      "type": "shell",
+      "command": "pwsh -ExecutionPolicy Bypass -File .\\create_project_backup.ps1",
+      "options": {
+        "cwd": "${workspaceFolder}/../Глобальные настройки проекта (накопитель)"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "clear": true
+      }
+    },
+    {
+      "label": "📊 8. Синхронизация Контента - Google Sheets -> content.json",
+      "type": "shell",
+      "command": "node scripts/sync-content.js",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🛠️ 9. SPARK: Восстановить все удаленные листы и контент из эталона",
+      "type": "shell",
+      "command": "node scripts/restore-sheets.js",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🏛️ 10. Инициализация Структуры CRM Таблиц - Google Sheets",
+      "type": "shell",
+      "command": "node scripts/init-google-sheets.js",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🗂️ 11. Миграция Листов Google Таблиц на Русские Названия",
+      "type": "shell",
+      "command": "npm run migrate-sheets",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "📱 12. Полный Стартер PowerShell - deploy_and_run.ps1",
+      "type": "shell",
+      "command": "pwsh -ExecutionPolicy Bypass -File .\\deploy_and_run.ps1",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "⏸️ 13. Перевести сайт в режим обслуживания - Vercel Pause",
       "type": "shell",
       "command": "pwsh -ExecutionPolicy Bypass -File .\\pause_site.ps1",
       "problemMatcher": [],
@@ -119,7 +153,7 @@
       }
     },
     {
-      "label": "▶️ 11. Возобновить штатную работу сайта - Vercel Resume",
+      "label": "▶️ 14. Возобновить штатную работу сайта - Vercel Resume",
       "type": "shell",
       "command": "pwsh -ExecutionPolicy Bypass -File .\\resume_site.ps1",
       "problemMatcher": [],
@@ -129,7 +163,20 @@
       }
     },
     {
-      "label": "🧹 12. Очистить архивные дубли и корень рабочей области",
+      "label": "💾 15. [Git] Зафиксировать все изменения в Git - Commit All",
+      "type": "shell",
+      "command": "pwsh -ExecutionPolicy Bypass -Command \"git add -A; git commit -m 'chore: синхронизация и сохранение версии репозитория'\"",
+      "options": {
+        "cwd": "${workspaceFolder}/.."
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🧹 16. Очистить архивные дубли и корень рабочей области",
       "type": "shell",
       "command": "pwsh -ExecutionPolicy Bypass -File .\\clean_accumulator_and_root.ps1",
       "options": {
@@ -142,7 +189,7 @@
       }
     },
     {
-      "label": "📦 13. Пересобрать переносной запускатор - Уровень 3",
+      "label": "📦 17. Пересобрать переносной запускатор - Уровень 3",
       "type": "shell",
       "command": "pwsh -ExecutionPolicy Bypass -File .\\rebuild_portable_launcher.ps1",
       "options": {
@@ -152,64 +199,6 @@
       "presentation": {
         "reveal": "always",
         "panel": "new"
-      }
-    },
-    {
-      "label": "💾 14. SPARK: Универсальное создание двухуровневого бэкапа и сохранение версии",
-      "type": "shell",
-      "command": "pwsh -ExecutionPolicy Bypass -File .\\create_project_backup.ps1",
-      "options": {
-        "cwd": "${workspaceFolder}/../Глобальные настройки проекта (накопитель)"
-      },
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "new",
-        "clear": true
-      }
-    },
-    {
-      "label": "💾 SPARK: Универсальное создание двухуровневого бэкапа и сохранение версии",
-      "type": "shell",
-      "command": "pwsh -ExecutionPolicy Bypass -File .\\create_project_backup.ps1",
-      "options": {
-        "cwd": "${workspaceFolder}/../Глобальные настройки проекта (накопитель)"
-      },
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "new",
-        "clear": true
-      }
-    },
-    {
-      "label": "🛠️ 15. SPARK: Восстановить все удаленные листы и контент из эталона",
-      "type": "shell",
-      "command": "node scripts/restore-sheets.js",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      }
-    },
-    {
-      "label": "💾 8. Зафиксировать текущие таблицы как эталон SSOT на сайте",
-      "type": "shell",
-      "command": "node scripts/save-master-seed.js",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      }
-    },
-    {
-      "label": "💾 16. SPARK: Зафиксировать состояние Google Sheets в эталон masterSeedContent.js",
-      "type": "shell",
-      "command": "node scripts/save-master-seed.js",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
       }
     }
   ]
