@@ -24,10 +24,28 @@ export default function GuestChat({
 
   const [input, setInput] = useState('');
   const [file, setFile] = useState(null);
-  const bottomRef = useRef(null);
+  const messagesContainerRef = useRef(null);
+  const isUserAtBottomRef = useRef(true);
+  const prevCountRef = useRef(0);
+
+  // Изолированный скролл контейнера с защитой позиции чтения пользователя
+  const handleScroll = () => {
+    if (!messagesContainerRef.current) return;
+    const el = messagesContainerRef.current;
+    const distanceToBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    isUserAtBottomRef.current = distanceToBottom < 120;
+  };
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (!messagesContainerRef.current) return;
+    const isFirstLoad = prevCountRef.current === 0 && messages.length > 0;
+    const hasNewMessages = messages.length > prevCountRef.current;
+
+    // Скроллим только при первой загрузке или если пользователь уже у нижней границы
+    if (isFirstLoad || (hasNewMessages && isUserAtBottomRef.current)) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+    prevCountRef.current = messages.length;
   }, [messages]);
 
   const handleFileChange = (e) => {
@@ -54,9 +72,17 @@ export default function GuestChat({
     e.preventDefault();
     if (!input.trim() && !file) return;
 
+    isUserAtBottomRef.current = true;
     onSendMessage(input.trim(), file);
     setInput('');
     setFile(null);
+    if (messagesContainerRef.current) {
+      setTimeout(() => {
+        if (messagesContainerRef.current) {
+          messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+        }
+      }, 100);
+    }
   };
 
   const activeOffer = (activeRequests || []).find((r) => r && r.status && (String(r.status).includes('СПЕЦПРЕДЛОЖЕНИЕ') || String(r.status).includes('ОЖИДАЕТ')));
@@ -139,8 +165,12 @@ export default function GuestChat({
         </div>
       )}
 
-      {/* Лента сообщений */}
-      <div className="flex-1 p-5 overflow-y-auto space-y-4 bg-slate-950/40">
+      {/* Лента сообщений с изолированным скроллом и защитой позиции пользователя */}
+      <div
+        ref={messagesContainerRef}
+        onScroll={handleScroll}
+        className="flex-1 p-5 overflow-y-auto space-y-4 bg-slate-950/40 custom-scrollbar"
+      >
         {!messages || messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-slate-500 text-xs">
             <MessageCircle className="w-10 h-10 mb-2 opacity-30" />
@@ -217,7 +247,6 @@ export default function GuestChat({
             );
           })
         )}
-        <div ref={bottomRef} />
       </div>
 
       {/* Прикрепленный файл превью */}

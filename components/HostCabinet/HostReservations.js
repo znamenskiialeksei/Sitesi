@@ -5,7 +5,7 @@
 // ==============================================================================
 
 import React, { useState, useEffect } from 'react';
-import { Clock, CheckCircle2, XCircle, Tag, Undo2, User, Phone, Calendar, AlertCircle, Gift } from 'lucide-react';
+import { Clock, CheckCircle2, XCircle, Tag, Undo2, User, Phone, Calendar, AlertCircle, Gift, MessageCircle } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../Toast';
 
@@ -16,6 +16,7 @@ export default function HostReservations({
   onSpecialOffer,
   onReject,
   onRevoke,
+  onOpenChat,
   loading = false
 }) {
   const { t, formatMoney } = useLanguage();
@@ -135,7 +136,7 @@ export default function HostReservations({
 
                 <div className="text-xs text-slate-300 flex flex-wrap items-center gap-4">
                   <span>{t('periodLabel')} <b className="text-white">{req.checkIn} - {req.checkOut}</b> [{req.nights} {t('nightsWord')}]</span>
-                  <span>{t('guestsCountLabel')} <b className="text-white">{req.guests || (req.adults + req.children)}</b></span>
+                  <span>{t('guestsCountLabel')} <b className="text-white">{Number(req.guests) || (Number(req.adults || 0) + Number(req.children || 0)) || 1}</b></span>
                   <span>{t('amountLabel')} <b className="text-emerald-400 font-bold">{req.price}</b></span>
                 </div>
 
@@ -161,6 +162,20 @@ export default function HostReservations({
 
               {/* Кнопки управления заявкой на любой активной стадии */}
               <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                {/* Кнопка быстрого перехода в чат с этим гостем */}
+                {onOpenChat && (
+                  <button
+                    disabled={loading}
+                    type="button"
+                    onClick={() => onOpenChat(req)}
+                    className="px-4 py-2.5 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 font-bold text-xs transition-colors border border-blue-500/30 flex items-center gap-1.5 shadow-sm"
+                    title="Открыть переписку с гостем в Центре сообщений"
+                  >
+                    <MessageCircle className="w-4 h-4 text-blue-400" />
+                    <span>{t('openChatBtn') || 'Перейти в чат'}</span>
+                  </button>
+                )}
+
                 {req.status === 'ЗАПРОС' && (
                   <>
                     <button

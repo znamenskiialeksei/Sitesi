@@ -41,6 +41,7 @@ export default function HostDashboardPage() {
   const [lmsModules, setLmsModules] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isAssistantModalOpen, setIsAssistantModalOpen] = useState(false);
+  const [selectedChatSheet, setSelectedChatSheet] = useState(null);
 
   // Синхронизация таба из query
   useEffect(() => {
@@ -213,6 +214,29 @@ export default function HostDashboardPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Быстрый переход в чат из карточки бронирования
+  const handleOpenChatFromReservation = (req) => {
+    if (!req) return;
+    const safeName = (req.name || 'Гость').toString().trim();
+    const safeContact = (req.contact || '').toString().trim();
+
+    const matched = (chats || []).find((c) => {
+      const cContact = (c.clientContact || '').toString().trim();
+      const cName = (c.clientName || '').toString().trim().toLowerCase();
+      return (
+        (safeContact && cContact && (cContact.includes(safeContact) || safeContact.includes(cContact))) ||
+        (safeName && cName && cName === safeName.toLowerCase())
+      );
+    });
+
+    if (matched) {
+      setSelectedChatSheet(matched.sheetName);
+    } else {
+      setSelectedChatSheet(`Chat_${safeName}_${safeContact}`);
+    }
+    setActiveTab('inbox');
   };
 
   // 5. Сохранение правил календаря
@@ -468,6 +492,7 @@ export default function HostDashboardPage() {
                 onSpecialOffer={handleSpecialOffer}
                 onReject={handleRejectRequest}
                 onRevoke={handleRevokeRequest}
+                onOpenChat={handleOpenChatFromReservation}
                 loading={loading}
               />
             )}
@@ -487,6 +512,7 @@ export default function HostDashboardPage() {
               <HostInbox
                 chats={chats}
                 lmsModules={lmsModules}
+                initialSelectedSheet={selectedChatSheet}
                 onSendMessage={handleSendMessage}
                 onBroadcast={handleBroadcast}
                 onApprove={handleApproveRequest}

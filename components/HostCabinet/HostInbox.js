@@ -47,6 +47,7 @@ import { detectGuestLanguage, resolveTemplate } from '../../utils/templateResolv
 export default function HostInbox({
   chats = [],
   lmsModules = [],
+  initialSelectedSheet = null,
   onSendMessage,
   onBroadcast,
   onApprove,
@@ -59,10 +60,12 @@ export default function HostInbox({
   const { t, lang } = useLanguage();
   const toast = useToast();
 
-  const [selectedSheet, setSelectedSheet] = useState(chats[0]?.sheetName || null);
+  const [selectedSheet, setSelectedSheet] = useState(initialSelectedSheet || chats[0]?.sheetName || null);
   const [selectedMultiSheets, setSelectedMultiSheets] = useState([]);
   const [isBroadcastMode, setIsBroadcastMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilterTab, setActiveFilterTab] = useState('all'); // 'all' | 'requests' | 'paid' | 'registered' | 'unregistered' | 'pending'
+  const [activeSortOrder, setActiveSortOrder] = useState('recent'); // 'recent' | 'urgent' | 'amount' | 'name'
 
   // Многострочное поле ввода: текст никогда не обрезается
   const [messageInput, setMessageInput] = useState('');
@@ -79,6 +82,16 @@ export default function HostInbox({
   const chatBottomRef = useRef(null);
   const messagesContainerRef = useRef(null);
   const textareaRef = useRef(null);
+  const userScrolledUpRef = useRef(false);
+  const isHostSendingRef = useRef(false);
+
+  // Синхронизация выбора чата при переходе из карточки бронирования
+  useEffect(() => {
+    if (initialSelectedSheet) {
+      setSelectedSheet(initialSelectedSheet);
+      setMobileActiveView('chat');
+    }
+  }, [initialSelectedSheet]);
 
   // Динамические шаблоны и база знаний из Google Таблиц с офлайн-памятью
   const [liveTemplates, setLiveTemplates] = useState(SMART_TEMPLATES);
@@ -226,21 +239,75 @@ export default function HostInbox({
     loadKnowledgeBase(false);
   }, []);
 
-  // Автоскролл к последнему сообщению внутри изолированного контейнера: предотвращает дергание экрана
+  // Интеллектуальный скролл сообщений без дергания экрана:
+  // Сохраняет позицию скролла там где ее оставил хозяин, автоскроллит вниз только если хозяин у самого низа (< 120px) или только что сам отправил сообщение
   useEffect(() => {
-    if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 120;
+
+    if (isHostSendingRef.current || !userScrolledUpRef.current || isNearBottom) {
+      container.scrollTop = container.scrollHeight;
+      isHostSendingRef.current = false;
     }
   }, [activeChat?.messages]);
 
-  // Фильтрация чатов по поиску
-  const filteredChats = chats.filter((c) => {
-    const q = searchQuery.toLowerCase();
-    return (
-      (c.clientName || '').toLowerCase().includes(q) ||
-      (c.clientContact || '').toLowerCase().includes(q)
-    );
-  });
+  // Отслеживание ручного скролла хозяином для блокировки нежелательного авто-скролла
+  const handleMessagesScroll = () => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+    const isAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 40;
+    userScrolledUpRef.current = !isAtBottom;
+  };
+
+  // Интеллектуальная фильтрация и сортировка диалогов
+  const filteredChats = useMemo(() => {
+    let list = chats.filter((c) => {
+      const q = searchQuery.toLowerCase();
+      const matchSearch =
+        (c.clientName || '').toLowerCase().includes(q) ||
+        (c.clientContact || '').toLowerCase().includes(q);
+      if (!matchSearch) return false;
+
+      const hasReq = (c.activeRequests && c.activeRequests.length > 0) || c.hasBooking;
+      const curReq = c.activeRequests?.[0] || {};
+      const status = (curReq.status || c.bookingStatus || '').toUpperCase();
+      const isPaid = status.includes('ОПЛАЧЕНО') || status.includes('ПОДТВЕРЖДЕНО');
+      const isPending = status.includes('ОЖИДАЕТ') || status.includes('HOLD') || status.includes('СПЕЦПРЕДЛОЖЕНИЕ') || status.includes('ЗАПРОС');
+      const isReg = !!c.isRegistered;
+
+      if (activeFilterTab === 'requests') return hasReq;
+      if (activeFilterTab === 'paid') return isPaid;
+      if (activeFilterTab === 'pending') return isPending;
+      if (activeFilterTab === 'registered') return isReg;
+      if (activeFilterTab === 'unregistered') return !isReg;
+      return true;
+    });
+
+    // Сортировка
+    return list.sort((a, b) => {
+      if (activeSortOrder === 'recent') {
+        const lastA = a.messages?.[a.messages.length - 1]?.date || '';
+        const lastB = b.messages?.[b.messages.length - 1]?.date || '';
+        return lastB.localeCompare(lastA);
+      }
+      if (activeSortOrder === 'urgent') {
+        const hasPendingA = (a.activeRequests?.[0]?.status || a.bookingStatus || '').toUpperCase().includes('ОЖИДАЕТ') ? 1 : 0;
+        const hasPendingB = (b.activeRequests?.[0]?.status || b.bookingStatus || '').toUpperCase().includes('ОЖИДАЕТ') ? 1 : 0;
+        return hasPendingB - hasPendingA;
+      }
+      if (activeSortOrder === 'amount') {
+        const priceA = parseFloat((a.activeRequests?.[0]?.price || a.bookingAmount || '0').toString().replace(/[^\d.]/g, '')) || 0;
+        const priceB = parseFloat((b.activeRequests?.[0]?.price || b.bookingAmount || '0').toString().replace(/[^\d.]/g, '')) || 0;
+        return priceB - priceA;
+      }
+      if (activeSortOrder === 'name') {
+        return (a.clientName || '').localeCompare(b.clientName || '');
+      }
+      return 0;
+    });
+  }, [chats, searchQuery, activeFilterTab, activeSortOrder]);
 
   // Автоматическое определение языка гостя при смене активного чата
   useEffect(() => {
@@ -380,6 +447,7 @@ export default function HostInbox({
       setIsBroadcastMode(false);
     } else {
       if (!activeChat) return;
+      isHostSendingRef.current = true;
       onSendMessage(activeChat.sheetName, messageInput.trim(), attachedFile);
       setMessageInput('');
       setAttachedFile(null);
@@ -521,7 +589,7 @@ export default function HostInbox({
 
         {/* Левая колонка: Список диалогов с гостями [4 колонки] */}
         <div className={`col-span-12 md:col-span-4 border-r border-white/10 flex flex-col bg-slate-950/50 min-h-0 h-full overflow-hidden ${mobileActiveView !== 'list' ? 'hidden md:flex' : 'flex'}`}>
-          <div className="p-3 border-b border-white/5">
+          <div className="p-3 border-b border-white/5 space-y-2">
             <div className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
@@ -531,6 +599,45 @@ export default function HostInbox({
                 placeholder={t('searchChatPlaceholder')}
                 className="w-full bg-slate-800/80 border border-white/5 pl-9 pr-3 py-2 rounded-xl text-xs text-white outline-none focus:border-rose-500"
               />
+            </div>
+
+            {/* Фильтры по статусам диалогов */}
+            <div className="flex items-center gap-1 overflow-x-auto pb-1 no-scrollbar text-[11px]">
+              {[
+                { id: 'all', label: 'Все' },
+                { id: 'requests', label: 'С заявками' },
+                { id: 'paid', label: 'Оплаченные' },
+                { id: 'pending', label: 'В ожидании' },
+                { id: 'registered', label: 'Зарегистр.' },
+                { id: 'unregistered', label: 'Без регистр.' }
+              ].map((f) => (
+                <button
+                  key={f.id}
+                  onClick={() => setActiveFilterTab(f.id)}
+                  className={`px-2.5 py-1 rounded-lg font-bold shrink-0 transition-all ${
+                    activeFilterTab === f.id
+                      ? 'bg-rose-600 text-white shadow-sm'
+                      : 'bg-slate-800/70 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Сортировка диалогов */}
+            <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1">
+              <span>Сортировка:</span>
+              <select
+                value={activeSortOrder}
+                onChange={(e) => setActiveSortOrder(e.target.value)}
+                className="bg-slate-800 text-slate-200 text-[11px] rounded-lg px-2 py-0.5 border border-white/10 outline-none focus:border-rose-500"
+              >
+                <option value="recent">Свежие сообщения</option>
+                <option value="urgent">Срочные (HOLD/Запросы)</option>
+                <option value="amount">Сумма брони</option>
+                <option value="name">Имя гостя</option>
+              </select>
             </div>
           </div>
 
@@ -550,6 +657,14 @@ export default function HostInbox({
                 ? selectedMultiSheets.includes(c.sheetName)
                 : selectedSheet === c.sheetName;
               const lastMsg = c.messages?.[c.messages.length - 1];
+
+              // Смарт-бейджи для контакта
+              const curReq = c.activeRequests?.[0] || {};
+              const reqStatus = (curReq.status || c.bookingStatus || '').toUpperCase();
+              const isPaid = reqStatus.includes('ОПЛАЧЕНО') || reqStatus.includes('ПОДТВЕРЖДЕНО');
+              const isHold = reqStatus.includes('ОЖИДАЕТ') || reqStatus.includes('HOLD');
+              const isOffer = reqStatus.includes('СПЕЦПРЕДЛОЖЕНИЕ');
+              const isRequest = reqStatus.includes('ЗАПРОС') || (c.activeRequests && c.activeRequests.length > 0 && !isPaid && !isHold && !isOffer);
 
               return (
                 <div
@@ -575,6 +690,41 @@ export default function HostInbox({
                       <span className="text-[10px] text-slate-500 shrink-0">{lastMsg?.date?.split(' ')?.[0] || ''}</span>
                     </div>
                     <p className="text-[11px] text-slate-400 truncate mt-0.5">{c.clientContact}</p>
+
+                    {/* Смарт-бейджи статусов */}
+                    <div className="flex items-center gap-1.5 flex-wrap mt-1">
+                      {c.isRegistered ? (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-950/60 border border-emerald-500/30 text-emerald-300">
+                          {c.verificationLevel === 'both' ? '✓ Email и Тел' : c.verificationLevel === 'email' ? '✓ Email' : c.verificationLevel === 'phone' ? '✓ Тел' : '👤 Аккаунт'}
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-800 border border-white/10 text-slate-400">
+                          👁️ Без рег.
+                        </span>
+                      )}
+
+                      {isPaid && (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-900/60 border border-emerald-500/40 text-emerald-200">
+                          💳 Оплачено
+                        </span>
+                      )}
+                      {isHold && (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-950/60 border border-amber-500/40 text-amber-200">
+                          ⏰ HOLD 24ч
+                        </span>
+                      )}
+                      {isOffer && (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-950/60 border border-purple-500/40 text-purple-200">
+                          🎁 Спецпредложение
+                        </span>
+                      )}
+                      {isRequest && (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-950/60 border border-blue-500/40 text-blue-200">
+                          ⏳ Запрос
+                        </span>
+                      )}
+                    </div>
+
                     <p className="text-xs text-slate-400 truncate mt-1">
                       {lastMsg ? `${lastMsg.sender}: ${lastMsg.original}` : t('noMessages')}
                     </p>
@@ -632,7 +782,7 @@ export default function HostInbox({
           </div>
 
           {/* Сообщения активного диалога: изолированный скролл без дергания экрана */}
-          <div ref={messagesContainerRef} className="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-950/30">
+          <div ref={messagesContainerRef} onScroll={handleMessagesScroll} className="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-950/30">
             {activeChat?.messages?.map((m, mIdx) => {
               const isOwner = m.sender === 'Владелец' || m.sender === 'Система';
               return (

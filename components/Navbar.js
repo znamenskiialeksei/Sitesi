@@ -55,21 +55,21 @@ export default function Navbar() {
 
         {/* Навигационные якоря (десктоп) */}
         <nav className="hidden md:flex items-center gap-1 bg-slate-800/60 p-1.5 rounded-full border border-white/5 text-xs font-semibold text-slate-300">
-          <a href="#about" className="px-4 py-2 rounded-full hover:text-white hover:bg-white/5 transition-all">
+          <Link href={router.pathname === '/' ? '#about' : '/#about'} className="px-4 py-2 rounded-full hover:text-white hover:bg-white/5 transition-all">
             {t('navAbout')}
-          </a>
-          <a href="#amenities" className="px-4 py-2 rounded-full hover:text-white hover:bg-white/5 transition-all">
+          </Link>
+          <Link href={router.pathname === '/' ? '#amenities' : '/#amenities'} className="px-4 py-2 rounded-full hover:text-white hover:bg-white/5 transition-all">
             {t('navAmenities')}
-          </a>
-          <a href="#reviews" className="px-4 py-2 rounded-full hover:text-white hover:bg-white/5 transition-all">
+          </Link>
+          <Link href={router.pathname === '/' ? '#reviews' : '/#reviews'} className="px-4 py-2 rounded-full hover:text-white hover:bg-white/5 transition-all">
             {t('navReviews')}
-          </a>
-          <a href="#gallery" className="px-4 py-2 rounded-full hover:text-white hover:bg-white/5 transition-all">
+          </Link>
+          <Link href={router.pathname === '/' ? '#gallery' : '/#gallery'} className="px-4 py-2 rounded-full hover:text-white hover:bg-white/5 transition-all">
             {t('galleryTitle') || 'Галерея'}
-          </a>
-          <a href="#catalog" className="px-4 py-2 rounded-full hover:text-white hover:bg-white/5 transition-all">
+          </Link>
+          <Link href={router.pathname === '/' ? '#catalog' : '/#catalog'} className="px-4 py-2 rounded-full hover:text-white hover:bg-white/5 transition-all">
             {t('navCatalog')}
-          </a>
+          </Link>
         </nav>
 
         {/* Правая панель действий */}
@@ -175,19 +175,19 @@ export default function Navbar() {
           </Link>
 
           {/* Меню профиля пользователя (AirBnB Pill) */}
-          <div className="relative" ref={profileRef}>
+          <div className="relative shrink-0" ref={profileRef}>
             <button
               onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-              className="flex items-center gap-2 p-1.5 pl-3 rounded-full bg-slate-800 hover:bg-slate-700 border border-white/10 transition-all shadow-inner"
+              className="flex items-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 sm:pl-3 rounded-full bg-slate-800 hover:bg-slate-700 border border-white/10 transition-all shadow-inner shrink-0"
             >
-              <Menu className="w-4 h-4 text-slate-400" />
-              <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
+              <Menu className="w-4 h-4 text-slate-400 shrink-0" />
+              <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
                 {currentUser ? currentUser.name.charAt(0).toUpperCase() : <User className="w-3.5 h-3.5" />}
               </div>
             </button>
 
             {profileMenuOpen && (
-              <div className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-24px)] bg-slate-800 rounded-2xl shadow-2xl border border-white/10 p-2 z-50 fade-in flex flex-col">
+              <div className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-16px)] bg-slate-800 rounded-2xl shadow-2xl border border-white/10 p-2 z-50 fade-in flex flex-col">
                 {currentUser ? (
                   <>
                     <div className="px-4 py-3 border-b border-white/10 mb-1">

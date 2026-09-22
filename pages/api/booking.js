@@ -122,7 +122,15 @@ const parseMessageRow = (r) => {
 
 const getChatSheetName = (name, contact) => {
   const safeName = (name || 'Guest').toString().replace(/[\\/?*[\]]/g, '').trim().substring(0, 15);
-  const safeContact = (contact || 'NoContact').toString().replace(/[\\/?*[\]]/g, '').trim().substring(0, 30);
+  // Нормализация контакта: если передан комбинированный 'Телефон | Email', выделяем основной контакт
+  let rawContact = (contact || 'NoContact').toString();
+  if (rawContact.includes('|')) {
+    const parts = rawContact.split('|').map((p) => p.trim()).filter(Boolean);
+    // Приоритет email для имени листа чата, если нет: телефон
+    const emailPart = parts.find((p) => p.includes('@'));
+    rawContact = emailPart || parts[0] || 'NoContact';
+  }
+  const safeContact = rawContact.replace(/[\\/?*[\]|]/g, '').trim().substring(0, 30);
   return `Chat_${safeName}_${safeContact}`;
 };
 
@@ -429,8 +437,8 @@ export default async function handler(req, res) {
 
   let serviceAccountAuth, oauth2Client;
   let sheets, drive, tasksApi, calendarApi;
-  let spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID;
-  let chatsSpreadsheetId = process.env.GOOGLE_CHATS_SPREADSHEET_ID;
+  let spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID || '1ESfaH3FBOx-Z0Z1CKU8-c1cQZCE2YjJBiTvX0MV0A5Q';
+  let chatsSpreadsheetId = process.env.GOOGLE_CHATS_SPREADSHEET_ID || '1oiWwaT7KzbTdRS-pSCjHv-F84ymXlrmrkNE99IFD3rQ';
 
   // Авторизация в Google Service Account (только при наличии реальных, не демонстрационных ключей)
   const clientEmail = (process.env.GOOGLE_CLIENT_EMAIL || '').trim();
@@ -972,30 +980,6 @@ export default async function handler(req, res) {
                 });
               }
             }
-          }
-        } catch (e) { }
-
-        try {
-          // 2. Фоллбэк на старый лист MASTER, если он еще существует
-          const masterDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'MASTER', 'A:M') });
-          const masterUser = (masterDb.data.values || []).find((r) => {
-            const email = (r[4] || '').toString().trim().toLowerCase();
-            const login = (r[5] || '').toString().trim().toLowerCase();
-            const pwd = (r[6] || '').toString().trim();
-            return (email === safeContact || login === safeContact) && pwd === safePassword;
-          });
-
-          if (masterUser) {
-            return res.status(200).json({
-              success: true,
-              user: {
-                name: (masterUser[0] || 'Aleksei Znamenskii').trim(),
-                contact: safeContact,
-                isHost: true,
-                role: masterUser[7] || 'Owner',
-                permissions: { finance: true, periods: true, blocks: true, bookingWindow: true, chats: true }
-              }
-            });
           }
         } catch (e) { }
 
@@ -1640,11 +1624,24 @@ export default async function handler(req, res) {
               checkIn: r[3],
               checkOut: r[4],
               nights: r[5],
+              adults: Number(r[6]) || 1,
+              children: Number(r[7]) || 0,
+              total_guests: Number(r[8]) || (Number(r[6] || 1) + Number(r[7] || 0)),
+              guests: Number(r[8]) || (Number(r[6] || 1) + Number(r[7] || 0)),
               price: r[9],
               status,
               expiresAt
             };
           });
+
+          // Получение аккаунтов для определения статуса регистрации и верификации
+          let accountsDb = { data: { values: [] } };
+          try {
+            accountsDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'ACCOUNTS', 'A:G') });
+          } catch (accErr) {
+            console.warn('[master_get_chats ACCOUNTS Warning]:', accErr.message);
+          }
+          const allAccounts = (accountsDb.data.values || []).slice(1);
 
           // Пакетная загрузка всех листов чатов за 1 сетевой запрос [batchGet]
           const ranges = chatSheets.map((s) => `'${s.properties.title}'!A:G`);
@@ -1688,9 +1685,51 @@ export default async function handler(req, res) {
               }
             }
 
-            const userReqs = allReqs.filter((r) => (r.contact || '').toLowerCase() === clientContact.toLowerCase());
+            // Сопоставление с заявками: прямое совпадение или частичное совпадение контакта
+            const contactLower = clientContact.toLowerCase();
+            const userReqs = allReqs.filter((r) => {
+              const rContact = (r.contact || '').toLowerCase();
+              return rContact === contactLower ||
+                (contactLower.length > 3 && rContact.includes(contactLower)) ||
+                (rContact.length > 3 && contactLower.includes(rContact));
+            });
 
-            allChats.push({ sheetName: title, clientName, clientContact, messages, activeRequests: userReqs });
+            // Сопоставление с аккаунтом для бейджей регистрации и верификации
+            const matchedAccount = allAccounts.find((acc) => {
+              const login = (acc[2] || '').toLowerCase();
+              return login === contactLower ||
+                (contactLower.length > 3 && login.includes(contactLower)) ||
+                (login.length > 3 && contactLower.includes(login));
+            });
+
+            const isRegistered = !!matchedAccount;
+            let verificationLevel = 'none';
+            if (isRegistered) {
+              const accLogin = (matchedAccount[2] || '').toLowerCase();
+              const hasEmail = accLogin.includes('@');
+              const hasPhone = /\d{7,}/.test(accLogin);
+              if (hasEmail && hasPhone) verificationLevel = 'both';
+              else if (hasEmail) verificationLevel = 'email';
+              else if (hasPhone) verificationLevel = 'phone';
+              else verificationLevel = 'account';
+            }
+
+            const primaryReq = userReqs[0];
+            const bookingStatus = primaryReq ? primaryReq.status : null;
+            const bookingAmount = primaryReq ? primaryReq.price : null;
+
+            allChats.push({
+              sheetName: title,
+              clientName,
+              clientContact,
+              messages,
+              activeRequests: userReqs,
+              isRegistered,
+              verificationLevel,
+              hasBooking: userReqs.length > 0,
+              bookingStatus,
+              bookingAmount
+            });
           }
         } catch (innerErr) {
           console.warn('[master_get_chats inner Warning]:', innerErr.message);

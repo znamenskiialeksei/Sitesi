@@ -71,7 +71,7 @@ export default async function handler(req, res) {
     return { home: {}, about: {}, legal: {}, templates: {}, products: [], courses: [], gallery: [] };
   };
 
-  const spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID;
+  const spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID || '1ESfaH3FBOx-Z0Z1CKU8-c1cQZCE2YjJBiTvX0MV0A5Q';
   const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
   const privateKey = process.env.GOOGLE_PRIVATE_KEY;
 

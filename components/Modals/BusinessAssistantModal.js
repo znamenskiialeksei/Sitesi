@@ -54,6 +54,7 @@ export default function BusinessAssistantModal({
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef(null);
   const chatBottomRef = useRef(null);
+  const chatContainerRef = useRef(null);
 
   // Состояние калькулятора e-Arşiv Fatura
   const [calcGrossTRY, setCalcGrossTRY] = useState(activeBooking?.price ? String(parseInt(activeBooking.price, 10) * 35) : '75000');
@@ -124,9 +125,10 @@ export default function BusinessAssistantModal({
     }
   };
 
+  // Локальный скролл контейнера сообщений без дергания модального окна и всей страницы
   useEffect(() => {
-    if (activeTab === 'chat' && chatBottomRef.current) {
-      chatBottomRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (activeTab === 'chat' && chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [messages, activeTab]);
 
@@ -391,8 +393,8 @@ export default function BusinessAssistantModal({
                 </div>
               </div>
 
-              {/* Лента сообщений */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              {/* Лента сообщений: изолированный скролл без вызова глобального scrollIntoView */}
+              <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-6 space-y-4">
                 {messages.map((m) => (
                   <div
                     key={m.id}
