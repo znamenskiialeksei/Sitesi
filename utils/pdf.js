@@ -1,7 +1,7 @@
 // ==============================================================================
 // ГЕНЕРАЦИЯ PDF-ВАУЧЕРОВ И КВИТАНЦИЙ БРОНИРОВАНИЯ
 // Файл: utils/pdf.js
-// Назначение: Автоматическое формирование официального подтверждения бронирования (ваучера)
+// Назначение: Автоматическое формирование официального подтверждения бронирования - ваучера
 // для заселения на Villa Turaman после успешной оплаты.
 // ==============================================================================
 
@@ -46,11 +46,11 @@ export const generateVoucher = async (bookingData) => {
       doc.text(`Guest Full Name: ${bookingData.name || 'Valued Guest'}`);
       doc.text(`Contact: ${bookingData.contact || 'Registered Contact'}`);
       if (bookingData.checkIn && bookingData.checkOut) {
-        doc.text(`Check-in Date: ${bookingData.checkIn} (from 16:00)`);
-        doc.text(`Check-out Date: ${bookingData.checkOut} (until 10:00)`);
+        doc.text(`Check-in Date: ${bookingData.checkIn} - from 16:00`);
+        doc.text(`Check-out Date: ${bookingData.checkOut} - until 10:00`);
         doc.text(`Total Nights: ${bookingData.nights || 1}`);
       }
-      doc.text(`Total Guests: ${bookingData.total_guests || bookingData.guests || 2} (Adults: ${bookingData.adults || 2}, Children: ${bookingData.children || 0})`);
+      doc.text(`Total Guests: ${bookingData.total_guests || bookingData.guests || 2} - Adults: ${bookingData.adults || 2}, Children: ${bookingData.children || 0}`);
       doc.text(`Total Paid Amount: ${bookingData.amount || bookingData.price || 0} ${bookingData.currency || 'RUB'}`);
       doc.text(`Payment Status: CONFIRMED & PAID IN FULL`);
       doc.moveDown(1.5);
@@ -63,7 +63,7 @@ export const generateVoucher = async (bookingData) => {
       doc.text('• Self Check-in: The villa is equipped with an electronic smart lock. Access code will be sent via chat 24h prior.');
       doc.text('• Smoking inside the villa is strictly prohibited. Permitted only on outdoor terraces.');
       doc.text('• Quiet hours: 23:00 - 08:00 in accordance with Dalyan municipality regulations.');
-      doc.text('• Direct Contact with Host Aleksei Znamenskii: Telegram @AlekseiZnamenskii | Email: villaturaman@gmail.com');
+      doc.text('• Direct Contact with Host Aleksei Znamenskii: Telegram @marmarisyachtingru | Email: villaturaman@gmail.com');
       doc.moveDown(2);
 
       // 5. Подвал с печатью и благодарностью

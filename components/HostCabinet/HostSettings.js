@@ -5,7 +5,7 @@
 // ==============================================================================
 
 import React, { useState, useEffect } from 'react';
-import { Settings, Save, Clock, DollarSign, Calendar, Shield, Bot, Sparkles, CreditCard } from 'lucide-react';
+import { Settings, Save, Clock, DollarSign, Calendar, Shield, Bot, Sparkles, CreditCard, MessageCircle, Mail } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../Toast';
 
@@ -130,10 +130,12 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
     ibanReceiver: globalRules.ibanReceiver || 'Aleksei Znamenskii',
     ibanNumber: globalRules.ibanNumber || 'TR000000000000000000000000',
     ibanSwift: globalRules.ibanSwift || 'TCZBTR2A',
-    ibanNote: globalRules.ibanNote || 'Укажите код бронирования в назначении платежа'
+    ibanNote: globalRules.ibanNote || 'Укажите код бронирования в назначении платежа',
+    hostTelegram: globalRules.hostTelegram || 'https://t.me/marmarisyachtingru',
+    hostEmail: globalRules.hostEmail || 'villaturaman@gmail.com'
   });
 
-  // Синхронизация формы при асинхронной загрузке настроек из Google Sheets [CalendarSettings]
+  // Синхронизация формы при асинхронной загрузке настроек из Google Sheets CalendarSettings
   useEffect(() => {
     if (globalRules && Object.keys(globalRules).length > 0) {
       setForm({
@@ -151,7 +153,9 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
         ibanReceiver: globalRules.ibanReceiver || 'Aleksei Znamenskii',
         ibanNumber: globalRules.ibanNumber || 'TR000000000000000000000000',
         ibanSwift: globalRules.ibanSwift || 'TCZBTR2A',
-        ibanNote: globalRules.ibanNote || 'Укажите код бронирования в назначении платежа'
+        ibanNote: globalRules.ibanNote || 'Укажите код бронирования в назначении платежа',
+        hostTelegram: globalRules.hostTelegram || 'https://t.me/marmarisyachtingru',
+        hostEmail: globalRules.hostEmail || 'villaturaman@gmail.com'
       });
     }
   }, [globalRules]);
@@ -582,6 +586,53 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
                 placeholder="Обязательно укажите код бронирования в назначении платежа"
                 className="w-full bg-slate-800 border border-white/10 p-2.5 rounded-xl text-xs font-bold text-slate-200 outline-none focus:border-emerald-500"
               />
+            </div>
+          </div>
+        </div>
+
+        {/* БЛОК: ОФИЦИАЛЬНЫЕ КОНТАКТЫ ХОЗЯИНА ДЛЯ ГОСТЕЙ И ИИ АГЕНТА */}
+        <div className="sm:col-span-2 p-5 rounded-2xl bg-slate-800/60 border border-white/10 space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
+              <MessageCircle className="w-4 h-4" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-white">Официальные контакты хозяина</h4>
+              <p className="text-xs text-slate-400">
+                Используются в чате с гостем, в письмах подтверждения бронирования и ИИ агентом
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <div>
+              <label className="block text-xs uppercase font-bold text-slate-400 mb-1 flex items-center gap-1.5">
+                <MessageCircle className="w-3.5 h-3.5 text-blue-400" /> Telegram хозяина
+              </label>
+              <input
+                type="text"
+                name="hostTelegram"
+                value={form.hostTelegram}
+                onChange={handleChange}
+                placeholder="https://t.me/marmarisyachtingru"
+                className="w-full bg-slate-800 border border-white/10 p-2.5 rounded-xl text-xs font-bold text-blue-300 outline-none focus:border-blue-500"
+              />
+              <span className="text-[10px] text-slate-500 mt-1 block">Ссылка вида https://t.me/username или @username</span>
+            </div>
+
+            <div>
+              <label className="block text-xs uppercase font-bold text-slate-400 mb-1 flex items-center gap-1.5">
+                <Mail className="w-3.5 h-3.5 text-rose-400" /> Email хозяина для связи
+              </label>
+              <input
+                type="email"
+                name="hostEmail"
+                value={form.hostEmail}
+                onChange={handleChange}
+                placeholder="villaturaman@gmail.com"
+                className="w-full bg-slate-800 border border-white/10 p-2.5 rounded-xl text-xs font-bold text-white outline-none focus:border-rose-500"
+              />
+              <span className="text-[10px] text-slate-500 mt-1 block">Email для прямых обращений гостей и уведомлений</span>
             </div>
           </div>
         </div>

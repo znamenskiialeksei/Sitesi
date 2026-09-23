@@ -14,8 +14,9 @@ export default function Footer({ legalData = {} }) {
   const { t, lang } = useLanguage();
 
   const companyName = legalData.company_name?.text?.[lang] || legalData.company_name?.text?.ru || 'ALEKSEI ZNAMENSKII - Villa Turaman';
-  const taxInfo = legalData.tax_info?.text?.[lang] || legalData.tax_info?.text?.ru || 'Ortaca Vergi Dairesi, VKN: 9991120181 (Турция)';
+  const taxInfo = legalData.tax_info?.text?.[lang] || legalData.tax_info?.text?.ru || 'Ortaca Vergi Dairesi, VKN: 9991120181 - Турция';
   const contactEmail = legalData.contact_email?.text?.[lang] || legalData.contact_email?.text?.ru || 'villaturaman@gmail.com';
+  const contactTelegram = legalData.contact_telegram?.text?.[lang] || legalData.contact_telegram?.text?.ru || 'https://t.me/marmarisyachtingru';
   const etbisText = legalData.etbis_text?.text?.[lang] || legalData.etbis_text?.text?.ru || "ETBİS'e Kayıtlıdır";
   const etbisQr = legalData.etbis_placeholder?.text?.[lang] || legalData.etbis_placeholder?.text?.ru || "ETBIS QR CODE\nVKN: 9991120181";
 
@@ -85,12 +86,12 @@ export default function Footer({ legalData = {} }) {
             <ul className="space-y-2">
               <li>
                 <a
-                  href="https://t.me/AlekseiZnamenskii"
+                  href={contactTelegram}
                   target="_blank"
                   rel="noreferrer"
                   className="hover:text-white hover:underline transition-colors flex items-center gap-2 text-blue-400"
                 >
-                  <MessageCircle className="w-4 h-4 shrink-0" /> Telegram: @AlekseiZnamenskii
+                  <MessageCircle className="w-4 h-4 shrink-0" /> Telegram: @marmarisyachtingru
                 </a>
               </li>
               <li>

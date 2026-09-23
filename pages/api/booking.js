@@ -425,12 +425,12 @@ export default async function handler(req, res) {
     </div>
 
     <div class="detail"><span class="label">Гость:</span><span class="val">${bookingData.name}</span></div>
-    <div class="detail"><span class="label">Объект:</span><span class="val">Villa Turaman (Дальян, Мугла, Турция)</span></div>
-    <div class="detail"><span class="label">Владелец / Tax ID:</span><span class="val">Алексей Знаменский (VKN: 9991120181)</span></div>
+    <div class="detail"><span class="label">Объект:</span><span class="val">Villa Turaman : Дальян, Мугла, Турция</span></div>
+    <div class="detail"><span class="label">Владелец / Tax ID:</span><span class="val">Алексей Знаменский : VKN 9991120181</span></div>
     ${checkInHtml}
     <div class="detail"><span class="label">Время заезда / выезда:</span><span class="val">Заезд с 16:00 • Выезд до 10:00</span></div>
     <div class="detail"><span class="label">Код доступа Wi-Fi:</span><span class="val code">turaman2026</span></div>
-    <div class="detail"><span class="label">Персональный консьерж:</span><span class="val">@AlekseiZnamenskii</span></div>
+    <div class="detail"><span class="label">Персональный консьерж:</span><span class="val">@marmarisyachtingru</span></div>
 
     <div class="btn-group">
       <a href="${pdfLink}" class="btn btn-primary">
@@ -705,7 +705,15 @@ export default async function handler(req, res) {
           bookingMode: 'instant',
           verificationMode: 'progressive',
           checkInTime: '16:00',
-          checkOutTime: '10:00'
+          checkOutTime: '10:00',
+          paymentMode: 'all',
+          ibanBankName: 'Ziraat Bankası',
+          ibanReceiver: 'Aleksei Znamenskii',
+          ibanNumber: 'TR000000000000000000000000',
+          ibanSwift: 'TCZBTR2A',
+          ibanNote: 'Укажите код бронирования в назначении платежа',
+          hostTelegram: 'https://t.me/marmarisyachtingru',
+          hostEmail: 'villaturaman@gmail.com'
         };
         await sheets.spreadsheets.values.append({
           spreadsheetId,
@@ -925,7 +933,26 @@ export default async function handler(req, res) {
       if (!sheets || !spreadsheetId) {
         return res.status(200).json({
           success: true,
-          globalRules: { basePrice: 250, currency: 'USD', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', verificationMode: 'progressive', checkInTime: '16:00', checkOutTime: '10:00' },
+          globalRules: {
+            basePrice: 250,
+            currency: 'USD',
+            minNights: 3,
+            maxNights: 30,
+            bookingWindowMonths: 18,
+            advanceNoticeDays: 2,
+            bookingMode: 'instant',
+            verificationMode: 'progressive',
+            checkInTime: '16:00',
+            checkOutTime: '10:00',
+            paymentMode: 'all',
+            ibanBankName: 'Ziraat Bankası',
+            ibanReceiver: 'Aleksei Znamenskii',
+            ibanNumber: 'TR000000000000000000000000',
+            ibanSwift: 'TCZBTR2A',
+            ibanNote: 'Укажите код бронирования в назначении платежа',
+            hostTelegram: 'https://t.me/marmarisyachtingru',
+            hostEmail: 'villaturaman@gmail.com'
+          },
           dateRules: []
         });
       }
@@ -947,6 +974,8 @@ export default async function handler(req, res) {
             if (!globalRules.ibanNumber) globalRules.ibanNumber = 'TR000000000000000000000000';
             if (!globalRules.ibanSwift) globalRules.ibanSwift = 'TCZBTR2A';
             if (!globalRules.ibanNote) globalRules.ibanNote = 'Укажите код бронирования в назначении платежа';
+            if (!globalRules.hostTelegram) globalRules.hostTelegram = 'https://t.me/marmarisyachtingru';
+            if (!globalRules.hostEmail) globalRules.hostEmail = 'villaturaman@gmail.com';
           } catch (e) { }
         } else if (row[2] !== 'Настройки' && row[0] && row[0] !== 'Дата старта') {
           let isValid = true;
@@ -974,7 +1003,26 @@ export default async function handler(req, res) {
 
       const result = {
         success: true,
-        globalRules: globalRules || { basePrice: 250, currency: 'USD', minNights: 3, maxNights: 30, bookingWindowMonths: 18, advanceNoticeDays: 2, bookingMode: 'instant', verificationMode: 'progressive', checkInTime: '16:00', checkOutTime: '10:00' },
+        globalRules: globalRules || {
+          basePrice: 250,
+          currency: 'USD',
+          minNights: 3,
+          maxNights: 30,
+          bookingWindowMonths: 18,
+          advanceNoticeDays: 2,
+          bookingMode: 'instant',
+          verificationMode: 'progressive',
+          checkInTime: '16:00',
+          checkOutTime: '10:00',
+          paymentMode: 'all',
+          ibanBankName: 'Ziraat Bankası',
+          ibanReceiver: 'Aleksei Znamenskii',
+          ibanNumber: 'TR000000000000000000000000',
+          ibanSwift: 'TCZBTR2A',
+          ibanNote: 'Укажите код бронирования в назначении платежа',
+          hostTelegram: 'https://t.me/marmarisyachtingru',
+          hostEmail: 'villaturaman@gmail.com'
+        },
         dateRules,
         variablesDict
       };

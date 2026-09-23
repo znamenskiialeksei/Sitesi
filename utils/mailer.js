@@ -473,12 +473,12 @@ export const getDetailedBookingEmailHtml = ({
                 </a>
               </div>
               <div>
-                <a href="https://t.me/AlekseiZnamenskii" target="_blank" style="display: inline-block; color: #38bdf8; text-decoration: none; font-size: 12px; font-weight: 600; margin: 0 10px;">
-                  💬 Написать хозяину в Telegram
+                <a href="https://t.me/marmarisyachtingru" target="_blank" style="display: inline-block; color: #38bdf8; text-decoration: none; font-size: 12px; font-weight: 600; margin: 0 10px;">
+                  💬 Написать хозяину в Telegram: @marmarisyachtingru
                 </a>
                 <span style="color: rgba(255, 255, 255, 0.2);">|</span>
-                <a href="mailto:info@villaturaman.com" style="display: inline-block; color: #94a3b8; text-decoration: none; font-size: 12px; font-weight: 600; margin: 0 10px;">
-                  ✉ Связаться по email: info@villaturaman.com
+                <a href="mailto:villaturaman@gmail.com" style="display: inline-block; color: #94a3b8; text-decoration: none; font-size: 12px; font-weight: 600; margin: 0 10px;">
+                  ✉ Связаться по email: villaturaman@gmail.com
                 </a>
               </div>
             </td>
@@ -592,7 +592,7 @@ export const sendDetailedBookingNotification = async ({
           'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
         },
         body: JSON.stringify({
-          from: process.env.MAIL_FROM || 'Villa Turaman <booking@villaturaman.com>',
+          from: process.env.MAIL_FROM || 'Villa Turaman <villaturaman@gmail.com>',
           to: [to],
           subject,
           html: htmlContent
@@ -617,7 +617,7 @@ export const sendDetailedBookingNotification = async ({
           'api-key': process.env.BREVO_API_KEY
         },
         body: JSON.stringify({
-          sender: { name: 'Villa Turaman', email: process.env.MAIL_FROM_EMAIL || 'info@villaturaman.com' },
+          sender: { name: 'Villa Turaman', email: process.env.MAIL_FROM_EMAIL || 'villaturaman@gmail.com' },
           to: [{ email: to, name: guestName }],
           subject,
           htmlContent

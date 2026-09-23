@@ -121,7 +121,7 @@ export default function GuestChat({
 
         <div className="flex flex-wrap items-center gap-2.5 self-stretch md:self-auto justify-between md:justify-end">
           <a
-            href="https://t.me/AlekseiZnamenskii"
+            href="https://t.me/marmarisyachtingru"
             target="_blank"
             rel="noreferrer"
             className="px-3 py-1.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 text-sky-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm hover:scale-105"
@@ -131,7 +131,7 @@ export default function GuestChat({
             <span>Телеграм хозяина</span>
           </a>
           <a
-            href="mailto:info@villaturaman.com"
+            href="mailto:villaturaman@gmail.com"
             className="px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm hover:scale-105"
             title="Написать письмо владельцу"
           >
@@ -278,7 +278,7 @@ export default function GuestChat({
                   {(isHost || isAi) && (
                     <div className="mt-3 pt-2.5 border-t border-white/10 flex flex-wrap items-center gap-2">
                       <a
-                        href="https://t.me/AlekseiZnamenskii"
+                        href="https://t.me/marmarisyachtingru"
                         target="_blank"
                         rel="noreferrer"
                         className="px-2.5 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/30 text-sky-200 text-[11px] font-bold transition-all flex items-center gap-1.5 shadow-sm"
@@ -287,7 +287,7 @@ export default function GuestChat({
                         <span>Телеграм хозяина</span>
                       </a>
                       <a
-                        href="mailto:info@villaturaman.com"
+                        href="mailto:villaturaman@gmail.com"
                         className="px-2.5 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/30 text-rose-200 text-[11px] font-bold transition-all flex items-center gap-1.5 shadow-sm"
                       >
                         <Mail className="w-3 h-3 text-rose-300" />
