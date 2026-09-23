@@ -1017,7 +1017,7 @@ function initSingleSheetByKey_(sheet, key) {
     var cHeaders = ['Дата старта', 'Дата завершения', 'Тип [Блокировка/Цена/Мин. дней/Заметка/Настройки]', 'Значение', 'Заметка', 'Автор изменения', 'Время фиксации'];
     styleSheetHeader_(sheet, cHeaders, 1);
     var cRows = [
-      ['Глобальные правила', 'Все даты', 'Настройки', '{"basePrice":250,"currency":"USD","minNights":3,"maxNights":30,"bookingWindowMonths":18,"advanceNoticeDays":2,"bookingMode":"instant","verificationMode":"progressive","checkInTime":"16:00","checkOutTime":"10:00"}', 'Изменение тарифов', 'admin', '20.09.2026 12:00'],
+      ['Глобальные правила', 'Все даты', 'Настройки', '{"basePrice":250,"currency":"USD","minNights":3,"maxNights":30,"bookingWindowMonths":18,"advanceNoticeDays":2,"bookingMode":"instant","verificationMode":"progressive","paymentMode":"all","ibanBankName":"Ziraat Bankası","ibanReceiver":"Aleksei Znamenskii","ibanNumber":"TR000000000000000000000000","ibanSwift":"TCZBTR2A","ibanNote":"Укажите код бронирования в назначении платежа","checkInTime":"16:00","checkOutTime":"10:00"}', 'Изменение тарифов', 'admin', '20.09.2026 12:00'],
       ['01.05.2026', '31.05.2026', 'Цена', '180', 'Май: Низкий сезон [$180/ночь]', 'admin', '20.09.2026 12:00'],
       ['01.06.2026', '30.06.2026', 'Цена', '220', 'Июнь: Стандартный сезон [$220/ночь]', 'admin', '20.09.2026 12:00'],
       ['01.07.2026', '31.08.2026', 'Цена', '320', 'Июль-Август: Высокий пик [$320/ночь]', 'admin', '20.09.2026 12:00'],

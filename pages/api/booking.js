@@ -1889,9 +1889,9 @@ export default async function handler(req, res) {
         const guestCount = data.guests || ((parseInt(data.adults, 10) || 0) + (parseInt(data.children, 10) || 0)) || '2';
         const nightsCount = data.nights || 1;
         const msg = `🎁 Для вас сформировано специальное предложение!\n\n📅 Даты проживания: ${data.checkIn} - ${data.checkOut} [${nightsCount} ноч.]\n👥 Количество гостей: ${guestCount}\n💰 Обновленная стоимость со скидкой: ${data.price}\n⏳ Окно оплаты открыто до: ${deadlineStr}\n\nВилла заблокирована за вами на 24 часа. Чтобы завершить бронирование по специальной цене, перейдите к оплате в карточке бронирования или в верхней плашке чата.`;
-        const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "ru")';
-        const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "en")';
-        const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()), "auto", "tr")';
+        const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+        const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+        const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
 
         await ensureStyledChatSheet(sheets, targetChatId, data.chatSheetName);
         await sheets.spreadsheets.values.append({

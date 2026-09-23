@@ -293,6 +293,7 @@ export default function HostReservations({
           );
         })}
       </div>
+      )}
 
       {/* Модальное окно создания специального предложения */}
       {offerModalOpen && selectedReq && (
