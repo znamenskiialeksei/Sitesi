@@ -5,7 +5,7 @@
 // ==============================================================================
 
 import React, { useState, useEffect } from 'react';
-import { Settings, Save, Clock, DollarSign, Calendar, Shield, Bot, Sparkles } from 'lucide-react';
+import { Settings, Save, Clock, DollarSign, Calendar, Shield, Bot, Sparkles, CreditCard } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useToast } from '../Toast';
 
@@ -124,7 +124,13 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
     advanceNoticeDays: globalRules.advanceNoticeDays !== undefined ? globalRules.advanceNoticeDays : 2,
     bookingMode: globalRules.bookingMode || 'instant',
     checkInTime: globalRules.checkInTime || '16:00',
-    checkOutTime: globalRules.checkOutTime || '10:00'
+    checkOutTime: globalRules.checkOutTime || '10:00',
+    paymentMode: globalRules.paymentMode || 'all',
+    ibanBankName: globalRules.ibanBankName || 'Ziraat Bankası',
+    ibanReceiver: globalRules.ibanReceiver || 'Aleksei Znamenskii',
+    ibanNumber: globalRules.ibanNumber || 'TR000000000000000000000000',
+    ibanSwift: globalRules.ibanSwift || 'TCZBTR2A',
+    ibanNote: globalRules.ibanNote || 'Укажите код бронирования в назначении платежа'
   });
 
   // Синхронизация формы при асинхронной загрузке настроек из Google Sheets [CalendarSettings]
@@ -139,7 +145,13 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
         advanceNoticeDays: globalRules.advanceNoticeDays !== undefined ? globalRules.advanceNoticeDays : 2,
         bookingMode: globalRules.bookingMode || 'instant',
         checkInTime: globalRules.checkInTime || '16:00',
-        checkOutTime: globalRules.checkOutTime || '10:00'
+        checkOutTime: globalRules.checkOutTime || '10:00',
+        paymentMode: globalRules.paymentMode || 'all',
+        ibanBankName: globalRules.ibanBankName || 'Ziraat Bankası',
+        ibanReceiver: globalRules.ibanReceiver || 'Aleksei Znamenskii',
+        ibanNumber: globalRules.ibanNumber || 'TR000000000000000000000000',
+        ibanSwift: globalRules.ibanSwift || 'TCZBTR2A',
+        ibanNote: globalRules.ibanNote || 'Укажите код бронирования в назначении платежа'
       });
     }
   }, [globalRules]);
@@ -437,6 +449,140 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
               />
               <span className="font-bold text-xs">✋ {t('manualBookingOption')}</span>
             </label>
+          </div>
+        </div>
+
+        {/* Настройки способов оплаты и банковских реквизитов IBAN */}
+        <div className="sm:col-span-2 p-5 rounded-2xl bg-slate-800/60 border border-white/10 space-y-4">
+          <div className="border-b border-white/10 pb-3">
+            <h4 className="text-sm font-bold text-white flex items-center gap-2">
+              <CreditCard className="w-4 h-4 text-emerald-400" />
+              <span>Способы оплаты и Банковский IBAN</span>
+            </h4>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Управление активными вариантами оплаты для гостей и реквизиты прямого банковского перевода
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-xs uppercase font-bold text-slate-400 mb-2">
+              Активный режим оплаты для гостей
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <label className={`p-3 rounded-xl border cursor-pointer flex items-center gap-2.5 transition-all ${
+                form.paymentMode === 'all' ? 'bg-emerald-950/40 border-emerald-500 text-white' : 'bg-slate-800 border-white/5 text-slate-400'
+              }`}>
+                <input
+                  type="radio"
+                  name="paymentMode"
+                  value="all"
+                  checked={form.paymentMode === 'all'}
+                  onChange={handleChange}
+                  className="hidden"
+                />
+                <span className="font-bold text-xs">🌐 Все способы: Карты и IBAN</span>
+              </label>
+
+              <label className={`p-3 rounded-xl border cursor-pointer flex items-center gap-2.5 transition-all ${
+                form.paymentMode === 'gateway_only' ? 'bg-emerald-950/40 border-emerald-500 text-white' : 'bg-slate-800 border-white/5 text-slate-400'
+              }`}>
+                <input
+                  type="radio"
+                  name="paymentMode"
+                  value="gateway_only"
+                  checked={form.paymentMode === 'gateway_only'}
+                  onChange={handleChange}
+                  className="hidden"
+                />
+                <span className="font-bold text-xs">💳 Только онлайн-эквайринг</span>
+              </label>
+
+              <label className={`p-3 rounded-xl border cursor-pointer flex items-center gap-2.5 transition-all ${
+                form.paymentMode === 'iban_only' ? 'bg-emerald-950/40 border-emerald-500 text-white' : 'bg-slate-800 border-white/5 text-slate-400'
+              }`}>
+                <input
+                  type="radio"
+                  name="paymentMode"
+                  value="iban_only"
+                  checked={form.paymentMode === 'iban_only'}
+                  onChange={handleChange}
+                  className="hidden"
+                />
+                <span className="font-bold text-xs">🏦 Только банковский IBAN</span>
+              </label>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <div>
+              <label className="block text-xs uppercase font-bold text-slate-400 mb-1">
+                Название банка владельца
+              </label>
+              <input
+                type="text"
+                name="ibanBankName"
+                value={form.ibanBankName}
+                onChange={handleChange}
+                placeholder="Ziraat Bankası"
+                className="w-full bg-slate-800 border border-white/10 p-2.5 rounded-xl text-xs font-bold text-white outline-none focus:border-emerald-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs uppercase font-bold text-slate-400 mb-1">
+                ФИО получателя платежа
+              </label>
+              <input
+                type="text"
+                name="ibanReceiver"
+                value={form.ibanReceiver}
+                onChange={handleChange}
+                placeholder="Aleksei Znamenskii"
+                className="w-full bg-slate-800 border border-white/10 p-2.5 rounded-xl text-xs font-bold text-white outline-none focus:border-emerald-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs uppercase font-bold text-slate-400 mb-1">
+                Номер счета IBAN
+              </label>
+              <input
+                type="text"
+                name="ibanNumber"
+                value={form.ibanNumber}
+                onChange={handleChange}
+                placeholder="TR00 0000 0000 0000 0000 0000 00"
+                className="w-full bg-slate-800 border border-white/10 p-2.5 rounded-xl text-xs font-mono font-bold text-emerald-300 outline-none focus:border-emerald-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs uppercase font-bold text-slate-400 mb-1">
+                SWIFT / BIC код банка
+              </label>
+              <input
+                type="text"
+                name="ibanSwift"
+                value={form.ibanSwift}
+                onChange={handleChange}
+                placeholder="TCZBTR2A"
+                className="w-full bg-slate-800 border border-white/10 p-2.5 rounded-xl text-xs font-mono font-bold text-white outline-none focus:border-emerald-500"
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="block text-xs uppercase font-bold text-slate-400 mb-1">
+                Инструкция для назначения платежа
+              </label>
+              <input
+                type="text"
+                name="ibanNote"
+                value={form.ibanNote}
+                onChange={handleChange}
+                placeholder="Обязательно укажите код бронирования в назначении платежа"
+                className="w-full bg-slate-800 border border-white/10 p-2.5 rounded-xl text-xs font-bold text-slate-200 outline-none focus:border-emerald-500"
+              />
+            </div>
           </div>
         </div>
 

@@ -17,7 +17,7 @@ import { ru, enUS, tr } from 'date-fns/locale';
 import {
   Calendar, Users, Zap, Clock, ShieldCheck,
   ChevronDown, ChevronLeft, ChevronRight, Plus, Minus, AlertCircle,
-  Mail, Phone, CheckCircle2
+  Mail, Phone, CheckCircle2, CreditCard, Landmark
 } from 'lucide-react';
 import { useLanguage } from '../utils/language';
 import { useAuth } from '../context/AuthContext';
@@ -88,8 +88,18 @@ export default function BookingWidget({
   const [guestName, setGuestName] = useState('');
   const [guestEmail, setGuestEmail] = useState('');
   const [guestPhone, setGuestPhone] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState(dynamicRules.paymentMode === 'iban_only' ? 'iban' : 'card');
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
   const [pendingPayload, setPendingPayload] = useState(null);
+
+  // Синхронизация метода оплаты при обновлении настроек хозяина
+  useEffect(() => {
+    if (dynamicRules.paymentMode === 'iban_only') {
+      setPaymentMethod('iban');
+    } else if (dynamicRules.paymentMode === 'gateway_only') {
+      setPaymentMethod('card');
+    }
+  }, [dynamicRules.paymentMode]);
 
   // Синхронизация полей гостя с профилем currentUser (включая неполные профили из быстрого чата)
   useEffect(() => {
@@ -493,7 +503,8 @@ export default function BookingWidget({
       total_children: children,
       total_guests: totalGuests,
       totalPrice: formatVillaMoney(totalPrice),
-      isRegistered: !!currentUser
+      isRegistered: !!currentUser,
+      paymentMethod: dynamicRules.paymentMode === 'iban_only' ? 'iban' : paymentMethod
     };
 
     // Если контакты НЕ подтверждены — обязательно запускаем модальное окно верификации
@@ -826,6 +837,58 @@ export default function BookingWidget({
             <span>
               {t('shortStayNotice', { min: minRequiredNights })}
             </span>
+          </div>
+        )}
+
+        {/* Выбор способа оплаты: Картой онлайн или Перевод на банковский счет IBAN */}
+        {effectiveMode === 'instant' && (
+          <div className="pt-2 border-t border-white/10 space-y-2">
+            <span className="block text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+              Способ оплаты:
+            </span>
+            {dynamicRules.paymentMode === 'iban_only' ? (
+              <div className="p-3 bg-slate-900/90 border border-amber-500/30 rounded-2xl flex items-center gap-2.5 text-xs text-amber-200">
+                <Landmark className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>Прямой банковский перевод на IBAN счет владельца виллы</span>
+              </div>
+            ) : dynamicRules.paymentMode === 'gateway_only' ? (
+              <div className="p-3 bg-slate-900/90 border border-rose-500/30 rounded-2xl flex items-center gap-2.5 text-xs text-rose-200">
+                <CreditCard className="w-4 h-4 text-rose-400 shrink-0" />
+                <span>Оплата онлайн банковской картой через защищенный шлюз</span>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('card')}
+                  className={`p-2.5 rounded-2xl border text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
+                    paymentMethod === 'card'
+                      ? 'bg-rose-600/20 border-rose-500 text-white shadow-sm'
+                      : 'bg-slate-900/80 border-white/10 text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  <CreditCard className="w-3.5 h-3.5" />
+                  <span>Картой онлайн</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('iban')}
+                  className={`p-2.5 rounded-2xl border text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
+                    paymentMethod === 'iban'
+                      ? 'bg-emerald-600/20 border-emerald-500 text-white shadow-sm'
+                      : 'bg-slate-900/80 border-white/10 text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  <Landmark className="w-3.5 h-3.5" />
+                  <span>Перевод на IBAN</span>
+                </button>
+              </div>
+            )}
+            {paymentMethod === 'iban' && dynamicRules.paymentMode !== 'gateway_only' && (
+              <p className="text-[11px] text-slate-400 bg-slate-900/60 p-2.5 rounded-xl border border-white/5 leading-relaxed">
+                Реквизиты турецкого банка IBAN и уникальный код бронирования поступят на ваш email и в чат личного кабинета.
+              </p>
+            )}
           </div>
         )}
 

@@ -230,13 +230,13 @@ export default function GuestDashboard() {
                 <ArrowLeft className="w-3.5 h-3.5" /> На главную виллы
               </Link>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-              {t('travelerHubTitle')}
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Личный кабинет
             </h1>
             {currentUser && (
               <div className="flex flex-wrap items-center gap-2 mt-2">
-                <span className="text-xs text-slate-300 font-medium">
-                  {currentUser.name}
+                <span className="text-sm text-slate-300 font-medium">
+                  Имя гостя: <b className="text-white font-bold">{currentUser.name || 'Гость'}</b>
                 </span>
                 {currentUser.emailVerified ? (
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-semibold">

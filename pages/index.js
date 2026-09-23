@@ -524,55 +524,100 @@ export default function HomeListing({ publicData, contentData }) {
     text: item.text?.[lang] || item.text?.ru || ''
   }));
 
-  // Обработчик бронирования из виджета — instant: платёжный шлюз, manual: запрос хозяину
+  // Обработчик бронирования из виджета: instant: платёжный шлюз или IBAN, manual: запрос хозяину
   const handleBookingSubmit = async (bookingData, effectiveMode) => {
     try {
-      if (effectiveMode === 'instant') {
-        // Если пользователь не авторизован, обеспечиваем мгновенную авто-регистрацию гостя перед переходом к оплате
-        if (!currentUser && (bookingData.contact || bookingData.email || bookingData.phone)) {
-          try {
-            const regRes = await fetch('/api/booking', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                action: 'auto_register_guest',
-                name: bookingData.name || 'Гость',
-                contact: bookingData.contact,
-                email: bookingData.email,
-                phone: bookingData.phone,
-                emailVerified: bookingData.emailVerified,
-                phoneVerified: bookingData.phoneVerified
-              })
-            });
-            const regData = await regRes.json();
-            if (regData.success && regData.user) {
-              loginGuestDirectly(regData.user);
-            }
-          } catch (regErr) {
-            console.warn('Фоновая авто-регистрация при оплате:', regErr);
-          }
+      // 1. Проверка правила доступа к прямой оплате: только гости с подтвержденной почтой
+      const isEmailVerified = Boolean(
+        (currentUser && currentUser.emailVerified) ||
+        bookingData.emailVerified
+      );
+
+      // Если почта не подтверждена или режим ручной: оформляется строго как заявка
+      const isEligibleForDirectPayment = effectiveMode === 'instant' && isEmailVerified;
+
+      if (!isEligibleForDirectPayment) {
+        // Оформление как заявка хозяину [по запросу]
+        if (effectiveMode === 'instant' && !isEmailVerified) {
+          toast.info('Прямая оплата доступна гостям с подтвержденным email. Ваша бронь оформлена как заявка хозяину.');
         }
 
-        // Мгновенное бронирование : редирект на платёжный шлюз
-        const paymentGateway = currency === 'RUB' ? 'tbank' : 'stripe';
-        const numericAmount = typeof bookingData.totalPrice === 'number'
-          ? bookingData.totalPrice
-          : parseInt(String(bookingData.totalPrice).replace(/\D/g, ''), 10) || 0;
-
-        const res = await fetch('/api/payment', {
+        const res = await fetch('/api/booking', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            gateway: paymentGateway,
-            amount: numericAmount,
-            currency,
-            origin: typeof window !== 'undefined' ? window.location.origin : '',
-            bookingDetails: bookingData
+            ...bookingData,
+            action: 'request_booking'
           })
         });
-        const result = await res.json().catch(() => ({}));
-        if (result && result.url) {
-          // Сохраняем авторизованную сессию гостя для бесшовного входа в личный кабинет и чат
+        const data = await res.json().catch(() => ({}));
+        if (data && data.success) {
+          if (data.user) {
+            loginGuestDirectly(data.user);
+          }
+          toast.success('Запрос отправлен! Хозяин ответит в течение 24 часов.');
+          router.push('/guest?tab=chat');
+        } else {
+          toast.error(data?.error || 'Ошибка оформления заявки. Попробуйте снова.');
+        }
+        return;
+      }
+
+      // 2. Гость имеет подтвержденную почту и допущен к оплате
+      // Авто-регистрация гостя в локальной сессии если еще не авторизован
+      if (!currentUser && (bookingData.contact || bookingData.email || bookingData.phone)) {
+        try {
+          const regRes = await fetch('/api/booking', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'auto_register_guest',
+              name: bookingData.name || 'Гость',
+              contact: bookingData.contact,
+              email: bookingData.email,
+              phone: bookingData.phone,
+              emailVerified: true,
+              phoneVerified: bookingData.phoneVerified
+            })
+          });
+          const regData = await regRes.json();
+          if (regData.success && regData.user) {
+            loginGuestDirectly(regData.user);
+          }
+        } catch (regErr) {
+          console.warn('Фоновая авто-регистрация при оплате:', regErr);
+        }
+      }
+
+      // 3. Выбор метода оплаты: IBAN или онлайн-карты через шлюз
+      const selectedMethod = bookingData.paymentMethod || (dynamicRules.paymentMode === 'iban_only' ? 'iban' : 'card');
+
+      if (selectedMethod === 'iban' || dynamicRules.paymentMode === 'iban_only') {
+        // Оплата переводом на банковский IBAN счет хозяина
+        const bookingCode = `VT-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+        const ibanDetails = {
+          bankName: dynamicRules.ibanBankName || 'Ziraat Bankası',
+          receiver: dynamicRules.ibanReceiver || 'Aleksei Znamenskii',
+          iban: dynamicRules.ibanNumber || 'TR000000000000000000000000',
+          swift: dynamicRules.ibanSwift || 'TCZBTR2A',
+          note: `${bookingCode} : ${bookingData.name || 'GUEST'}`
+        };
+
+        const res = await fetch('/api/booking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...bookingData,
+            action: 'booking',
+            bookingCode,
+            paymentMethod: 'iban',
+            paymentStatus: `ОЖИДАЕТ ОПЛАТЫ НА IBAN | Код: ${bookingCode}`,
+            ibanDetails
+          })
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (data && data.success) {
           const guestUser = {
             name: bookingData.name || 'Гость',
             contact: bookingData.contact || bookingData.email || '',
@@ -585,32 +630,52 @@ export default function HomeListing({ publicData, contentData }) {
             hasChat: true
           };
           loginGuestDirectly(guestUser);
+          toast.success('Бронирование оформлено! Реквизиты IBAN отправлены на ваш email и в чат.');
+          router.push('/guest?tab=trips');
+        } else {
+          toast.error(data?.error || 'Ошибка оформления бронирования.');
+        }
+        return;
+      }
 
-          if (result.isTestMode) {
-            toast.info(result.message || 'Тестовый режим оплаты : перенаправление на оформление');
-          }
-          window.location.href = result.url;
-        } else {
-          toast.error(result?.error || 'Ошибка платёжного шлюза. Попробуйте снова.');
+      // 4. Оплата онлайн банковской картой через платежный шлюз
+      const paymentGateway = currency === 'RUB' ? 'tbank' : 'stripe';
+      const numericAmount = typeof bookingData.totalPrice === 'number'
+        ? bookingData.totalPrice
+        : parseInt(String(bookingData.totalPrice).replace(/\D/g, ''), 10) || 0;
+
+      const res = await fetch('/api/payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          gateway: paymentGateway,
+          amount: numericAmount,
+          currency,
+          origin: typeof window !== 'undefined' ? window.location.origin : '',
+          bookingDetails: bookingData
+        })
+      });
+      const result = await res.json().catch(() => ({}));
+      if (result && result.url) {
+        const guestUser = {
+          name: bookingData.name || 'Гость',
+          contact: bookingData.contact || bookingData.email || '',
+          email: bookingData.email || '',
+          phone: bookingData.phone || '',
+          emailVerified: true,
+          phoneVerified: Boolean(bookingData.phoneVerified),
+          isHost: false,
+          blockChat: false,
+          hasChat: true
+        };
+        loginGuestDirectly(guestUser);
+
+        if (result.isTestMode) {
+          toast.info(result.message || 'Тестовый режим оплаты : перенаправление на оформление');
         }
+        window.location.href = result.url;
       } else {
-        // Бронирование по запросу : отправляем заявку хозяину
-        const res = await fetch('/api/booking', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(bookingData)
-        });
-        const data = await res.json().catch(() => ({}));
-        if (data && data.success) {
-          // Мгновенная прямая авторизация гостя
-          if (data.user) {
-            loginGuestDirectly(data.user);
-          }
-          toast.success('Запрос отправлен! Хозяин ответит в течение 24 часов.');
-          router.push('/guest?tab=chat');
-        } else {
-          toast.error(data?.error || 'Ошибка оформления заявки. Попробуйте снова.');
-        }
+        toast.error(result?.error || 'Ошибка платёжного шлюза. Попробуйте снова.');
       }
     } catch (e) {
       console.error('[handleBookingSubmit Error]:', e);

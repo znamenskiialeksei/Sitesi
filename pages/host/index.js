@@ -537,7 +537,7 @@ export default function HostDashboardPage() {
             {/* Контент табов хозяина */}
             {activeTab === 'reservations' && (
               <HostReservations
-                requests={pendingRequests}
+                requests={allRequests}
                 dynamicRules={dynamicRules}
                 onApprove={handleApproveRequest}
                 onSpecialOffer={handleSpecialOffer}

@@ -83,7 +83,7 @@ export const translations = {
     // --- ЛИЧНЫЙ КАБИНЕТ ПУТЕШЕСТВЕННИКА (/guest) ---
     travelerHubTitle: "Личный кабинет путешественника",
     tabMyTrips: "Мои поездки",
-    tabHostChat: "Диалог с хозяином",
+    tabHostChat: "Чат с хозяином",
     tabMyGuides: "Мои путеводители и услуги",
     tabProfile: "Профиль и настройки",
     noActiveTrips: "У вас пока нет активных бронирований. Самое время запланировать поездку!",

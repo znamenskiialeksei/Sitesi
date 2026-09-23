@@ -9,7 +9,7 @@ import { google } from 'googleapis';
 import { createClient } from '@vercel/kv';
 import { generateVoucher } from '../../utils/pdf';
 import { getLiveSheetMap, resolveRange, SHEETS_REGISTRY } from '../../utils/sheetsRegistry';
-import { generateOtpCode, sendEmailVerificationCode, sendPhoneVerificationCode } from '../../utils/mailer';
+import { generateOtpCode, sendEmailVerificationCode, sendPhoneVerificationCode, sendDetailedBookingNotification } from '../../utils/mailer';
 import { SMART_TEMPLATES } from '../../utils/templatesData';
 import { getAiKnowledgeBase, invalidateAiKnowledgeCache } from '../../utils/aiKnowledgeBase';
 import { generateConciergeReply } from '../../utils/aiConciergeEngine';
@@ -65,6 +65,22 @@ const safeCacheDel = async (key) => {
   } else {
     delete memoryCache[key];
   }
+};
+
+// Интеллектуальное сопоставление составных контактов [телефон | email]
+const isContactMatch = (storedContact, targetContact) => {
+  if (!storedContact || !targetContact) return false;
+  const s1 = storedContact.toLowerCase().trim();
+  const s2 = targetContact.toLowerCase().trim();
+  if (s1 === s2) return true;
+  if (s1.includes(s2) || s2.includes(s1)) return true;
+  if (s2.includes('@') && s1.includes(s2)) return true;
+  const digits2 = s2.replace(/\D/g, '');
+  if (digits2.length >= 7) {
+    const digits1 = s1.replace(/\D/g, '');
+    if (digits1.includes(digits2) || digits2.includes(digits1)) return true;
+  }
+  return false;
 };
 
 // Конфигурация названий листов и заголовков таблицы Google
@@ -925,6 +941,12 @@ export default async function handler(req, res) {
           try {
             globalRules = JSON.parse(row[3]);
             if (!globalRules.verificationMode) globalRules.verificationMode = 'progressive';
+            if (!globalRules.paymentMode) globalRules.paymentMode = 'all';
+            if (!globalRules.ibanBankName) globalRules.ibanBankName = 'Ziraat Bankası';
+            if (!globalRules.ibanReceiver) globalRules.ibanReceiver = 'Aleksei Znamenskii';
+            if (!globalRules.ibanNumber) globalRules.ibanNumber = 'TR000000000000000000000000';
+            if (!globalRules.ibanSwift) globalRules.ibanSwift = 'TCZBTR2A';
+            if (!globalRules.ibanNote) globalRules.ibanNote = 'Укажите код бронирования в назначении платежа';
           } catch (e) { }
         } else if (row[2] !== 'Настройки' && row[0] && row[0] !== 'Дата старта') {
           let isValid = true;
@@ -1384,7 +1406,7 @@ export default async function handler(req, res) {
               status,
               expiresAt
             };
-          }).filter((r) => (r.contact || '').toLowerCase() === safeContact);
+          }).filter((r) => isContactMatch(r.contact, safeContact));
 
           if (activeRequests.length > 0) {
             await safeCacheSet(reqCacheKey, activeRequests, { ex: 86400 * 7 });
@@ -2230,7 +2252,36 @@ export default async function handler(req, res) {
         }).catch(() => { });
       }
 
-      return res.status(200).json({ success: true, user: userObj, message: 'Заявка успешно принята!' });
+      // Генерация уникального кода бронирования и отправка детального оповещения гостю
+      const bookingCode = data.bookingCode || `VT-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+      sendDetailedBookingNotification({
+        to: safeEmail,
+        guestName,
+        booking: {
+          bookingCode,
+          checkIn: data.checkIn,
+          checkOut: data.checkOut,
+          nights: data.nights,
+          adults: data.total_adults,
+          children: data.total_children,
+          price: data.totalPrice,
+          phone: safePhone,
+          email: safeEmail
+        },
+        guestProfile: {
+          name: guestName,
+          email: safeEmail,
+          phone: safePhone,
+          emailVerified: !!data.emailVerified,
+          phoneVerified: !!data.phoneVerified
+        },
+        status: 'ЗАПРОС',
+        paymentMode: 'request'
+      }).catch((mailErr) => {
+        console.warn('[Detailed Mail Notification Warning]:', mailErr.message);
+      });
+
+      return res.status(200).json({ success: true, bookingCode, user: userObj, message: 'Заявка успешно принята!' });
     } catch (e) {
       return res.status(500).json({ success: false, error: e.message });
     }
@@ -2263,6 +2314,35 @@ export default async function handler(req, res) {
         });
       }
 
+      // Авто-регистрация гостя в таблице аккаунтов при бронировании
+      if (sheets && spreadsheetId && effectiveContact) {
+        const safeContactKey = effectiveContact.toLowerCase();
+        try {
+          const existingData = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: resolveRange(sheetMap, 'ACCOUNTS', 'C:C')
+          });
+          const logins = existingData.data.values
+            ? existingData.data.values.flat().map((v) => (v || '').toString().trim().toLowerCase())
+            : [];
+          const checkKey = safeEmail ? safeEmail.toLowerCase() : safeContactKey;
+          if (!logins.includes(checkKey) && !logins.includes(safeContactKey)) {
+            await sheets.spreadsheets.values.append({
+              spreadsheetId,
+              range: resolveRange(sheetMap, 'ACCOUNTS', 'A:G'),
+              valueInputOption: 'USER_ENTERED',
+              insertDataOption: 'INSERT_ROWS',
+              requestBody: {
+                values: [[timestamp, guestName, effectiveContact, '123456', 'Нет', 'Нет', 'Нет']]
+              }
+            });
+          }
+        } catch (regErr) { /* продолжаем */ }
+      }
+
+      const bookingCode = data.bookingCode || `VT-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+      const statusToSave = data.paymentStatus || 'ОПЛАЧЕНО';
+
       if (sheets && spreadsheetId) {
         await sheets.spreadsheets.values.append({
           spreadsheetId,
@@ -2281,7 +2361,7 @@ export default async function handler(req, res) {
               data.total_children,
               data.total_guests,
               data.totalPrice || '',
-              data.paymentStatus || 'ОЖИДАЕТ ОПЛАТЫ'
+              statusToSave
             ]]
           }
         });
@@ -2292,7 +2372,9 @@ export default async function handler(req, res) {
           const chatSheetName = getChatSheetName(guestName, effectiveContact);
           try {
             await ensureStyledChatSheet(sheets, targetChatId, chatSheetName);
-            const miniCard = `✅ Заказ успешно оформлен!\nДетали: ${data.checkIn} - ${data.checkOut}\nГостей: ${data.total_guests}\nСумма: ${data.totalPrice}`;
+            const miniCard = statusToSave.includes('IBAN')
+              ? `🏦 Заказ оформлен: Ожидается оплата по IBAN\nКод бронирования: ${bookingCode}\nДетали: ${data.checkIn} - ${data.checkOut}\nГостей: ${data.total_guests}\nСумма: ${data.totalPrice}\n\nПожалуйста, укажите код ${bookingCode} в назначении платежа.`
+              : `✅ Заказ успешно оформлен!\nКод бронирования: ${bookingCode}\nДетали: ${data.checkIn} - ${data.checkOut}\nГостей: ${data.total_guests}\nСумма: ${data.totalPrice}`;
             const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
             const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
             const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
@@ -2309,7 +2391,7 @@ export default async function handler(req, res) {
 
       // Мгновенное Telegram-уведомление хозяину о подтвержденном бронировании
       if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
-        const tgMsg = `🎉 НОВОЕ БРОНИРОВАНИЕ: Оплата подтверждена\n👤 Гость: ${guestName}\n📞 Контакт: ${effectiveContact}\n📅 Период: ${data.checkIn} - ${data.checkOut}\n👥 Гостей: ${data.total_guests}\n💰 Стоимость: ${data.totalPrice || '-'}\nСтатус: ${data.paymentStatus || 'ОЖИДАЕТ ОПЛАТЫ'}`;
+        const tgMsg = `🎉 НОВОЕ БРОНИРОВАНИЕ\nКод брони: ${bookingCode}\n👤 Гость: ${guestName}\n📞 Контакт: ${effectiveContact}\n📅 Период: ${data.checkIn} - ${data.checkOut}\n👥 Гостей: ${data.total_guests}\n💰 Стоимость: ${data.totalPrice || '-'}\nСтатус: ${statusToSave}`;
         const inlineKeyboard = [
           [
             { text: `✍️ Написать гостю: ${guestName}`, callback_data: `reply_${effectiveContact}` },
@@ -2327,7 +2409,48 @@ export default async function handler(req, res) {
         }).catch(() => { });
       }
 
-      return res.status(200).json({ success: true, message: 'Бронирование оформлено!' });
+      // Информативное email-оповещение гостя с полным срезом данных брони и инструкциями
+      sendDetailedBookingNotification({
+        to: safeEmail,
+        guestName,
+        booking: {
+          bookingCode,
+          checkIn: data.checkIn,
+          checkOut: data.checkOut,
+          nights: data.nights,
+          adults: data.total_adults,
+          children: data.total_children,
+          price: data.totalPrice,
+          phone: safePhone,
+          email: safeEmail
+        },
+        guestProfile: {
+          name: guestName,
+          email: safeEmail,
+          phone: safePhone,
+          emailVerified: true,
+          phoneVerified: !!data.phoneVerified
+        },
+        status: statusToSave,
+        paymentMode: statusToSave.includes('IBAN') ? 'iban' : 'gateway',
+        ibanDetails: data.ibanDetails || {}
+      }).catch((mailErr) => {
+        console.warn('[Detailed Mail Notification Warning]:', mailErr.message);
+      });
+
+      const userObj = {
+        name: guestName,
+        contact: effectiveContact,
+        email: safeEmail,
+        phone: safePhone,
+        emailVerified: true,
+        phoneVerified: !!data.phoneVerified,
+        isHost: false,
+        blockChat: false,
+        hasChat: true
+      };
+
+      return res.status(200).json({ success: true, bookingCode, user: userObj, message: 'Бронирование оформлено!' });
     } catch (e) {
       return res.status(500).json({ success: false, error: e.message });
     }

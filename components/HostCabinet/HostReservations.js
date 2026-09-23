@@ -23,6 +23,7 @@ export default function HostReservations({
   const toast = useToast();
   const hostCurrency = dynamicRules.currency || 'RUB';
 
+  const [filterTab, setFilterTab] = useState('all');
   const [offerModalOpen, setOfferModalOpen] = useState(false);
   const [selectedReq, setSelectedReq] = useState(null);
   const [offerPrice, setOfferPrice] = useState('');
@@ -94,6 +95,18 @@ export default function HostReservations({
     setSelectedReq(null);
   };
 
+  const pendingList = requests.filter((r) => r.status === 'ЗАПРОС' || (r.status && (r.status.includes('ОЖИДАЕТ') || r.status.includes('СПЕЦПРЕДЛОЖЕНИЕ'))));
+  const paidList = requests.filter((r) => r.status && (r.status.includes('ОПЛАЧЕНО') || r.status.includes('БРОНЬ') || r.status.includes('PAID')));
+  const archiveList = requests.filter((r) => r.status && (r.status.includes('ОТКЛОНЕНО') || r.status.includes('ОТОЗВАНО') || r.status.includes('EXPIRED')));
+
+  const displayedRequests = filterTab === 'pending'
+    ? pendingList
+    : filterTab === 'paid'
+      ? paidList
+      : filterTab === 'archive'
+        ? archiveList
+        : requests;
+
   if (!requests || requests.length === 0) {
     return (
       <div className="bg-slate-900/60 border border-white/10 rounded-3xl p-10 text-center text-slate-400">
@@ -106,33 +119,93 @@ export default function HostReservations({
 
   return (
     <div className="space-y-4 fade-in">
-      <div className="flex items-center justify-between pb-3 border-b border-white/10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-white/10 gap-3">
         <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Clock className="w-5 h-5 text-rose-500" /> {t('activeTravelerRequests')} ({requests.length})
+          <Clock className="w-5 h-5 text-rose-500" />
+          <span>{t('activeTravelerRequests')} [{displayedRequests.length}]</span>
         </h3>
+
+        {/* Переключатель категорий бронирований */}
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setFilterTab('all')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              filterTab === 'all'
+                ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20'
+                : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-white/5'
+            }`}
+          >
+            Все [{requests.length}]
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilterTab('pending')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              filterTab === 'pending'
+                ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20'
+                : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-white/5'
+            }`}
+          >
+            Ожидают решения [{pendingList.length}]
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilterTab('paid')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              filterTab === 'paid'
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-white/5'
+            }`}
+          >
+            Оплаченные брони [{paidList.length}]
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilterTab('archive')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              filterTab === 'archive'
+                ? 'bg-slate-700 text-white shadow-md'
+                : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-white/5'
+            }`}
+          >
+            Архив [{archiveList.length}]
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4">
-        {requests.map((req, idx) => {
-          const isHold = req.status === 'ОЖИДАЕТ ОПЛАТЫ' || req.status === 'СПЕЦПРЕДЛОЖЕНИЕ';
+      {displayedRequests.length === 0 ? (
+        <div className="bg-slate-900/40 border border-white/5 rounded-2xl p-8 text-center text-slate-400">
+          <p className="text-xs">В данной категории нет бронирований</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4">
+          {displayedRequests.map((req, idx) => {
+            const isPaid = req.status && (req.status.includes('ОПЛАЧЕНО') || req.status.includes('PAID'));
+            const isIban = req.status && req.status.includes('IBAN');
+            const isHold = req.status === 'ОЖИДАЕТ ОПЛАТЫ' || req.status === 'СПЕЦПРЕДЛОЖЕНИЕ' || isIban;
 
-          return (
-            <div
-              key={idx}
-              className="bg-slate-900 border border-white/10 rounded-3xl p-6 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 shadow-xl"
-            >
-              <div className="space-y-2">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm font-bold text-white flex items-center gap-1.5">
-                    <User className="w-4 h-4 text-rose-400" /> {req.name || t('guestLabel')}
-                  </span>
-                  <span className="text-xs text-slate-400">({req.contact})</span>
-                  <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                    isHold ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-                  }`}>
-                    {getLocalizedStatus(req.status)}
-                  </span>
-                </div>
+            return (
+              <div
+                key={idx}
+                className="bg-slate-900 border border-white/10 rounded-3xl p-6 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 shadow-xl"
+              >
+                <div className="space-y-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-sm font-bold text-white flex items-center gap-1.5">
+                      <User className="w-4 h-4 text-rose-400" /> {req.name || t('guestLabel')}
+                    </span>
+                    <span className="text-xs text-slate-400">[{req.contact}]</span>
+                    <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                      isPaid
+                        ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                        : isHold
+                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                          : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                    }`}>
+                      {getLocalizedStatus(req.status)}
+                    </span>
+                  </div>
 
                 <div className="text-xs text-slate-300 flex flex-wrap items-center gap-4">
                   <span>{t('periodLabel')} <b className="text-white">{req.checkIn} - {req.checkOut}</b> [{req.nights} {t('nightsWord')}]</span>

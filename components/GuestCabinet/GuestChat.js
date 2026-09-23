@@ -5,7 +5,7 @@
 // ==============================================================================
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Paperclip, X, MessageCircle, User, Shield, FileText, Sparkles, Clock, CreditCard, Gift, Calendar } from 'lucide-react';
+import { Send, Paperclip, X, MessageCircle, User, Shield, FileText, Sparkles, Clock, CreditCard, Gift, Calendar, Mail } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../Toast';
@@ -92,26 +92,57 @@ export default function GuestChat({
   return (
     <div className="bg-slate-900 border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[650px] fade-in">
       
-      {/* Шапка чата */}
-      <div className="p-5 bg-slate-800/80 border-b border-white/10 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-amber-500 flex items-center justify-center text-white font-bold text-sm">
-            AZ
+      {/* Выразительная шапка чата гостя */}
+      <div className="p-4 sm:p-5 bg-slate-800/90 border-b border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="space-y-2">
+          <div className="text-base sm:text-lg font-black text-white flex items-center gap-2 tracking-wide">
+            <MessageCircle className="w-5 h-5 text-rose-500" />
+            <span>Чат с хозяином</span>
           </div>
-          <div>
-            <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
-              Алексей Знаменский <Shield className="w-3.5 h-3.5 text-amber-400" />
-            </h3>
-            <span className="text-[11px] text-emerald-400 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-              Владелец Villa Turaman [Онлайн]
-            </span>
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-rose-500 to-amber-500 flex items-center justify-center text-white font-black text-sm shadow-md shrink-0">
+              AZ
+            </div>
+            <div>
+              <h3 className="text-sm font-extrabold text-white flex items-center gap-1.5 leading-snug">
+                <span>Алексей Знаменский</span>
+                <Shield className="w-3.5 h-3.5 text-amber-400" />
+              </h3>
+              <div className="text-xs text-slate-300 font-medium leading-none mt-0.5">
+                Владелец Villa Turaman
+              </div>
+              <div className="text-[11px] text-emerald-400 flex items-center gap-1 font-bold mt-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                <span>[Онлайн]</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <span className="text-xs text-slate-400 bg-slate-900 px-3 py-1 rounded-full border border-white/5">
-          Авто-перевод: {lang.toUpperCase()}
-        </span>
+        <div className="flex flex-wrap items-center gap-2.5 self-stretch md:self-auto justify-between md:justify-end">
+          <a
+            href="https://t.me/AlekseiZnamenskii"
+            target="_blank"
+            rel="noreferrer"
+            className="px-3 py-1.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 text-sky-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm hover:scale-105"
+            title="Открыть диалог с хозяином в Telegram"
+          >
+            <Send className="w-3.5 h-3.5 text-sky-400" />
+            <span>Телеграм хозяина</span>
+          </a>
+          <a
+            href="mailto:info@villaturaman.com"
+            className="px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm hover:scale-105"
+            title="Написать письмо владельцу"
+          >
+            <Mail className="w-3.5 h-3.5 text-rose-400" />
+            <span>Почта хозяина</span>
+          </a>
+          <span className="text-[11px] text-slate-300 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-white/10 font-bold tracking-wider uppercase flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-amber-400" />
+            <span>Авто-перевод: {lang.toUpperCase()}</span>
+          </span>
+        </div>
       </div>
 
       {/* Закрепленная плашка специального предложения или ожидания оплаты */}
@@ -240,6 +271,28 @@ export default function GuestChat({
                         <CreditCard className="w-3.5 h-3.5" />
                         <span>Оплатить {activeOffer.price}</span>
                       </button>
+                    </div>
+                  )}
+
+                  {/* Навигационные кнопки прямой связи с хозяином под сообщением хозяина или ИИ */}
+                  {(isHost || isAi) && (
+                    <div className="mt-3 pt-2.5 border-t border-white/10 flex flex-wrap items-center gap-2">
+                      <a
+                        href="https://t.me/AlekseiZnamenskii"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-2.5 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/30 text-sky-200 text-[11px] font-bold transition-all flex items-center gap-1.5 shadow-sm"
+                      >
+                        <Send className="w-3 h-3 text-sky-300" />
+                        <span>Телеграм хозяина</span>
+                      </a>
+                      <a
+                        href="mailto:info@villaturaman.com"
+                        className="px-2.5 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/30 text-rose-200 text-[11px] font-bold transition-all flex items-center gap-1.5 shadow-sm"
+                      >
+                        <Mail className="w-3 h-3 text-rose-300" />
+                        <span>Почта хозяина</span>
+                      </a>
                     </div>
                   )}
                 </div>
