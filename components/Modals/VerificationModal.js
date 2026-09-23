@@ -4,6 +4,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mail, Phone, ShieldCheck, X, CheckCircle2, AlertCircle, RefreshCw, ArrowRight, Edit3 } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
+import { useAuth } from '../../context/AuthContext';
 
 export default function VerificationModal({
   isOpen,
@@ -13,6 +14,7 @@ export default function VerificationModal({
   onSuccess
 }) {
   const { t } = useLanguage();
+  const { updateCurrentUser } = useAuth();
   const [channel, setChannel] = useState(targetChannel || 'email');
   const [currentContact, setCurrentContact] = useState('');
   const [isEditingContact, setIsEditingContact] = useState(false);
@@ -24,7 +26,6 @@ export default function VerificationModal({
   const [countdown, setCountdown] = useState(60);
   const [attemptsLeft, setAttemptsLeft] = useState(3);
   const [isDone, setIsDone] = useState(false);
-  const [devCode, setDevCode] = useState(null);
 
   const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
@@ -42,7 +43,6 @@ export default function VerificationModal({
       setErrorMessage('');
       setAttemptsLeft(3);
       setIsDone(false);
-      setDevCode(null);
       setIsEditingContact(!initialContact);
 
       if (initialContact) {
@@ -114,11 +114,7 @@ export default function VerificationModal({
       if (!data.success) {
         setErrorMessage(data.error || 'Не удалось отправить проверочный код. Попробуйте снова.');
       } else {
-        if (data.devCode) {
-          setDevCode(data.devCode);
-        } else {
-          setDevCode(null);
-        }
+        setErrorMessage('');
       }
     } catch (err) {
       setErrorMessage('Сетевой сбой при отправке кода. Проверьте соединение.');
@@ -127,7 +123,7 @@ export default function VerificationModal({
     }
   };
 
-  // Сохранение нового контакта при редактировании
+  // Сохранение нового контакта при редактировании с мгновенной синхронизацией профиля
   const handleSaveContact = (e) => {
     e.preventDefault();
     const clean = tempContactInput.trim();
@@ -144,17 +140,14 @@ export default function VerificationModal({
 
     setCurrentContact(clean);
     setIsEditingContact(false);
-    sendCode(channel, clean);
-  };
-
-  // Быстрая вставка тестового проверочного кода при отладке
-  const handleInsertDevCode = () => {
-    if (!devCode) return;
-    const digits = devCode.toString().split('').slice(0, 4);
-    setOtpDigits(digits);
-    if (digits.length === 4) {
-      verifyCode(digits.join(''));
+    if (updateCurrentUser) {
+      if (channel === 'email') {
+        updateCurrentUser({ email: clean });
+      } else {
+        updateCurrentUser({ phone: clean });
+      }
     }
+    sendCode(channel, clean);
   };
 
   // Обработка ввода цифр
@@ -316,11 +309,11 @@ export default function VerificationModal({
           <>
             {/* Описание текущего контакта и возможность отредактировать */}
             {isEditingContact ? (
-              <form onSubmit={handleSaveContact} className="bg-slate-950/60 p-4 rounded-2xl border border-white/10 mb-5">
-                <label className="text-xs text-slate-400 block mb-2 font-medium">
-                  {isEmail ? 'Укажите адрес электронной почты:' : 'Укажите номер телефона:'}
+              <form onSubmit={handleSaveContact} className="bg-slate-950/80 p-4 rounded-2xl border border-rose-500/30 mb-5">
+                <label className="text-xs text-rose-300 block mb-2 font-medium">
+                  {isEmail ? 'Укажите правильный email адрес:' : 'Укажите правильный номер телефона:'}
                 </label>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type={isEmail ? 'email' : 'tel'}
                     value={tempContactInput}
@@ -329,19 +322,31 @@ export default function VerificationModal({
                     className="flex-1 bg-slate-900 border border-white/20 p-2.5 rounded-xl text-xs sm:text-sm text-white focus:border-rose-500 outline-none"
                     autoFocus
                   />
-                  <button
-                    type="submit"
-                    className="px-4 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl transition-colors"
-                  >
-                    Отправить
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      type="submit"
+                      className="px-4 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl transition-colors whitespace-nowrap"
+                    >
+                      Отправить код
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTempContactInput(currentContact || '');
+                        setIsEditingContact(false);
+                      }}
+                      className="px-3 py-2.5 bg-white/10 hover:bg-white/20 text-slate-300 font-medium text-xs rounded-xl transition-colors"
+                    >
+                      Отмена
+                    </button>
+                  </div>
                 </div>
               </form>
             ) : (
-              <div className="bg-slate-950/60 p-4 rounded-2xl border border-white/5 mb-5 text-xs text-slate-300 flex items-center justify-between">
-                <div>
+              <div className="bg-slate-950/60 p-4 rounded-2xl border border-white/5 mb-5 text-xs text-slate-300 flex items-center justify-between gap-3">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5 text-slate-400 mb-1">
-                    {isEmail ? <Mail className="w-3.5 h-3.5 text-rose-400" /> : <Phone className="w-3.5 h-3.5 text-rose-400" />}
+                    {isEmail ? <Mail className="w-3.5 h-3.5 text-rose-400 shrink-0" /> : <Phone className="w-3.5 h-3.5 text-rose-400 shrink-0" />}
                     <span>{isEmail ? 'Код отправлен на почту:' : 'Код для номера:'}</span>
                   </div>
                   <div className="font-bold text-sm text-white tracking-wide break-all">
@@ -351,27 +356,11 @@ export default function VerificationModal({
                 <button
                   type="button"
                   onClick={() => setIsEditingContact(true)}
-                  className="p-2 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white transition-colors"
+                  className="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-rose-300 hover:text-white transition-colors flex items-center gap-1.5 text-xs shrink-0"
                   title="Изменить адрес или номер"
                 >
-                  <Edit3 className="w-4 h-4" />
-                </button>
-              </div>
-            )}
-
-            {/* Тестовый режим отладки : при ненастроенном шлюзе */}
-            {devCode && (
-              <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex flex-col gap-2 text-xs text-amber-300 mb-5">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-amber-200">Отладка : код подтверждения</span>
-                  <span className="font-mono font-bold text-amber-100 text-sm tracking-widest">{devCode}</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleInsertDevCode}
-                  className="w-full py-2 px-3 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 rounded-xl text-amber-100 font-semibold text-xs transition-colors flex items-center justify-center gap-1.5"
-                >
-                  <span>Вставить проверочный код {devCode}</span>
+                  <Edit3 className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Изменить</span>
                 </button>
               </div>
             )}

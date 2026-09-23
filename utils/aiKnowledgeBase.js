@@ -119,11 +119,24 @@ function getLocalFallbackKnowledge() {
     videoUrl: r[9] || ''
   }));
 
-  const parsedTemplates = (MASTER_TEMPLATES_ROWS || []).map((r) => ({
-    id: r[0] || '',
-    title: { ru: r[1] || '', en: r[2] || '', tr: r[3] || '' },
-    content: { ru: r[4] || '', en: r[5] || '', tr: r[6] || '' }
-  }));
+  const parsedTemplates = (MASTER_TEMPLATES_ROWS || []).map((r) => {
+    const id = r[0] || '';
+    let stageId = r[7] || '';
+    if (!stageId) {
+      if (id.startsWith('1')) stageId = 'stage_1';
+      else if (id.startsWith('2')) stageId = 'stage_2';
+      else if (id.startsWith('3')) stageId = 'stage_3';
+      else if (id.startsWith('4')) stageId = 'stage_4';
+      else if (id.startsWith('5')) stageId = 'stage_5';
+      else stageId = 'stage_1';
+    }
+    return {
+      id,
+      stageId,
+      title: { ru: r[1] || '', en: r[2] || '', tr: r[3] || '' },
+      content: { ru: r[4] || '', en: r[5] || '', tr: r[6] || '' }
+    };
+  });
 
   const parsedKnowledgeGraph = (MASTER_KNOWLEDGE_GRAPH_ROWS || []).map((r) => ({
     nodeId: r[0] || '',
@@ -431,12 +444,42 @@ async function getAiKnowledgeBase(forceRefresh = false) {
 
     // 7. Парсинг шаблонов сообщений
     const parsedTemplates = templatesRows.length > 1
-      ? templatesRows.slice(1).map((r) => ({
-          id: r[0] || '',
-          title: { ru: r[1] || '', en: r[2] || '', tr: r[3] || '' },
-          content: { ru: r[4] || '', en: r[5] || '', tr: r[6] || '' }
-        })).filter((t) => t.id)
-      : (MASTER_TEMPLATES_ROWS || []).map((r) => ({ id: r[0], title: { ru: r[1], en: r[2], tr: r[3] }, content: { ru: r[4], en: r[5], tr: r[6] } }));
+      ? templatesRows.slice(1).map((r) => {
+          const id = r[0] || '';
+          let stageId = r[7] || '';
+          if (!stageId) {
+            if (id.startsWith('1')) stageId = 'stage_1';
+            else if (id.startsWith('2')) stageId = 'stage_2';
+            else if (id.startsWith('3')) stageId = 'stage_3';
+            else if (id.startsWith('4')) stageId = 'stage_4';
+            else if (id.startsWith('5')) stageId = 'stage_5';
+            else stageId = 'stage_1';
+          }
+          return {
+            id,
+            stageId,
+            title: { ru: r[1] || '', en: r[2] || '', tr: r[3] || '' },
+            content: { ru: r[4] || '', en: r[5] || '', tr: r[6] || '' }
+          };
+        }).filter((t) => t.id)
+      : (MASTER_TEMPLATES_ROWS || []).map((r) => {
+          const id = r[0] || '';
+          let stageId = r[7] || '';
+          if (!stageId) {
+            if (id.startsWith('1')) stageId = 'stage_1';
+            else if (id.startsWith('2')) stageId = 'stage_2';
+            else if (id.startsWith('3')) stageId = 'stage_3';
+            else if (id.startsWith('4')) stageId = 'stage_4';
+            else if (id.startsWith('5')) stageId = 'stage_5';
+            else stageId = 'stage_1';
+          }
+          return {
+            id,
+            stageId,
+            title: { ru: r[1] || '', en: r[2] || '', tr: r[3] || '' },
+            content: { ru: r[4] || '', en: r[5] || '', tr: r[6] || '' }
+          };
+        });
 
     // 8. Парсинг 15-го листа: Граф Знаний и Безопасность
     const parsedKnowledgeGraph = knowledgeGraphRows.length > 1

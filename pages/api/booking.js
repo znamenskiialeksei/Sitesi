@@ -1098,8 +1098,6 @@ export default async function handler(req, res) {
       return res.status(200).json({
         success: true,
         message: sendResult?.message || `Проверочный код успешно отправлен на ${target}`,
-        isDevMode: sendResult?.isDevMode || false,
-        devCode: sendResult?.isDevMode ? otpCode : undefined,
         provider: sendResult?.provider || 'default',
         emailSent: sendResult?.emailSent || false,
         telegramSent: sendResult?.telegramSent || false
