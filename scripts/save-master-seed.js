@@ -353,6 +353,21 @@ async function saveMasterSeed() {
       caption: { ru: r[9] || '', en: r[10] || '', tr: r[11] || '' }
     }));
 
+    const settingsObj = {};
+    masterSettingsRows.forEach((r) => {
+      const cat = (r[0] || '').toString().trim();
+      const param = (r[1] || '').toString().trim();
+      const val = (r[2] || '').toString().trim();
+      const desc = (r[3] || '').toString().trim();
+      if (param) {
+        settingsObj[param] = {
+          category: cat,
+          value: val,
+          description: desc
+        };
+      }
+    });
+
     const updatedContentJson = {
       home: masterHomeMap,
       about: aboutObj,
@@ -360,7 +375,8 @@ async function saveMasterSeed() {
       templates: templatesObj,
       products: productsArr,
       courses: coursesArr,
-      gallery: galleryArr
+      gallery: galleryArr,
+      settings: settingsObj
     };
 
     fs.writeFileSync(contentFilePath, JSON.stringify(updatedContentJson, null, 2), 'utf8');

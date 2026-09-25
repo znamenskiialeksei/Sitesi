@@ -29,6 +29,14 @@ let lastCacheTime = 0;
 const CACHE_TTL_MS = 30 * 1000; // 30 секунд кэширования
 
 /**
+ * Сброс кэша в памяти сервера
+ */
+export function clearMemoryCache() {
+  memoryCache = null;
+  lastCacheTime = 0;
+}
+
+/**
  * Обработчик запроса получения контента
  * Поддерживает GET и POST (с опцией force=true для сброса кэша)
  */
@@ -202,6 +210,27 @@ export default async function handler(req, res) {
       });
     }
 
+    const fallbackData = readFallbackFile();
+
+    const settingsObj = {};
+    if (settingsRows.length > 1) {
+      settingsRows.slice(1).forEach((r) => {
+        const cat = (r[0] || '').toString().trim();
+        const param = (r[1] || '').toString().trim();
+        const val = (r[2] || '').toString().trim();
+        const desc = (r[3] || '').toString().trim();
+        if (param) {
+          settingsObj[param] = {
+            category: cat,
+            value: val,
+            description: desc
+          };
+        }
+      });
+    } else if (fallbackData.settings && typeof fallbackData.settings === 'object') {
+      Object.assign(settingsObj, fallbackData.settings);
+    }
+
     const content = {
       home: {},
       about: {},
@@ -209,10 +238,10 @@ export default async function handler(req, res) {
       templates: {},
       products: [],
       courses: [],
-      gallery: []
+      gallery: [],
+      settings: settingsObj,
+      ssotContext
     };
-
-    const fallbackData = readFallbackFile();
 
     // Базовое наполнение SSOT: гарантируем наличие всех ключей мастер-эталона
     const baseHomeMap = { ...MASTER_HOME_MAP };

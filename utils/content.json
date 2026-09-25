@@ -3036,5 +3036,152 @@
         "tr": "İztuzu Plajı ve Kaplumbağalar"
       }
     }
-  ]
+  ],
+  "settings": {
+    "ai_mode": {
+      "category": "СИСТЕМА",
+      "value": "autopilot",
+      "description": "Режим работы ИИ: autopilot [автоответ], copilot [суфлер хозяина], off [выключен]"
+    },
+    "ai_model": {
+      "category": "СИСТЕМА",
+      "value": "gemini-3.6-flash",
+      "description": "Целевая модель Google Gemini: gemini-3.6-flash / gemini-2.5-flash"
+    },
+    "min_night_price": {
+      "category": "СИСТЕМА",
+      "value": "180",
+      "description": "Минимально допустимая цена за сутки бронирования в USD: ниже опускать запрещено"
+    },
+    "telegram_bot_token": {
+      "category": "СИСТЕМА",
+      "value": "",
+      "description": "Токен Telegram-бота от BotFather для оповещений и мобильного пульта"
+    },
+    "telegram_admin_chat_id": {
+      "category": "СИСТЕМА",
+      "value": "",
+      "description": "ID чата суперхозяина в Telegram для получения алертов и модерации"
+    },
+    "vercel_url": {
+      "category": "СИСТЕМА",
+      "value": "https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app",
+      "description": "Боевой URL платформы на Vercel для вебхуков и ревалидации"
+    },
+    "wifi_name": {
+      "category": "ПЕРЕМЕННАЯ",
+      "value": "Guest",
+      "description": "Имя гостевой сети Wi-Fi виллы"
+    },
+    "wifi_password": {
+      "category": "ПЕРЕМЕННАЯ",
+      "value": "villa2026",
+      "description": "Пароль гостевой сети Wi-Fi"
+    },
+    "address": {
+      "category": "ПЕРЕМЕННАЯ",
+      "value": "Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla",
+      "description": "Точный физический адрес виллы"
+    },
+    "maps_url": {
+      "category": "ПЕРЕМЕННАЯ",
+      "value": "https://maps.app.goo.gl/tPgCjCwz4pzq28pE9",
+      "description": "Прямая ссылка на геолокацию Google Maps"
+    },
+    "checkin_time": {
+      "category": "ПЕРЕМЕННАЯ",
+      "value": "16:00",
+      "description": "Стандартное время заезда гостей"
+    },
+    "checkout_time": {
+      "category": "ПЕРЕМЕННАЯ",
+      "value": "10:00",
+      "description": "Стандартное время выезда гостей"
+    },
+    "checkin_method": {
+      "category": "ПЕРЕМЕННАЯ",
+      "value": "Электронный смарт-замок и мини-сейф с кодом / личная встреча владельцем",
+      "description": "Способ передачи ключей"
+    },
+    "key_handover": {
+      "category": "ПЕРЕМЕННАЯ",
+      "value": "Оставьте ключи в мини-сейфе с кодом у входной двери или на кухонном столе",
+      "description": "Инструкция возврата ключей"
+    },
+    "platform_name": {
+      "category": "ПЕРЕМЕННАЯ",
+      "value": "Villa Turaman Direct",
+      "description": "Название платформы бронирования"
+    },
+    "host_name": {
+      "category": "О_ХОЗЯИНЕ",
+      "value": "Aleksei Znamenskii",
+      "description": "Имя владельца виллы на английском и русском"
+    },
+    "host_status": {
+      "category": "О_ХОЗЯИНЕ",
+      "value": "Суперхозяин на Airbnb • Более 5 лет приема гостей",
+      "description": "Статус суперхозяина и опыт"
+    },
+    "host_languages": {
+      "category": "О_ХОЗЯИНЕ",
+      "value": "Русский, English, Türkçe",
+      "description": "Языки общения с гостями"
+    },
+    "host_response_time": {
+      "category": "О_ХОЗЯИНЕ",
+      "value": "В течение часа",
+      "description": "Скорость ответа на сообщения"
+    },
+    "host_business": {
+      "category": "О_ХОЗЯИНЕ",
+      "value": "Краткосрочная аренда Villa Turaman [Дальян, Мугла, Турция]",
+      "description": "Юридический вид деятельности и бизнес"
+    },
+    "villa_capacity": {
+      "category": "О_ВИЛЛЕ",
+      "value": "10 гостей",
+      "description": "Максимальная вместимость виллы, включая детей"
+    },
+    "villa_floors": {
+      "category": "О_ВИЛЛЕ",
+      "value": "2 этажа. Первый этаж: кухня, гостиная со Smart TV 55\", гостевой санузел, стиральная машина, гладильная доска и утюг, спальня на 3 места с ванной. Второй этаж: 3 спальни с ванными комнатами и кондиционерами, доп. кровать и вторая стиральная машина.",
+      "description": "Планировка и оснащение этажей"
+    },
+    "pool_specs": {
+      "category": "О_ВИЛЛЕ",
+      "value": "Приватный бассейн с соленой водой 36 кв.м и уличное джакузи",
+      "description": "Характеристики бассейна и гидромассажа"
+    },
+    "pool_season": {
+      "category": "О_ВИЛЛЕ",
+      "value": "с 1 мая по 1 ноября",
+      "description": "Период работы и эксплуатации бассейна и джакузи"
+    },
+    "jacuzzi_schedule": {
+      "category": "О_ВИЛЛЕ",
+      "value": "Работает с 09:00 до 18:00. Включается автоматически на 15 минут с интервалом каждые 45 минут.",
+      "description": "Алгоритм и часы работы джакузи"
+    },
+    "pool_lighting": {
+      "category": "О_ВИЛЛЕ",
+      "value": "Освещение в бассейне и джакузи включается автоматически с 20:00 до 01:00.",
+      "description": "График подсветки воды"
+    },
+    "street_lighting": {
+      "category": "О_ВИЛЛЕ",
+      "value": "Уличное освещение включается автоматически с 20:00 до 01:00 и с 04:00 до 06:00.",
+      "description": "График освещения сада и фасада"
+    },
+    "pool_maintenance": {
+      "category": "О_ВИЛЛЕ",
+      "value": "Профилактические работы и чистка бассейна производятся в день заселения и далее каждые 7 дней.",
+      "description": "Регламент очистки бассейна"
+    },
+    "outdoor_zones": {
+      "category": "О_ВИЛЛЕ",
+      "value": "Парковка перед виллой, дворик-сад, зона барбекю, крыльцо с кофейными столиками и обеденной зоной, зона для загара с шезлонгами.",
+      "description": "Территория вне виллы"
+    }
+  }
 }
