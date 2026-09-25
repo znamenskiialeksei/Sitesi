@@ -461,7 +461,38 @@ export const translations = {
     verifyPhonePrompt: "Подтвердить номер телефона",
     verifyEmailPrompt: "Email не подтвержден",
     verifyRequired: "Код на email",
-    openChatBtn: "Перейти в чат"
+    openChatBtn: "Перейти в чат",
+
+    // Модальные окна информационных разделов витрины
+    modalAboutVillaSubtitle: "Полный архитектурный, юридический и экспедиционный паспорт объекта",
+    modalAboutVillaFooter: "Официальный налогоплательщик: Ortaca Vergi Dairesi, VKN: 9991120181",
+    modalClosePassportBtn: "Закрыть паспорт объекта",
+    closeBtn: "Закрыть",
+    
+    // Бейджи 7 секций паспорта объекта
+    aboutSec1Badge: "Геолокация • 14 ориентиров",
+    aboutSec2Badge: "Архитектура • 10 мест",
+    aboutSec3Badge: "Бассейн 36 м² • Джакузи",
+    aboutSec4Badge: "Закон № 7464 • KBS",
+    aboutSec5Badge: "Суперхозяин • Паспорт",
+    aboutSec6Badge: "Яхта BAVARIA C45 • Море",
+    aboutSec7Badge: "Кемпер Adria • Тур Всё",
+
+    // Модальное окно отзывов и оценок
+    reviewsModalTitle: "Отзывы гостей и критерии качества",
+    reviewsModalSubtitle: "4.98 ★ • 48 подтвержденных отзывов гостей виллы Dalyan Turaman",
+    reviewsModalFooter: "Статус Суперхозяина на Airbnb: более 5 лет безупречного гостеприимства",
+    reviewsScoreHeaderFallback: "4.98 • Рейтинг гостей на основе 48 отзывов",
+
+    // Модальное окно безопасности и Закона № 7464
+    safetyModalTitle: "Юридический регламент, безопасность и доступная среда",
+    safetyModalSubtitle: "Закон Турции № 7464, регистрация KBS, сертификаты пожарной безопасности и безбарьерный доступ",
+    safetyModalFooter: "Официальное оформление e-Arşiv Fatura по закону VUK 213 Madde 230",
+
+    // Модальное окно ориентиров Дальяна
+    landmarksModalTitle: "14 географических ориентиров Дальяна",
+    landmarksModalSubtitle: "Точные расстояния, время в пути и способы перемещения от виллы",
+    landmarksModalFooter: "GPS: 36.8336° N, 28.6439° E • 250 м до центральной улицы"
   },
 
   en: {
@@ -909,7 +940,38 @@ export const translations = {
     verifyPhonePrompt: "Verify Phone Number",
     verifyEmailPrompt: "Email not verified",
     verifyRequired: "Code to email",
-    openChatBtn: "Open Chat"
+    openChatBtn: "Open Chat",
+
+    // Modal windows of showcase information sections
+    modalAboutVillaSubtitle: "Complete architectural, legal and expedition property passport",
+    modalAboutVillaFooter: "Official taxpayer: Ortaca Tax Office, VKN: 9991120181",
+    modalClosePassportBtn: "Close property passport",
+    closeBtn: "Close",
+    
+    // Badges of 7 property passport sections
+    aboutSec1Badge: "Geolocation • 14 landmarks",
+    aboutSec2Badge: "Architecture • Sleeps 10",
+    aboutSec3Badge: "Pool 36 m² • Jacuzzi",
+    aboutSec4Badge: "Law No. 7464 • KBS",
+    aboutSec5Badge: "Superhost • Profile",
+    aboutSec6Badge: "Yacht BAVARIA C45 • Sea",
+    aboutSec7Badge: "Camper Adria • Tour All",
+
+    // Reviews & ratings modal window
+    reviewsModalTitle: "Guest Reviews & Quality Criteria",
+    reviewsModalSubtitle: "4.98 ★ • 48 verified guest reviews for Villa Dalyan Turaman",
+    reviewsModalFooter: "Airbnb Superhost status: over 5 years of outstanding hospitality",
+    reviewsScoreHeaderFallback: "4.98 • Guest rating based on 48 reviews",
+
+    // Safety & Law No. 7464 modal window
+    safetyModalTitle: "Legal Regulations, Safety & Accessibility",
+    safetyModalSubtitle: "Turkish Law No. 7464, KBS police registration, fire safety compliance and barrier-free access",
+    safetyModalFooter: "Official issuance of e-Arşiv Fatura tax invoice under VUK 213 Article 230",
+
+    // Dalyan landmarks modal window
+    landmarksModalTitle: "14 Geographic Landmarks of Dalyan",
+    landmarksModalSubtitle: "Exact distances, travel times and transportation options from the villa",
+    landmarksModalFooter: "GPS: 36.8336° N, 28.6439° E • 250 m to main pedestrian street"
   },
 
   tr: {
@@ -1357,7 +1419,38 @@ export const translations = {
     verifyPhonePrompt: "Telefon Numarasını Doğrula",
     verifyEmailPrompt: "E-posta doğrulanmadı",
     verifyRequired: "E-postaya kod",
-    openChatBtn: "Sohbete Git"
+    openChatBtn: "Sohbete Git",
+
+    // Vitrin bilgi bölümleri modal pencereleri
+    modalAboutVillaSubtitle: "Mülkün eksiksiz mimari, yasal ve keşif pasaportu",
+    modalAboutVillaFooter: "Resmi vergi mükellefi: Ortaca Vergi Dairesi, VKN: 9991120181",
+    modalClosePassportBtn: "Mülk pasaportunu kapat",
+    closeBtn: "Kapat",
+    
+    // 7 mülk pasaportu bölümü rozetleri
+    aboutSec1Badge: "Konum • 14 coğrafi işaret",
+    aboutSec2Badge: "Mimari • 10 kişilik kapasite",
+    aboutSec3Badge: "Havuz 36 m² • Jakuzi",
+    aboutSec4Badge: "7464 Sayılı Kanun • KBS",
+    aboutSec5Badge: "Süper Ev Sahibi • Profil",
+    aboutSec6Badge: "Yat BAVARIA C45 • Deniz",
+    aboutSec7Badge: "Karavan Adria • Tur Hepsi",
+
+    // Değerlendirmeler ve puanlar modal penceresi
+    reviewsModalTitle: "Misafir Değerlendirmeleri ve Kalite Kriterleri",
+    reviewsModalSubtitle: "4.98 ★ • Villa Dalyan Turaman için 48 doğrulanmış misafir değerlendirmesi",
+    reviewsModalFooter: "Airbnb Süper Ev Sahibi statüsü: 5 yılı aşkın kusursuz misafirperverlik",
+    reviewsScoreHeaderFallback: "4.98 • 48 değerlendirmeye göre misafir puanı",
+
+    // Güvenlik ve 7464 Sayılı Kanun modal penceresi
+    safetyModalTitle: "Yasal Mevzuat, Güvenlik ve Engelsiz Erişim",
+    safetyModalSubtitle: "7464 Sayılı Kanun, KBS polis kaydı, yangın güvenliği ve engelsiz erişim",
+    safetyModalFooter: "VUK 213 Madde 230 uyarınca resmi e-Arşiv Fatura düzenlenmesi",
+
+    // Dalyan coğrafi işaretleri modal penceresi
+    landmarksModalTitle: "Dalyan'ın 14 Coğrafi İşareti",
+    landmarksModalSubtitle: "Villadan kesin mesafeler, seyahat süreleri ve ulaşım seçenekleri",
+    landmarksModalFooter: "GPS: 36.8336° K, 28.6439° D • Ana caddeye 250 m"
   }
 };
 

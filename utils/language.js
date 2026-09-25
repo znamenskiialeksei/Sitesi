@@ -115,11 +115,17 @@ export const LanguageProvider = ({ children }) => {
   };
 
   // Функция перевода ключа с фоллбэком на русский язык и поддержкой интерполяции параметров {param}
-  const t = (key, params) => {
-    if (!key) return '';
-    let text = translations[lang]?.[key] || translations['ru']?.[key] || key;
-    if (params && typeof params === 'object') {
-      Object.entries(params).forEach(([k, v]) => {
+  const t = (key, params, defaultText) => {
+    if (!key) return defaultText || '';
+    let effectiveParams = params;
+    let fallbackText = defaultText;
+    if (typeof params === 'string') {
+      fallbackText = params;
+      effectiveParams = null;
+    }
+    let text = translations[lang]?.[key] || translations['ru']?.[key] || fallbackText || key;
+    if (effectiveParams && typeof effectiveParams === 'object') {
+      Object.entries(effectiveParams).forEach(([k, v]) => {
         text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
       });
     }

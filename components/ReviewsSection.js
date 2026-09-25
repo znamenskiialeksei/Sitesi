@@ -13,23 +13,43 @@ export default function ReviewsSection({ homeData = null, customReviewsData = nu
 
   const reviewsData = customReviewsData || homeData?.reviewsData;
 
-  const headerText = reviewsData?.header?.[lang] || reviewsData?.header?.ru || '4.98 • Рейтинг гостей на основе 48 отзывов';
+  const headerText = reviewsData?.header?.[lang] || reviewsData?.header?.ru || t('reviewsScoreHeaderFallback', '4.98 • Рейтинг гостей на основе 48 отзывов');
 
   const defaultCategories = [
-    { label: t('reviewCleanliness') || 'Чистота', score: '5.0', percent: 100 },
-    { label: t('reviewAccuracy') || 'Точность описания', score: '4.9', percent: 98 },
-    { label: t('reviewCommunication') || 'Общение с хозяином', score: '5.0', percent: 100 },
-    { label: t('reviewLocation') || 'Расположение', score: '4.9', percent: 98 },
-    { label: t('reviewCheckIn') || 'Прибытие и заезд', score: '5.0', percent: 100 },
-    { label: t('reviewValue') || 'Соотношение цена/качество', score: '4.9', percent: 98 }
+    { key: 'reviewCleanliness', label: t('reviewCleanliness', 'Чистота'), score: '5.0', percent: 100 },
+    { key: 'reviewAccuracy', label: t('reviewAccuracy', 'Точность описания'), score: '4.9', percent: 98 },
+    { key: 'reviewCommunication', label: t('reviewCommunication', 'Общение с хозяином'), score: '5.0', percent: 100 },
+    { key: 'reviewLocation', label: t('reviewLocation', 'Расположение'), score: '4.9', percent: 98 },
+    { key: 'reviewCheckIn', label: t('reviewCheckIn', 'Прибытие и заезд'), score: '5.0', percent: 100 },
+    { key: 'reviewValue', label: t('reviewValue', 'Соотношение цена/качество'), score: '4.9', percent: 98 }
   ];
 
+  // Карта соответствия категорий ключам словаря локализации
+  const catKeyMap = {
+    'review_cat_1': 'reviewCleanliness',
+    'review_cat_2': 'reviewAccuracy',
+    'review_cat_3': 'reviewCommunication',
+    'review_cat_4': 'reviewLocation',
+    'review_cat_5': 'reviewCheckIn',
+    'review_cat_6': 'reviewValue',
+    'Чистота': 'reviewCleanliness',
+    'Точность описания': 'reviewAccuracy',
+    'Общение с хозяином': 'reviewCommunication',
+    'Расположение': 'reviewLocation',
+    'Прибытие и заезд': 'reviewCheckIn',
+    'Соотношение цена/качество': 'reviewValue'
+  };
+
   const categories = (reviewsData?.categories && reviewsData.categories.length > 0)
-    ? reviewsData.categories.map((c) => ({
-        label: c.label?.[lang] || c.label?.ru || (typeof c.label === 'string' ? c.label : ''),
-        score: c.score || '5.0',
-        percent: c.percent || 100
-      }))
+    ? reviewsData.categories.map((c, idx) => {
+        const transKey = catKeyMap[c.key] || catKeyMap[c.label?.ru] || catKeyMap[c.label] || defaultCategories[idx]?.key;
+        const localizedLabel = (transKey && t(transKey)) || c.label?.[lang] || c.label?.ru || (typeof c.label === 'string' ? c.label : '');
+        return {
+          label: localizedLabel,
+          score: c.score || '5.0',
+          percent: c.percent || 100
+        };
+      })
     : defaultCategories;
 
   const defaultReviews = [

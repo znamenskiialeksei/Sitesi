@@ -34,49 +34,56 @@ const SECTION_CONFIGS = [
     index: 0,
     icon: Compass,
     iconBg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    badge: 'Геолокация • 14 ориентиров',
+    badgeKey: 'aboutSec1Badge',
+    fallbackBadge: 'Геолокация • 14 ориентиров',
     badgeBg: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20'
   },
   {
     index: 1,
     icon: Home,
     iconBg: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    badge: '240 м² • 4 спальни • 10 мест',
+    badgeKey: 'aboutSec2Badge',
+    fallbackBadge: '240 м² • 4 спальни • 10 мест',
     badgeBg: 'bg-blue-500/10 text-blue-300 border-blue-500/20'
   },
   {
     index: 2,
     icon: Waves,
     iconBg: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
-    badge: 'Бассейн 36 м² • Джакузи спа',
+    badgeKey: 'aboutSec3Badge',
+    fallbackBadge: 'Бассейн 36 м² • Джакузи спа',
     badgeBg: 'bg-cyan-500/10 text-cyan-300 border-cyan-500/20'
   },
   {
     index: 3,
     icon: ShieldCheck,
     iconBg: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-    badge: 'Закон № 7464 • KBS учет',
+    badgeKey: 'aboutSec4Badge',
+    fallbackBadge: 'Закон № 7464 • KBS учет',
     badgeBg: 'bg-amber-500/10 text-amber-300 border-amber-500/20'
   },
   {
     index: 4,
     icon: Award,
     iconBg: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-    badge: 'Суперхозяин • Рейтинг 4.98★',
+    badgeKey: 'aboutSec5Badge',
+    fallbackBadge: 'Суперхозяин • Рейтинг 4.98★',
     badgeBg: 'bg-rose-500/10 text-rose-300 border-rose-500/20'
   },
   {
     index: 5,
     icon: Anchor,
     iconBg: 'bg-sky-500/10 text-sky-400 border-sky-500/20',
-    badge: 'Яхта BAVARIA C45 • 60 м²',
+    badgeKey: 'aboutSec6Badge',
+    fallbackBadge: 'Яхта BAVARIA C45 • 60 м²',
     badgeBg: 'bg-sky-500/10 text-sky-300 border-sky-500/20'
   },
   {
     index: 6,
     icon: Car,
     iconBg: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
-    badge: 'Adria Adora 673 PK • Тур «Всё»',
+    badgeKey: 'aboutSec7Badge',
+    fallbackBadge: 'Adria Adora 673 PK • Тур «Всё»',
     badgeBg: 'bg-purple-500/10 text-purple-300 border-purple-500/20'
   }
 ];
@@ -99,10 +106,10 @@ export default function AboutVillaModal({ isOpen = false, onClose = () => {}, se
             </div>
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-white leading-tight">
-                {t('modalAboutVilla') || 'Об этой вилле: Dalyan Turaman'}
+                {t('modalAboutVilla', 'Об этой вилле: Dalyan Turaman')}
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                Полный архитектурный, юридический и экспедиционный паспорт объекта
+                {t('modalAboutVillaSubtitle', 'Полный архитектурный, юридический и экспедиционный паспорт объекта')}
               </p>
             </div>
           </div>
@@ -138,7 +145,7 @@ export default function AboutVillaModal({ isOpen = false, onClose = () => {}, se
                       </h4>
                     </div>
                     <span className={`text-[11px] font-bold px-3 py-1 rounded-full border shrink-0 ${cfg.badgeBg}`}>
-                      {cfg.badge}
+                      {t(cfg.badgeKey, cfg.fallbackBadge)}
                     </span>
                   </div>
 
@@ -178,14 +185,14 @@ export default function AboutVillaModal({ isOpen = false, onClose = () => {}, se
         <div className="p-4 sm:p-5 border-t border-white/10 bg-slate-900/90 flex flex-wrap items-center justify-between gap-4 shrink-0">
           <div className="flex items-center gap-2 text-xs text-slate-400">
             <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <span>Официальный объект: Ortaca Vergi Dairesi, VKN: 9991120181</span>
+            <span>{t('modalAboutVillaFooter', 'Официальный объект: Ortaca Vergi Dairesi, VKN: 9991120181')}</span>
           </div>
           <button
             type="button"
             onClick={onClose}
             className="px-6 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-medium text-xs sm:text-sm transition-colors border border-white/10"
           >
-            Закрыть
+            {t('modalClosePassportBtn', 'Закрыть паспорт объекта')}
           </button>
         </div>
 

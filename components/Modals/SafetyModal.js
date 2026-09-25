@@ -31,10 +31,10 @@ export default function SafetyModal({ isOpen = false, onClose = () => {}, homeDa
             </div>
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-white leading-tight">
-                {t('safetyModalTitle') || 'Юридический регламент, безопасность и доступная среда'}
+                {t('safetyModalTitle', 'Юридический регламент, безопасность и доступная среда')}
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                Закон Турции № 7464, регистрация KBS, сертификаты пожарной безопасности и безбарьерный доступ
+                {t('safetyModalSubtitle', 'Закон Турции № 7464, регистрация KBS, сертификаты пожарной безопасности и безбарьерный доступ')}
               </p>
             </div>
           </div>
@@ -56,14 +56,14 @@ export default function SafetyModal({ isOpen = false, onClose = () => {}, homeDa
         <div className="p-4 sm:p-5 border-t border-white/10 bg-slate-900/90 flex flex-wrap items-center justify-between gap-4 shrink-0">
           <div className="flex items-center gap-2 text-xs text-slate-400">
             <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <span>Официальное оформление e-Arşiv Fatura по закону VUK 213 Madde 230</span>
+            <span>{t('safetyModalFooter', 'Официальное оформление e-Arşiv Fatura по закону VUK 213 Madde 230')}</span>
           </div>
           <button
             type="button"
             onClick={onClose}
             className="px-6 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-medium text-xs sm:text-sm transition-colors border border-white/10"
           >
-            Закрыть
+            {t('closeBtn', 'Закрыть')}
           </button>
         </div>
 

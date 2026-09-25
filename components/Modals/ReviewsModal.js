@@ -28,10 +28,10 @@ export default function ReviewsModal({ isOpen = false, onClose = () => {}, homeD
             </div>
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-white leading-tight">
-                {t('reviewsModalTitle') || 'Отзывы гостей и критерии качества'}
+                {t('reviewsModalTitle', 'Отзывы гостей и критерии качества')}
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                4.98 ★ • 48 подтвержденных отзывов гостей виллы Dalyan Turaman
+                {t('reviewsModalSubtitle', '4.98 ★ • 48 подтвержденных отзывов гостей виллы Dalyan Turaman')}
               </p>
             </div>
           </div>
@@ -53,14 +53,14 @@ export default function ReviewsModal({ isOpen = false, onClose = () => {}, homeD
         <div className="p-4 sm:p-5 border-t border-white/10 bg-slate-900/90 flex flex-wrap items-center justify-between gap-4 shrink-0">
           <div className="flex items-center gap-2 text-xs text-slate-400">
             <Award className="w-4 h-4 text-rose-400" />
-            <span>Статус Суперхозяина на Airbnb: более 5 лет безупречного гостеприимства</span>
+            <span>{t('reviewsModalFooter', 'Статус Суперхозяина на Airbnb: более 5 лет безупречного гостеприимства')}</span>
           </div>
           <button
             type="button"
             onClick={onClose}
             className="px-6 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-medium text-xs sm:text-sm transition-colors border border-white/10"
           >
-            Закрыть
+            {t('closeBtn', 'Закрыть')}
           </button>
         </div>
 

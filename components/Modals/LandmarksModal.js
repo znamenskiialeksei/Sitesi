@@ -28,10 +28,10 @@ export default function LandmarksModal({ isOpen = false, onClose = () => {}, hom
             </div>
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-white leading-tight">
-                {t('landmarksModalTitle') || '14 географических ориентиров Дальяна'}
+                {t('landmarksModalTitle', '14 географических ориентиров Дальяна')}
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                Точные расстояния, время в пути и способы перемещения от вилы
+                {t('landmarksModalSubtitle', 'Точные расстояния, время в пути и способы перемещения от виллы')}
               </p>
             </div>
           </div>
@@ -53,14 +53,14 @@ export default function LandmarksModal({ isOpen = false, onClose = () => {}, hom
         <div className="p-4 sm:p-5 border-t border-white/10 bg-slate-900/90 flex flex-wrap items-center justify-between gap-4 shrink-0">
           <div className="flex items-center gap-2 text-xs text-slate-400">
             <Navigation className="w-4 h-4 text-emerald-400" />
-            <span>GPS: 36.8336° N, 28.6439° E • 250 м до центральной улицы</span>
+            <span>{t('landmarksModalFooter', 'GPS: 36.8336° N, 28.6439° E • 250 м до центральной улицы')}</span>
           </div>
           <button
             type="button"
             onClick={onClose}
             className="px-6 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-medium text-xs sm:text-sm transition-colors border border-white/10"
           >
-            Закрыть
+            {t('closeBtn', 'Закрыть')}
           </button>
         </div>
 
