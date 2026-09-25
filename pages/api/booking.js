@@ -2254,6 +2254,7 @@ export default async function handler(req, res) {
         } catch (e) { }
 
         // Запись заявки в лист бронирований (11 колонок A:K)
+        const safeSheetContact = (effectiveContact && effectiveContact.toString().startsWith('+')) ? `'${effectiveContact}` : (effectiveContact || '');
         await sheets.spreadsheets.values.append({
           spreadsheetId,
           range: resolveRange(sheetMap, 'BOOKINGS', 'A:K'),
@@ -2263,7 +2264,7 @@ export default async function handler(req, res) {
             values: [[
               timestamp,
               guestName,
-              effectiveContact,
+              safeSheetContact,
               data.checkIn,
               data.checkOut,
               data.nights,
@@ -2416,6 +2417,7 @@ export default async function handler(req, res) {
       const statusToSave = data.paymentStatus || 'ОПЛАЧЕНО';
 
       if (sheets && spreadsheetId) {
+        const safeConfirmedContact = (effectiveContact && effectiveContact.toString().startsWith('+')) ? `'${effectiveContact}` : (effectiveContact || '');
         await sheets.spreadsheets.values.append({
           spreadsheetId,
           range: resolveRange(sheetMap, 'BOOKINGS', 'A:K'),
@@ -2425,7 +2427,7 @@ export default async function handler(req, res) {
             values: [[
               timestamp,
               guestName,
-              effectiveContact,
+              safeConfirmedContact,
               data.checkIn,
               data.checkOut,
               data.nights,

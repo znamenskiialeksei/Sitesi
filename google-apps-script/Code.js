@@ -164,15 +164,30 @@ function onOpen() {
   aiMainMenu.addToUi();
 
   // ЧЕТВЕРТОЕ ГЛАВНОЕ МЕНЮ: 💼 4. Секретарь • Юрист • Бухгалтер
-  var assistantMenu = ui.createMenu("💼 4. Секретарь • Юрист • Бухгалтер")
-    .addItem("🧾 1. Калькулятор турецкой фактуры: e-Arşiv Fatura GİB", "openInvoiceCalculatorModal")
-    .addItem("⚖️ 2. Юрист: Экспресс-проверка бронирования по закону № 7464", "openLegalCheckModal")
-    .addItem("📋 3. Секретарь: Поставить новую задачу или поручение", "openNewTaskModal")
-    .addItem("📁 4. Архивариус Google Drive: Создать папку в архиве", "openCreateDriveFolderModal")
-    .addSeparator()
-    .addItem("📑 5. Открыть лист Задач и Поручений", "jumpToSheet_TASKS");
-  assistantMenu.addToUi();
-}
+  var assistantMenu = ui.createMenu("💼 4. Секретарь • Юрист • Бухгалтер");
+
+  var bAccSubMenu = ui.createMenu("🧾 1. Бухгалтерия и Налоги Турции: e-Arşiv Fatura GİB")
+    .addItem("🧾 Калькулятор турецкой фактуры: e-Arşiv Fatura", "openInvoiceCalculatorModal")
+    .addItem("💰 Проверить поступления на банковский счет IBAN", "auditPendingBankPaymentsModal");
+
+  var bLawSubMenu = ui.createMenu("⚖️ 2. Юрист: Закон № 7464 и Полиция KBS")
+    .addItem("⚖️ Экспресс-проверка бронирования по закону № 7464", "openLegalCheckModal")
+    .addItem("👮 Чек-лист регистрации паспортов в полиции: KBS", "openKbsChecklistModal");
+
+  var bSecSubMenu = ui.createMenu("📋 3. Секретарь: Поручения и Чек-листы персоналу")
+    .addItem("📋 Поставить новую задачу или поручение", "openNewTaskModal")
+    .addItem("📑 Открыть лист Задач и Поручений", "jumpToSheet_TASKS");
+
+  var bArcSubMenu = ui.createMenu("📁 4. Архивариус: Папки и Документы Google Drive")
+    .addItem("📁 Создать новую папку гостя или сезона в Google Drive", "openCreateDriveFolderModal")
+    .addItem("🗄️ Открыть корень архива виллы на Google Drive", "openDriveRootLink");
+
+  assistantMenu
+    .addSubMenu(bAccSubMenu)
+    .addSubMenu(bLawSubMenu)
+    .addSubMenu(bSecSubMenu)
+    .addSubMenu(bArcSubMenu)
+    .addToUi();
 }
 
 // ==============================================================================
@@ -1030,10 +1045,11 @@ function initSingleSheetByKey_(sheet, key) {
   } else if (key === 'BOOKINGS') {
     var bHeaders = ['Дата заявки', 'Имя клиента', 'Контакт [Tel/TG]', 'Старт', 'Завершение', 'Ночей', 'Взрослых', 'Детей', 'Всего гостей', 'Итоговая стоимость', 'Статус оплаты'];
     styleSheetHeader_(sheet, bHeaders, 1);
+    sheet.getRange("C:C").setNumberFormat("@");
     var bRows = [
-      ['2026-06-01', 'Иван Смирнов', '+7 999 111-22-33', '01.06.2026', '08.06.2026', '7', '4', '2', '6', '$1540', 'Оплачено [Airbnb]'],
-      ['2026-07-10', 'Markus Webber', '+49 170 1234567', '10.07.2026', '20.07.2026', '10', '6', '0', '6', '$2800', 'Предоплата 50% [Direct]'],
-      ['2026-08-01', 'Ahmet Yılmaz', '+90 532 9876543', '01.08.2026', '08.08.2026', '7', '8', '2', '10', '$2240', 'Подтверждено [Direct]']
+      ['2026-06-01', 'Иван Смирнов', "'+7 999 111-22-33", '01.06.2026', '08.06.2026', '7', '4', '2', '6', '$1540', 'Оплачено [Airbnb]'],
+      ['2026-07-10', 'Markus Webber', "'+49 170 1234567", '10.07.2026', '20.07.2026', '10', '6', '0', '6', '$2800', 'Предоплата 50% [Direct]'],
+      ['2026-08-01', 'Ahmet Yılmaz', "'+90 532 9876543", '01.08.2026', '08.08.2026', '7', '8', '2', '10', '$2240', 'Подтверждено [Direct]']
     ];
     sheet.getRange(2, 1, bRows.length, bHeaders.length).setValues(bRows);
   } else if (key === 'CALENDAR') {
@@ -2367,4 +2383,61 @@ function openCreateDriveFolderModal() {
   } catch (err) {
     ui.alert('Google Drive', 'Результат: ' + err.message + '\nКорневой ID: ' + rootId, ui.ButtonSet.OK);
   }
+}
+
+/**
+ * 💰 Проверить поступления на банковский счет IBAN
+ */
+function auditPendingBankPaymentsModal() {
+  var ui = SpreadsheetApp.getUi();
+  var sheet = findConfigSheet_('BOOKINGS');
+  if (!sheet) {
+    ui.alert('Банковский аудит', 'Лист Заявки и Бронирования не найден.', ui.ButtonSet.OK);
+    return;
+  }
+  var data = sheet.getDataRange().getValues();
+  var pending = [];
+  for (var i = 1; i < data.length; i++) {
+    var status = (data[i][10] || '').toString();
+    if (status.indexOf('IBAN') !== -1 || status.indexOf('Банк') !== -1 || status.indexOf('Предоплата') !== -1 || status.indexOf('ОЖИДАЕТ') !== -1) {
+      pending.push('Строка ' + (i + 1) + ': ' + data[i][1] + ' : ' + data[i][9] + ' : ' + status);
+    }
+  }
+  var msg = pending.length > 0 
+    ? 'Бронирования с ожиданием банковской оплаты [' + pending.length + ']:\n\n' + pending.join('\n')
+    : 'Все бронирования оплачены или подтверждены онлайн. Заявок с ожиданием IBAN перевода не найдено.';
+  ui.alert('💰 Банковский аудит IBAN', msg, ui.ButtonSet.OK);
+}
+
+/**
+ * 👮 Чек-лист регистрации паспортов в полиции: KBS
+ */
+function openKbsChecklistModal() {
+  var ui = SpreadsheetApp.getUi();
+  var checklist = [
+    'Чек-лист регистрации гостей в полиции KBS [Закон № 7464]:',
+    '1. Собрать паспорта всех проживающих [включая детей] до заезда.',
+    '2. Проверить ФИО латиницей, номер паспорта, дату рождения, гражданство.',
+    '3. Выполнить вход на портал KBS Жандармерии: https://kbs.jandarma.gov.tr',
+    '4. Внести запись о заселении с указанием даты и номера виллы до 16:00.',
+    '5. При выезде гостя отметить факт выселения в системе KBS в течение 24 часов.',
+    'Внимание: Нарушение сроков влечет штраф в соответствии с VUK 213.'
+  ].join('\n');
+  ui.alert('👮 Полиция KBS: Чек-лист', checklist, ui.ButtonSet.OK);
+}
+
+/**
+ * 🗄️ Открыть корень архива виллы на Google Drive
+ */
+function openDriveRootLink() {
+  var ui = SpreadsheetApp.getUi();
+  var rootUrl = 'https://drive.google.com/drive/folders/11xBSWA02NypliPFbziRSMfC9aAPclYF_';
+  var html = HtmlService.createHtmlOutput(
+    '<div style="font-family:sans-serif;padding:16px;">' +
+    '<h3>📁 Корень архива Villa Turaman на Google Drive</h3>' +
+    '<p>Папка: <code>VillaTuramanWebSitePlatform_DB</code></p>' +
+    '<p><a href="' + rootUrl + '" target="_blank" style="display:inline-block;padding:10px 16px;background:#2563eb;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;">Открыть Google Drive в новой вкладке ↗</a></p>' +
+    '</div>'
+  ).setWidth(450).setHeight(200);
+  ui.showModalDialog(html, 'Архивариус Google Drive');
 }
