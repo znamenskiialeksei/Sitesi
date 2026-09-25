@@ -44,14 +44,20 @@ export const generateVoucher = async (bookingData) => {
 
       doc.fontSize(10).font('Helvetica').fillColor('#334155');
       doc.text(`Guest Full Name: ${bookingData.name || 'Valued Guest'}`);
-      doc.text(`Contact: ${bookingData.contact || 'Registered Contact'}`);
+      const safeContact = (!bookingData.contact || String(bookingData.contact).includes('#ERROR!'))
+        ? 'Registered Contact'
+        : bookingData.contact;
+      doc.text(`Contact: ${safeContact}`);
       if (bookingData.checkIn && bookingData.checkOut) {
         doc.text(`Check-in Date: ${bookingData.checkIn} - from 16:00`);
         doc.text(`Check-out Date: ${bookingData.checkOut} - until 10:00`);
         doc.text(`Total Nights: ${bookingData.nights || 1}`);
       }
       doc.text(`Total Guests: ${bookingData.total_guests || bookingData.guests || 2} - Adults: ${bookingData.adults || 2}, Children: ${bookingData.children || 0}`);
-      doc.text(`Total Paid Amount: ${bookingData.amount || bookingData.price || 0} ${bookingData.currency || 'RUB'}`);
+      const rawPrice = String(bookingData.amount || bookingData.price || 0);
+      const hasCurrency = /[₽$€]|RUB|USD|EUR|TRY/i.test(rawPrice);
+      const displayPrice = hasCurrency ? rawPrice : `${rawPrice} ${bookingData.currency || 'RUB'}`;
+      doc.text(`Total Paid Amount: ${displayPrice}`);
       doc.text(`Payment Status: CONFIRMED & PAID IN FULL`);
       doc.moveDown(1.5);
 

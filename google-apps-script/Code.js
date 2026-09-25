@@ -42,78 +42,75 @@ function onOpen() {
   var ui = SpreadsheetApp.getUi();
 
   // 1. Блок 1: Смарт-менеджер и Навигатор листов
-  var jumpMenu = ui.createMenu("🚀 2. Быстрый переход к листу")
-    .addItem("🏠 Главная витрина [ID: 101]", "jumpToSheet_HOME")
-    .addItem("📸 Фото и Видео Галерея [ID: 102]", "jumpToSheet_GALLERY")
-    .addItem("🛎️ Дополнительные услуги [ID: 104]", "jumpToSheet_SERVICES")
-    .addItem("🗺️ Видео-путеводители [ID: 105]", "jumpToSheet_GUIDES")
-    .addItem("⚖️ Юридические документы [ID: 106]", "jumpToSheet_LEGAL")
+  var jumpMenu = ui.createMenu("🚀 Быстрый переход к листу")
+    .addItem("🏠 Главная витрина", "jumpToSheet_HOME")
+    .addItem("📸 Фото и видео галерея", "jumpToSheet_GALLERY")
+    .addItem("🛎️ Дополнительные услуги", "jumpToSheet_SERVICES")
+    .addItem("🗺️ Видео-путеводители", "jumpToSheet_GUIDES")
+    .addItem("⚖️ Юридические документы", "jumpToSheet_LEGAL")
     .addSeparator()
-    .addItem("📋 Заявки и Бронирования [ID: 201]", "jumpToSheet_BOOKINGS")
-    .addItem("📅 Календарь и Тарифы [ID: 202]", "jumpToSheet_CALENDAR")
-    .addItem("👤 Гостевые аккаунты [ID: 203]", "jumpToSheet_ACCOUNTS")
-    .addItem("💳 Заказы услуг и гидов [ID: 205]", "jumpToSheet_ORDERS")
-    .addItem("🎟️ Доступы к путеводителям [ID: 206]", "jumpToSheet_ACCESS")
+    .addItem("📋 Заявки и бронирования", "jumpToSheet_BOOKINGS")
+    .addItem("📅 Календарь и тарифы", "jumpToSheet_CALENDAR")
+    .addItem("👤 База гостей и аккаунты", "jumpToSheet_ACCOUNTS")
+    .addItem("💳 Заказы услуг и путеводителей", "jumpToSheet_ORDERS")
+    .addItem("🎟️ Доступы к путеводителям", "jumpToSheet_ACCESS")
     .addSeparator()
-    .addItem("💬 Шаблоны сообщений [ID: 207]", "jumpToSheet_TEMPLATES")
-    .addItem("⚙️ Системные настройки ИИ [ID: 209]", "jumpToSheet_SETTINGS")
-    .addItem("📋 Задачи и Поручения [ID: 210]", "jumpToSheet_TASKS")
-    .addItem("🧠 Граф Знаний и Безопасность [ID: 211]", "jumpToSheet_KNOWLEDGE_GRAPH");
+    .addItem("💬 Шаблоны сообщений", "jumpToSheet_TEMPLATES")
+    .addItem("⚙️ Системные настройки ИИ", "jumpToSheet_SETTINGS")
+    .addItem("📋 Задачи и поручения", "jumpToSheet_TASKS")
+    .addItem("🧠 Граф знаний и безопасность", "jumpToSheet_KNOWLEDGE_GRAPH");
 
-  var focusMenu = ui.createMenu("🎯 3. Режимы фокуса по кластерам")
-    .addItem("🏠 1. Публичная витрина [5 листов]", "applyPresetShowcase")
-    .addItem("💼 2. Центр управления и CRM [4 листа]", "applyPresetOperations")
-    .addItem("🧩 3. Настройки, Задачи и Граф Знаний [5 листов]", "applyPresetSettings");
+  var focusMenu = ui.createMenu("👁️ Режимы фокуса: скрыть лишнее")
+    .addItem("🏠 Витрина для гостей: Витрина, Фото, Услуги, Гиды, Юр. документы", "applyPresetShowcase")
+    .addItem("💼 Бронирования и гости: Заявки, Календарь, Аккаунты, Заказы", "applyPresetOperations")
+    .addItem("⚙️ Настройки и бэк-офис: Шаблоны, Настройки ИИ, Задачи, Граф", "applyPresetSettings");
 
-  var sheetManagerMenu = ui.createMenu("👁️ 1. Менеджер и Навигатор листов")
-    .addItem("🌟 1. Раскрыть ВСЕ листы", "applyPresetAllOpen")
+  var sheetManagerMenu = ui.createMenu("🧭 1. Листы таблицы: быстрый переход и режимы фокуса")
+    .addItem("🌟 Показать все вкладки", "applyPresetAllOpen")
     .addSeparator()
-    .addSubMenu(jumpMenu)
     .addSubMenu(focusMenu)
+    .addSubMenu(jumpMenu)
     .addSeparator()
-    .addItem("📑 4. Каноническая сортировка вкладок", "sortSheetsCanonically")
-    .addItem("🏷️ 5. Пакетное авто-переименование в русский стандарт", "renameSheetsToRussianStandard")
-    .addItem("📊 6. Паспорт листов и проверка структуры", "showSheetsPassportModal")
+    .addItem("🏷️ Переименовать вкладки в русский стандарт", "renameSheetsToRussianStandard")
+    .addItem("🔢 Расставить вкладки по порядку", "sortSheetsCanonically")
+    .addItem("📊 Паспорт листов и проверка структуры", "showSheetsPassportModal")
     .addSeparator()
     .addItem("ℹ️ Справка по менеджеру листов", "showSheetManagerHelp");
 
   // 2. Блок 2: Синхронизация с платформой Next.js
-  var syncMenu = ui.createMenu("🌐 2. Синхронизация с сайтом")
-    .addItem("⚡ Мгновенная ревалидация страниц: ISR Webhook", "triggerRevalidateWebhook")
-    .addItem("🔄 Полный пересбор сайта: Vercel Deploy Hook", "triggerVercelDeployHook")
-    .addItem("⏱️ Проверить статус доступности сайта", "checkWebsiteHealth");
+  var syncMenu = ui.createMenu("🔄 2. Публикация и связь с сайтом")
+    .addItem("⚡ Опубликовать изменения на сайте прямо сейчас", "triggerRevalidateWebhook")
+    .addItem("🚀 Полный перезапуск и пересборка сайта Vercel", "triggerVercelDeployHook")
+    .addItem("⏱️ Проверить доступность сайта: тест связи", "checkWebsiteHealth");
 
   // 3. Блок 3: Управление бронированиями и календарем
-  var calendarMenu = ui.createMenu("📅 3. Управление бронированиями")
-    .addItem("🔍 Проверить накладки дат и статус HOLD 24ч", "auditCalendarHolds")
-    .addItem("📥 Экспортировать ссылку iCal .ics для каналов", "showIcalExportUrl")
-    .addItem("🧹 Очистить истекшие блокировки HOLD", "clearExpiredHolds");
+  var calendarMenu = ui.createMenu("📅 3. Календарь, Брони и Цены")
+    .addItem("🔍 Проверить даты на накладки и статус оплаты", "auditCalendarHolds")
+    .addItem("🧹 Снять брони с истекшим сроком оплаты", "clearExpiredHolds")
+    .addItem("📥 Получить ссылку календаря iCal для каналов", "showIcalExportUrl");
 
   // 4. Блок 4: Каталог услуг и путеводителей
-  var catalogMenu = ui.createMenu("🛍️ 4. Каталог и Путеводители")
-    .addItem("🔄 1. Обновить автопереводы услуг: RU ➔ EN / TR", "refreshCatalogTranslations")
-    .addItem("💱 2. Пересчитать все валюты по заполненным ценам", "recalculateAllCatalogCurrencies")
-    .addItem("🖼️ 3. Проверить прямые превью ссылок Google Drive", "auditDriveMediaLinks");
+  var catalogMenu = ui.createMenu("🛎️ 4. Услуги, Цены и Фотографии")
+    .addItem("💱 Автоматически пересчитать цены во всех валютах по курсу ЦБ", "recalculateAllCatalogCurrencies")
+    .addItem("🌍 Перевести каталог услуг на английский и турецкий языки", "refreshCatalogTranslations")
+    .addItem("🖼️ Проверить медиафайлы Google Drive", "auditDriveMediaLinks");
 
   // 5. Блок 5: Гостевой сервис и CRM-мессенджер
-  var crmMenu = ui.createMenu("💬 5. CRM & Сообщения")
-    .addItem("📨 Проверить новые чаты с гостями", "checkGuestChatsStatus")
-    .addItem("📝 Проверить корректность шаблонов ответов", "auditTemplatesFormat");
+  var crmMenu = ui.createMenu("💬 5. Сообщения и Чат с гостями")
+    .addItem("📨 Проверить новые сообщения от гостей", "checkGuestChatsStatus")
+    .addItem("📝 Проверить шаблоны сообщений", "auditTemplatesFormat");
 
   // 6. Блок 6: Системный аудит, формулы и Свойства скрипта
-  var auditMenu = ui.createMenu("⚙️ 6. Системный аудит & Свойства")
-    .addItem("🔑 1. Настроить Свойства скрипта: Script Properties", "setupScriptPropertiesInteractive")
-    .addItem("🌐 2. Проверить статус ключей на Vercel: https://vercel.com/", "checkVercelEnvStatusInteractive")
-    .addItem("📋 3. Показать текущие Свойства скрипта", "viewCurrentScriptProperties")
-    .addItem("⚡ 4. Установить типовые свойства по умолчанию", "setupDefaultScriptProperties")
+  var auditMenu = ui.createMenu("⚙️ 6. Сервисное обслуживание и Безопасность")
+    .addItem("🔑 Настройка ключей и параметров: Свойства скрипта", "setupScriptPropertiesInteractive")
+    .addItem("🌐 Проверить статус переменных на Vercel", "checkVercelEnvStatusInteractive")
+    .addItem("📋 Показать текущие Свойства скрипта", "viewCurrentScriptProperties")
     .addSeparator()
-    .addItem("🧪 5. Проверить стандарт точки с запятой в формулах", "auditFormulasSemicolon")
-    .addItem("📄 6. Просмотр паспорта и ID всех листов", "showSheetsPassportModal")
-    .addItem("🛠️ 7. Восстановить все листы и наполнить эталонным контентом", "ensureAllSystemSheets")
-    .addItem("💾 8. Зафиксировать текущие таблицы как эталон SSOT на сайте", "saveMasterSeedInteractive")
+    .addItem("🧪 Проверить формулы таблицы на ошибки точки с запятой", "auditFormulasSemicolon")
+    .addItem("🛠️ Восстановить структуру таблицы: при необходимости", "ensureAllSystemSheets")
+    .addItem("💾 Сохранить текущую таблицу как вечный эталон сайта", "saveMasterSeedInteractive")
     .addSeparator()
-    .addItem("📧 9. Инструкция по развертыванию Gmail Relay", "showGmailRelayDeployHelp")
-    .addItem("🧪 10. Тестовая отправка письма через Gmail Relay", "testGmailRelayInteractive");
+    .addItem("📧 Тестовая отправка письма через почту хозяина", "testGmailRelayInteractive");
 
   // Сборка первого главного меню верхнего уровня: 🏡 Villa Turaman Suite
   ui.createMenu("🏡 Villa Turaman Suite")
@@ -127,82 +124,52 @@ function onOpen() {
     .addSubMenu(auditMenu)
     .addToUi();
 
-  // ВТОРОЕ ГЛАВНОЕ МЕНЮ ВЕРХНЕГО УРОВНЯ: 🤖 Telegram Бот
-  var tgLaunchMenu = ui.createMenu("📲 1. Запуск и Меню бота")
-    .addItem("📱 Отправить Главное меню на телефон хозяина", "sendTelegramBotMenuToOwner")
-    .addItem("⌨️ Обновить клавиатуру бота: Reply Keyboard", "refreshTelegramKeyboard")
-    .addItem("📋 Зарегистрировать команды в Telegram: setMyCommands", "registerTelegramBotCommands");
-
-  var tgRequestsMenu = ui.createMenu("📋 2. Заявки и Бронирования")
-    .addItem("📥 Отправить список активных заявок в Telegram", "sendTelegramPendingRequests")
-    .addItem("🔍 Аудит накладок и 24ч HOLD в Telegram", "auditTelegramCalendarHolds");
-
-  var tgCrmMenu = ui.createMenu("💬 3. CRM и Переписка с гостями")
-    .addItem("💬 Отправить сводку последних диалогов в Telegram", "sendTelegramRecentChats")
-    .addItem("📢 Отправить сообщение гостю через Telegram", "sendTelegramDirectMessageDialog")
-    .addItem("📣 Массовая рассылка гостям через Telegram", "sendTelegramBroadcastDialog");
-
-  var tgCalendarMenu = ui.createMenu("📅 4. Календарь и Тарифы")
-    .addItem("📊 Отправить график занятости виллы на 30 дней", "sendTelegramCalendarSummary")
-    .addItem("💳 Отправить сводку актуальных тарифов", "sendTelegramRatesSummary");
-
-  var tgSyncMenu = ui.createMenu("🌐 5. Синхронизация с сайтом")
-    .addItem("⚡ Вызвать ревалидацию страниц сайта через бот", "triggerTelegramRevalidate")
-    .addItem("👑 Проверить статус доступности кабинета хозяина", "checkTelegramHostCabinetStatus");
-
-  var tgSettingsMenu = ui.createMenu("⚙️ 6. Настройки Webhook и Токена")
-    .addItem("🔗 Установить Webhook на сайт: Next.js API", "setTelegramWebhookToSite")
-    .addItem("🔍 Проверить статус Webhook: getWebhookInfo", "checkTelegramWebhookStatus")
-    .addItem("❌ Удалить Webhook: переход на Polling", "deleteTelegramWebhook")
-    .addSeparator()
-    .addItem("🌐 Проверить статус ключей на Vercel: https://vercel.com/", "checkVercelEnvStatusInteractive")
-    .addItem("🔑 Настроить TELEGRAM_BOT_TOKEN и CHAT_ID", "setupTelegramPropertiesInteractive")
-    .addItem("🧪 Тестовый пинг в Telegram", "sendTelegramTestPing");
-
-  ui.createMenu("🤖 Telegram Бот")
-    .addSubMenu(tgLaunchMenu)
-    .addSeparator()
-    .addSubMenu(tgRequestsMenu)
-    .addSubMenu(tgCrmMenu)
-    .addSubMenu(tgCalendarMenu)
-    .addSubMenu(tgSyncMenu)
-    .addSeparator()
-    .addSubMenu(tgSettingsMenu)
-    .addToUi();
+  // ВТОРОЕ ГЛАВНОЕ МЕНЮ ВЕРХНЕГО УРОВНЯ: 🤖 Telegram Бот (регистрируется через модуль TelegramBot.js)
+  try {
+    registerTelegramBotMenu();
+  } catch (tgErr) {
+    Logger.log("Регистрация меню Telegram через модуль TelegramBot.js");
+  }
 
   // ТРЕТЬЕ ГЛАВНОЕ МЕНЮ ВЕРХНЕГО УРОВНЯ: 🧠 3. ИИ-Агент & Gemini
-  var aiModeSubMenu = ui.createMenu("🎯 1. Режим работы ИИ")
-    .addItem("🚀 Автопилот: самостоятельные ответы гостям", "setAiModeAutopilot")
-    .addItem("💡 Суфлер: подготовка черновиков для хозяина", "setAiModeCopilot")
-    .addItem("⏸️ Выключен: ручной режим владельца", "setAiModeOff")
+  var aiModeSubMenu = ui.createMenu("🎯 1. Режим работы ИИ: Кто отвечает гостю?")
+    .addItem("🚀 Режим Автопилот: самостоятельные ответы гостям 24/7", "setAiModeAutopilot")
+    .addItem("💡 Режим Суфлер: подготовка черновиков для владельца", "setAiModeCopilot")
+    .addItem("⏸️ Режим Выключен: ручной режим владельца", "setAiModeOff")
     .addSeparator()
-    .addItem("ℹ️ Справка по текущему режиму ИИ", "showAiFullStatusModal");
+    .addItem("ℹ️ Показать текущий режим и статус ИИ", "showAiFullStatusModal");
 
   var aiRolesSubMenu = ui.createMenu("🎭 2. Роли ИИ и Специализации")
-    .addItem("👑 Консьерж-Мастер: Алексей Знаменский", "showConciergePromptInfo")
-    .addItem("⚖️ Юрист-Консультант: KBS, KVKK, Налоги", "showLawyerPromptInfo")
-    .addItem("💰 Финансист-Бухгалтер: e-Arşiv, Оплаты", "showFinancePromptInfo");
+    .addItem("👑 Персональный консьерж виллы", "showConciergePromptInfo")
+    .addItem("⚖️ Юрист по законодательству Турции", "showLawyerPromptInfo")
+    .addItem("💰 Бухгалтер по налогам и платежам", "showFinancePromptInfo");
+
+  var aiRulesSubMenu = ui.createMenu("🛡️ 3. Правила безопасности и лимитов ИИ")
+    .addItem("💰 Минимальная цена за ночь: настройка порога скидок из таблицы", "setupAiMinPriceInteractive")
+    .addItem("🔒 Скрытие кодов доступа и паролей до подтверждения оплаты", "showSecurityCodeRuleInfo")
+    .addItem("🚕 Контакты официального трансфера виллы из таблицы", "showTransferRuleInfo");
 
   var aiMainMenu = ui.createMenu("🧠 3. ИИ-Агент & Gemini")
     .addSubMenu(aiModeSubMenu)
     .addSubMenu(aiRolesSubMenu)
-    .addItem("💰 3. Минимальная цена за ночь: лимит $180", "setupAiMinPriceInteractive")
-    .addItem("🤖 4. Выбор модели Gemini: gemini-3.6-flash", "setupAiModelInteractive")
-    .addItem("📚 5. Синхронизировать Базу Знаний в память сайта", "syncAiKnowledgeToVercel")
+    .addSubMenu(aiRulesSubMenu)
     .addSeparator()
-    .addItem("🛠️ 6. Обновить лист Настроек и Матрицу Доступа", "initAiKnowledgeBaseSheets")
-    .addItem("🌐 7. Проверить статус Gemini API на Vercel", "checkGeminiVercelStatusInteractive")
+    .addItem("📚 4. Передать свежие знания из таблицы в память сайта", "syncAiKnowledgeToVercel")
+    .addItem("🤖 5. Выбрать рабочую модель нейросети", "setupAiModelInteractive")
+    .addItem("🌐 6. Проверить подключение нейросети к сайту на Vercel", "checkGeminiVercelStatusInteractive")
+    .addItem("🛠️ 7. Обновить структуру системных таблиц базы знаний", "initAiKnowledgeBaseSheets");
   aiMainMenu.addToUi();
 
   // ЧЕТВЕРТОЕ ГЛАВНОЕ МЕНЮ: 💼 4. Секретарь • Юрист • Бухгалтер
   var assistantMenu = ui.createMenu("💼 4. Секретарь • Юрист • Бухгалтер")
-    .addItem("🧾 1. Калькулятор фактур e-Arşiv Fatura [GİB]", "openInvoiceCalculatorModal")
-    .addItem("⚖️ 2. Юрист: Экспресс-проверка бронирования", "openLegalCheckModal")
-    .addItem("📋 3. Секретарь: Добавить задачу или поручение", "openNewTaskModal")
-    .addItem("📁 4. Google Drive: Создать папку в архиве", "openCreateDriveFolderModal")
+    .addItem("🧾 1. Калькулятор турецкой фактуры: e-Arşiv Fatura GİB", "openInvoiceCalculatorModal")
+    .addItem("⚖️ 2. Юрист: Экспресс-проверка бронирования по закону № 7464", "openLegalCheckModal")
+    .addItem("📋 3. Секретарь: Поставить новую задачу или поручение", "openNewTaskModal")
+    .addItem("📁 4. Архивариус Google Drive: Создать папку в архиве", "openCreateDriveFolderModal")
     .addSeparator()
     .addItem("📑 5. Открыть лист Задач и Поручений", "jumpToSheet_TASKS");
   assistantMenu.addToUi();
+}
 }
 
 // ==============================================================================
@@ -1880,13 +1847,13 @@ function showAiFullStatusModal() {
   var props = PropertiesService.getScriptProperties();
   var mode = props.getProperty('AI_MODE') || 'autopilot';
   var model = props.getProperty('GEMINI_MODEL') || 'gemini-3.6-flash';
-  var minPrice = props.getProperty('MIN_NIGHT_PRICE') || '180';
+  var minPrice = props.getProperty('MIN_NIGHT_PRICE') || 'установлен в таблице';
   var siteUrl = props.getProperty('SITE_URL') || 'https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app';
 
   var info = '🧠 ЦЕНТР УПРАВЛЕНИЯ ИИ-АГЕНТАМИ VILLA TURAMAN:\n\n' +
     '• Текущий режим работы: ' + (mode === 'autopilot' ? '🚀 Автопилот' : (mode === 'copilot' ? '💡 Суфлер' : '⏸️ Выключен')) + '\n' +
     '• Рабочая языковая модель: ' + model + '\n' +
-    '• Минимальный тариф за сутки: $' + minPrice + ' USD\n' +
+    '• Минимальный порог цен за сутки: ' + minPrice + '\n' +
     '• Сервер платформы: ' + siteUrl + '\n\n' +
     'Для изменения ролей, промптов и матриц доступа перейдите на вкладку:\n"⚙️ Системные настройки ИИ Агентов".';
 
@@ -1895,51 +1862,79 @@ function showAiFullStatusModal() {
 
 function showConciergePromptInfo() {
   SpreadsheetApp.getUi().alert(
-    'Роль: Консьерж-Мастер [Алексей Знаменский]',
-    'Миссия: гостеприимный и авторитетный суперхозяин Villa Turaman в Дальяне.\n\n' +
-    'Обязанности: презентация виллы [10 гостей, 4 спальни, бассейн 36м²], координация заездов и выездов, предложение платных сервисов [трансферы, шеф-повар, яхты] и видео-гидов.\n\n' +
-    'Отредактировать текст можно в листе "⚙️ Системные настройки ИИ Агентов", строка "Консьерж-Мастер".',
+    'Роль: Персональный консьерж виллы',
+    'Миссия: гостеприимный прием гостей и презентация Villa Turaman в Дальяне.\n\n' +
+    'Обязанности: презентация виллы, координация заездов и выездов, рекомендации лучших локаций Дальяна, предложение платных сервисов и видео-путеводителей.\n\n' +
+    'Все параметры виллы, комнат и сервисов считываются динамически из Google Таблицы.\n' +
+    'Отредактировать текст роли можно на листе "⚙️ Системные настройки ИИ Агентов".',
     SpreadsheetApp.getUi().ButtonSet.OK
   );
 }
 
 function showLawyerPromptInfo() {
   SpreadsheetApp.getUi().alert(
-    'Роль: Юрист-Консультант [KBS / KVKK / Налоги]',
+    'Роль: Юрист по законодательству Турции',
     'Миссия: контроль правового соответствия законам Турции о краткосрочной аренде.\n\n' +
-    'Обязанности: разъяснение обязательной регистрации гостей в KBS жандармерии, защита данных по закону KVKK, соблюдение налоговых стандартов VKN 9991120181 и VUK 213 Madde 230 e-Arşiv Fatura. Формула переговоров: 30% эмпатии / 70% юридического контроля.\n\n' +
-    'Отредактировать текст можно на листе "⚙️ Системные настройки ИИ Агентов".',
+    'Обязанности: разъяснение правил регистрации гостей в системе KBS жандармерии по Закону № 7464, защита персональных данных по закону KVKK, соблюдение налоговых стандартов VUK 213 Madde 230 e-Arşiv Fatura.\n\n' +
+    'Отредактировать текст роли можно на листе "⚙️ Системные настройки ИИ Агентов".',
     SpreadsheetApp.getUi().ButtonSet.OK
   );
 }
 
 function showFinancePromptInfo() {
   SpreadsheetApp.getUi().alert(
-    'Роль: Финансист-Бухгалтер [e-Arşiv / Оплаты]',
+    'Роль: Бухгалтер по налогам и платежам',
     'Миссия: финансовый менеджмент и контроль доходности виллы.\n\n' +
-    'Обязанности: сверка бронирований, расчет скидки 10% за невозвратный тариф, мультивалютный учет EUR/RUB/TRY и жесткий контроль минимального лимита $180/ночь.\n\n' +
-    'Отредактировать текст можно на листе "⚙️ Системные настройки ИИ Агентов".',
+    'Обязанности: сверка бронирований, расчет скидок по тарифам, мультивалютный учет EUR, RUB, TRY и строгий контроль минимального порога цены за ночь из таблицы.\n\n' +
+    'Отредактировать текст роли можно на листе "⚙️ Системные настройки ИИ Агентов".',
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
+}
+
+function showSecurityCodeRuleInfo() {
+  SpreadsheetApp.getUi().alert(
+    'Правило безопасности: Коды доступа и пароли',
+    'Статус правила: АКТИВНО\n\n' +
+    '1. Пароли Wi-Fi и коды замка виллы берутся динамически из Google Таблицы.\n' +
+    '2. ИИ-агенты строго скрывают все коды доступа до момента перехода бронирования в статус ОПЛАЧЕНО.\n' +
+    '3. Выдача кодов гостям осуществляется автоматически только после 100% подтверждения оплаты.',
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
+}
+
+function showTransferRuleInfo() {
+  SpreadsheetApp.getUi().alert(
+    'Правило трансфера: Прямой контакт водителя',
+    'Статус правила: АКТИВНО\n\n' +
+    '1. Реквизиты трансфера загружаются динамически из каталога услуг Google Таблицы.\n' +
+    '2. При любом вопросе гостя о дороге, встрече в аэропорту Даламан или поездках ИИ выдает актуальные данные водителя прямо из таблицы.\n' +
+    '3. Вы можете в любой момент изменить имя водителя, марку авто и телефон на листе услуг без изменения программного кода.',
     SpreadsheetApp.getUi().ButtonSet.OK
   );
 }
 
 function setupAiMinPriceInteractive() {
   var ui = SpreadsheetApp.getUi();
-  var currentPrice = '180';
+  var props = PropertiesService.getScriptProperties();
+  var currentPrice = props.getProperty('MIN_NIGHT_PRICE') || 'из таблицы настроек';
 
-  var res = ui.prompt('Защита цены: лимит за ночь', 'Укажите минимальную цену аренды в USD [не ниже 180 USD]:\nТекущее значение: ' + currentPrice, ui.ButtonSet.OK_CANCEL);
+  var res = ui.prompt(
+    'Минимальный порог цен за ночь',
+    'Укажите нижний предел стоимости суток проживания в базовой валюте:\nТекущее значение: ' + currentPrice,
+    ui.ButtonSet.OK_CANCEL
+  );
   if (res.getSelectedButton() !== ui.Button.OK) return;
-  var val = parseInt(res.getResponseText().replace(/\D/g, ''), 10) || 180;
-  if (val < 180) {
-    ui.alert('Внимание', 'По правилам проекта минимальная цена не может быть ниже 180 USD. Установлено: 180 USD.', ui.ButtonSet.OK);
-    val = 180;
+  var val = parseInt(res.getResponseText().replace(/\D/g, ''), 10);
+  if (!val || val <= 0) {
+    ui.alert('Внимание', 'Необходимо указать корректную положительную сумму.', ui.ButtonSet.OK);
+    return;
   }
 
   updateAiSettingInSheet_('min_night_price', String(val));
-  PropertiesService.getScriptProperties().setProperty('MIN_NIGHT_PRICE', String(val));
+  props.setProperty('MIN_NIGHT_PRICE', String(val));
   try { syncAiKnowledgeToVercel(); } catch (e) { }
 
-  ui.alert('✅ Лимит обновлен!', 'Минимальная стоимость зафиксирована: ' + val + ' USD/ночь.', ui.ButtonSet.OK);
+  ui.alert('Порог зафиксирован', 'Минимальная стоимость успешно обновлена: ' + val + ' в сутки.\nИИ никогда не предложит скидку ниже этого значения.', ui.ButtonSet.OK);
 }
 
 function setupAiModelInteractive() {

@@ -460,7 +460,8 @@ export const translations = {
     phoneVerifiedBadge: "Телефон подтвержден",
     verifyPhonePrompt: "Подтвердить номер телефона",
     verifyEmailPrompt: "Email не подтвержден",
-    verifyRequired: "Код на email"
+    verifyRequired: "Код на email",
+    openChatBtn: "Перейти в чат"
   },
 
   en: {
@@ -907,7 +908,8 @@ export const translations = {
     phoneVerifiedBadge: "Phone Verified",
     verifyPhonePrompt: "Verify Phone Number",
     verifyEmailPrompt: "Email not verified",
-    verifyRequired: "Code to email"
+    verifyRequired: "Code to email",
+    openChatBtn: "Open Chat"
   },
 
   tr: {
@@ -1354,7 +1356,8 @@ export const translations = {
     phoneVerifiedBadge: "Telefon Doğrulandı",
     verifyPhonePrompt: "Telefon Numarasını Doğrula",
     verifyEmailPrompt: "E-posta doğrulanmadı",
-    verifyRequired: "E-postaya kod"
+    verifyRequired: "E-postaya kod",
+    openChatBtn: "Sohbete Git"
   }
 };
 

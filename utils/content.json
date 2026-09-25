@@ -292,7 +292,7 @@
       "desc": "Модальное окно: Раздел 1 Заголовок",
       "ru": "1. Концепция объекта, геолокация и расширенные географические ориентиры",
       "en": "1. Object concept, geolocation and extended geographic landmarks",
-      "tr": "1. Nesne kavramı, coğrafi konum belirleme ve genişletilmiş coğrafi işaretler",
+      "tr": "1. Nesne kavramı, coğrafi konum ve genişletilmiş coğrafi işaretler",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -346,8 +346,8 @@
       "key": "about_sec_3_text",
       "desc": "Модальное окно: Раздел 3 Текст",
       "ru": "Приватный бассейн с соленой водой: чаша 4×9 метров [площадь 36 кв. м], постоянная глубина 150 см. Без запаха хлора. Доступен с 1 мая по 1 ноября. Чистка в день заселения и каждые 7 дней. Подсветка бассейна: 20:00 - 01:00.\nУличное приватное джакузи: на 4 персоны, автоматический цикл [15 минут работы каждые 45 минут в период 10:00 - 17:00]. Подсветка джакузи: 20:00 - 01:00. Сезон: 1 мая - 1 ноября.\nОсвещение территории: автоматическое [20:00 - 01:00 и 04:00 - 06:00].\nПарковка: бесплатная закрытая частная парковка на территории на 2 авто.\nОткрытые зоны отдыха: огороженный сад, барбекю [BBQ], крыльцо с кофейными столиками, обеденный стол на 8 мест, шезлонги и летний душ.",
-      "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor recreation areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
-      "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava dinlenme alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır.",
+      "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor seating areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
+      "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava oturma alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -390,8 +390,8 @@
       "key": "about_sec_5_text",
       "desc": "Модальное окно: Раздел 5 Текст",
       "ru": "Владелец: Алексей Знаменский [Aleksei Znamenskii]. Проживает в Мармарисе, яхтсмен на пенсии. Жизненное кредо: «Хочешь сделать хорошо - сделай сам». Мечта: отправиться в Португалию и увидеть океан. Хобби: велоспорт, парусный спорт, природа. Штампы путешествий: Дубай [3 поездки], Абу-Даби [март 2026 г.]. Языки: русский, английский, турецкий. Налоговые реквизиты: Ortaca Vergi Dairesi, VKN: 9991120181.",
-      "en": "Owner: Aleksei Znamenskii. Lives in Marmaris, retired yachtsman. Life motto: \"If you want something done right, do it yourself.\" Dream: to go to Portugal and see the ocean. Hobbies: cycling, sailing, nature. Travel stamps: Dubai [3 trips], Abu Dhabi [March 2026]. Languages: Russian, English, Turkish. Tax details: Ortaca Vergi Dairesi, VKN: 9991120181.",
-      "tr": "Sahibi: Aleksei Znamenskii. Marmaris'te yaşıyor, emekli yatçı. Hayat felsefesi: \"Bir şeyin doğru yapılmasını istiyorsanız, kendiniz yapın.\" Hayali: Portekiz'e gidip okyanusu görmek. Hobileri: bisiklet, yelken, doğa. Seyahat damgaları: Dubai [3 gezi], Abu Dhabi [Mart 2026]. Diller: Rusça, İngilizce, Türkçe. Vergi bilgileri: Ortaca Vergi Dairesi, VKN: 9991120181.",
+      "en": "Owner: Aleksei Znamenskii. Lives in Marmaris, retired yachtsman. Life motto: \"If you want something done right, do it yourself.\" Dream: to go to Portugal and see the ocean. Hobbies: cycling, sailing, nature. Travel highlights: Dubai [3 trips], Abu Dhabi [March 2026]. Languages: Russian, English, Turkish. Tax details: Ortaca Vergi Dairesi, VKN: 9991120181.",
+      "tr": "Sahibi: Aleksei Znamenskii. Marmaris'te yaşıyor, emekli yatçı. Hayat felsefesi: \"Bir şeyin doğru yapılmasını istiyorsanız, kendiniz yapın.\" Hayali: Portekiz'e gidip okyanusu görmek. Hobileri: bisiklet, yelken, doğa. Seyahat deneyimleri: Dubai [3 gezi], Abu Dabi [Mart 2026]. Diller: Rusça, İngilizce, Türkçe. Vergi bilgileri: Ortaca Vergi Dairesi, VKN: 9991120181.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -435,7 +435,7 @@
       "desc": "Модальное окно: Раздел 7 Текст",
       "ru": "Тур \"Всё\" - это возможность за 1 неделю неспешно отдохнуть меняя ритм, стиль и вид отдыха. Это очень круто. За это время вы однозначно почувствуете разнообразие и красоту Турции и в том числе замечательного места города Дальян (провинция Мугла). Предъявляя разные требования и пожелания к своему досугу, вы в конечном итоге, будете удовлетворены и поймете, что это было замечательно и великолепно. И скажите мне: Спасибо. Это было настоящее приключение. \nНазвание: Тур \"Всё\". Вилла, яхта, кемпер, SUP, каяк, велосипеды.....\nПлан тура:\nVilla Turaman (2 дня 2 ночи) - Яхта Vasilisa (2 дня 1ночь) - Кемпер ( 1 день 2 ночи) - Villa Turaman (2 дня 1ночь)\n\n1 и 2 день - Villa Turaman (2 дня 2 ночи): \n1 день. Трансфер из аэропорта. Заселение на виллу после 16.00. Вечерний променад по набережной и пешеходной улице города Дальян. Ужин в ресторане.\n2 день. Отдых на вилле, бассейн. Можно выехать в древний город или взять на прокат лодку с экскурсией по реке. Половить крабов и в конечном итоге по реке добраться до пляжа. День свободный, сможете принять сами решение как его провести. Мы со своей стороны обеспечим вас транспортом и сопровождением по всем местам, что мы знаем всё вам покажем. Этот день мы можем с вами спланировать при формировании брони и сделать его максимально интересным для вас.\n3 и 4 день - Яхта Vasilisa (2 дня 1ночь):\n3 день. 6:00 подъём. Сборы. Завтрак. Выезд на яхту Vasilisa в Marmaris. 9.30 заходим на яхту. Готовимся отходить. Маршрут: Marmaris Yacht Marina - Ekincik       ссылка на маршрут .\n4 и 5 день - Кемпер Adria Adora 673 PK ( 1 день 2 ночи):\n4 день. 16:00 Сборы. На моторной лодке отчаливаем с яхты Vasilisa и двигаемся 5 - 10 минут к берегу бухты Ekincik. Там на береговой линии бухты нас ждёт оборудованная площадка для отдыха на караване.\nНеобычный и абсолютно новый семейный караван Adria Adora 673 PK на берегу Средиземного моря в прекрасном тихом месте Ekincik находится в 60 минутах езды от вилы Turaman, выполненный в стиле минимализма, вмещает 3 спальные зоны:\n— в передней части: двуспальная кровать с панорамным видом;\n— в середине: раздельный санузел, обеденная зона со столом, которая разбирается в большую кровать, а напротив кухня;\n— в задней части: комната с диваном и вторым спальным ярусом, отлично подойдет в качестве детской комнаты;\nВ Кемпер Adria Adora 673 PK есть все для полного комфорта: два входа, отопление и бойлер, пол с подогревом, кондиционер, штатное место для аккумулятора, увеличенный холодильник, автоматический слив воды, аудиосистема, установлен бак для воды, вытяжка в кухне, а в комплекте идут: ковры, бак для серой воды, противооткатные упоры.  Тип санузла: Раздельный \nТак же вам будут предоставлены:\nГриль и принадлежности\nМаски для плавания\nУличная пляжная мебель и посуда.\n6 и 7 день - Villa Turaman (2 дня 2 ночи):\n6день. Возврвщаемся на виллу. Вечерний променад по набережной и пешеходной улице города Дальян. Ужин в ресторане.\n7 день. Выезд с виллы до 9.00: Завтрак. Трансфер до аэропорта.\nВсё это можно продлить по вашему желанию.\nЕсли у вас есть вопросы просто нажмите на эту кнопку и я вам перезвоню по WhatsApp.  Начиная диалог, вы соглашаетесь с Политикой конфиденциальности.",
       "en": "The \"Everything\" tour is an opportunity to unwind in one week, changing your pace, style, and type of vacation. It's absolutely fantastic. During this time, you'll definitely experience the diversity and beauty of Turkey, including the wonderful city of Dalyan (Mugla Province). Although you may have different expectations and wishes for your leisure time, you'll ultimately be satisfied and realize that it was wonderful and magnificent. And tell me: Thank you. It was a real adventure.\n\nTitle: \"Everything\" Tour. Villa, yacht, camper, SUP, kayak, bicycles...\nTour Plan:\nVilla Turaman (2 days 2 nights) - Yacht Vasilisa (2 days 1 night) - Camper (1 day 2 nights) - Villa Turaman (2 days 1 night)\n\nDays 1 and 2 - Villa Turaman (2 days 2 nights):\nDay 1. Airport transfer. Check-in at the villa after 4:00 PM. An evening stroll along the Dalyan promenade and pedestrian street. Dinner at a restaurant.\nDay 2. Relax at the villa, pool. You can visit the ancient city or rent a boat for a river excursion. Catch crabs and eventually reach the beach. The day is free, so you can decide how to spend it. We will provide transportation and escort you to all the places we know and will show you. We can plan this day together when making your reservation and make it as interesting as possible for you.\nDays 3 and 4 - Yacht Vasilisa (2 days, 1 night):\nDay 3. Wake up at 6:00 AM. Pack up. Breakfast. Departure for the yacht Vasilisa in Marmaris. Board the yacht at 9:30 AM. Prepare to depart. Route: Marmaris Yacht Marina - Ekincik (link to route).\nDays 4 and 5 - Adria Adora 673 PK Camper (1 day 2 nights):\nDay 4. 4:00 PM. We depart the Vasilisa yacht by motorboat and travel 5-10 minutes to the shore of Ekincik Bay. There, on the bay's shoreline, a well-equipped campervan site awaits.\nThis unique and brand-new family caravan, the Adria Adora 673 PK, is located on the Mediterranean coast in the beautiful, quiet location of Ekincik, a 60-minute drive from Villa Turaman. Designed in a minimalist style, it features three sleeping areas:\n— Forward: a double bed with panoramic views;\n— Middle: separate bathroom, dining area with table that converts into a large bed, and opposite is the kitchen;\n— Rear: a room with a sofa and a second bunk, perfect for a children's room;\nThe Adria Adora 673 PK camper has everything you need for complete comfort: two entrances, heating and a boiler, underfloor heating, air conditioning, a dedicated battery compartment, a larger refrigerator, automatic drain, an audio system, a water tank, a kitchen hood, and carpets, a grey water tank, and wheel chocks. Bathroom type: Separate\nYou will also be provided with:\nGrill and accessories\nSwimming masks\nOutdoor beach furniture and utensils.\nDays 6 and 7 - Villa Turaman (2 days 2 nights):\nDay 6. Return to the villa. Evening promenade along the promenade and pedestrian street of Dalyan. Dinner at the restaurant.\nDay 7. Check-out before 9:00 AM: Breakfast. Airport transfer.\nAll of this can be extended at your request.\nIf you have any questions, just click this button and I will call you back via WhatsApp. By starting a dialogue, you agree to the Privacy Policy.",
-      "tr": "\"Her Şey\" turu, bir hafta boyunca rahatlamak, hızınızı, tarzınızı ve tatil türünüzü değiştirmek için bir fırsattır. Kesinlikle harika. Bu süre zarfında, Dalyan'ın (Muğla ili) muhteşem şehri de dahil olmak üzere Türkiye'nin çeşitliliğini ve güzelliğini kesinlikle deneyimleyeceksiniz. Boş zamanınız için farklı beklentileriniz ve istekleriniz olsa da, sonunda memnun kalacak ve harika ve muhteşem olduğunu anlayacaksınız. Ve bana şunu söyleyeceksiniz: Teşekkür ederim. Gerçek bir maceraydı.\n\nBaşlık: \"Her Şey\" Turu. Villa, yat, karavan, SUP, kayak, bisikletler...\nTur Planı:\nVilla Turaman (2 gün 2 gece) - Yat Vasilisa (2 gün 1 gece) - Karavan (1 gün 2 gece) - Villa Turaman (2 gün 1 gece)\n\n1. ve 2. Günler - Villa Turaman (2 gün 2 gece):\n1. Gün. Havaalanı transferi. Saat 16:00'dan sonra villaya giriş. Dalyan sahil şeridi ve yaya caddesinde akşam yürüyüşü. Restoranda akşam yemeği.\n2. Gün. Villada, havuzda dinlenin. Antik kenti ziyaret edebilir veya nehir gezisi için tekne kiralayabilirsiniz. Yengeç yakalayabilir ve sonunda sahile ulaşabilirsiniz. Gün serbest, bu yüzden nasıl geçireceğinize siz karar verebilirsiniz. Bildiğimiz ve size göstereceğimiz tüm yerlere ulaşımınızı sağlayacağız ve size eşlik edeceğiz. Rezervasyonunuzu yaparken bu günü birlikte planlayabilir ve sizin için mümkün olduğunca ilgi çekici hale getirebiliriz.\n3. ve 4. Günler - Vasilisa Yat (2 gün, 1 gece):\n3. Gün. Sabah 6:00'da uyanın. Eşyalarınızı toplayın. Kahvaltı. Marmaris'teki Vasilisa yatına hareket. Saat 9:30'da yata binin. Harekete hazırlanın. Güzergah: Marmaris Yat Limanı - Ekincik (güzergah bağlantısı).\n4. ve 5. Günler - Adria Adora 673 PK Karavan (1 gün 2 gece):\n4. Gün. 16:00. Vasilisa yatından motorlu tekneyle ayrılıp Ekincik Koyu kıyısına 5-10 dakika yolculuk yapıyoruz. Orada, koyun kıyısında, iyi donanımlı bir karavan alanı bizi bekliyor.\nBu eşsiz ve yepyeni aile karavanı, Adria Adora 673 PK, Akdeniz kıyısında, güzel ve sakin Ekincik bölgesinde, Villa Turaman'a 60 dakikalık sürüş mesafesinde yer almaktadır. Minimalist bir tarzda tasarlanan karavan, üç uyku alanına sahiptir:\n— Ön: panoramik manzaralı çift kişilik yatak;\n\n— Orta: ayrı banyo, büyük bir yatağa dönüşen masa bulunan yemek alanı ve karşısında mutfak;\n\n— Arka: çocuk odası için mükemmel olan, kanepe ve ikinci bir ranza bulunan bir oda;\n\nAdria Adora 673 PK karavan, tam konfor için ihtiyacınız olan her şeye sahiptir: iki giriş, ısıtma ve kazan, yerden ısıtma, klima, özel akü bölmesi, daha büyük bir buzdolabı, otomatik tahliye, ses sistemi, su deposu, mutfak davlumbazı ve halılar, gri su deposu ve tekerlek takozları. Banyo tipi: Ayrı\nAyrıca şunlar da sağlanacaktır:\nIzgara ve aksesuarları\nYüzme maskeleri\nDış mekan plaj mobilyaları ve mutfak eşyaları.\n6. ve 7. Günler - Villa Turaman (2 gün 2 gece):\n6. Gün. Villaya dönüş. Dalyan'ın sahil şeridi ve yaya caddesinde akşam gezintisi. Restoranda akşam yemeği.\n\n7. Gün. Sabah 9:00'dan önce çıkış: Kahvaltı. Havaalanı transferi.\nTüm bunlar isteğiniz üzerine uzatılabilir.\nHerhangi bir sorunuz varsa, bu butona tıklayın ve sizi WhatsApp üzerinden arayacağım. Diyalog başlatarak Gizlilik Politikası'nı kabul etmiş olursunuz.",
+      "tr": "\"Her Şey\" turu, bir hafta boyunca rahatlamak, hızınızı, tarzınızı ve tatil türünüzü değiştirmek için bir fırsattır. Kesinlikle harika. Bu süre zarfında, Dalyan'ın (Muğla ili) muhteşem şehri de dahil olmak üzere Türkiye'nin çeşitliliğini ve güzelliğini kesinlikle deneyimleyeceksiniz. Boş zamanınız için farklı beklentileriniz ve istekleriniz olsa da, sonunda memnun kalacak ve harika ve muhteşem olduğunu anlayacaksınız. Ve bana şunu söyleyin: Teşekkür ederim. Gerçek bir maceraydı.\n\nBaşlık: \"Her Şey\" Turu. Villa, yat, karavan, SUP, kayak, bisikletler...\nTur Planı:\nVilla Turaman (2 gün 2 gece) - Yat Vasilisa (2 gün 1 gece) - Karavan (1 gün 2 gece) - Villa Turaman (2 gün 1 gece)\n\n1. ve 2. Günler - Villa Turaman (2 gün 2 gece):\n1. Gün. Havaalanı transferi. Saat 16:00'dan sonra villaya giriş. Dalyan sahil şeridi ve yaya caddesinde akşam yürüyüşü. Restoranda akşam yemeği.\n2. Gün. Villada, havuzda dinlenin. Antik kenti ziyaret edebilir veya nehir gezisi için tekne kiralayabilirsiniz. Yengeç yakalayabilir ve sonunda sahile ulaşabilirsiniz. Gün serbest, bu yüzden nasıl geçireceğinize siz karar verebilirsiniz. Bildiğimiz ve size göstereceğimiz tüm yerlere ulaşımınızı sağlayacağız ve size eşlik edeceğiz. Rezervasyonunuzu yaparken bu günü birlikte planlayabilir ve sizin için mümkün olduğunca ilgi çekici hale getirebiliriz.\n3. ve 4. Günler - Vasilisa Yat (2 gün, 1 gece):\n3. Gün. Sabah 6:00'da uyanın. Eşyalarınızı toplayın. Kahvaltı. Marmaris'teki Vasilisa yatına hareket. Saat 9:30'da yata binin. Harekete hazırlanın. Güzergah: Marmaris Yat Limanı - Ekincik (güzergah bağlantısı).\n4. ve 5. Günler - Adria Adora 673 PK Karavan (1 gün 2 gece):\n4. Gün. 16:00. Vasilisa yatından motorlu tekneyle ayrılıp Ekincik Koyu kıyısına 5-10 dakika yolculuk yapıyoruz. Orada, koyun kıyısında, iyi donanımlı bir karavan alanı bizi bekliyor.\nBu eşsiz ve yepyeni aile karavanı, Adria Adora 673 PK, Akdeniz kıyısında, güzel ve sakin Ekincik bölgesinde, Villa Turaman'a 60 dakikalık sürüş mesafesinde yer almaktadır. Minimalist bir tarzda tasarlanan karavan, üç uyku alanına sahiptir:\n— Ön: panoramik manzaralı çift kişilik yatak;\n\n— Orta: ayrı banyo, büyük bir yatağa dönüşen masa bulunan yemek alanı ve karşısında mutfak;\n\n— Arka: çocuk odası için mükemmel olan, kanepe ve ikinci bir ranza bulunan bir oda;\n\nAdria Adora 673 PK karavan, tam konfor için ihtiyacınız olan her şeye sahiptir: iki giriş, ısıtma ve kazan, yerden ısıtma, klima, özel akü bölmesi, daha büyük bir buzdolabı, otomatik tahliye, ses sistemi, su deposu, mutfak davlumbazı ve halılar, gri su deposu ve tekerlek takozları. Banyo tipi: Ayrı\nAyrıca şunlar da sağlanacaktır:\nIzgara ve aksesuarları\nYüzme maskeleri\nDış mekan plaj mobilyaları ve mutfak eşyaları.\n6. ve 7. Günler - Villa Turaman (2 gün 2 gece):\n6. Gün. Villaya dönüş. Dalyan'ın sahil şeridi ve yaya caddesinde akşam gezintisi. Restoranda akşam yemeği.\n\n7. Gün. Sabah 9:00'dan önce çıkış: Kahvaltı. Havaalanı transferi.\nTüm bunlar isteğiniz üzerine uzatılabilir.\nHerhangi bir sorunuz varsa, bu butona tıklayın ve sizi WhatsApp üzerinden arayacağım. Diyalog başlatarak Gizlilik Politikası'nı kabul etmiş olursunuz.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -874,7 +874,7 @@
       "key": "amenity_cat3_item5",
       "desc": "Модальное окно: Категория 3 Пункт 5",
       "ru": "Полный комплект посуды и бокалов для вина",
-      "en": "A complete set of tableware and wine glasses",
+      "en": "A complete set of dishes and wine glasses",
       "tr": "Komple bir yemek takımı ve şarap kadehleri ​​seti.",
       "media": "Check",
       "status": "Вкл",
@@ -908,7 +908,7 @@
       "desc": "Модальное окно: Категория 4 Пункт 2",
       "ru": "Сплит-системы кондиционирования во всех спальнях",
       "en": "Split-system air conditioning in all bedrooms",
-      "tr": "Tüm yatak odalarında split sistem klima bulunmaktadır.",
+      "tr": "Tüm yatak odalarında split sistem klima mevcuttur.",
       "media": "Check",
       "status": "Вкл",
       "enabled": true
@@ -1029,7 +1029,7 @@
       "desc": "Критерий 3: Общение с хозяином",
       "ru": "Общение с хозяином",
       "en": "Communication with the owner",
-      "tr": "Ev sahibiyle iletişim",
+      "tr": "Mülk sahibiyle iletişim",
       "media": "5.0|100",
       "status": "Вкл",
       "enabled": true
@@ -1150,7 +1150,7 @@
       "desc": "Отзыв 4: Текст отзыва",
       "ru": "Идеально для семейного отдыха до 10 человек. Закрытая территория, 250 метров до центра Дальяна, тишина. Видео-гид от Алексея открыл нам секретные пляжи и отличные рыбные рестораны.",
       "en": "Ideal for a family vacation of up to 10 people. Gated area, 250 meters from the center of Dalyan, quiet. Alexey's video guide revealed secret beaches and excellent seafood restaurants.",
-      "tr": "10 kişiye kadar aile tatili için ideal. Güvenlikli site içerisinde, Dalyan merkezine 250 metre mesafede, sakin bir konumda. Alexey'in video rehberi gizli plajları ve mükemmel deniz ürünleri restoranlarını ortaya çıkardı.",
+      "tr": "10 kişiye kadar olan aileler için ideal bir tatil yeri. Güvenlikli site içerisinde, Dalyan merkezine 250 metre mesafede, sakin bir konumda. Alexey'in video rehberi gizli plajları ve mükemmel deniz ürünleri restoranlarını ortaya çıkardı.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -1172,7 +1172,7 @@
       "desc": "Подробный текст об окрестностях Дальяна",
       "ru": "Вилла Turaman находится в самом центре Дальяна: всего 250 метров до пешеходной улицы, 400 метров до речной набережной, 350 метров до ресторана La Boheme Dalyan. Песчаный пляж Изтузу - 11 км [15 минут на машине или лодке], аэропорт Даламан - 30 км. В пешей доступности древний город Каунос и Ликийские гробницы.",
       "en": "Villa Turaman is located in the heart of Dalyan: just 250 meters from the pedestrian street, 400 meters from the river promenade, and 350 meters from the La Boheme Dalyan restaurant. Iztuzu Beach is 11 km away (15 minutes by car or boat), and Dalaman Airport is 30 km away. The ancient city of Kaunos and the Lycian tombs are within walking distance.",
-      "tr": "Villa Turaman, Dalyan'ın kalbinde yer almaktadır: yaya caddesine sadece 250 metre, nehir kıyısına 400 metre ve La Boheme Dalyan restoranına 350 metre mesafededir. İztuzu Plajı 11 km (araba veya tekneyle 15 dakika) ve Dalyan Havalimanı 30 km uzaklıktadır. Kaunos antik kenti ve Likya mezarları yürüme mesafesindedir.",
+      "tr": "Villa Turaman, Dalyan'ın kalbinde yer almaktadır: yaya caddesine sadece 250 metre, nehir kıyısına 400 metre ve La Boheme Dalyan restoranına 350 metre mesafededir. İztuzu Plajı 11 km (araba veya tekneyle 15 dakika), Dalyan Havalimanı ise 30 km uzaklıktadır. Kaunos antik kenti ve Likya mezarları yürüme mesafesindedir.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -1535,7 +1535,7 @@
       "desc": "Ориентир 14: Морской курортный город Мармарис",
       "ru": "Крупный морской порт и курортный город Мармарис: марины для суперяхт, набережная и шоппинг",
       "en": "The major seaport and resort town of Marmaris: superyacht marinas, a promenade, and shopping",
-      "tr": "Marmaris, önemli bir liman kenti ve tatil beldesidir: süper yat limanları, sahil şeridi ve alışveriş merkezleri bulunmaktadır.",
+      "tr": "Marmaris, önemli bir liman kenti ve tatil beldesidir: süper yat marinaları, sahil şeridi ve alışveriş merkezleri bulunmaktadır.",
       "media": "85 км|1 час 15 мин на авто|city|Эгейская Ривьера|Car",
       "status": "Вкл",
       "enabled": true
@@ -2052,7 +2052,7 @@
       "title": {
         "ru": "1. Концепция объекта, геолокация и расширенные географические ориентиры",
         "en": "1. Object concept, geolocation and extended geographic landmarks",
-        "tr": "1. Nesne kavramı, coğrafi konum belirleme ve genişletilmiş coğrafi işaretler"
+        "tr": "1. Nesne kavramı, coğrafi konum ve genişletilmiş coğrafi işaretler"
       },
       "text": {
         "ru": "Dalyan Turaman [частный бассейн, 10 спальных мест] - это цифровая веб-платформа прямого онлайн-бронирования двухэтажной виллы премиум-класса в экологическом заповедном курорте Дальян [район Ортаджа, провинция Мугла, Турция], расположенном между рекой Дальян и озером Кёйджегиз.\n\nОфициальный адрес и навигация:\n* Адрес виллы: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Turkey.\n* Ссылка на геолокацию в Google Maps: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n* Точные координаты GPS: 36.8336° N, 28.6439° E.\n\nПолный реестр ключевых географических ориентиров:\n* Пешеходный центр Дальяна: всего 250 метров [3 минуты пешком] до главной пешеходной улицы с магазинами, рынками, аптеками и сувенирными лавками.\n* Речная набережная реки Дальян: 400 метров для утренних пробежек, вечерних прогулок и наблюдения за речными лодками.\n* Гастрономия: популярный ресторан высокой кухни La Boheme Dalyan - 350 метров; традиционный рыбный ресторан Çiçek Restoran - 500 метров.\n* Ликийские скальные гробницы королей Кауноса [IV век до н.э.]: панорамный вид с набережной Дальяна [450 метров], вечерняя подсветка скал и 10 минут на лодке.\n* Античный город Каунос, древний акрополь и амфитеатр: 1.5 км [переправа на весельной лодке через реку Дальян и пеший маршрут].\n* Всемирно известный песчаный пляж Изтузу [İztuzu]: 11 км [около 15 минут на машине или 30-40 минут на живописном речном катере-такси через лабиринты камышей]. Заповедная зона обитания гигантских морских черепах Caretta-Caretta.\n* Термальные радоновые источники и омолаживающие грязи Султание [Sultaniye Kaplıcaları]: 4 км по воде на озере Кёйджегиз.\n* Озеро Кёйджегиз [Köyceğiz Gölü]: 5 км до выхода из русла реки в открытую озерную акваторию.\n* Смотровая площадка Радар [Radar Tepesi]: 8 км [панорамный обзор 360° на всю дельту реки, озеро и косу пляжа Изтузу с высоты 500 метров].\n* Международный аэропорт Даламан [DLM]: 30 км [25-30 минут на машине или индивидуальном трансфере].\n* Субботний фермерский рынок Дальяна: 600 метров [свежие фермерские сыры, оливки, гранатовый сок, инжир и фрукты].\n* Морские курорты: город Мармарис - 85 км, город Фетхие и бухта Олюдениз - 60 км.",
@@ -2080,8 +2080,8 @@
       },
       "text": {
         "ru": "Приватный бассейн с соленой водой: чаша 4×9 метров [площадь 36 кв. м], постоянная глубина 150 см. Без запаха хлора. Доступен с 1 мая по 1 ноября. Чистка в день заселения и каждые 7 дней. Подсветка бассейна: 20:00 - 01:00.\nУличное приватное джакузи: на 4 персоны, автоматический цикл [15 минут работы каждые 45 минут в период 10:00 - 17:00]. Подсветка джакузи: 20:00 - 01:00. Сезон: 1 мая - 1 ноября.\nОсвещение территории: автоматическое [20:00 - 01:00 и 04:00 - 06:00].\nПарковка: бесплатная закрытая частная парковка на территории на 2 авто.\nОткрытые зоны отдыха: огороженный сад, барбекю [BBQ], крыльцо с кофейными столиками, обеденный стол на 8 мест, шезлонги и летний душ.",
-        "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor recreation areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
-        "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava dinlenme alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır."
+        "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor seating areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
+        "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava oturma alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır."
       }
     },
     "4": {
@@ -2104,8 +2104,8 @@
       },
       "text": {
         "ru": "Владелец: Алексей Знаменский [Aleksei Znamenskii]. Проживает в Мармарисе, яхтсмен на пенсии. Жизненное кредо: «Хочешь сделать хорошо - сделай сам». Мечта: отправиться в Португалию и увидеть океан. Хобби: велоспорт, парусный спорт, природа. Штампы путешествий: Дубай [3 поездки], Абу-Даби [март 2026 г.]. Языки: русский, английский, турецкий. Налоговые реквизиты: Ortaca Vergi Dairesi, VKN: 9991120181.",
-        "en": "Owner: Aleksei Znamenskii. Lives in Marmaris, retired yachtsman. Life motto: \"If you want something done right, do it yourself.\" Dream: to go to Portugal and see the ocean. Hobbies: cycling, sailing, nature. Travel stamps: Dubai [3 trips], Abu Dhabi [March 2026]. Languages: Russian, English, Turkish. Tax details: Ortaca Vergi Dairesi, VKN: 9991120181.",
-        "tr": "Sahibi: Aleksei Znamenskii. Marmaris'te yaşıyor, emekli yatçı. Hayat felsefesi: \"Bir şeyin doğru yapılmasını istiyorsanız, kendiniz yapın.\" Hayali: Portekiz'e gidip okyanusu görmek. Hobileri: bisiklet, yelken, doğa. Seyahat damgaları: Dubai [3 gezi], Abu Dhabi [Mart 2026]. Diller: Rusça, İngilizce, Türkçe. Vergi bilgileri: Ortaca Vergi Dairesi, VKN: 9991120181."
+        "en": "Owner: Aleksei Znamenskii. Lives in Marmaris, retired yachtsman. Life motto: \"If you want something done right, do it yourself.\" Dream: to go to Portugal and see the ocean. Hobbies: cycling, sailing, nature. Travel highlights: Dubai [3 trips], Abu Dhabi [March 2026]. Languages: Russian, English, Turkish. Tax details: Ortaca Vergi Dairesi, VKN: 9991120181.",
+        "tr": "Sahibi: Aleksei Znamenskii. Marmaris'te yaşıyor, emekli yatçı. Hayat felsefesi: \"Bir şeyin doğru yapılmasını istiyorsanız, kendiniz yapın.\" Hayali: Portekiz'e gidip okyanusu görmek. Hobileri: bisiklet, yelken, doğa. Seyahat deneyimleri: Dubai [3 gezi], Abu Dabi [Mart 2026]. Diller: Rusça, İngilizce, Türkçe. Vergi bilgileri: Ortaca Vergi Dairesi, VKN: 9991120181."
       }
     },
     "6": {
@@ -2129,7 +2129,7 @@
       "text": {
         "ru": "Тур \"Всё\" - это возможность за 1 неделю неспешно отдохнуть меняя ритм, стиль и вид отдыха. Это очень круто. За это время вы однозначно почувствуете разнообразие и красоту Турции и в том числе замечательного места города Дальян (провинция Мугла). Предъявляя разные требования и пожелания к своему досугу, вы в конечном итоге, будете удовлетворены и поймете, что это было замечательно и великолепно. И скажите мне: Спасибо. Это было настоящее приключение. \nНазвание: Тур \"Всё\". Вилла, яхта, кемпер, SUP, каяк, велосипеды.....\nПлан тура:\nVilla Turaman (2 дня 2 ночи) - Яхта Vasilisa (2 дня 1ночь) - Кемпер ( 1 день 2 ночи) - Villa Turaman (2 дня 1ночь)\n\n1 и 2 день - Villa Turaman (2 дня 2 ночи): \n1 день. Трансфер из аэропорта. Заселение на виллу после 16.00. Вечерний променад по набережной и пешеходной улице города Дальян. Ужин в ресторане.\n2 день. Отдых на вилле, бассейн. Можно выехать в древний город или взять на прокат лодку с экскурсией по реке. Половить крабов и в конечном итоге по реке добраться до пляжа. День свободный, сможете принять сами решение как его провести. Мы со своей стороны обеспечим вас транспортом и сопровождением по всем местам, что мы знаем всё вам покажем. Этот день мы можем с вами спланировать при формировании брони и сделать его максимально интересным для вас.\n3 и 4 день - Яхта Vasilisa (2 дня 1ночь):\n3 день. 6:00 подъём. Сборы. Завтрак. Выезд на яхту Vasilisa в Marmaris. 9.30 заходим на яхту. Готовимся отходить. Маршрут: Marmaris Yacht Marina - Ekincik       ссылка на маршрут .\n4 и 5 день - Кемпер Adria Adora 673 PK ( 1 день 2 ночи):\n4 день. 16:00 Сборы. На моторной лодке отчаливаем с яхты Vasilisa и двигаемся 5 - 10 минут к берегу бухты Ekincik. Там на береговой линии бухты нас ждёт оборудованная площадка для отдыха на караване.\nНеобычный и абсолютно новый семейный караван Adria Adora 673 PK на берегу Средиземного моря в прекрасном тихом месте Ekincik находится в 60 минутах езды от вилы Turaman, выполненный в стиле минимализма, вмещает 3 спальные зоны:\n— в передней части: двуспальная кровать с панорамным видом;\n— в середине: раздельный санузел, обеденная зона со столом, которая разбирается в большую кровать, а напротив кухня;\n— в задней части: комната с диваном и вторым спальным ярусом, отлично подойдет в качестве детской комнаты;\nВ Кемпер Adria Adora 673 PK есть все для полного комфорта: два входа, отопление и бойлер, пол с подогревом, кондиционер, штатное место для аккумулятора, увеличенный холодильник, автоматический слив воды, аудиосистема, установлен бак для воды, вытяжка в кухне, а в комплекте идут: ковры, бак для серой воды, противооткатные упоры.  Тип санузла: Раздельный \nТак же вам будут предоставлены:\nГриль и принадлежности\nМаски для плавания\nУличная пляжная мебель и посуда.\n6 и 7 день - Villa Turaman (2 дня 2 ночи):\n6день. Возврвщаемся на виллу. Вечерний променад по набережной и пешеходной улице города Дальян. Ужин в ресторане.\n7 день. Выезд с виллы до 9.00: Завтрак. Трансфер до аэропорта.\nВсё это можно продлить по вашему желанию.\nЕсли у вас есть вопросы просто нажмите на эту кнопку и я вам перезвоню по WhatsApp.  Начиная диалог, вы соглашаетесь с Политикой конфиденциальности.",
         "en": "The \"Everything\" tour is an opportunity to unwind in one week, changing your pace, style, and type of vacation. It's absolutely fantastic. During this time, you'll definitely experience the diversity and beauty of Turkey, including the wonderful city of Dalyan (Mugla Province). Although you may have different expectations and wishes for your leisure time, you'll ultimately be satisfied and realize that it was wonderful and magnificent. And tell me: Thank you. It was a real adventure.\n\nTitle: \"Everything\" Tour. Villa, yacht, camper, SUP, kayak, bicycles...\nTour Plan:\nVilla Turaman (2 days 2 nights) - Yacht Vasilisa (2 days 1 night) - Camper (1 day 2 nights) - Villa Turaman (2 days 1 night)\n\nDays 1 and 2 - Villa Turaman (2 days 2 nights):\nDay 1. Airport transfer. Check-in at the villa after 4:00 PM. An evening stroll along the Dalyan promenade and pedestrian street. Dinner at a restaurant.\nDay 2. Relax at the villa, pool. You can visit the ancient city or rent a boat for a river excursion. Catch crabs and eventually reach the beach. The day is free, so you can decide how to spend it. We will provide transportation and escort you to all the places we know and will show you. We can plan this day together when making your reservation and make it as interesting as possible for you.\nDays 3 and 4 - Yacht Vasilisa (2 days, 1 night):\nDay 3. Wake up at 6:00 AM. Pack up. Breakfast. Departure for the yacht Vasilisa in Marmaris. Board the yacht at 9:30 AM. Prepare to depart. Route: Marmaris Yacht Marina - Ekincik (link to route).\nDays 4 and 5 - Adria Adora 673 PK Camper (1 day 2 nights):\nDay 4. 4:00 PM. We depart the Vasilisa yacht by motorboat and travel 5-10 minutes to the shore of Ekincik Bay. There, on the bay's shoreline, a well-equipped campervan site awaits.\nThis unique and brand-new family caravan, the Adria Adora 673 PK, is located on the Mediterranean coast in the beautiful, quiet location of Ekincik, a 60-minute drive from Villa Turaman. Designed in a minimalist style, it features three sleeping areas:\n— Forward: a double bed with panoramic views;\n— Middle: separate bathroom, dining area with table that converts into a large bed, and opposite is the kitchen;\n— Rear: a room with a sofa and a second bunk, perfect for a children's room;\nThe Adria Adora 673 PK camper has everything you need for complete comfort: two entrances, heating and a boiler, underfloor heating, air conditioning, a dedicated battery compartment, a larger refrigerator, automatic drain, an audio system, a water tank, a kitchen hood, and carpets, a grey water tank, and wheel chocks. Bathroom type: Separate\nYou will also be provided with:\nGrill and accessories\nSwimming masks\nOutdoor beach furniture and utensils.\nDays 6 and 7 - Villa Turaman (2 days 2 nights):\nDay 6. Return to the villa. Evening promenade along the promenade and pedestrian street of Dalyan. Dinner at the restaurant.\nDay 7. Check-out before 9:00 AM: Breakfast. Airport transfer.\nAll of this can be extended at your request.\nIf you have any questions, just click this button and I will call you back via WhatsApp. By starting a dialogue, you agree to the Privacy Policy.",
-        "tr": "\"Her Şey\" turu, bir hafta boyunca rahatlamak, hızınızı, tarzınızı ve tatil türünüzü değiştirmek için bir fırsattır. Kesinlikle harika. Bu süre zarfında, Dalyan'ın (Muğla ili) muhteşem şehri de dahil olmak üzere Türkiye'nin çeşitliliğini ve güzelliğini kesinlikle deneyimleyeceksiniz. Boş zamanınız için farklı beklentileriniz ve istekleriniz olsa da, sonunda memnun kalacak ve harika ve muhteşem olduğunu anlayacaksınız. Ve bana şunu söyleyeceksiniz: Teşekkür ederim. Gerçek bir maceraydı.\n\nBaşlık: \"Her Şey\" Turu. Villa, yat, karavan, SUP, kayak, bisikletler...\nTur Planı:\nVilla Turaman (2 gün 2 gece) - Yat Vasilisa (2 gün 1 gece) - Karavan (1 gün 2 gece) - Villa Turaman (2 gün 1 gece)\n\n1. ve 2. Günler - Villa Turaman (2 gün 2 gece):\n1. Gün. Havaalanı transferi. Saat 16:00'dan sonra villaya giriş. Dalyan sahil şeridi ve yaya caddesinde akşam yürüyüşü. Restoranda akşam yemeği.\n2. Gün. Villada, havuzda dinlenin. Antik kenti ziyaret edebilir veya nehir gezisi için tekne kiralayabilirsiniz. Yengeç yakalayabilir ve sonunda sahile ulaşabilirsiniz. Gün serbest, bu yüzden nasıl geçireceğinize siz karar verebilirsiniz. Bildiğimiz ve size göstereceğimiz tüm yerlere ulaşımınızı sağlayacağız ve size eşlik edeceğiz. Rezervasyonunuzu yaparken bu günü birlikte planlayabilir ve sizin için mümkün olduğunca ilgi çekici hale getirebiliriz.\n3. ve 4. Günler - Vasilisa Yat (2 gün, 1 gece):\n3. Gün. Sabah 6:00'da uyanın. Eşyalarınızı toplayın. Kahvaltı. Marmaris'teki Vasilisa yatına hareket. Saat 9:30'da yata binin. Harekete hazırlanın. Güzergah: Marmaris Yat Limanı - Ekincik (güzergah bağlantısı).\n4. ve 5. Günler - Adria Adora 673 PK Karavan (1 gün 2 gece):\n4. Gün. 16:00. Vasilisa yatından motorlu tekneyle ayrılıp Ekincik Koyu kıyısına 5-10 dakika yolculuk yapıyoruz. Orada, koyun kıyısında, iyi donanımlı bir karavan alanı bizi bekliyor.\nBu eşsiz ve yepyeni aile karavanı, Adria Adora 673 PK, Akdeniz kıyısında, güzel ve sakin Ekincik bölgesinde, Villa Turaman'a 60 dakikalık sürüş mesafesinde yer almaktadır. Minimalist bir tarzda tasarlanan karavan, üç uyku alanına sahiptir:\n— Ön: panoramik manzaralı çift kişilik yatak;\n\n— Orta: ayrı banyo, büyük bir yatağa dönüşen masa bulunan yemek alanı ve karşısında mutfak;\n\n— Arka: çocuk odası için mükemmel olan, kanepe ve ikinci bir ranza bulunan bir oda;\n\nAdria Adora 673 PK karavan, tam konfor için ihtiyacınız olan her şeye sahiptir: iki giriş, ısıtma ve kazan, yerden ısıtma, klima, özel akü bölmesi, daha büyük bir buzdolabı, otomatik tahliye, ses sistemi, su deposu, mutfak davlumbazı ve halılar, gri su deposu ve tekerlek takozları. Banyo tipi: Ayrı\nAyrıca şunlar da sağlanacaktır:\nIzgara ve aksesuarları\nYüzme maskeleri\nDış mekan plaj mobilyaları ve mutfak eşyaları.\n6. ve 7. Günler - Villa Turaman (2 gün 2 gece):\n6. Gün. Villaya dönüş. Dalyan'ın sahil şeridi ve yaya caddesinde akşam gezintisi. Restoranda akşam yemeği.\n\n7. Gün. Sabah 9:00'dan önce çıkış: Kahvaltı. Havaalanı transferi.\nTüm bunlar isteğiniz üzerine uzatılabilir.\nHerhangi bir sorunuz varsa, bu butona tıklayın ve sizi WhatsApp üzerinden arayacağım. Diyalog başlatarak Gizlilik Politikası'nı kabul etmiş olursunuz."
+        "tr": "\"Her Şey\" turu, bir hafta boyunca rahatlamak, hızınızı, tarzınızı ve tatil türünüzü değiştirmek için bir fırsattır. Kesinlikle harika. Bu süre zarfında, Dalyan'ın (Muğla ili) muhteşem şehri de dahil olmak üzere Türkiye'nin çeşitliliğini ve güzelliğini kesinlikle deneyimleyeceksiniz. Boş zamanınız için farklı beklentileriniz ve istekleriniz olsa da, sonunda memnun kalacak ve harika ve muhteşem olduğunu anlayacaksınız. Ve bana şunu söyleyin: Teşekkür ederim. Gerçek bir maceraydı.\n\nBaşlık: \"Her Şey\" Turu. Villa, yat, karavan, SUP, kayak, bisikletler...\nTur Planı:\nVilla Turaman (2 gün 2 gece) - Yat Vasilisa (2 gün 1 gece) - Karavan (1 gün 2 gece) - Villa Turaman (2 gün 1 gece)\n\n1. ve 2. Günler - Villa Turaman (2 gün 2 gece):\n1. Gün. Havaalanı transferi. Saat 16:00'dan sonra villaya giriş. Dalyan sahil şeridi ve yaya caddesinde akşam yürüyüşü. Restoranda akşam yemeği.\n2. Gün. Villada, havuzda dinlenin. Antik kenti ziyaret edebilir veya nehir gezisi için tekne kiralayabilirsiniz. Yengeç yakalayabilir ve sonunda sahile ulaşabilirsiniz. Gün serbest, bu yüzden nasıl geçireceğinize siz karar verebilirsiniz. Bildiğimiz ve size göstereceğimiz tüm yerlere ulaşımınızı sağlayacağız ve size eşlik edeceğiz. Rezervasyonunuzu yaparken bu günü birlikte planlayabilir ve sizin için mümkün olduğunca ilgi çekici hale getirebiliriz.\n3. ve 4. Günler - Vasilisa Yat (2 gün, 1 gece):\n3. Gün. Sabah 6:00'da uyanın. Eşyalarınızı toplayın. Kahvaltı. Marmaris'teki Vasilisa yatına hareket. Saat 9:30'da yata binin. Harekete hazırlanın. Güzergah: Marmaris Yat Limanı - Ekincik (güzergah bağlantısı).\n4. ve 5. Günler - Adria Adora 673 PK Karavan (1 gün 2 gece):\n4. Gün. 16:00. Vasilisa yatından motorlu tekneyle ayrılıp Ekincik Koyu kıyısına 5-10 dakika yolculuk yapıyoruz. Orada, koyun kıyısında, iyi donanımlı bir karavan alanı bizi bekliyor.\nBu eşsiz ve yepyeni aile karavanı, Adria Adora 673 PK, Akdeniz kıyısında, güzel ve sakin Ekincik bölgesinde, Villa Turaman'a 60 dakikalık sürüş mesafesinde yer almaktadır. Minimalist bir tarzda tasarlanan karavan, üç uyku alanına sahiptir:\n— Ön: panoramik manzaralı çift kişilik yatak;\n\n— Orta: ayrı banyo, büyük bir yatağa dönüşen masa bulunan yemek alanı ve karşısında mutfak;\n\n— Arka: çocuk odası için mükemmel olan, kanepe ve ikinci bir ranza bulunan bir oda;\n\nAdria Adora 673 PK karavan, tam konfor için ihtiyacınız olan her şeye sahiptir: iki giriş, ısıtma ve kazan, yerden ısıtma, klima, özel akü bölmesi, daha büyük bir buzdolabı, otomatik tahliye, ses sistemi, su deposu, mutfak davlumbazı ve halılar, gri su deposu ve tekerlek takozları. Banyo tipi: Ayrı\nAyrıca şunlar da sağlanacaktır:\nIzgara ve aksesuarları\nYüzme maskeleri\nDış mekan plaj mobilyaları ve mutfak eşyaları.\n6. ve 7. Günler - Villa Turaman (2 gün 2 gece):\n6. Gün. Villaya dönüş. Dalyan'ın sahil şeridi ve yaya caddesinde akşam gezintisi. Restoranda akşam yemeği.\n\n7. Gün. Sabah 9:00'dan önce çıkış: Kahvaltı. Havaalanı transferi.\nTüm bunlar isteğiniz üzerine uzatılabilir.\nHerhangi bir sorunuz varsa, bu butona tıklayın ve sizi WhatsApp üzerinden arayacağım. Diyalog başlatarak Gizlilik Politikası'nı kabul etmiş olursunuz."
       }
     }
   },
@@ -2179,7 +2179,7 @@
       "text": {
         "ru": "Полный возврат 100% предоплаты при отмене бронирования не позднее чем за 14 суток до даты заселения. При бронировании невозвратного тарифа предоставляется скидка 10%.",
         "en": "A full 100% refund of the prepayment is available if you cancel your reservation no later than 14 days before your check-in date. A 10% discount is available when booking a non-refundable rate.",
-        "tr": "Rezervasyonunuzu giriş tarihinizden en geç 14 gün önce iptal etmeniz durumunda ön ödemenin tamamı (%100) iade edilir. İade edilmeyen fiyatlardan yararlanarak rezervasyon yaptığınızda %10 indirim uygulanır."
+        "tr": "Rezervasyonunuzu giriş tarihinden en geç 14 gün önce iptal etmeniz durumunda ön ödemenin tamamı (%100) iade edilir. İade edilmeyen fiyatlardan yararlanarak rezervasyon yaptığınızda %10 indirim uygulanır."
       }
     },
     "tax_info": {
@@ -2411,20 +2411,20 @@
       },
       "desc": {
         "ru": "Комфортабельный Mercedes Vito с кондиционером и напитками",
-        "en": "Comfortable Mercedes Vito with air conditioning and drinks",
-        "tr": "Klimalı ve içecek servisi bulunan konforlu Mercedes Vito."
+        "en": "A comfortable Mercedes Vito with air conditioning and drinks",
+        "tr": "Klimalı ve içecek servisi bulunan konforlu bir Mercedes Vito."
       },
-      "priceEUR": "0",
-      "priceRUB": "5000",
-      "priceTRY": "0",
-      "image": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1200",
+      "priceEUR": "100",
+      "priceRUB": "92",
+      "priceTRY": "9250",
+      "image": "3800",
       "available": true,
-      "type": "Трансфер",
-      "video": "https://youtube.com/watch?v=transfer",
+      "type": "Да",
+      "video": "Трансфер",
       "details": {
-        "ru": "Встреча в зоне прилета с именной табличкой. Время в пути до виллы 25 минут. В салоне бесплатный Wi-Fi и прохладительные напитки.",
-        "en": "Meet in the arrivals area with a name sign. Travel time to the villa is 25 minutes. Complimentary Wi-Fi and refreshments are available in the lounge.",
-        "tr": "Varış alanında isim tabelasıyla buluşalım. Villaya ulaşım süresi 25 dakikadır. Salonda ücretsiz Wi-Fi ve ikramlar mevcuttur."
+        "ru": "https://youtube.com/watch?v=transfer",
+        "en": "Встреча в зоне прилета с именной табличкой. Время в пути до виллы 25 минут. В салоне бесплатный Wi-Fi и прохладительные напитки.",
+        "tr": "Meet in the arrivals area with a name sign. Travel time to the villa is 25 minutes. Complimentary Wi-Fi and refreshments are available in the lounge."
       }
     },
     {
@@ -2439,17 +2439,17 @@
         "en": "Traditional Wooden Boat: Captain Adam, Lycian Tombs",
         "tr": "Geleneksel Ahşap Tekne: Kaptan Adam, Likya Mezarları"
       },
-      "priceEUR": "250",
-      "priceRUB": "25000",
-      "priceTRY": "9000",
-      "image": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200",
+      "priceEUR": "270",
+      "priceRUB": "250",
+      "priceTRY": "25000",
+      "image": "9000",
       "available": true,
-      "type": "Круиз",
-      "video": "https://youtube.com/watch?v=cruise",
+      "type": "Да",
+      "video": "Круиз",
       "details": {
-        "ru": "Эксклюзивный дневной маршрут: Ликийские гробницы, ловля голубых крабов, купание на пляже Изтузу и обед от капитана со свежей рыбой.",
-        "en": "An exclusive day trip: Lycian tombs, blue crab fishing, swimming at Iztuzu beach and a fresh fish lunch prepared by the captain.",
-        "tr": "Özel bir günlük gezi: Likya mezarları, mavi yengeç avı, İztuzu plajında ​​yüzme ve kaptan tarafından hazırlanan taze balık öğle yemeği."
+        "ru": "https://youtube.com/watch?v=cruise",
+        "en": "Эксклюзивный дневной маршрут: Ликийские гробницы, ловля голубых крабов, купание на пляже Изтузу и обед от капитана со свежей рыбой.",
+        "tr": "An exclusive day trip: Lycian tombs, blue crab fishing, swimming at Iztuzu beach and a fresh fish lunch prepared by the captain."
       }
     },
     {
@@ -2464,17 +2464,17 @@
         "en": "4-course poolside dinner: traditional Turkish meze and seafood",
         "tr": "Havuz başında 4 çeşit yemekten oluşan akşam yemeği: geleneksel Türk mezeleri ve deniz ürünleri."
       },
-      "priceEUR": "120",
-      "priceRUB": "12000",
-      "priceTRY": "4300",
-      "image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200",
+      "priceEUR": "200",
+      "priceRUB": "184",
+      "priceTRY": "18500",
+      "image": "7600",
       "available": true,
-      "type": "Шеф",
-      "video": "https://youtube.com/watch?v=chef",
+      "type": "Да",
+      "video": "Шеф",
       "details": {
-        "ru": "Шеф-повар лично закупает фермерские продукты на рынке Дальяна, готовит ужин на вашей кухне, сервирует стол и наводит идеальный порядок.",
-        "en": "The chef personally purchases farm produce from the Dalyan market, prepares dinner in your kitchen, sets the table, and keeps everything perfectly tidy.",
-        "tr": "Şef, Dalyan pazarından bizzat çiftlik ürünleri satın alıyor, mutfağınızda akşam yemeğini hazırlıyor, sofrayı kuruyor ve her şeyi kusursuz bir şekilde düzenli tutuyor."
+        "ru": "https://youtube.com/watch?v=chef",
+        "en": "Шеф-повар лично закупает фермерские продукты на рынке Дальяна, готовит ужин на вашей кухне, сервирует стол и наводит идеальный порядок.",
+        "tr": "The chef personally purchases farm produce from the Dalyan market, prepares dinner in your kitchen, sets the table, and keeps everything perfectly tidy."
       }
     },
     {
@@ -2486,20 +2486,20 @@
       },
       "desc": {
         "ru": "Стейки рибай, каре ягненка на косточке и овощи гриль",
-        "en": "Ribeye steaks, lamb rack on the bone and grilled vegetables",
-        "tr": "Antrikot biftek, kemikli kuzu pirzola ve ızgara sebzeler"
+        "en": "Ribeye steaks, lamb chops and grilled vegetables",
+        "tr": "Antrikot biftek, kuzu pirzola ve ızgara sebzeler"
       },
-      "priceEUR": "160",
-      "priceRUB": "16000",
-      "priceTRY": "5800",
-      "image": "https://images.unsplash.com/photo-1544025162-d76694265947?w=1200",
+      "priceEUR": "1200",
+      "priceRUB": "1104",
+      "priceTRY": "111000",
+      "image": "45600",
       "available": true,
-      "type": "BBQ",
-      "video": "https://youtube.com/watch?v=bbq",
+      "type": "Да",
+      "video": "BBQ",
       "details": {
-        "ru": "В стоимость входит премиальное маринованное фермерское мясо, отборные угли, розжиг, лаваш, соусы и работа гриль-мастера в течение 3 часов.",
-        "en": "The price includes premium marinated farm-raised meat, select charcoal, fire starter, lavash, sauces, and a 3-hour grill master.",
-        "tr": "Fiyata birinci sınıf marine edilmiş çiftlik eti, seçkin mangal kömürü, ateş başlatıcı, lavaş, soslar ve 3 saatlik mangal ustası eğitimi dahildir."
+        "ru": "https://youtube.com/watch?v=bbq",
+        "en": "В стоимость входит премиальное маринованное фермерское мясо, отборные угли, розжиг, лаваш, соусы и работа гриль-мастера в течение 3 часов.",
+        "tr": "The price includes premium marinated farm-raised meat, select charcoal, fire starter, lavash, sauces, and a 3-hour grill master."
       }
     },
     {
@@ -2514,17 +2514,17 @@
         "en": "Rejuvenating mineral baths and thermal springs of Lake Köyceğiz",
         "tr": "Köyceğiz Gölü'nün canlandırıcı mineral banyoları ve termal kaynakları"
       },
-      "priceEUR": "70",
-      "priceRUB": "7000",
-      "priceTRY": "2500",
-      "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200",
+      "priceEUR": "300",
+      "priceRUB": "276",
+      "priceTRY": "27750",
+      "image": "11400",
       "available": true,
-      "type": "СПА",
-      "video": "https://youtube.com/watch?v=spa",
+      "type": "Да",
+      "video": "СПА",
       "details": {
-        "ru": "Трансфер на моторной лодке прямо от причала виллы. Входные билеты в термальные комплексы и радоновые бассейны включены.",
-        "en": "Motorboat transfers directly from the villa's dock. Entrance fees to the thermal baths and radon pools are included.",
-        "tr": "Villanın iskelesinden doğrudan motorlu tekne transferi sağlanmaktadır. Termal banyolar ve radon havuzlarına giriş ücretleri fiyata dahildir."
+        "ru": "https://youtube.com/watch?v=spa",
+        "en": "Трансфер на моторной лодке прямо от причала виллы. Входные билеты в термальные комплексы и радоновые бассейны включены.",
+        "tr": "Motorboat transfers directly from the villa's dock. Entrance fees to the thermal baths and radon pools are included."
       }
     },
     {
@@ -2539,17 +2539,17 @@
         "en": "2 stable SUP boards and a two-seater expedition kayak",
         "tr": "2 adet sağlam SUP tahtası ve iki kişilik bir keşif kayığı"
       },
-      "priceEUR": "80",
-      "priceRUB": "8000",
-      "priceTRY": "2900",
-      "image": "https://images.unsplash.com/photo-1517404215738-15263e9f9178?w=1200",
+      "priceEUR": "100",
+      "priceRUB": "92",
+      "priceTRY": "9250",
+      "image": "3800",
       "available": true,
-      "type": "Спорт",
-      "video": "https://youtube.com/watch?v=sup",
+      "type": "Да",
+      "video": "Спорт",
       "details": {
-        "ru": "Доставка оборудования прямо к вилле на весь период проживания. В комплекте весла, страховочные лиши и спасательные жилеты.",
-        "en": "Equipment delivered directly to your villa for the entire stay. Includes paddles, leashes, and life jackets.",
-        "tr": "Konaklamanız boyunca kullanacağınız ekipmanlar doğrudan villanıza teslim edilir. Kürekler, tasmalar ve can yelekleri dahildir."
+        "ru": "https://youtube.com/watch?v=sup",
+        "en": "Доставка оборудования прямо к вилле на весь период проживания. В комплекте весла, страховочные лиши и спасательные жилеты.",
+        "tr": "Equipment delivered directly to your villa for the entire stay. Includes paddles, leashes, and life jackets."
       }
     },
     {
@@ -2564,42 +2564,42 @@
         "en": "2 modern electric bikes with a range of up to 60 km",
         "tr": "60 km'ye kadar menzile sahip 2 adet modern elektrikli bisiklet."
       },
-      "priceEUR": "40",
-      "priceRUB": "4000",
-      "priceTRY": "1500",
-      "image": "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=1200",
+      "priceEUR": "100",
+      "priceRUB": "92",
+      "priceTRY": "9250",
+      "image": "3800",
       "available": true,
-      "type": "Транспорт",
-      "video": "https://youtube.com/watch?v=bike",
+      "type": "Да",
+      "video": "Транспорт",
       "details": {
-        "ru": "Идеальный способ исследовать гранатовые сады и улочки Дальяна. В комплекте шлемы, замки и держатели для смартфонов с навигатором.",
-        "en": "The perfect way to explore the pomegranate orchards and streets of Dalyan. Helmets, locks, and smartphone holders with GPS included.",
-        "tr": "Dalyan'ın nar bahçelerini ve sokaklarını keşfetmenin mükemmel yolu. Kasklar, kilitler ve GPS'li akıllı telefon tutucuları dahildir."
+        "ru": "https://youtube.com/watch?v=bike",
+        "en": "Идеальный способ исследовать гранатовые сады и улочки Дальяна. В комплекте шлемы, замки и держатели для смартфонов с навигатором.",
+        "tr": "The perfect way to explore the pomegranate orchards and streets of Dalyan. Helmets, locks, and smartphone holders with GPS included."
       }
     },
     {
       "id": "prod-8",
       "title": {
-        "ru": "Уборка и смена белья",
-        "en": "Cleaning and linen change",
-        "tr": "Temizlik ve nevresim değişimi"
+        "ru": "Дополнительная экспресс-уборка и смена белья",
+        "en": "Additional express cleaning and linen change",
+        "tr": "Ek ekspres temizlik ve nevresim değişimi"
       },
       "desc": {
         "ru": "Внеплановая влажная уборка виллы, замена полотенец и постельного белья",
         "en": "Unscheduled wet cleaning of the villa, change of towels and bed linen",
         "tr": "Villanın planlanmamış ıslak temizliği, havlu ve nevresim değişimi."
       },
-      "priceEUR": "60",
-      "priceRUB": "6000",
-      "priceTRY": "2200",
-      "image": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1200",
+      "priceEUR": "150",
+      "priceRUB": "138",
+      "priceTRY": "13875",
+      "image": "5700",
       "available": true,
-      "type": "Сервис",
-      "video": "https://youtube.com/watch?v=cleaning",
+      "type": "Да",
+      "video": "Сервис",
       "details": {
-        "ru": "Полная уборка всех 4 спален, кухни и санузлов, мытье полов эко-средствами, замена постельных комплектов сатин премиум и банных полотенец.",
-        "en": "Full cleaning of all 4 bedrooms, kitchen, and bathrooms, floor cleaning with eco-friendly products, replacement of premium satin bed linens and bath towels.",
-        "tr": "4 yatak odasının, mutfağın ve banyoların komple temizliği, çevre dostu ürünlerle yer temizliği, birinci sınıf saten nevresim takımları ve banyo havlularının değiştirilmesi."
+        "ru": "https://youtube.com/watch?v=cleaning",
+        "en": "Полная уборка всех 4 спален, кухни и санузлов, мытье полов эко-средствами, замена постельных комплектов сатин премиум и банных полотенец.",
+        "tr": "Full cleaning of all 4 bedrooms, kitchen, and bathrooms, floor cleaning with eco-friendly products, replacement of premium satin bed linens and bath towels."
       }
     }
   ],
@@ -2619,14 +2619,14 @@
       "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200",
       "category": "Локации",
       "videoUrl": "https://youtube.com/watch?v=guide1",
-      "priceEUR": "30",
-      "priceRUB": "2000",
-      "priceTRY": "700",
-      "video": "https://youtube.com/watch?v=preview1",
+      "priceEUR": "10",
+      "priceRUB": "9",
+      "priceTRY": "925",
+      "video": "380",
       "details": {
-        "ru": "Где встретить гигантских черепах Caretta-Caretta, как взять лодку без наценок и какие дикие бухты скрыты от массовых туристов.",
-        "en": "Where to spot giant Caretta-Caretta turtles, how to rent a boat without extra charges, and which wild bays are hidden from the masses.",
-        "tr": "Dev Caretta-Caretta kaplumbağalarını nerede görebilirsiniz, ek ücret ödemeden nasıl tekne kiralayabilirsiniz ve kalabalıkların gözünden uzak hangi vahşi koylar var?"
+        "ru": "https://youtube.com/watch?v=preview1",
+        "en": "Где встретить гигантских черепах Caretta-Caretta, как взять лодку без наценок и какие дикие бухты скрыты от массовых туристов.",
+        "tr": "Where to spot giant Caretta-Caretta turtles, how to rent a boat without extra charges, and which wild bays are hidden from the masses."
       }
     },
     {
@@ -2644,22 +2644,22 @@
       "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200",
       "category": "История",
       "videoUrl": "https://youtube.com/watch?v=guide2",
-      "priceEUR": "25",
-      "priceRUB": "2500",
-      "priceTRY": "900",
-      "video": "https://youtube.com/watch?v=preview2",
+      "priceEUR": "10",
+      "priceRUB": "9",
+      "priceTRY": "925",
+      "video": "380",
       "details": {
-        "ru": "Маршрут безопасного подъема к амфитеатру Кауноса, тайные тропы древней гавани и лучшие видовые точки для фотосъемки на закате.",
-        "en": "A safe route to the Kaunos Amphitheater, hidden paths of the ancient harbor, and the best vantage points for sunset photography.",
-        "tr": "Kaunos Amfitiyatrosu'na güvenli bir rota, antik limanın gizli yolları ve gün batımı fotoğrafçılığı için en iyi seyir noktaları."
+        "ru": "https://youtube.com/watch?v=preview2",
+        "en": "Маршрут безопасного подъема к амфитеатру Кауноса, тайные тропы древней гавани и лучшие видовые точки для фотосъемки на закате.",
+        "tr": "A safe route to the Kaunos Amphitheater, the secret paths of the ancient harbor, and the best vantage points for sunset photography."
       }
     },
     {
       "id": "guide-3",
       "title": {
         "ru": "Гастрономический гид: топ-10 ресторанов и гранатовые сады",
-        "en": "Food Guide: Top 10 Restaurants and Pomegranate Gardens",
-        "tr": "Yemek Rehberi: En İyi 10 Restoran ve Nar Bahçesi"
+        "en": "Gastronomic Guide: Top 10 Restaurants and Pomegranate Orchards",
+        "tr": "Gastronomi Rehberi: En İyi 10 Restoran ve Nar Bahçesi"
       },
       "desc": {
         "ru": "Где попробовать настоящую турецкую кухню, свежую рыбу и мезе",
@@ -2669,14 +2669,14 @@
       "image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200",
       "category": "Гастрономия",
       "videoUrl": "https://youtube.com/watch?v=guide3",
-      "priceEUR": "15",
-      "priceRUB": "1500",
-      "priceTRY": "550",
-      "video": "https://youtube.com/watch?v=preview3",
+      "priceEUR": "10",
+      "priceRUB": "9",
+      "priceTRY": "925",
+      "video": "380",
       "details": {
-        "ru": "Список проверенных ресторанов Дальяна, включая культовый ресторан Çiçek Restoran, явки шефов и специальные привилегии для гостей нашей виллы.",
-        "en": "A list of Dalyan's trusted restaurants, including the iconic Çiçek Restaurant, chef appearances, and special privileges for our villa guests.",
-        "tr": "Dalyan'ın güvenilir restoranlarının listesi, ikonik Çiçek Restoranı da dahil olmak üzere, şeflerin katılımları ve villa misafirlerimiz için özel ayrıcalıklar."
+        "ru": "https://youtube.com/watch?v=preview3",
+        "en": "Список проверенных ресторанов Дальяна, включая культовый ресторан Çiçek Restoran, явки шефов и специальные привилегии для гостей нашей виллы.",
+        "tr": "A list of Dalyan's trusted restaurants, including the iconic Çiçek Restaurant, chef appearances, and special privileges for our villa guests."
       }
     },
     {
@@ -2694,14 +2694,14 @@
       "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200",
       "category": "Здоровье",
       "videoUrl": "https://youtube.com/watch?v=guide4",
-      "priceEUR": "20",
-      "priceRUB": "2000",
-      "priceTRY": "700",
-      "video": "https://youtube.com/watch?v=preview4",
+      "priceEUR": "10",
+      "priceRUB": "9",
+      "priceTRY": "925",
+      "video": "380",
       "details": {
-        "ru": "Расписание работы источников, часы отсутствия экскурсионных теплоходов, состав минеральных вод и правильный порядок принятия ванн.",
-        "en": "Spring operating hours, hours when excursion boats are closed, composition of mineral waters, and the correct procedure for taking baths.",
-        "tr": "İlkbahar çalışma saatleri, gezi teknelerinin kapalı olduğu saatler, maden sularının bileşimi ve banyo yapmanın doğru yöntemi."
+        "ru": "https://youtube.com/watch?v=preview4",
+        "en": "Расписание работы источников, часы отсутствия экскурсионных теплоходов, состав минеральных вод и правильный порядок принятия ванн.",
+        "tr": "Spring operating hours, hours when excursion boats are closed, composition of mineral waters, and the correct procedure for taking baths."
       }
     },
     {
@@ -2719,14 +2719,14 @@
       "image": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200",
       "category": "Трекинг",
       "videoUrl": "https://youtube.com/watch?v=guide5",
-      "priceEUR": "15",
-      "priceRUB": "1500",
-      "priceTRY": "550",
-      "video": "https://youtube.com/watch?v=preview5",
+      "priceEUR": "10",
+      "priceRUB": "9",
+      "priceTRY": "925",
+      "video": "380",
       "details": {
-        "ru": "Точные GPS-треки подъема на высоту 500 метров над уровнем моря, рекомендации по обуви, запасу воды и безопасности на Ликийской тропе.",
-        "en": "Precise GPS tracking of your ascent to 500 meters above sea level, along with recommendations for footwear, water supplies, and safety on the Lycian Way.",
-        "tr": "Deniz seviyesinden 500 metre yüksekliğe tırmanışınızın hassas GPS takibi, Likya Yolu'nda giyilecek ayakkabı, su temini ve güvenlik önerileri."
+        "ru": "https://youtube.com/watch?v=preview5",
+        "en": "Точные GPS-треки подъема на высоту 500 метров над уровнем моря, рекомендации по обуви, запасу воды и безопасности на Ликийской тропе.",
+        "tr": "Precise GPS tracking of your ascent to 500 meters above sea level, along with recommendations for footwear, water supplies, and safety on the Lycian Way."
       }
     },
     {
@@ -2745,13 +2745,13 @@
       "category": "Шоппинг",
       "videoUrl": "https://youtube.com/watch?v=guide6",
       "priceEUR": "10",
-      "priceRUB": "1000",
-      "priceTRY": "350",
-      "video": "https://youtube.com/watch?v=preview6",
+      "priceRUB": "9",
+      "priceTRY": "925",
+      "video": "380",
       "details": {
-        "ru": "С какими фермерами стоит торговаться, где найти натуральное холодное оливковое масло первого отжима и свежайший инжир.",
-        "en": "Which farmers are worth bargaining with, where to find natural cold-pressed extra virgin olive oil and the freshest figs.",
-        "tr": "Hangi çiftçilerle pazarlık yapmaya değer, doğal soğuk sıkım sızma zeytinyağı ve en taze incirleri nerede bulabilirim?"
+        "ru": "https://youtube.com/watch?v=preview6",
+        "en": "С какими фермерами стоит торговаться, где найти натуральное холодное оливковое масло первого отжима и свежайший инжир.",
+        "tr": "Which farmers are worth bargaining with, where to find natural cold-pressed extra virgin olive oil and the freshest figs."
       }
     }
   ],

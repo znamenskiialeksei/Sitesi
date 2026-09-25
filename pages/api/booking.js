@@ -384,10 +384,14 @@ export default async function handler(req, res) {
     }
 
     const checkInHtml = bookingData.checkIn
-      ? `<div class="detail"><span class="label">Даты проживания:</span><span class="val">${bookingData.checkIn} — ${bookingData.checkOut} (${bookingData.nights} ночей)</span></div>`
+      ? `<div class="detail"><span class="label">Даты проживания:</span><span class="val">${bookingData.checkIn} - ${bookingData.checkOut} : ${bookingData.nights} ночей</span></div>`
       : '';
 
-    const pdfLink = `/api/booking?action=download_voucher&rowIndex=${encodeURIComponent(rowIndex)}&format=pdf&name=${encodeURIComponent(bookingData.name)}&checkIn=${encodeURIComponent(bookingData.checkIn)}&checkOut=${encodeURIComponent(bookingData.checkOut)}&nights=${encodeURIComponent(bookingData.nights)}&guests=${encodeURIComponent(bookingData.total_guests)}&price=${encodeURIComponent(bookingData.price)}`;
+    const safeContact = (!bookingData.contact || String(bookingData.contact).includes('#ERROR!'))
+      ? ''
+      : bookingData.contact;
+
+    const pdfLink = `/api/booking?action=download_voucher&rowIndex=${encodeURIComponent(rowIndex)}&format=pdf&name=${encodeURIComponent(bookingData.name)}&contact=${encodeURIComponent(safeContact)}&checkIn=${encodeURIComponent(bookingData.checkIn)}&checkOut=${encodeURIComponent(bookingData.checkOut)}&nights=${encodeURIComponent(bookingData.nights)}&guests=${encodeURIComponent(bookingData.total_guests)}&price=${encodeURIComponent(bookingData.price)}`;
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     return res.send(`<!DOCTYPE html>
@@ -426,9 +430,11 @@ export default async function handler(req, res) {
 
     <div class="detail"><span class="label">Гость:</span><span class="val">${bookingData.name}</span></div>
     <div class="detail"><span class="label">Объект:</span><span class="val">Villa Turaman : Дальян, Мугла, Турция</span></div>
-    <div class="detail"><span class="label">Владелец / Tax ID:</span><span class="val">Алексей Знаменский : VKN 9991120181</span></div>
+    <div class="detail"><span class="label">Владелец и Tax ID:</span><span class="val">Алексей Знаменский : VKN 9991120181</span></div>
     ${checkInHtml}
-    <div class="detail"><span class="label">Время заезда / выезда:</span><span class="val">Заезд с 16:00 • Выезд до 10:00</span></div>
+    <div class="detail"><span class="label">Количество гостей:</span><span class="val">${bookingData.total_guests || bookingData.guests || 2}</span></div>
+    <div class="detail"><span class="label">Итоговая стоимость:</span><span class="val" style="color:#10b981; font-weight:bold;">${bookingData.price || 'Оплачено'}</span></div>
+    <div class="detail"><span class="label">Время заезда и выезда:</span><span class="val">Заезд с 16:00 • Выезд до 10:00</span></div>
     <div class="detail"><span class="label">Код доступа Wi-Fi:</span><span class="val code">turaman2026</span></div>
     <div class="detail"><span class="label">Персональный консьерж:</span><span class="val">@marmarisyachtingru</span></div>
 
@@ -1707,15 +1713,33 @@ export default async function handler(req, res) {
             let expiresAt = null;
             if (statusFull.includes('СПЕЦПРЕДЛОЖЕНИЕ')) {
               status = 'СПЕЦПРЕДЛОЖЕНИЕ';
-              expiresAt = statusFull.split('|')[1] ? statusFull.split('|')[1].trim() : null;
+              const rawExp = statusFull.split('|')[1] ? statusFull.split('|')[1].trim() : null;
+              if (rawExp) {
+                const parsedDate = new Date(rawExp);
+                if (!isNaN(parsedDate.getTime())) {
+                  expiresAt = parsedDate.toISOString();
+                }
+              }
             } else if (statusFull.includes('ОЖИДАЕТ ОПЛАТЫ')) {
               status = 'ОЖИДАЕТ ОПЛАТЫ';
-              expiresAt = statusFull.split('|')[1] ? statusFull.split('|')[1].trim() : null;
+              const rawExp = statusFull.split('|')[1] ? statusFull.split('|')[1].trim() : null;
+              if (rawExp) {
+                const parsedDate = new Date(rawExp);
+                if (!isNaN(parsedDate.getTime())) {
+                  expiresAt = parsedDate.toISOString();
+                }
+              }
             }
+
+            let rawContact = (r[2] || '').toString().trim();
+            if (rawContact.includes('#ERROR!')) {
+              rawContact = '';
+            }
+
             return {
               rowIndex: i + 1,
-              name: r[1],
-              contact: r[2],
+              name: r[1] || 'Гость',
+              contact: rawContact,
               checkIn: r[3],
               checkOut: r[4],
               nights: r[5],

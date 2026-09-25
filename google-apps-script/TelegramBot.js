@@ -13,48 +13,94 @@
  */
 function registerTelegramBotMenu() {
   var ui = SpreadsheetApp.getUi();
+  var active = getTelegramActiveSections_();
 
-  var tgLaunchMenu = ui.createMenu("📲 1. Запуск и Меню бота")
-    .addItem("📱 Отправить Главное меню на телефон хозяина", "sendTelegramBotMenuToOwner")
-    .addItem("⌨️ Обновить клавиатуру бота: Reply Keyboard", "refreshTelegramKeyboard")
-    .addItem("📋 Зарегистрировать команды в Telegram: setMyCommands", "registerTelegramBotCommands");
+  var tgMenu = ui.createMenu("🤖 Telegram Бот");
+  var hasItems = false;
 
-  var tgRequestsMenu = ui.createMenu("📋 2. Заявки и Бронирования")
-    .addItem("📥 Отправить список активных заявок в Telegram", "sendTelegramPendingRequests")
-    .addItem("🔍 Аудит накладок и 24ч HOLD в Telegram", "auditTelegramCalendarHolds");
+  if (active.launch) {
+    var tgLaunchMenu = ui.createMenu("📲 1. Запуск и Меню бота")
+      .addItem("📱 Отправить Главное меню на телефон хозяина", "sendTelegramBotMenuToOwner")
+      .addItem("⌨️ Обновить клавиатуру бота: Reply Keyboard", "refreshTelegramKeyboard")
+      .addItem("📋 Зарегистрировать команды в Telegram: setMyCommands", "registerTelegramBotCommands")
+      .addItem("🧪 Тестовый пинг в Telegram", "sendTelegramTestPing");
+    tgMenu.addSubMenu(tgLaunchMenu);
+    hasItems = true;
+  }
 
-  var tgCrmMenu = ui.createMenu("💬 3. CRM и Переписка с гостями")
-    .addItem("💬 Отправить сводку последних диалогов в Telegram", "sendTelegramRecentChats")
-    .addItem("📢 Отправить сообщение гостю через Telegram", "sendTelegramDirectMessageDialog")
-    .addItem("📣 Массовая рассылка гостям через Telegram", "sendTelegramBroadcastDialog");
+  if (active.requests) {
+    if (hasItems) tgMenu.addSeparator();
+    var tgRequestsMenu = ui.createMenu("📋 2. Заявки и Бронирования")
+      .addItem("📥 Отправить список активных заявок в Telegram", "sendTelegramPendingRequests")
+      .addItem("🔍 Аудит накладок и 24ч HOLD в Telegram", "auditTelegramCalendarHolds");
+    tgMenu.addSubMenu(tgRequestsMenu);
+    hasItems = true;
+  }
 
-  var tgCalendarMenu = ui.createMenu("📅 4. Календарь и Тарифы")
-    .addItem("📊 Отправить график занятости виллы на 30 дней", "sendTelegramCalendarSummary")
-    .addItem("💳 Отправить сводку актуальных тарифов", "sendTelegramRatesSummary");
+  if (active.crm) {
+    var tgCrmMenu = ui.createMenu("💬 3. CRM и Переписка с гостями")
+      .addItem("💬 Отправить сводку последних диалогов в Telegram", "sendTelegramRecentChats")
+      .addItem("📢 Отправить сообщение гостю через Telegram", "sendTelegramDirectMessageDialog")
+      .addItem("📣 Массовая рассылка гостям через Telegram", "sendTelegramBroadcastDialog");
+    tgMenu.addSubMenu(tgCrmMenu);
+    hasItems = true;
+  }
 
-  var tgSyncMenu = ui.createMenu("🌐 5. Синхронизация с сайтом")
-    .addItem("⚡ Вызвать ревалидацию страниц сайта через бот", "triggerTelegramRevalidate")
-    .addItem("👑 Проверить статус доступности кабинета хозяина", "checkTelegramHostCabinetStatus");
+  if (active.calendar) {
+    var tgCalendarMenu = ui.createMenu("📅 4. Календарь и Тарифы")
+      .addItem("📊 Отправить график занятости виллы на 30 дней", "sendTelegramCalendarSummary")
+      .addItem("💳 Отправить сводку актуальных тарифов", "sendTelegramRatesSummary");
+    tgMenu.addSubMenu(tgCalendarMenu);
+    hasItems = true;
+  }
 
-  var tgSettingsMenu = ui.createMenu("⚙️ 6. Настройки Webhook и Токена")
-    .addItem("🔗 Установить Webhook на сайт: Next.js API", "setTelegramWebhookToSite")
-    .addItem("🔍 Проверить статус Webhook: getWebhookInfo", "checkTelegramWebhookStatus")
-    .addItem("❌ Удалить Webhook: переход на Polling", "deleteTelegramWebhook")
-    .addSeparator()
-    .addItem("🌐 Проверить статус ключей на Vercel: https://vercel.com/", "checkVercelEnvStatusInteractive")
-    .addItem("🔑 Настроить TELEGRAM_BOT_TOKEN и CHAT_ID", "setupTelegramPropertiesInteractive")
-    .addItem("🧪 Тестовый пинг в Telegram", "sendTelegramTestPing");
+  if (active.vscode) {
+    if (hasItems) tgMenu.addSeparator();
+    var tgVsCodeMenu = ui.createMenu("🛠️ 5. Задачи запуска проекта в VS Code")
+      .addItem("🚀 Задача 1: Запуск сервера разработки Next.js: Порт 3000", "showVsCodeTaskGuide_Dev")
+      .addItem("🧹 Задача 2: Освободить сетевой порт 3000", "showVsCodeTaskGuide_KillPort")
+      .addItem("📦 Задача 3: Сборка проекта Next.js Build", "showVsCodeTaskGuide_Build")
+      .addItem("⚡ Задача 4: Запуск продакшн сервера Next.js Start", "showVsCodeTaskGuide_Start")
+      .addItem("💾 Задача 5: Фиксация таблиц в эталон SSOT: masterSeed", "showVsCodeTaskGuide_Seed")
+      .addItem("💾 Задача 6: Создание двухуровневого бэкапа и сохранение версии", "showVsCodeTaskGuide_Backup")
+      .addItem("📊 Задача 7: Синхронизация контента Google Sheets в кэш", "showVsCodeTaskGuide_Sync")
+      .addItem("📤 Задача 8: Пуш проекта в изолированные ветки GitHub и main", "showVsCodeTaskGuide_Push")
+      .addItem("⏸️ Задача 9: Перевод сайта в режим обслуживания: HTTP 503", "showVsCodeTaskGuide_Pause")
+      .addItem("▶️ Задача 10: Возобновление штатной работы сайта", "showVsCodeTaskGuide_Resume")
+      .addSeparator()
+      .addItem("📱 Отправить дайджест задач VS Code на телефон в Telegram", "sendVsCodeTasksSummaryToTelegram");
+    tgMenu.addSubMenu(tgVsCodeMenu);
+    hasItems = true;
+  }
 
-  ui.createMenu("🤖 Telegram Бот")
-    .addSubMenu(tgLaunchMenu)
-    .addSeparator()
-    .addSubMenu(tgRequestsMenu)
-    .addSubMenu(tgCrmMenu)
-    .addSubMenu(tgCalendarMenu)
-    .addSubMenu(tgSyncMenu)
-    .addSeparator()
-    .addSubMenu(tgSettingsMenu)
-    .addToUi();
+  if (active.sync) {
+    var tgSyncMenu = ui.createMenu("🌐 6. Синхронизация с сайтом")
+      .addItem("⚡ Вызвать ревалидацию страниц сайта через бот", "triggerTelegramRevalidate")
+      .addItem("👑 Проверить статус доступности кабинета хозяина", "checkTelegramHostCabinetStatus");
+    tgMenu.addSubMenu(tgSyncMenu);
+    hasItems = true;
+  }
+
+  if (active.settings) {
+    if (hasItems) tgMenu.addSeparator();
+    var tgSettingsMenu = ui.createMenu("⚙️ 7. Конструктор меню и Настройки Webhook")
+      .addItem("🎛️ Конструктор разделов меню бота: Включить / Выключить", "toggleTelegramMenuSectionsInteractive")
+      .addSeparator()
+      .addItem("🔗 Установить Webhook на сайт: Next.js API", "setTelegramWebhookToSite")
+      .addItem("🔍 Проверить статус Webhook: getWebhookInfo", "checkTelegramWebhookStatus")
+      .addItem("❌ Удалить Webhook: переход на Polling", "deleteTelegramWebhook")
+      .addSeparator()
+      .addItem("🌐 Проверить статус ключей на Vercel: https://vercel.com/", "checkVercelEnvStatusInteractive")
+      .addItem("🔑 Настроить TELEGRAM_BOT_TOKEN и CHAT_ID", "setupTelegramPropertiesInteractive")
+      .addItem("🧪 Тестовый пинг в Telegram", "sendTelegramTestPing");
+    tgMenu.addSubMenu(tgSettingsMenu);
+  } else {
+    // Если раздел настроек скрыт, всегда оставляем доступ к конструктору
+    tgMenu.addSeparator();
+    tgMenu.addItem("🎛️ Конструктор разделов меню бота: Включить / Выключить", "toggleTelegramMenuSectionsInteractive");
+  }
+
+  tgMenu.addToUi();
 }
 
 /**
@@ -99,12 +145,35 @@ function sendTelegramMessage_(text, replyMarkup) {
  * Построение постоянной мобильной клавиатуры Reply Keyboard для телефона хозяина
  */
 function buildTelegramReplyKeyboard_() {
+  var active = getTelegramActiveSections_();
+  var rows = [];
+
+  var row1 = [];
+  if (active.requests) row1.push({ text: '📋 Заявки и брони' });
+  if (active.crm) row1.push({ text: '💬 CRM Чаты' });
+  if (row1.length > 0) rows.push(row1);
+
+  var row2 = [];
+  if (active.calendar) row2.push({ text: '📅 Календарь дат' });
+  if (active.calendar) row2.push({ text: '💳 Тарифы виллы' });
+  if (row2.length > 0) rows.push(row2);
+
+  var row3 = [];
+  if (active.vscode) row3.push({ text: '🛠️ Задачи VS Code' });
+  if (active.crm) row3.push({ text: '📢 Массовая рассылка' });
+  if (row3.length > 0) rows.push(row3);
+
+  var row4 = [];
+  if (active.sync) row4.push({ text: '⚡ Обновить сайт' });
+  if (active.settings) row4.push({ text: '⚙️ Статус и Webhook' });
+  if (row4.length > 0) rows.push(row4);
+
+  if (rows.length === 0) {
+    rows.push([{ text: '📱 Главное меню' }]);
+  }
+
   return {
-    keyboard: [
-      [{ text: '📋 Заявки и брони' }, { text: '💬 CRM Чаты' }],
-      [{ text: '📅 Календарь дат' }, { text: '💳 Тарифы виллы' }],
-      [{ text: '📢 Массовая рассылка' }, { text: '⚙️ Статус и Webhook' }]
-    ],
+    keyboard: rows,
     resize_keyboard: true,
     is_persistent: true
   };
@@ -115,29 +184,42 @@ function buildTelegramReplyKeyboard_() {
  */
 function sendTelegramBotMenuToOwner() {
   try {
+    var active = getTelegramActiveSections_();
     var text = '🏡 Villa Turaman: Центр управления владельца\n\n' +
-      'Вам доступны все ключевые операции по вилле прямо из этого чата:\n' +
+      'Вам доступны ключевые операции по вилле прямо из этого чата:\n' +
       '• Модерация заявок: одобрение 24ч HOLD или отклонение\n' +
       '• Ответы гостям: проведите вправо по сообщению гостя для ответа\n' +
       '• Календарь и актуальные тарифы\n' +
-      '• Синхронизация и ревалидация витрины сайта\n\n' +
+      '• Управление задачами VS Code и синхронизацией сайта\n\n' +
       'Используйте кнопки меню внизу экрана для быстрого доступа:';
 
+    var inlineRows = [];
+
+    var r1 = [];
+    if (active.requests) r1.push({ text: '📋 Заявки на модерации', callback_data: 'menu_requests' });
+    if (active.crm) r1.push({ text: '💬 CRM Диалоги', callback_data: 'menu_chats' });
+    if (r1.length > 0) inlineRows.push(r1);
+
+    var r2 = [];
+    if (active.calendar) r2.push({ text: '📅 Календарь занятости', callback_data: 'menu_calendar' });
+    if (active.calendar) r2.push({ text: '💳 Актуальные тарифы', callback_data: 'menu_prices' });
+    if (r2.length > 0) inlineRows.push(r2);
+
+    var r3 = [];
+    if (active.vscode) r3.push({ text: '🛠️ Задачи VS Code', callback_data: 'menu_vscode' });
+    if (active.sync) r3.push({ text: '⚡ Ревалидация сайта', callback_data: 'menu_revalidate' });
+    if (r3.length > 0) inlineRows.push(r3);
+
+    if (active.settings) {
+      inlineRows.push([{ text: '⚙️ Статус системы', callback_data: 'menu_status' }]);
+    }
+
+    if (inlineRows.length === 0) {
+      inlineRows.push([{ text: '📱 Обновить меню', callback_data: 'menu_start' }]);
+    }
+
     var inlineKeyboard = {
-      inline_keyboard: [
-        [
-          { text: '📋 Заявки на модерации', callback_data: 'menu_requests' },
-          { text: '💬 CRM Диалоги', callback_data: 'menu_chats' }
-        ],
-        [
-          { text: '📅 Календарь занятости', callback_data: 'menu_calendar' },
-          { text: '💳 Актуальные тарифы', callback_data: 'menu_prices' }
-        ],
-        [
-          { text: '⚡ Ревалидация сайта', callback_data: 'menu_revalidate' },
-          { text: '⚙️ Статус системы', callback_data: 'menu_status' }
-        ]
-      ]
+      inline_keyboard: inlineRows
     };
 
     var replyKeyboard = buildTelegramReplyKeyboard_();
@@ -782,5 +864,225 @@ function sendTelegramTestPing() {
     }
   } catch (err) {
     SpreadsheetApp.getUi().alert('Ошибка пинга', err.message, SpreadsheetApp.getUi().ButtonSet.OK);
+  }
+}
+
+// ==============================================================================
+// МОДУЛЬНЫЙ КОНСТРУКТОР РАЗДЕЛОВ МЕНЮ TELEGRAM БОТА И ЗАДАЧИ VS CODE
+// ==============================================================================
+
+/**
+ * Получение активных разделов меню Telegram-бота из Script Properties
+ */
+function getTelegramActiveSections_() {
+  var props = PropertiesService.getScriptProperties();
+  var raw = props.getProperty('TG_ACTIVE_SECTIONS');
+  if (!raw) {
+    return {
+      launch: true,
+      requests: true,
+      crm: true,
+      calendar: true,
+      vscode: true,
+      sync: true,
+      settings: true
+    };
+  }
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    return {
+      launch: true,
+      requests: true,
+      crm: true,
+      calendar: true,
+      vscode: true,
+      sync: true,
+      settings: true
+    };
+  }
+}
+
+/**
+ * Интерактивный переключатель разделов меню Telegram-бота (ВКЛ / ВЫКЛ)
+ */
+function toggleTelegramMenuSectionsInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var current = getTelegramActiveSections_();
+  var menuList = [
+    '1. launch: 📱 Пульт управления в смартфоне [текущий: ' + (current.launch ? 'ВКЛ' : 'ВЫКЛ') + ']',
+    '2. requests: 📋 Заявки и 24ч HOLD [текущий: ' + (current.requests ? 'ВКЛ' : 'ВЫКЛ') + ']',
+    '3. crm: 💬 CRM и Переписка с гостями [текущий: ' + (current.crm ? 'ВКЛ' : 'ВЫКЛ') + ']',
+    '4. calendar: 📅 Календарь занятости и Тарифы [текущий: ' + (current.calendar ? 'ВКЛ' : 'ВЫКЛ') + ']',
+    '5. vscode: 🛠️ Задачи запуска проекта в VS Code [текущий: ' + (current.vscode ? 'ВКЛ' : 'ВЫКЛ') + ']',
+    '6. sync: 🌐 Синхронизация с сайтом [текущий: ' + (current.sync ? 'ВКЛ' : 'ВЫКЛ') + ']',
+    '7. settings: ⚙️ Настройки Webhook и Токена [текущий: ' + (current.settings ? 'ВКЛ' : 'ВЫКЛ') + ']'
+  ].join('\n');
+
+  var promptRes = ui.prompt(
+    'Конструктор разделов Telegram-бота',
+    'Укажите номер раздела от 1 до 7 для переключения статуса ВКЛ / ВЫКЛ, либо введите all для включения всех разделов:\n\n' + menuList,
+    ui.ButtonSet.OK_CANCEL
+  );
+
+  if (promptRes.getSelectedButton() !== ui.Button.OK) return;
+  var input = promptRes.getResponseText().trim().toLowerCase();
+
+  var keyMap = {
+    '1': 'launch',
+    '2': 'requests',
+    '3': 'crm',
+    '4': 'calendar',
+    '5': 'vscode',
+    '6': 'sync',
+    '7': 'settings'
+  };
+
+  if (input === 'all') {
+    Object.keys(current).forEach(function(k) { current[k] = true; });
+  } else if (keyMap[input]) {
+    var k = keyMap[input];
+    current[k] = !current[k];
+  } else {
+    ui.alert('Внимание', 'Неверный номер раздела. Введите число от 1 до 7 или all.', ui.ButtonSet.OK);
+    return;
+  }
+
+  PropertiesService.getScriptProperties().setProperty('TG_ACTIVE_SECTIONS', JSON.stringify(current));
+  ui.alert(
+    'Конфигурация обновлена',
+    'Разделы Telegram-бота успешно настроены!\nПерезагрузите таблицу или вызовите меню повторно для применения изменений.',
+    ui.ButtonSet.OK
+  );
+}
+
+// ------------------------------------------------------------------------------
+// ИНСТРУКЦИИ И ШПАРГАЛКИ ПО ЗАДАЧАМ ЗАПУСКА ПРОЕКТА В VS CODE
+// ------------------------------------------------------------------------------
+
+function showVsCodeTaskGuide_Dev() {
+  SpreadsheetApp.getUi().alert(
+    'Задача 1: Запуск сервера разработки Next.js',
+    'Назначение: локальный сервер разработки на порту 3000.\n\n' +
+    '1. В интерфейсе VS Code: Терминал ➔ Запустить задачу ➔ "🚀 1. Запуск Сервера Разработки - Next.js Dev: Port 3000"\n' +
+    '2. Горячие клавиши: Ctrl+Shift+B\n' +
+    '3. Команда терминала pwsh: npm run dev',
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
+}
+
+function showVsCodeTaskGuide_KillPort() {
+  SpreadsheetApp.getUi().alert(
+    'Задача 2: Освободить порт 3000',
+    'Назначение: принудительное завершение зависшего процесса на порту 3000.\n\n' +
+    '1. В интерфейсе VS Code: Терминал ➔ Запустить задачу ➔ "🧹 2. Освободить Порт 3000 - Free Port 3000"\n' +
+    '2. Команда терминала pwsh:\npwsh -ExecutionPolicy Bypass -Command "Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }"',
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
+}
+
+function showVsCodeTaskGuide_Build() {
+  SpreadsheetApp.getUi().alert(
+    'Задача 3: Сборка проекта Next.js Build',
+    'Назначение: компиляция и проверка проекта перед деплоем.\n\n' +
+    '1. В интерфейсе VS Code: Терминал ➔ Запустить задачу ➔ "📦 3. Сборка Проекта - Next.js Build"\n' +
+    '2. Команда терминала pwsh: npm run build',
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
+}
+
+function showVsCodeTaskGuide_Start() {
+  SpreadsheetApp.getUi().alert(
+    'Задача 4: Запуск продакшн сервера Next.js Start',
+    'Назначение: запуск скомпилированной версии на порту 3000.\n\n' +
+    '1. В интерфейсе VS Code: Терминал ➔ Запустить задачу ➔ "⚡ 4. Запуск Продакшн Сервера - Next.js Start"\n' +
+    '2. Команда терминала pwsh: npm start',
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
+}
+
+function showVsCodeTaskGuide_Seed() {
+  SpreadsheetApp.getUi().alert(
+    'Задача 5: Фиксация таблиц в эталон SSOT',
+    'Назначение: создание локальной копии контента masterSeedContent.js и content.json.\n\n' +
+    '1. В интерфейсе VS Code: Терминал ➔ Запустить задачу ➔ "💾 6. Зафиксировать текущие таблицы как эталон SSOT на сайте"\n' +
+    '2. Команда терминала pwsh: node scripts/save-master-seed.js',
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
+}
+
+function showVsCodeTaskGuide_Backup() {
+  SpreadsheetApp.getUi().alert(
+    'Задача 6: Создание двухуровневого бэкапа и сохранение версии',
+    'Назначение: создание локального бэкапа и паспортизированного релиза в СОХР_ПРОЕКТЫ.\n\n' +
+    '1. В интерфейсе VS Code: Терминал ➔ Запустить задачу ➔ "💾 7. SPARK: Универсальное создание двухуровневого бэкапа и сохранение версии"\n' +
+    '2. Команда терминала pwsh:\npwsh -ExecutionPolicy Bypass -File .\\create_project_backup.ps1',
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
+}
+
+function showVsCodeTaskGuide_Sync() {
+  SpreadsheetApp.getUi().alert(
+    'Задача 7: Синхронизация контента Google Sheets в кэш',
+    'Назначение: ручная выгрузка данных из Google Sheets в локальный файл content.json.\n\n' +
+    '1. В интерфейсе VS Code: Терминал ➔ Запустить задачу ➔ "📊 8. Синхронизация Контента - Google Sheets -> content.json"\n' +
+    '2. Команда терминала pwsh: node scripts/sync-content.js',
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
+}
+
+function showVsCodeTaskGuide_Push() {
+  SpreadsheetApp.getUi().alert(
+    'Задача 8: Пуш проекта в изолированные ветки GitHub и main',
+    'Назначение: безопасная отправка изменений в Git с автоматической фильтрацией секретов.\n\n' +
+    '1. В интерфейсе VS Code: Терминал ➔ Запустить задачу ➔ "📤 9. SPARK: Пуш проекта в изолированные ветки GitHub и main"\n' +
+    '2. Команда терминала pwsh:\npwsh -ExecutionPolicy Bypass -File .\\push_project_to_github.ps1',
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
+}
+
+function showVsCodeTaskGuide_Pause() {
+  SpreadsheetApp.getUi().alert(
+    'Задача 9: Режим обслуживания HTTP 503',
+    'Назначение: временная приостановка публичного доступа с сохранением SEO позиций.\n\n' +
+    '1. В интерфейсе VS Code: Терминал ➔ Запустить задачу ➔ "⏸️ 11. SPARK: Приостановить сайт - режим тех. обслуживания: HTTP 503"\n' +
+    '2. Команда терминала pwsh:\npwsh -ExecutionPolicy Bypass -File .\\pause_site.ps1',
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
+}
+
+function showVsCodeTaskGuide_Resume() {
+  SpreadsheetApp.getUi().alert(
+    'Задача 10: Возобновление работы сайта',
+    'Назначение: снятие заглушки 503 и возвращение сайта в боевой режим.\n\n' +
+    '1. В интерфейсе VS Code: Терминал ➔ Запустить задачу ➔ "▶️ 12. SPARK: Возобновить штатную работу сайта: снятие 503"\n' +
+    '2. Команда терминала pwsh:\npwsh -ExecutionPolicy Bypass -File .\\resume_site.ps1',
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
+}
+
+function sendVsCodeTasksSummaryToTelegram() {
+  try {
+    var text = '🛠️ ЗАДАЧИ ЗАПУСКА ПРОЕКТА В VS CODE\n\n' +
+      'Шпаргалка для быстрого запуска из терминала или через меню Tasks:\n\n' +
+      '• Dev 3000: npm run dev\n' +
+      '• Kill Port 3000: pwsh stop-port 3000\n' +
+      '• Build: npm run build\n' +
+      '• Start: npm start\n' +
+      '• SSOT Seed: node scripts/save-master-seed.js\n' +
+      '• Backup: pwsh create_project_backup.ps1\n' +
+      '• Sync: node scripts/sync-content.js\n' +
+      '• Git Push: pwsh push_project_to_github.ps1\n' +
+      '• Pause 503: pwsh pause_site.ps1\n' +
+      '• Resume: pwsh resume_site.ps1';
+
+    var res = sendTelegramMessage_(text, null);
+    if (res.ok) {
+      SpreadsheetApp.getUi().alert('✅ Отправлено', 'Шпаргалка по задачам VS Code доставлена в ваш Telegram.', SpreadsheetApp.getUi().ButtonSet.OK);
+    } else {
+      SpreadsheetApp.getUi().alert('Ошибка', res.description || 'Не удалось отправить сообщение', SpreadsheetApp.getUi().ButtonSet.OK);
+    }
+  } catch (err) {
+    SpreadsheetApp.getUi().alert('Ошибка отправки', err.message, SpreadsheetApp.getUi().ButtonSet.OK);
   }
 }

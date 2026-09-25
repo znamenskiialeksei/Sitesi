@@ -36,14 +36,19 @@ export default function HostReservations({
       const newMap = {};
       requests.forEach((req) => {
         if (req.expiresAt) {
-          const diff = new Date(req.expiresAt).getTime() - Date.now();
-          if (diff <= 0) {
-            newMap[req.rowIndex] = 'EXPIRED';
+          const expTime = new Date(req.expiresAt).getTime();
+          if (isNaN(expTime)) {
+            newMap[req.rowIndex] = null;
           } else {
-            const h = Math.floor(diff / (1000 * 60 * 60));
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
-            newMap[req.rowIndex] = `${h}ч ${m}м ${s}с`;
+            const diff = expTime - Date.now();
+            if (diff <= 0) {
+              newMap[req.rowIndex] = 'EXPIRED';
+            } else {
+              const h = Math.floor(diff / (1000 * 60 * 60));
+              const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+              const s = Math.floor((diff % (1000 * 60)) / 1000);
+              newMap[req.rowIndex] = `${h}ч ${m}м ${s}с`;
+            }
           }
         }
       });
@@ -122,7 +127,7 @@ export default function HostReservations({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-white/10 gap-3">
         <h3 className="text-lg font-bold text-white flex items-center gap-2">
           <Clock className="w-5 h-5 text-rose-500" />
-          <span>{t('activeTravelerRequests')} [{displayedRequests.length}]</span>
+          <span>{t('activeTravelerRequests')}: {displayedRequests.length}</span>
         </h3>
 
         {/* Переключатель категорий бронирований */}
@@ -136,7 +141,7 @@ export default function HostReservations({
                 : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-white/5'
             }`}
           >
-            Все [{requests.length}]
+            Все: {requests.length}
           </button>
           <button
             type="button"
@@ -147,7 +152,7 @@ export default function HostReservations({
                 : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-white/5'
             }`}
           >
-            Ожидают решения [{pendingList.length}]
+            Ожидают решения: {pendingList.length}
           </button>
           <button
             type="button"
@@ -158,7 +163,7 @@ export default function HostReservations({
                 : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-white/5'
             }`}
           >
-            Оплаченные брони [{paidList.length}]
+            Оплаченные брони: {paidList.length}
           </button>
           <button
             type="button"
@@ -169,7 +174,7 @@ export default function HostReservations({
                 : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-white/5'
             }`}
           >
-            Архив [{archiveList.length}]
+            Архив: {archiveList.length}
           </button>
         </div>
       </div>
@@ -195,7 +200,11 @@ export default function HostReservations({
                     <span className="text-sm font-bold text-white flex items-center gap-1.5">
                       <User className="w-4 h-4 text-rose-400" /> {req.name || t('guestLabel')}
                     </span>
-                    <span className="text-xs text-slate-400">[{req.contact}]</span>
+                    <span className="text-xs text-slate-400 font-mono">
+                      {(!req.contact || req.contact.includes('#ERROR!'))
+                        ? (req.email || req.phone || 'Контакт уточняется')
+                        : req.contact}
+                    </span>
                     <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
                       isPaid
                         ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
@@ -208,12 +217,12 @@ export default function HostReservations({
                   </div>
 
                 <div className="text-xs text-slate-300 flex flex-wrap items-center gap-4">
-                  <span>{t('periodLabel')} <b className="text-white">{req.checkIn} - {req.checkOut}</b> [{req.nights} {t('nightsWord')}]</span>
+                  <span>{t('periodLabel')} <b className="text-white">{req.checkIn} - {req.checkOut}</b> - {req.nights} {t('nightsWord')}</span>
                   <span>{t('guestsCountLabel')} <b className="text-white">{Number(req.guests) || (Number(req.adults || 0) + Number(req.children || 0)) || 1}</b></span>
                   <span>{t('amountLabel')} <b className="text-emerald-400 font-bold">{req.price}</b></span>
                 </div>
 
-                {req.expiresAt && isHold && (
+                {req.expiresAt && isHold && !isNaN(new Date(req.expiresAt).getTime()) && (
                   <div className="flex flex-wrap items-center gap-2 pt-1 font-mono text-xs">
                     {countdownMap[req.rowIndex] && countdownMap[req.rowIndex] !== 'EXPIRED' ? (
                       <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-950/70 border border-rose-500/40 text-rose-300 font-bold animate-pulse">
@@ -223,7 +232,7 @@ export default function HostReservations({
                     ) : countdownMap[req.rowIndex] === 'EXPIRED' ? (
                       <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-950/60 border border-red-500/30 text-red-400 font-bold">
                         <Clock className="w-3.5 h-3.5" />
-                        <span>Время оплаты истекло [требуется отзыв]</span>
+                        <span>Время оплаты истекло: требуется отзыв</span>
                       </span>
                     ) : null}
                     <span className="text-[11px] text-slate-400">
@@ -245,7 +254,7 @@ export default function HostReservations({
                     title="Открыть переписку с гостем в Центре сообщений"
                   >
                     <MessageCircle className="w-4 h-4 text-blue-400" />
-                    <span>{t('openChatBtn') || 'Перейти в чат'}</span>
+                    <span>{t('openChatBtn') && t('openChatBtn') !== 'openChatBtn' ? t('openChatBtn') : 'Перейти в чат'}</span>
                   </button>
                 )}
 

@@ -42,6 +42,7 @@ import SleepingArrangements from '../components/SleepingArrangements';
 import SpaPoolSection from '../components/SpaPoolSection';
 import DalyanLandmarks from '../components/DalyanLandmarks';
 import LawSafetyAccessibility from '../components/LawSafetyAccessibility';
+import ExpandableInfoTabs from '../components/ExpandableInfoTabs';
 import HostProfileCard from '../components/HostProfileCard';
 import ReviewsSection from '../components/ReviewsSection';
 import CatalogSection from '../components/CatalogSection';
@@ -847,9 +848,6 @@ export default function HomeListing({ publicData, contentData }) {
               </div>
             </div>
 
-            {/* Безопасность, Закон № 7464 и Доступная среда */}
-            <LawSafetyAccessibility homeData={homeData} />
-
             {/* Дополнительные услуги и видео-путеводители из Google Sheets */}
             <CatalogSection
               products={currentPublicData.products}
@@ -865,8 +863,8 @@ export default function HomeListing({ publicData, contentData }) {
               gallery={currentPublicData.gallery}
             />
 
-            {/* Отзывы и оценки гостей по категориям */}
-            <ReviewsSection homeData={homeData} />
+            {/* Раскрывающийся аккордеон с вкладками: Закон № 7464, 14 ориентиров Дальяна, Отзывы гостей */}
+            <ExpandableInfoTabs homeData={homeData} />
 
             {/* Карточка хоста: Aleksei Znamenskii */}
             <HostProfileCard homeData={homeData} />
