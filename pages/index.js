@@ -25,7 +25,8 @@ import {
   Compass,
   ChevronRight,
   X,
-  Camera
+  Camera,
+  Star
 } from 'lucide-react';
 
 import { useLanguage } from '../utils/language';
@@ -40,11 +41,7 @@ import BookingWidget from '../components/BookingWidget';
 import Amenities from '../components/Amenities';
 import SleepingArrangements from '../components/SleepingArrangements';
 import SpaPoolSection from '../components/SpaPoolSection';
-import DalyanLandmarks from '../components/DalyanLandmarks';
-import LawSafetyAccessibility from '../components/LawSafetyAccessibility';
-import ExpandableInfoTabs from '../components/ExpandableInfoTabs';
 import HostProfileCard from '../components/HostProfileCard';
-import ReviewsSection from '../components/ReviewsSection';
 import CatalogSection from '../components/CatalogSection';
 import GallerySection from '../components/GallerySection';
 import Footer from '../components/Footer';
@@ -53,6 +50,10 @@ import AuthModal from '../components/Modals/AuthModal';
 import TwoFaModal from '../components/Modals/TwoFaModal';
 import PresentationModal from '../components/Modals/PresentationModal';
 import ContactHostModal from '../components/Modals/ContactHostModal';
+import AboutVillaModal from '../components/Modals/AboutVillaModal';
+import SafetyModal from '../components/Modals/SafetyModal';
+import LandmarksModal from '../components/Modals/LandmarksModal';
+import ReviewsModal from '../components/Modals/ReviewsModal';
 import { parseDriveLink } from '../utils/media';
 import { parseDateRU } from '../utils/dates';
 import { buildHomeDerivedCollections } from '../utils/masterSeedContent';
@@ -115,8 +116,10 @@ export default function HomeListing({ publicData, contentData }) {
 
   // Состояние выбранной презентации: видео-гид или консьерж-сервис
   const [selectedPresentation, setSelectedPresentation] = useState(null);
-  const [selectedPresentationType, setSelectedPresentationType] = useState('service');
   const [aboutModalOpen, setAboutModalOpen] = useState(false);
+  const [safetyModalOpen, setSafetyModalOpen] = useState(false);
+  const [landmarksModalOpen, setLandmarksModalOpen] = useState(false);
+  const [reviewsModalOpen, setReviewsModalOpen] = useState(false);
 
   // Занятые даты из iCal каналов бронирования
   const [apiOccupiedDates, setApiOccupiedDates] = useState([]);
@@ -520,10 +523,23 @@ export default function HomeListing({ publicData, contentData }) {
         }).filter(Boolean)
   };
 
-  const fullDescriptionSections = Object.values(currentContentData.about || {}).map((item) => ({
-    title: item.title?.[lang] || item.title?.ru || '',
-    text: item.text?.[lang] || item.text?.ru || ''
-  }));
+  const fullDescriptionSections = (
+    currentContentData.about && Object.keys(currentContentData.about).length > 0
+  )
+    ? Object.values(currentContentData.about).map((item) => ({
+        title: item.title?.[lang] || item.title?.ru || '',
+        text: item.text?.[lang] || item.text?.ru || ''
+      }))
+    : [1, 2, 3, 4, 5, 6, 7].map((num) => {
+        const titleKey = `about_sec_${num}_title`;
+        const textKey = `about_sec_${num}_text`;
+        const titleItem = currentContentData.home?.[titleKey];
+        const textItem = currentContentData.home?.[textKey];
+        return {
+          title: titleItem?.[lang] || titleItem?.ru || '',
+          text: textItem?.[lang] || textItem?.ru || ''
+        };
+      }).filter((s) => s.title && s.text);
 
   // Обработчик бронирования из виджета: instant: платёжный шлюз или IBAN, manual: запрос хозяину
   const handleBookingSubmit = async (bookingData, effectiveMode) => {
@@ -823,9 +839,6 @@ export default function HomeListing({ publicData, contentData }) {
             {/* Удобства виллы: Amenities */}
             <Amenities homeData={homeData} customAmenitiesGrouped={homeData.amenitiesGrouped} customMainAmenities={homeData.mainAmenities} />
 
-            {/* Географические ориентиры Дальяна: Dalyan Landmarks */}
-            <DalyanLandmarks homeData={homeData} />
-
             {/* Локация и окрестности Дальяна: панорама */}
             <div className="space-y-4 pt-4 border-t border-white/10">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -863,8 +876,68 @@ export default function HomeListing({ publicData, contentData }) {
               gallery={currentPublicData.gallery}
             />
 
-            {/* Раскрывающийся аккордеон с вкладками: Закон № 7464, 14 ориентиров Дальяна, Отзывы гостей */}
-            <ExpandableInfoTabs homeData={homeData} />
+            {/* Раздел: Юридический регламент, безопасность и доступная среда */}
+            <div className="space-y-4 pb-8 border-b border-white/10">
+              <div className="flex items-center gap-2 text-amber-400 font-semibold text-xs tracking-wider uppercase">
+                <ShieldCheck className="w-4 h-4" />
+                <span>Юридический регламент и комфорт</span>
+              </div>
+              <h2 className="text-xl font-bold text-white">
+                Безопасность, Закон № 7464 и Доступная среда
+              </h2>
+              <p className="text-slate-300 leading-relaxed line-clamp-4 text-base">
+                Вилла осуществляет деятельность в строгом соответствии с Законом Турции № 7464 о краткосрочной туристической аренде. Официальный договор найма с описью имущества, обязательная регистрация всех гостей в государственной системе учета населения KBS жандармерии, наружные камеры видеонаблюдения по периметру, автономные детекторы дыма и угарного газа, безбарьерный доступ на первом этаже и подъемник для бассейна.
+              </p>
+              <button
+                type="button"
+                onClick={() => setSafetyModalOpen(true)}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-rose-400 hover:text-rose-300 underline underline-offset-4 transition-colors"
+              >
+                Показать подробнее о безопасности и законе № 7464 <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Раздел: 14 географических ориентиров Дальяна */}
+            <div className="space-y-4 pb-8 border-b border-white/10">
+              <div className="flex items-center gap-2 text-emerald-400 font-semibold text-xs tracking-wider uppercase">
+                <Compass className="w-4 h-4" />
+                <span>Географические ориентиры Дальяна</span>
+              </div>
+              <h2 className="text-xl font-bold text-white">
+                {homeData.landmarksTitle || '14 географических ориентиров Дальяна'}
+              </h2>
+              <p className="text-slate-300 leading-relaxed line-clamp-4 text-base">
+                Идеальное расположение виллы в сердце экологического заповедника Дальян: всего 250 метров [3 минуты пешком] до главной пешеходной улицы, 400 метров до набережной реки Дальян, 450 метров до вида на Ликийские гробницы королей, 11 км до песчаного пляжа Изтузу и 30 км от международного аэропорта Даламан.
+              </p>
+              <button
+                type="button"
+                onClick={() => setLandmarksModalOpen(true)}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-rose-400 hover:text-rose-300 underline underline-offset-4 transition-colors"
+              >
+                Показать все 14 ориентиров и карту расстояний <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Раздел: Рейтинг и отзывы гостей */}
+            <div className="space-y-4 pb-8 border-b border-white/10">
+              <div className="flex items-center gap-2 text-rose-400 font-semibold text-xs tracking-wider uppercase">
+                <Star className="w-4 h-4 fill-rose-400" />
+                <span>Рейтинг гостей и отзывы</span>
+              </div>
+              <h2 className="text-xl font-bold text-white">
+                4.98 ★ • Рейтинг гостей на основе 48 отзывов
+              </h2>
+              <p className="text-slate-300 leading-relaxed line-clamp-4 text-base">
+                Гости оценивают чистоту, точность описания и мгновенное общение с хозяином на высший балл 5.0 из 5.0. Статус Суперхозяина на Airbnb более 5 лет приема гостей. Прочитайте реальные отзывы гостей о приватном бассейне с соленой водой, джакузи, тишине и морских путешествиях.
+              </p>
+              <button
+                type="button"
+                onClick={() => setReviewsModalOpen(true)}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-rose-400 hover:text-rose-300 underline underline-offset-4 transition-colors"
+              >
+                Показать все 48 отзывов и критерии оценок <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
 
             {/* Карточка хоста: Aleksei Znamenskii */}
             <HostProfileCard homeData={homeData} />
@@ -935,34 +1008,33 @@ export default function HomeListing({ publicData, contentData }) {
         />
       )}
 
-      {/* Модальное окно полного описания виллы из Google Sheets (таблица About) */}
-      {aboutModalOpen && (
-        <div className="fixed inset-0 z-[1000] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 select-none">
-          <div className="bg-slate-900 border border-white/10 rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between p-6 border-b border-white/10">
-              <h3 className="text-xl font-bold text-white">{t('modalAboutVilla') || 'Об этой вилле'}</h3>
-              <button
-                onClick={() => setAboutModalOpen(false)}
-                className="p-2 text-slate-400 hover:text-white rounded-full bg-slate-800 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="p-6 overflow-y-auto space-y-6 text-slate-300 text-sm leading-relaxed">
-              {fullDescriptionSections.length > 0 ? (
-                fullDescriptionSections.map((sec, idx) => (
-                  <div key={idx} className="space-y-2">
-                    <h4 className="font-semibold text-white text-base">{sec.title}</h4>
-                    <p className="whitespace-pre-line">{sec.text}</p>
-                  </div>
-                ))
-              ) : (
-                <p>{homeData.aboutText}</p>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* 1. Модальное окно 7 детальных плиток описания виллы */}
+      <AboutVillaModal
+        isOpen={aboutModalOpen}
+        onClose={() => setAboutModalOpen(false)}
+        sections={fullDescriptionSections}
+      />
+
+      {/* 2. Модальное окно 4 плиток безопасности, Закона № 7464 и доступной среды */}
+      <SafetyModal
+        isOpen={safetyModalOpen}
+        onClose={() => setSafetyModalOpen(false)}
+        homeData={homeData}
+      />
+
+      {/* 3. Модальное окно 14 интерактивных плиток ориентиров Дальяна */}
+      <LandmarksModal
+        isOpen={landmarksModalOpen}
+        onClose={() => setLandmarksModalOpen(false)}
+        homeData={homeData}
+      />
+
+      {/* 4. Модальное окно рейтинга и отзывов гостей */}
+      <ReviewsModal
+        isOpen={reviewsModalOpen}
+        onClose={() => setReviewsModalOpen(false)}
+        homeData={homeData}
+      />
 
     </div>
   );
