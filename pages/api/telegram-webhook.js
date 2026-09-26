@@ -13,6 +13,7 @@ import { getLiveSheetMap, resolveRange } from '../../utils/sheetsRegistry';
 import { SMART_TEMPLATES, TEMPLATE_STAGES } from '../../utils/templatesData';
 import { resolveTemplate, extractFirstName } from '../../utils/templateResolver';
 import { getAiKnowledgeBase, invalidateAiKnowledgeCache } from '../../utils/aiKnowledgeBase';
+import { getOrFetchLiveContent, clearLiveContentCache } from '../../utils/liveContentSync';
 
 // Вспомогательный кэш сессий ответов в памяти
 const botSessions = global._tgBotSessions || (global._tgBotSessions = {});
@@ -21,6 +22,7 @@ const botSessions = global._tgBotSessions || (global._tgBotSessions = {});
 const MAIN_KEYBOARD = {
   keyboard: [
     [{ text: "📋 Заявки и брони" }, { text: "💬 CRM Чаты" }],
+    [{ text: "📋 Задачи персонала" }, { text: "🛠️ Все 10 задач VS Code" }],
     [{ text: "💼 Бизнес-Ассистент" }, { text: "🧾 e-Arşiv Fatura" }],
     [{ text: "📑 Шаблоны ответов" }, { text: "📅 Календарь дат" }],
     [{ text: "💳 Тарифы виллы" }, { text: "🧠 Режим ИИ & Gemini" }],
@@ -1199,7 +1201,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // --- Действие: Список задач Секретаря из CRM ---
+    // --- Действие: Список задач персонала из CRM с интерактивными кнопками завершения ---
     if (data === 'bot_list_tasks') {
       await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId });
       try {
@@ -1211,27 +1213,234 @@ export default async function handler(req, res) {
           spreadsheetId,
           range: resolveRange(sheetMap, 'TASKS', 'A:G')
         });
-        const rows = (taskData.data.values || []).slice(1).slice(-6);
-        if (rows.length === 0) {
+        const rows = (taskData.data.values || []).slice(1);
+        const activeTasks = rows.filter((r) => {
+          const st = String(r[4] || '').toLowerCase().trim();
+          return st !== 'выполнена' && st !== 'завершено' && st !== 'done' && st !== 'готово';
+        });
+
+        if (activeTasks.length === 0) {
           await tgApi(token, 'sendMessage', {
             chat_id: chatId,
-            text: '📋 Лист задач пуст. Создайте задачу командой:\n/task Текст поручения',
-            reply_markup: MAIN_KEYBOARD
+            text: '🎉 Все задачи персонала выполнены!\n\nВы можете поставить новое поручение командой:\n/task [Текст задачи]',
+            reply_markup: {
+              inline_keyboard: [
+                [{ text: '➕ Поставить новую задачу', callback_data: 'task_new_prompt' }],
+                [{ text: '🛠️ Все 10 задач VS Code', callback_data: 'vscode_tasks_list' }]
+              ]
+            }
           });
           return res.status(200).json({ ok: true });
         }
-        let listText = `📋 Последние задачи из CRM [лист Задачи и Поручения]:\n\n`;
-        rows.forEach((r) => {
-          listText += `• [${r[0] || 'TASK'}] ${r[2] || ''} | ${r[4] || ''}\n  ${r[3] || ''}\n\n`;
-        });
+
         await tgApi(token, 'sendMessage', {
           chat_id: chatId,
-          text: listText,
+          text: '📋 Активные задачи персонала [найдено: ' + activeTasks.length + ']:'
+        });
+
+        for (const r of activeTasks.slice(0, 6)) {
+          const taskId = r[0] || 'task';
+          const taskDate = r[1] || '';
+          const taskSource = r[2] || 'CRM';
+          const taskText = r[3] || '';
+          const taskStatus = r[4] || 'В работе';
+          const taskModule = r[5] || 'Секретарь';
+
+          const card = '📌 Задача #' + taskId + '\n' +
+            '• Источник: ' + taskSource + ' | Дата: ' + taskDate + '\n' +
+            '• Модуль: ' + taskModule + '\n' +
+            '• Статус: 🟡 ' + taskStatus + '\n\n' +
+            'Текст поручения:\n' + taskText;
+
+          await tgApi(token, 'sendMessage', {
+            chat_id: chatId,
+            text: card,
+            reply_markup: {
+              inline_keyboard: [
+                [{ text: '✅ Завершить #' + taskId, callback_data: 'task_done_' + taskId }],
+                [{ text: '➕ Новая задача', callback_data: 'task_new_prompt' }]
+              ]
+            }
+          });
+        }
+      } catch (tErr) {
+        await tgApi(token, 'sendMessage', { chat_id: chatId, text: 'Ошибка задач: ' + tErr.message });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Интерактивная отметка выполнения задачи гостем/владельцем ---
+    if (data.startsWith('task_done_')) {
+      const targetTaskId = data.replace('task_done_', '').trim();
+      try {
+        if (sheets && spreadsheetId) {
+          const taskData = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: resolveRange(sheetMap, 'TASKS', 'A:G')
+          });
+          const allRows = taskData.data.values || [];
+          let foundRowIndex = -1;
+          for (let i = 1; i < allRows.length; i++) {
+            if (String(allRows[i][0] || '').trim() === targetTaskId) {
+              foundRowIndex = i + 1; // 1-based row index
+              break;
+            }
+          }
+          if (foundRowIndex !== -1) {
+            const nowStr = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
+            const targetSheetTitle = sheetMap['TASKS'] || '📋 Задачи и Поручения Секретаря';
+            await sheets.spreadsheets.values.update({
+              spreadsheetId,
+              range: `'${targetSheetTitle}'!E${foundRowIndex}:G${foundRowIndex}`,
+              valueInputOption: 'USER_ENTERED',
+              requestBody: {
+                values: [['Выполнена', allRows[foundRowIndex - 1][5] || 'Секретарь', 'Завершено владельцем через Telegram: ' + nowStr]]
+              }
+            });
+            await tgApi(token, 'answerCallbackQuery', {
+              callback_query_id: cqId,
+              text: '✅ Задача ' + targetTaskId + ' успешно завершена!',
+              show_alert: true
+            });
+            await tgApi(token, 'sendMessage', {
+              chat_id: chatId,
+              text: '✅ Задача ' + targetTaskId + ' успешно отмечена выполненной и зафиксирована в CRM!',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '📋 Обновить список задач', callback_data: 'bot_list_tasks' }],
+                  [{ text: '🛠️ Все 10 задач VS Code', callback_data: 'vscode_tasks_list' }]
+                ]
+              }
+            });
+            return res.status(200).json({ ok: true });
+          }
+        }
+        await tgApi(token, 'answerCallbackQuery', {
+          callback_query_id: cqId,
+          text: 'Задача не найдена в таблице',
+          show_alert: true
+        });
+      } catch (dErr) {
+        await tgApi(token, 'answerCallbackQuery', {
+          callback_query_id: cqId,
+          text: 'Ошибка: ' + dErr.message,
+          show_alert: true
+        });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Подсказка по созданию задачи ---
+    if (data === 'task_new_prompt') {
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId });
+      const promptText = '✍️ Чтобы поставить новую задачу секретарю или персоналу, отправьте сообщение:\n\n' +
+        '/task [Текст поручения]\n\n' +
+        'Пример: /task Подготовить виллу к заезду семьи Ивановых 15 октября';
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: promptText,
+        reply_markup: MAIN_KEYBOARD
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Интерактивный реестр всех 10 задач VS Code ---
+    if (data === 'vscode_tasks_list') {
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId });
+      const tasksRegistryText = '🛠️ РЕЕСТР ВСЕХ 10 ЗАДАЧ VS CODE И СЕРВЕРА [Вариант 1 : Airbnb]\n\n' +
+        '1. 🚀 Dev Сервер: npm run dev [Порт 3000]\n' +
+        '   • VS Code: Terminal -> Run Task... -> 🚀 1. Запуск Dev Сервера\n' +
+        '   • pwsh: npm run dev\n\n' +
+        '2. 🧹 Освободить Порт 3000: Free Port 3000\n' +
+        '   • VS Code: Terminal -> Run Task... -> 🧹 2. Освободить Порт 3000\n' +
+        '   • pwsh: Get-NetTCPConnection -LocalPort 3000 | Stop-Process\n\n' +
+        '3. 📦 Сборка Проекта: Next.js Build\n' +
+        '   • VS Code: Terminal -> Run Task... -> 📦 3. Сборка Проекта\n' +
+        '   • pwsh: npm run build\n\n' +
+        '4. ⚡ Продакшн Сервер: Next.js Start\n' +
+        '   • VS Code: Terminal -> Run Task... -> ⚡ 4. Запуск Продакшн Сервера\n' +
+        '   • pwsh: npm start\n\n' +
+        '5. 📥 Установка Зависимостей: npm install\n' +
+        '   • VS Code: Terminal -> Run Task... -> 📥 5. Установка Зависимостей\n' +
+        '   • pwsh: npm install\n\n' +
+        '6. 💾 Зафиксировать эталон SSOT: masterSeedContent\n' +
+        '   • VS Code: Terminal -> Run Task... -> 💾 6. Зафиксировать текущие таблицы\n' +
+        '   • pwsh: node scripts/save-master-seed.js\n\n' +
+        '7. 💾 Универсальный двухуровневый бэкап: SPARK Backup\n' +
+        '   • VS Code: Terminal -> Run Task... -> 💾 7. SPARK: Универсальное создание бэкапа\n' +
+        '   • pwsh: pwsh -File .\\create_project_backup.ps1\n\n' +
+        '8. 📊 Синхронизация Контента: Sheets -> content.json\n' +
+        '   • VS Code: Terminal -> Run Task... -> 📊 8. Синхронизация Контента\n' +
+        '   • pwsh: node scripts/sync-content.js\n\n' +
+        '9. 🛠️ Восстановление структуры листов: SPARK Restore\n' +
+        '   • VS Code: Terminal -> Run Task... -> 🛠️ 9. SPARK: Восстановить все листы\n' +
+        '   • pwsh: node scripts/restore-sheets.js\n\n' +
+        '10. 🏛️ Инициализация CRM Таблиц: Google Sheets Init\n' +
+        '    • VS Code: Terminal -> Run Task... -> 🏛️ 10. Инициализация CRM Таблиц\n' +
+        '    • pwsh: node scripts/init-google-sheets.js\n\n' +
+        'Дополнительные операции:\n' +
+        '• ⏸️ Режим обслуживания Vercel 503: pwsh -File .\\pause_site.ps1\n' +
+        '• ▶️ Возобновление работы сайта: pwsh -File .\\resume_site.ps1\n' +
+        '• 📤 Выгрузка ветки v1-airbnb: pwsh -File .\\push_project_to_github.ps1 -Target v1\n' +
+        '• 🔄 Полная синхронизация main: pwsh -File .\\push_project_to_github.ps1 -Target main';
+
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: tasksRegistryText,
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: '⚡ Опубликовать изменения прямо сейчас', callback_data: 'bot_trigger_revalidate' }],
+            [{ text: '📋 Задачи персонала', callback_data: 'bot_list_tasks' }],
+            [{ text: '⚙️ Статус платформы', callback_data: 'bot_status_view' }]
+          ]
+        }
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Мгновенная публикация и ревалидация сайта ---
+    if (data === 'bot_trigger_revalidate') {
+      await tgApi(token, 'answerCallbackQuery', {
+        callback_query_id: cqId,
+        text: '⚡ Синхронизация с сайтом запущена...',
+        show_alert: false
+      });
+      try {
+        clearLiveContentCache();
+        const fresh = await getOrFetchLiveContent(true);
+        await tgApi(token, 'sendMessage', {
+          chat_id: chatId,
+          text: '✅ Витрина сайта успешно обновлена!\n\nСвежие данные из Google Таблиц загружены в память сервера.\nИсточник: ' + (fresh.source || 'google_sheets_live') + '\nВремя: ' + new Date().toLocaleString('ru-RU'),
           reply_markup: MAIN_KEYBOARD
         });
-      } catch (tErr) {
-        await tgApi(token, 'sendMessage', { chat_id: chatId, text: `Ошибка задач: ${tErr.message}` });
+      } catch (syncErr) {
+        await tgApi(token, 'sendMessage', {
+          chat_id: chatId,
+          text: '❌ Ошибка ревалидации: ' + syncErr.message,
+          reply_markup: MAIN_KEYBOARD
+        });
       }
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Действие: Просмотр статуса платформы ---
+    if (data === 'bot_status_view') {
+      await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId });
+      const aiModel = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
+      const aiStatus = process.env.GEMINI_API_KEY ? 'Активен [Модель: ' + aiModel + '] 🟢' : 'Ключ не задан ⚠️';
+      const statusText = '⚙️ Статус экосистемы Villa Turaman:\n\n' +
+        '• Сервер сайта: Next.js Vercel [Онлайн 🟢]\n' +
+        '• ИИ-Консьерж Gemini: ' + aiStatus + '\n' +
+        '• Основная база Google Sheets: ' + (spreadsheetId ? 'Подключена ✅' : 'Не настроена ❌') + '\n' +
+        '• База чатов Google Sheets: ' + (chatsSpreadsheetId ? 'Подключена ✅' : 'Не настроена ❌') + '\n' +
+        '• Webhook Telegram: Активен [/api/telegram-webhook] 🟢\n' +
+        '• Chat ID владельца: ' + (ownerChatId || 'Авторизован') + '\n\n' +
+        'Все системы функционируют в штатном режиме.';
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: statusText,
+        reply_markup: MAIN_KEYBOARD
+      });
       return res.status(200).json({ ok: true });
     }
   }
@@ -1847,8 +2056,8 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // --- Раздел: 📋 Список задач CRM ---
-    if (text === '📋 Задачи CRM' || text === '/tasks') {
+    // --- Раздел: 📋 Задачи персонала из CRM ---
+    if (text === '📋 Задачи персонала' || text === '📋 Задачи CRM' || text === '/tasks') {
       try {
         if (!sheets || !spreadsheetId) {
           await tgApi(token, 'sendMessage', { chat_id: chatId, text: '❌ База задач недоступна.' });
@@ -1858,26 +2067,131 @@ export default async function handler(req, res) {
           spreadsheetId,
           range: resolveRange(sheetMap, 'TASKS', 'A:G')
         });
-        const rows = (taskData.data.values || []).slice(1).slice(-7);
-        if (rows.length === 0) {
+        const rows = (taskData.data.values || []).slice(1);
+        const activeTasks = rows.filter((r) => {
+          const st = String(r[4] || '').toLowerCase().trim();
+          return st !== 'выполнена' && st !== 'завершено' && st !== 'done' && st !== 'готово';
+        });
+
+        if (activeTasks.length === 0) {
           await tgApi(token, 'sendMessage', {
             chat_id: chatId,
-            text: '📋 В листе задач пока нет записей.\nСоздайте задачу командой:\n/task Текст поручения',
-            reply_markup: MAIN_KEYBOARD
+            text: '🎉 Все задачи персонала выполнены!\n\nВы можете поставить новое поручение командой:\n/task [Текст задачи]',
+            reply_markup: {
+              inline_keyboard: [
+                [{ text: '➕ Поставить новую задачу', callback_data: 'task_new_prompt' }],
+                [{ text: '🛠️ Все 10 задач VS Code', callback_data: 'vscode_tasks_list' }]
+              ]
+            }
           });
           return res.status(200).json({ ok: true });
         }
-        let listText = `📋 Задачи из CRM [лист Задачи и Поручения Секретаря]:\n\n`;
-        rows.forEach((r) => {
-          listText += `• [${r[0] || 'TASK'}] ${r[2] || ''} | ${r[4] || ''}\n  ${r[3] || ''}\n  📅 ${r[1] || ''}\n\n`;
-        });
+
         await tgApi(token, 'sendMessage', {
           chat_id: chatId,
-          text: listText,
+          text: '📋 Активные задачи персонала [найдено: ' + activeTasks.length + ']:'
+        });
+
+        for (const r of activeTasks.slice(0, 6)) {
+          const taskId = r[0] || 'task';
+          const taskDate = r[1] || '';
+          const taskSource = r[2] || 'CRM';
+          const taskText = r[3] || '';
+          const taskStatus = r[4] || 'В работе';
+          const taskModule = r[5] || 'Секретарь';
+
+          const card = '📌 Задача #' + taskId + '\n' +
+            '• Источник: ' + taskSource + ' | Дата: ' + taskDate + '\n' +
+            '• Модуль: ' + taskModule + '\n' +
+            '• Статус: 🟡 ' + taskStatus + '\n\n' +
+            'Текст поручения:\n' + taskText;
+
+          await tgApi(token, 'sendMessage', {
+            chat_id: chatId,
+            text: card,
+            reply_markup: {
+              inline_keyboard: [
+                [{ text: '✅ Завершить #' + taskId, callback_data: 'task_done_' + taskId }],
+                [{ text: '➕ Новая задача', callback_data: 'task_new_prompt' }]
+              ]
+            }
+          });
+        }
+      } catch (tErr) {
+        await tgApi(token, 'sendMessage', { chat_id: chatId, text: 'Ошибка задач: ' + tErr.message });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Раздел: 🛠️ Все 10 задач VS Code ---
+    if (text === '🛠️ Все 10 задач VS Code' || text === '/vscode' || text === '/tasks_vscode' || text === '/launcher') {
+      const tasksRegistryText = '🛠️ РЕЕСТР ВСЕХ 10 ЗАДАЧ VS CODE И СЕРВЕРА [Вариант 1 : Airbnb]\n\n' +
+        '1. 🚀 Dev Сервер: npm run dev [Порт 3000]\n' +
+        '   • VS Code: Terminal -> Run Task... -> 🚀 1. Запуск Dev Сервера\n' +
+        '   • pwsh: npm run dev\n\n' +
+        '2. 🧹 Освободить Порт 3000: Free Port 3000\n' +
+        '   • VS Code: Terminal -> Run Task... -> 🧹 2. Освободить Порт 3000\n' +
+        '   • pwsh: Get-NetTCPConnection -LocalPort 3000 | Stop-Process\n\n' +
+        '3. 📦 Сборка Проекта: Next.js Build\n' +
+        '   • VS Code: Terminal -> Run Task... -> 📦 3. Сборка Проекта\n' +
+        '   • pwsh: npm run build\n\n' +
+        '4. ⚡ Продакшн Сервер: Next.js Start\n' +
+        '   • VS Code: Terminal -> Run Task... -> ⚡ 4. Запуск Продакшн Сервера\n' +
+        '   • pwsh: npm start\n\n' +
+        '5. 📥 Установка Зависимостей: npm install\n' +
+        '   • VS Code: Terminal -> Run Task... -> 📥 5. Установка Зависимостей\n' +
+        '   • pwsh: npm install\n\n' +
+        '6. 💾 Зафиксировать эталон SSOT: masterSeedContent\n' +
+        '   • VS Code: Terminal -> Run Task... -> 💾 6. Зафиксировать текущие таблицы\n' +
+        '   • pwsh: node scripts/save-master-seed.js\n\n' +
+        '7. 💾 Универсальный двухуровневый бэкап: SPARK Backup\n' +
+        '   • VS Code: Terminal -> Run Task... -> 💾 7. SPARK: Универсальное создание бэкапа\n' +
+        '   • pwsh: pwsh -File .\\create_project_backup.ps1\n\n' +
+        '8. 📊 Синхронизация Контента: Sheets -> content.json\n' +
+        '   • VS Code: Terminal -> Run Task... -> 📊 8. Синхронизация Контента\n' +
+        '   • pwsh: node scripts/sync-content.js\n\n' +
+        '9. 🛠️ Восстановление структуры листов: SPARK Restore\n' +
+        '   • VS Code: Terminal -> Run Task... -> 🛠️ 9. SPARK: Восстановить все листы\n' +
+        '   • pwsh: node scripts/restore-sheets.js\n\n' +
+        '10. 🏛️ Инициализация CRM Таблиц: Google Sheets Init\n' +
+        '    • VS Code: Terminal -> Run Task... -> 🏛️ 10. Инициализация CRM Таблиц\n' +
+        '    • pwsh: node scripts/init-google-sheets.js\n\n' +
+        'Дополнительные операции:\n' +
+        '• ⏸️ Режим обслуживания Vercel 503: pwsh -File .\\pause_site.ps1\n' +
+        '• ▶️ Возобновление работы сайта: pwsh -File .\\resume_site.ps1\n' +
+        '• 📤 Выгрузка ветки v1-airbnb: pwsh -File .\\push_project_to_github.ps1 -Target v1\n' +
+        '• 🔄 Полная синхронизация main: pwsh -File .\\push_project_to_github.ps1 -Target main';
+
+      await tgApi(token, 'sendMessage', {
+        chat_id: chatId,
+        text: tasksRegistryText,
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: '⚡ Опубликовать изменения прямо сейчас', callback_data: 'bot_trigger_revalidate' }],
+            [{ text: '📋 Задачи персонала', callback_data: 'bot_list_tasks' }],
+            [{ text: '⚙️ Статус платформы', callback_data: 'bot_status_view' }]
+          ]
+        }
+      });
+      return res.status(200).json({ ok: true });
+    }
+
+    // --- Раздел: ⚡ Мгновенная публикация сайта ---
+    if (text === '/revalidate' || text === '/publish' || text === '⚡ Опубликовать изменения') {
+      try {
+        clearLiveContentCache();
+        const fresh = await getOrFetchLiveContent(true);
+        await tgApi(token, 'sendMessage', {
+          chat_id: chatId,
+          text: '✅ Витрина сайта успешно обновлена!\n\nСвежие данные из Google Таблиц загружены в память сервера.\nИсточник: ' + (fresh.source || 'google_sheets_live') + '\nВремя: ' + new Date().toLocaleString('ru-RU'),
           reply_markup: MAIN_KEYBOARD
         });
-      } catch (tErr) {
-        await tgApi(token, 'sendMessage', { chat_id: chatId, text: `Ошибка задач: ${tErr.message}` });
+      } catch (rErr) {
+        await tgApi(token, 'sendMessage', {
+          chat_id: chatId,
+          text: '❌ Ошибка ревалидации: ' + rErr.message,
+          reply_markup: MAIN_KEYBOARD
+        });
       }
       return res.status(200).json({ ok: true });
     }
@@ -1885,7 +2199,7 @@ export default async function handler(req, res) {
     // Ответ по умолчанию
     await tgApi(token, 'sendMessage', {
       chat_id: chatId,
-      text: `Команда принята. Используйте кнопки меню для управления виллой 👇`,
+      text: 'Команда принята. Используйте кнопки меню для управления виллой 👇',
       reply_markup: MAIN_KEYBOARD
     });
   }

@@ -57,31 +57,45 @@ import ReviewsModal from '../components/Modals/ReviewsModal';
 import { parseDriveLink } from '../utils/media';
 import { parseDateRU } from '../utils/dates';
 import { buildHomeDerivedCollections } from '../utils/masterSeedContent';
+import { getOrFetchLiveContent } from '../utils/liveContentSync';
 
 // ------------------------------------------------------------------------------
-// СТАТИЧЕСКАЯ ГЕНЕРАЦИЯ С ОНЛАЙН РЕВАЛИДАЦИЕЙ (Next.js ISR)
+// СТАТИЧЕСКАЯ ГЕНЕРАЦИЯ С ОНЛАЙН РЕВАЛИДАЦИЕЙ [Next.js ISR]
 // ------------------------------------------------------------------------------
 export async function getStaticProps() {
-  const contentPath = path.join(process.cwd(), 'utils', 'content.json');
-  let contentData = {
-    home: {},
-    about: {},
-    legal: {},
-    templates: {},
-    products: [],
-    courses: [],
-    gallery: []
-  };
+  let contentData = null;
 
   try {
-    if (fs.existsSync(contentPath)) {
-      contentData = JSON.parse(fs.readFileSync(contentPath, 'utf8'));
-      if (contentData.home) {
-        buildHomeDerivedCollections(contentData.home);
-      }
-    }
+    contentData = await getOrFetchLiveContent(false);
   } catch (err) {
-    console.error('Ошибка чтения content.json при статической сборке:', err);
+    console.warn('Предупреждение при получении живого контента в getStaticProps:', err.message);
+  }
+
+  // Если живой контент пуст : читаем локальный эталон utils/content.json
+  if (!contentData || !contentData.home || Object.keys(contentData.home).length === 0) {
+    const contentPath = path.join(process.cwd(), 'utils', 'content.json');
+    try {
+      if (fs.existsSync(contentPath)) {
+        contentData = JSON.parse(fs.readFileSync(contentPath, 'utf8'));
+        if (contentData.home) {
+          buildHomeDerivedCollections(contentData.home);
+        }
+      }
+    } catch (err) {
+      console.error('Ошибка чтения content.json при статической сборке:', err);
+    }
+  }
+
+  if (!contentData) {
+    contentData = {
+      home: {},
+      about: {},
+      legal: {},
+      templates: {},
+      products: [],
+      courses: [],
+      gallery: []
+    };
   }
 
   // Гарантия JSON-сериализации для Next.js SSG: устранение любых значений undefined
@@ -234,7 +248,7 @@ export default function HomeListing({ publicData, contentData }) {
 
     const fetchLiveContent = async () => {
       try {
-        const res = await fetch('/api/content');
+        const res = await fetch('/api/content?t=' + Date.now());
         if (res.ok) {
           const liveData = await res.json();
           if (liveData.success && isMounted) {

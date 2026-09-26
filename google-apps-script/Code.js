@@ -417,13 +417,33 @@ function triggerRevalidateWebhook() {
   var secret = props.getProperty('REVALIDATE_SECRET_TOKEN') || 'YOUR_VERY_SECRET_RANDOM_STRING';
 
   try {
+    // 1. Отправка сигнала ревалидации в Next.js On-demand ISR
     var res = UrlFetchApp.fetch(revalidateUrl + '?secret=' + encodeURIComponent(secret), {
       "method": "post",
       "muteHttpExceptions": true
     });
-    SpreadsheetApp.getActive().toast("Код ответа: " + res.getResponseCode(), "⚡ Ревалидация витрины отправлена", 4);
+    var code = res.getResponseCode();
+
+    // 2. Дополнительный синхронный сброс оперативного кэша контента на сайте
+    try {
+      UrlFetchApp.fetch(siteUrl + '/api/content?force=true', {
+        "method": "get",
+        "muteHttpExceptions": true
+      });
+    } catch (e2) {}
+
+    if (code === 200) {
+      SpreadsheetApp.getActive().toast("Сайт успешно обновлен: контент опубликован на витрине.", "⚡ 1. Опубликовано", 5);
+      return;
+    } else if (code === 401) {
+      SpreadsheetApp.getActive().toast("Ошибка авторизации [401]: проверьте REVALIDATE_SECRET_TOKEN.", "⚠️ Внимание", 6);
+      return;
+    } else {
+      SpreadsheetApp.getActive().toast("Код ответа: " + code + " : " + res.getContentText().substring(0, 80), "⚠️ Ответ сервера", 6);
+      return;
+    }
   } catch (err) {
-    SpreadsheetApp.getActive().toast("Ошибка: " + err.message, "⚠️ Сбой вебхука", 5);
+    SpreadsheetApp.getActive().toast("Сбой подключения к " + revalidateUrl + " : " + err.message, "⚠️ Ошибка связи с сайтом", 6);
   }
 }
 
@@ -2393,22 +2413,42 @@ function showVsCodeTaskGuide_Resume() {
 
 function sendVsCodeTasksSummaryToTelegram() {
   try {
-    var text = '🛠️ ЗАДАЧИ ЗАПУСКА ПРОЕКТА В VS CODE\n\n' +
-      'Шпаргалка для быстрого запуска из терминала или через меню Tasks:\n\n' +
-      '• Dev 3000: npm run dev\n' +
-      '• Kill Port 3000: pwsh stop-port 3000\n' +
-      '• Build: npm run build\n' +
-      '• Start: npm start\n' +
-      '• SSOT Seed: node scripts/save-master-seed.js\n' +
-      '• Backup: pwsh create_project_backup.ps1\n' +
-      '• Sync: node scripts/sync-content.js\n' +
-      '• Git Push: pwsh push_project_to_github.ps1\n' +
-      '• Pause 503: pwsh pause_site.ps1\n' +
-      '• Resume: pwsh resume_site.ps1';
+    var text = '🛠️ РЕЕСТР ВСЕХ 10 ЗАДАЧ VS CODE И СЕРВЕРА [Вариант 1 : Airbnb]\n\n' +
+      '1. 🚀 Dev Сервер: npm run dev [Порт 3000]\n' +
+      '   • VS Code: Terminal -> Run Task... -> 🚀 1. Запуск Dev Сервера\n' +
+      '   • pwsh: npm run dev\n\n' +
+      '2. 🧹 Освободить Порт 3000: Free Port 3000\n' +
+      '   • VS Code: Terminal -> Run Task... -> 🧹 2. Освободить Порт 3000\n' +
+      '   • pwsh: Get-NetTCPConnection -LocalPort 3000 | Stop-Process\n\n' +
+      '3. 📦 Сборка Проекта: Next.js Build\n' +
+      '   • VS Code: Terminal -> Run Task... -> 📦 3. Сборка Проекта\n' +
+      '   • pwsh: npm run build\n\n' +
+      '4. ⚡ Продакшн Сервер: Next.js Start\n' +
+      '   • VS Code: Terminal -> Run Task... -> ⚡ 4. Запуск Продакшн Сервера\n' +
+      '   • pwsh: npm start\n\n' +
+      '5. 📥 Установка Зависимостей: npm install\n' +
+      '   • VS Code: Terminal -> Run Task... -> 📥 5. Установка Зависимостей\n' +
+      '   • pwsh: npm install\n\n' +
+      '6. 💾 Зафиксировать эталон SSOT: masterSeedContent\n' +
+      '   • VS Code: Terminal -> Run Task... -> 💾 6. Зафиксировать текущие таблицы\n' +
+      '   • pwsh: node scripts/save-master-seed.js\n\n' +
+      '7. 💾 Универсальный двухуровневый бэкап: SPARK Backup\n' +
+      '   • VS Code: Terminal -> Run Task... -> 💾 7. SPARK: Универсальное создание бэкапа\n' +
+      '   • pwsh: pwsh -File .\\create_project_backup.ps1\n\n' +
+      '8. 📊 Синхронизация Контента: Sheets -> content.json\n' +
+      '   • VS Code: Terminal -> Run Task... -> 📊 8. Синхронизация Контента\n' +
+      '   • pwsh: node scripts/sync-content.js\n\n' +
+      '9. 🛠️ Восстановление структуры листов: SPARK Restore\n' +
+      '   • VS Code: Terminal -> Run Task... -> 🛠️ 9. SPARK: Восстановить все листы\n' +
+      '   • pwsh: node scripts/restore-sheets.js\n\n' +
+      '10. 🏛️ Инициализация CRM Таблиц: Google Sheets Init\n' +
+      '    • VS Code: Terminal -> Run Task... -> 🏛️ 10. Инициализация CRM Таблиц\n' +
+      '    • pwsh: node scripts/init-google-sheets.js\n\n' +
+      'Все задачи настроены в .vscode/tasks.json и готовы к запуску через встроенный терминал VS Code.';
 
     var res = sendTelegramMessage_(text, null);
     if (res.ok) {
-      SpreadsheetApp.getUi().alert('✅ Отправлено', 'Шпаргалка по задачам VS Code доставлена в ваш Telegram.', SpreadsheetApp.getUi().ButtonSet.OK);
+      SpreadsheetApp.getUi().alert('✅ Отправлено', 'Реестр всех 10 задач VS Code доставлен в ваш Telegram.', SpreadsheetApp.getUi().ButtonSet.OK);
     } else {
       SpreadsheetApp.getUi().alert('Ошибка', res.description || 'Не удалось отправить сообщение', SpreadsheetApp.getUi().ButtonSet.OK);
     }
