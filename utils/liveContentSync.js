@@ -61,7 +61,7 @@ export function readLocalFallback() {
         return parsedTmp;
       }
     }
-  } catch (tmpErr) {}
+  } catch (tmpErr) { }
 
   const contentFilePath = path.join(process.cwd(), 'utils', 'content.json');
   try {
@@ -752,7 +752,7 @@ export function updateLiveContentFromPayload(rawPayload) {
     try {
       const tmpCachePath = path.join('/tmp', 'villa_live_content.json');
       fs.writeFileSync(tmpCachePath, JSON.stringify(content), 'utf8');
-    } catch (tmpErr) {}
+    } catch (tmpErr) { }
   }
 
   return {

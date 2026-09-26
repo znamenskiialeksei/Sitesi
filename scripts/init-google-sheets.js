@@ -25,24 +25,22 @@ const {
 const GOOGLE_CONFIG = {
   parentFolderId: '11xBSWA02NypliPFbziRSMfC9aAPclYF_',
   spreadsheetName: 'VillaTuramanWebSitePlatform_DB',
-  sheetName: '📋 Заявки и Бронирования',
   homePageSheetName: '🏠 Главная витрина',
-  accountSheetName: '👤 Гостевые аккаунты',
-  masterSheetName: '🔑 Управление доступом',
-  calendarSettingsSheetName: '📅 Календарь и Тарифы',
-  productsSheetName: '🛎️ Дополнительные услуги',
-  coursesSheetName: '🗺️ Видео-путеводители',
-  studentsSheetName: '🎟️ Доступы к путеводителям',
-  ordersSheetName: '💳 Заказы услуг и гидов',
   gallerySheetName: '📸 Фото и Видео Галерея',
-  aboutSheetName: '📖 О вилле и Правила',
   legalSheetName: '⚖️ Юридические документы',
+  studentsSheetName: '🎟️ Доступы к путеводителям',
   templatesSheetName: '💬 Шаблоны сообщений',
   variablesSheetName: '⚙️ Системные настройки ИИ Агентов',
   tasksSheetName: '📋 Задачи и Поручения Секретаря',
   knowledgeGraphSheetName: '🧠 Граф Знаний и Безопасность',
+  accountSheetName: '👤 Гостевые аккаунты',
+  productsSheetName: '🛎️ Дополнительные услуги',
+  coursesSheetName: '🗺️ Видео-путеводители',
+  sheetName: '📋 Заявки и Бронирования',
+  calendarSettingsSheetName: '📅 Календарь и Тарифы',
+  ordersSheetName: '💳 Заказы услуг и гидов',
 
-  homeHeaders: ['Ключ [ID]', 'RU', 'EN', 'TR', 'Медиа/Картинка'],
+  homeHeaders: ['Блок / Раздел', 'Ключ [ID]', 'Место размещения / Описание [RU]', 'RU', 'EN', 'TR', 'Медиа / Иконка / Ссылка', 'Статус [Вкл/Выкл]'],
   headers: [
     'Дата заявки',
     'Имя клиента',
@@ -225,7 +223,7 @@ const initializeSpreadsheet = async () => {
       console.log(`Ликвидировано устаревших листов-дубликатов: ${deleteOldRequests.length}`);
     }
 
-    // 15 листов из реестра SHEETS_REGISTRY с поддержкой алиасов
+    // 14 листов CRM из реестра SHEETS_REGISTRY с поддержкой алиасов
     const allSheetConfigs = Object.values(SHEETS_REGISTRY).map((cfg) => ({
       key: cfg.key,
       title: cfg.defaultName,

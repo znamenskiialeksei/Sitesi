@@ -468,7 +468,7 @@ export const translations = {
     modalAboutVillaFooter: "Официальный налогоплательщик: Ortaca Vergi Dairesi, VKN: 9991120181",
     modalClosePassportBtn: "Закрыть паспорт объекта",
     closeBtn: "Закрыть",
-    
+
     // Бейджи 7 секций паспорта объекта
     aboutSec1Badge: "Геолокация • 14 ориентиров",
     aboutSec2Badge: "Архитектура • 10 мест",
@@ -947,7 +947,7 @@ export const translations = {
     modalAboutVillaFooter: "Official taxpayer: Ortaca Tax Office, VKN: 9991120181",
     modalClosePassportBtn: "Close property passport",
     closeBtn: "Close",
-    
+
     // Badges of 7 property passport sections
     aboutSec1Badge: "Geolocation • 14 landmarks",
     aboutSec2Badge: "Architecture • Sleeps 10",
@@ -1426,7 +1426,7 @@ export const translations = {
     modalAboutVillaFooter: "Resmi vergi mükellefi: Ortaca Vergi Dairesi, VKN: 9991120181",
     modalClosePassportBtn: "Mülk pasaportunu kapat",
     closeBtn: "Kapat",
-    
+
     // 7 mülk pasaportu bölümü rozetleri
     aboutSec1Badge: "Konum • 14 coğrafi işaret",
     aboutSec2Badge: "Mimari • 10 kişilik kapasite",

@@ -1874,7 +1874,7 @@ export default async function handler(req, res) {
         if (cachedFallback && Array.isArray(cachedFallback.chats) && cachedFallback.chats.length > 0) {
           return res.status(200).json({ success: true, chats: cachedFallback.chats, allRequests: cachedFallback.allRequests || [] });
         }
-      } catch (fallbackErr) {}
+      } catch (fallbackErr) { }
       return res.status(500).json({ success: false, error: e.message });
     }
   }

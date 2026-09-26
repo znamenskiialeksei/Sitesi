@@ -203,30 +203,12 @@ async function syncContent() {
       }
     }
 
-    // 2. Описание виллы, юридические документы, шаблоны CRM
-    const aboutData = await safeGet(resolveRange(sheetMap, 'ABOUT', 'A:G'));
+    // 2. Юридические документы и шаблоны CRM [описание вилы формируется из Листа 1 HOME или эталона]
     const legalData = await safeGet(resolveRange(sheetMap, 'LEGAL', 'A:G'));
     const templatesData = await safeGet(resolveRange(sheetMap, 'TEMPLATES', 'A:G'));
 
-    if (aboutData.data.values && aboutData.data.values.length > 1) {
-      aboutData.data.values.slice(1).forEach((r) => {
-        if (r[0]) {
-          content.about[r[0]] = {
-            title: {
-              ru: sanitizeText(r[1], existingContent.about?.[r[0]]?.title?.ru || ''),
-              en: sanitizeText(r[2], existingContent.about?.[r[0]]?.title?.en || ''),
-              tr: sanitizeText(r[3], existingContent.about?.[r[0]]?.title?.tr || '')
-            },
-            text: {
-              ru: sanitizeText(r[4], existingContent.about?.[r[0]]?.text?.ru || ''),
-              en: sanitizeText(r[5], existingContent.about?.[r[0]]?.text?.en || ''),
-              tr: sanitizeText(r[6], existingContent.about?.[r[0]]?.text?.tr || '')
-            }
-          };
-        }
-      });
-    }
-    if (Object.keys(content.about).length === 0) {
+    // Инициализация описания виллы: из существующего кэша либо эталона MASTER_ABOUT_SECTIONS
+    if (!content.about || Object.keys(content.about).length === 0) {
       if (existingContent.about && Object.keys(existingContent.about).length > 0) {
         content.about = existingContent.about;
       } else {

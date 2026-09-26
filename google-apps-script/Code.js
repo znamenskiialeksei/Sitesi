@@ -14,25 +14,47 @@
  * смысловые кластеры и исторические технические алиасы.
  */
 var VILLA_SHEETS_CONFIG = {
-  // Кластер 1: Публичная витрина и презентация листинга [5 листов]
+  // 1. HOME: Главная витрина [Лист 1]
   HOME: { name: "🏠 Главная витрина", suggestedSheetId: 101, aliases: ["🏠 Главная витрина", "Главная витрина", "Главная", "Витрина", "📖 О вилле и Правила", "О вилле и Правила", "О вилле"], cluster: "showcase", minWidths: [160, 170, 240, 420, 420, 420, 260, 100] },
+
+  // 2. GALLERY: Фото и Видео Галерея [Лист 2]
   GALLERY: { name: "📸 Фото и Видео Галерея", suggestedSheetId: 102, aliases: ["📸 Фото и Видео Галерея", "Фото и Видео Галерея", "Фотогалерея", "Галерея", "Медиа"], cluster: "showcase", minWidths: [80, 180, 200, 220, 200, 200, 160, 260, 280, 100, 100, 100] },
-  SERVICES: { name: "🛎️ Дополнительные услуги", suggestedSheetId: 104, aliases: ["🛎️ Дополнительные услуги", "Дополнительные услуги", "Услуги", "Сервисы", "Платные услуги"], cluster: "showcase", minWidths: [160, 180, 320, 120, 120, 120, 120, 140, 220, 100, 100, 100, 100, 100, 120, 200, 200, 200] },
-  GUIDES: { name: "🗺️ Видео-путеводители", suggestedSheetId: 105, aliases: ["🗺️ Видео-путеводители", "Видео-путеводители", "Видеопутеводители", "Путеводители", "Гиды"], cluster: "showcase", minWidths: [160, 200, 350, 140, 260, 260, 100, 120, 120, 140, 100, 100, 100, 100, 120, 200, 200, 200] },
+
+  // 3. LEGAL: Юридические документы [Лист 3]
   LEGAL: { name: "⚖️ Юридические документы", suggestedSheetId: 106, aliases: ["⚖️ Юридические документы", "Юридические документы", "Юридическая информация", "Реквизиты"], cluster: "showcase", minWidths: [160, 160, 220, 450, 450, 450, 100] },
 
-  // Кластер 2: Бронирования, Кабинет Хозяина, Продажи и CRM [4 листа]
-  BOOKINGS: { name: "📋 Заявки и Бронирования", suggestedSheetId: 201, aliases: ["📋 Заявки и Бронирования", "Заявки и Бронирования", "Заявки на бронирование", "Бронирования", "Заявки", "Вилла"], cluster: "host", minWidths: [120, 180, 160, 120, 120, 100, 140, 140, 140, 140, 160, 200] },
-  CALENDAR: { name: "📅 Календарь и Тарифы", suggestedSheetId: 202, aliases: ["📅 Календарь и Тарифы", "Календарь и Тарифы", "Календарь и Занятость", "Календарь", "Тарифы", "Настройки календаря"], cluster: "host", minWidths: [120, 140, 140, 140, 180, 160, 140, 140, 160] },
-  ACCOUNTS: { name: "👤 Гостевые аккаунты", suggestedSheetId: 203, aliases: ["👤 Гостевые аккаунты", "Гостевые аккаунты", "Аккаунты гостей", "Гости"], cluster: "host", minWidths: [120, 180, 160, 180, 160, 140, 140, 100] },
-  ORDERS: { name: "💳 Заказы услуг и гидов", suggestedSheetId: 205, aliases: ["💳 Заказы услуг и гидов", "Заказы услуг и гидов", "Заказы", "Заказы услуг"], cluster: "host", minWidths: [120, 160, 180, 220, 120, 140, 140, 160, 200] },
-
-  // Кластер 3: Бэк-офис, Шаблоны и Системный SSOT [5 листов]
+  // 4. ACCESS: Доступы к путеводителям [Лист 4]
   ACCESS: { name: "🎟️ Доступы к путеводителям", suggestedSheetId: 206, aliases: ["🎟️ Доступы к путеводителям", "Доступы к путеводителям", "Доступы к гидам", "Доступы"], cluster: "host", minWidths: [140, 160, 200, 180, 220, 180, 160, 100] },
+
+  // 5. TEMPLATES: Шаблоны сообщений [Лист 5]
   TEMPLATES: { name: "💬 Шаблоны сообщений", suggestedSheetId: 207, aliases: ["💬 Шаблоны сообщений", "Шаблоны сообщений", "Шаблоны", "Быстрые ответы"], cluster: "host", minWidths: [160, 180, 240, 420, 420, 420, 180, 100] },
+
+  // 6. SETTINGS: Системные настройки ИИ Агентов [Лист 6]
   SETTINGS: { name: "⚙️ Системные настройки ИИ Агентов", suggestedSheetId: 209, aliases: ["⚙️ Системные настройки ИИ Агентов", "Системные настройки ИИ Агентов", "Системные настройки", "Настройки ИИ", "🔑 Управление доступом", "Управление доступом", "MasterAccount", "🧩 Словарь переменных", "Словарь переменных"], cluster: "system", minWidths: [180, 200, 260, 260, 200, 100] },
+
+  // 7. TASKS: Задачи и Поручения Секретаря [Лист 7]
   TASKS: { name: "📋 Задачи и Поручения Секретаря", suggestedSheetId: 210, aliases: ["📋 Задачи и Поручения Секретаря", "Задачи и Поручения Секретаря", "Задачи Секретаря", "Поручения Секретаря", "Задачи и Поручения"], cluster: "host", minWidths: [140, 180, 320, 160, 140, 140, 200] },
-  KNOWLEDGE_GRAPH: { name: "🧠 Граф Знаний и Безопасность", suggestedSheetId: 211, aliases: ["🧠 Граф Знаний и Безопасность", "Граф Знаний и Безопасность", "Граф Знаний", "KnowledgeGraph", "Безопасность", "Security"], cluster: "system", minWidths: [160, 200, 350, 200, 160, 100, 100] }
+
+  // 8. KNOWLEDGE_GRAPH: Граф Знаний и Безопасность [Лист 8]
+  KNOWLEDGE_GRAPH: { name: "🧠 Граф Знаний и Безопасность", suggestedSheetId: 211, aliases: ["🧠 Граф Знаний и Безопасность", "Граф Знаний и Безопасность", "Граф Знаний", "KnowledgeGraph", "Безопасность", "Security"], cluster: "system", minWidths: [160, 200, 350, 200, 160, 100, 100] },
+
+  // 9. ACCOUNTS: Гостевые аккаунты [Лист 9]
+  ACCOUNTS: { name: "👤 Гостевые аккаунты", suggestedSheetId: 203, aliases: ["👤 Гостевые аккаунты", "Гостевые аккаунты", "Аккаунты гостей", "Гости"], cluster: "host", minWidths: [120, 180, 160, 180, 160, 140, 140, 100] },
+
+  // 10. SERVICES: Дополнительные услуги [Лист 10]
+  SERVICES: { name: "🛎️ Дополнительные услуги", suggestedSheetId: 104, aliases: ["🛎️ Дополнительные услуги", "Дополнительные услуги", "Услуги", "Сервисы", "Платные услуги"], cluster: "showcase", minWidths: [160, 180, 320, 120, 120, 120, 120, 140, 220, 100, 100, 100, 100, 100, 120, 200, 200, 200] },
+
+  // 11. GUIDES: Видео-путеводители [Лист 11]
+  GUIDES: { name: "🗺️ Видео-путеводители", suggestedSheetId: 105, aliases: ["🗺️ Видео-путеводители", "Видео-путеводители", "Видеопутеводители", "Путеводители", "Гиды"], cluster: "showcase", minWidths: [160, 200, 350, 140, 260, 260, 100, 120, 120, 140, 100, 100, 100, 100, 120, 200, 200, 200] },
+
+  // 12. BOOKINGS: Заявки и Бронирования [Лист 12]
+  BOOKINGS: { name: "📋 Заявки и Бронирования", suggestedSheetId: 201, aliases: ["📋 Заявки и Бронирования", "Заявки и Бронирования", "Заявки на бронирование", "Бронирования", "Заявки", "Вилла"], cluster: "host", minWidths: [120, 180, 160, 120, 120, 100, 140, 140, 140, 140, 160, 200] },
+
+  // 13. CALENDAR: Календарь и Тарифы [Лист 13]
+  CALENDAR: { name: "📅 Календарь и Тарифы", suggestedSheetId: 202, aliases: ["📅 Календарь и Тарифы", "Календарь и Тарифы", "Календарь и Занятость", "Календарь", "Тарифы", "Настройки календаря"], cluster: "host", minWidths: [120, 140, 140, 140, 180, 160, 140, 140, 160] },
+
+  // 14. ORDERS: Заказы услуг и гидов [Лист 14]
+  ORDERS: { name: "💳 Заказы услуг и гидов", suggestedSheetId: 205, aliases: ["💳 Заказы услуг и гидов", "Заказы услуг и гидов", "Заказы", "Заказы услуг"], cluster: "host", minWidths: [120, 160, 180, 220, 120, 140, 140, 160, 200] }
 };
 
 /**
@@ -586,7 +608,7 @@ function getEffectiveSiteUrl_() {
       try {
         props.setProperty('SITE_URL', targetUrl);
         props.setProperty('REVALIDATE_API_URL', targetUrl + '/api/revalidate');
-      } catch (propErr) {}
+      } catch (propErr) { }
       return targetUrl;
     }
 
@@ -708,7 +730,7 @@ function triggerRevalidateWebhook() {
 
       if (rCode === 200) {
         var rJson = null;
-        try { rJson = JSON.parse(rText); } catch (e) {}
+        try { rJson = JSON.parse(rText); } catch (e) { }
         if (rJson && rJson.success) {
           isAnySuccess = true;
         }
@@ -726,7 +748,7 @@ function triggerRevalidateWebhook() {
         if (contentRes.getResponseCode() === 200) {
           isAnySuccess = true;
         }
-      } catch (cErr) {}
+      } catch (cErr) { }
 
     } catch (netErr) {
       Logger.log("Сбой отправки на " + currentBase + ": " + netErr.message);
@@ -761,11 +783,11 @@ function onSheetEditTrigger(e) {
     if (sheetName && sheetName.indexOf('Chat_') === 0) {
       return;
     }
-  } catch (err) {}
+  } catch (err) { }
 
   try {
     SpreadsheetApp.getActive().toast("Передача правок таблицы на сайт...", "🔄 Авто-синхронизация", 3);
-  } catch (tErr) {}
+  } catch (tErr) { }
 
   triggerRevalidateWebhook();
 }
@@ -783,7 +805,7 @@ function setupAutoSyncTrigger() {
     if (triggers[i].getHandlerFunction() === 'onSheetEditTrigger') {
       try {
         ScriptApp.deleteTrigger(triggers[i]);
-      } catch (delErr) {}
+      } catch (delErr) { }
     }
   }
 
@@ -915,7 +937,7 @@ function clearExpiredHolds() {
   if (clearedCount > 0) {
     try {
       triggerRevalidateWebhook();
-    } catch (e) {}
+    } catch (e) { }
     SpreadsheetApp.getUi().alert(
       "🧹 Очистка истекших броней HOLD",
       "Успешно удалено просроченных удержаний: " + clearedCount + ".\nКалендарь обновлен, витрина сайта синхронизирована.",
@@ -1158,7 +1180,7 @@ function styleSheetHeader_(sheet, headers, frozenRows, minWidths) {
       if (cfgKey && VILLA_SHEETS_CONFIG[cfgKey] && VILLA_SHEETS_CONFIG[cfgKey].minWidths) {
         minWidths = VILLA_SHEETS_CONFIG[cfgKey].minWidths;
       }
-    } catch (e) {}
+    } catch (e) { }
   }
 
   for (var c = 1; c <= headers.length; c++) {
@@ -1505,8 +1527,8 @@ function initSingleSheetByKey_(sheet, key) {
       ['16. Словарь интерфейса', 'bookingSuccess', 'Уведомление об успешной оплате', 'Оплата успешно подтверждена! Бронирование внесено в календарь.', '', '', 'CheckCircle2', 'Вкл']
     ];
     // Чистая запись данных: колонки A..D и G..H
-    var colsA_D = homeRows.map(function(r) { return [r[0], r[1], r[2], r[3]]; });
-    var colsG_H = homeRows.map(function(r) { return [r[6] || '', r[7] || 'Вкл']; });
+    var colsA_D = homeRows.map(function (r) { return [r[0], r[1], r[2], r[3]]; });
+    var colsG_H = homeRows.map(function (r) { return [r[6] || '', r[7] || 'Вкл']; });
     sheet.getRange(2, 1, colsA_D.length, 4).setValues(colsA_D);
     sheet.getRange(2, 7, colsG_H.length, 2).setValues(colsG_H);
     // Инъекция формул автоперевода в строку 2
@@ -1531,8 +1553,8 @@ function initSingleSheetByKey_(sheet, key) {
       ['gal-13', 'Достопримечательности', 'Ликийские скальные гробницы IV века до н.э. с подсветкой', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600', 'Ликийские скальные гробницы', '', ''],
       ['gal-14', 'Пляжи и заповедники', 'Песчаный черепаший пляж Изтузу и озеро Кёйджегиз', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1600', 'Пляж Изтузу и черепахи', '', '']
     ];
-    var colsA_C = galRows.map(function(r) { return [r[0], r[1], r[2]]; });
-    var colsH_J = galRows.map(function(r) { return [r[7], r[8], r[9]]; });
+    var colsA_C = galRows.map(function (r) { return [r[0], r[1], r[2]]; });
+    var colsH_J = galRows.map(function (r) { return [r[7], r[8], r[9]]; });
     sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
     sheet.getRange(2, 8, colsH_J.length, 3).setValues(colsH_J);
     sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
@@ -1554,8 +1576,8 @@ function initSingleSheetByKey_(sheet, key) {
       ['prod-7', 'Прокат электровелосипедов для прогулок по Дальяну', '2 современных электробайка с запасом хода до 60 км', '', '', '', '', '45', '40', '4000', '1500', 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=1200', 'Да', 'Транспорт', 'https://youtube.com/watch?v=bike', 'Идеальный способ исследовать гранатовые сады и улочки Дальяна. В комплекте шлемы, замки и держатели для смартфонов с навигатором.', '', ''],
       ['prod-8', 'Дополнительная экспресс-уборка и смена белья', 'Внеплановая влажная уборка виллы, замена полотенец и постельного белья', '', '', '', '', '65', '60', '6000', '2200', 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1200', 'Да', 'Сервис', 'https://youtube.com/watch?v=cleaning', 'Полная уборка всех 4 спален, кухни и санузлов, мытье полов эко-средствами, замена постельных комплектов сатин премиум и банных полотенец.', '', '']
     ];
-    var colsA_C = srvRows.map(function(r) { return [r[0], r[1], r[2]]; });
-    var colsH_P = srvRows.map(function(r) { return [r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]]; });
+    var colsA_C = srvRows.map(function (r) { return [r[0], r[1], r[2]]; });
+    var colsH_P = srvRows.map(function (r) { return [r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]]; });
     sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
     sheet.getRange(2, 8, colsH_P.length, 9).setValues(colsH_P);
     sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
@@ -1575,8 +1597,8 @@ function initSingleSheetByKey_(sheet, key) {
       ['guide-5', 'Горные трекинговые тропы и смотровая площадка Радар', 'Пешие маршруты с панорамными видами на дельту реки и косу Изтузу', '', '', '', '', 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200', 'Трекинг', 'https://youtube.com/watch?v=guide5', '16', '15', '1500', '550', 'https://youtube.com/watch?v=preview5', 'Точные GPS-треки подъема на высоту 500 метров над уровнем моря, рекомендации по обуви, запасу воды и безопасности на Ликийской тропе.', '', ''],
       ['guide-6', 'Субботний фермерский рынок Дальяна: секреты и покупки', 'Инструкция по выбору домашних сыров, оливок, гранатового сиропа', '', '', '', '', 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=1200', 'Шоппинг', 'https://youtube.com/watch?v=guide6', '11', '10', '1000', '350', 'https://youtube.com/watch?v=preview6', 'С какими фермерами стоит торговаться, где найти натуральное холодное оливковое масло первого отжима и свежайший инжир.', '', '']
     ];
-    var colsA_C = gRows.map(function(r) { return [r[0], r[1], r[2]]; });
-    var colsH_P = gRows.map(function(r) { return [r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]]; });
+    var colsA_C = gRows.map(function (r) { return [r[0], r[1], r[2]]; });
+    var colsH_P = gRows.map(function (r) { return [r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]]; });
     sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
     sheet.getRange(2, 8, colsH_P.length, 9).setValues(colsH_P);
     sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
@@ -1598,8 +1620,8 @@ function initSingleSheetByKey_(sheet, key) {
       ['checkin_protocol', 'Протокол заселения и передачи ключей', '', '', 'Заселение через электронный смарт-замок [CHECKIN_METHOD]. Персональный пароль генерируется в день заезда. Возврат ключей: [KEY_HANDOVER].', '', ''],
       ['emergency', 'Экстренные службы и безопасность', '', '', 'Единый номер экстренных служб Турции: 112 [Полиция, Жандармерия, Скорая помощь, Пожарная служба]. Жандармерия Дальяна: +90 252 284 20 05. Экстренная связь с суперхозяином: 24/7 в чате.', '', '']
     ];
-    var colsA_B = lRows.map(function(r) { return [r[0], r[1]]; });
-    var colE = lRows.map(function(r) { return [r[4]]; });
+    var colsA_B = lRows.map(function (r) { return [r[0], r[1]]; });
+    var colE = lRows.map(function (r) { return [r[4]]; });
     sheet.getRange(2, 1, colsA_B.length, 2).setValues(colsA_B);
     sheet.getRange(2, 5, colE.length, 1).setValues(colE);
     sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
@@ -1674,8 +1696,8 @@ function initSingleSheetByKey_(sheet, key) {
       ['4.1_stay_care_checkin', '4.1. Забота о госте во время проживания', '', '', 'Здравствуйте, [FIRST_NAME]! Надеюсь, отдых проходит замечательно! Решил уточнить, все ли комфортно на вилле и не требуется ли помощь по технике, бассейну или рекомендации по ресторанам? С удовольствием отвечу! С уважением, Алексей Знаменский.', '', ''],
       ['5.1_checkout_instructions', '5.1. Напоминание о выезде и передача ключей', '', '', 'Здравствуйте, [FIRST_NAME]! Благодарим за выбор Villa Turaman! Напоминаем детали выезда: Дата: [CHECKOUT_DATE], Время: до [CHECKOUT_TIME]. [KEY_HANDOVER]. Будем рады видеть вас снова! С уважением, Алексей Знаменский.', '', '']
     ];
-    var colsA_B = tRows.map(function(r) { return [r[0], r[1]]; });
-    var colE = tRows.map(function(r) { return [r[4]]; });
+    var colsA_B = tRows.map(function (r) { return [r[0], r[1]]; });
+    var colE = tRows.map(function (r) { return [r[4]]; });
     sheet.getRange(2, 1, colsA_B.length, 2).setValues(colsA_B);
     sheet.getRange(2, 5, colE.length, 1).setValues(colE);
     sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
@@ -1846,7 +1868,7 @@ function checkVercelEnvStatusInteractive() {
 
 function viewCurrentScriptProperties() {
   var props = PropertiesService.getScriptProperties().getProperties();
-  var mask = function(v) { return v ? v.substring(0, 4) + '...' + v.substring(Math.max(0, v.length - 4)) : '[НЕ ЗАДАНО]'; };
+  var mask = function (v) { return v ? v.substring(0, 4) + '...' + v.substring(Math.max(0, v.length - 4)) : '[НЕ ЗАДАНО]'; };
 
   var text = "📋 ТЕКУЩИЕ СВОЙСТВА СКРИПТА:\n\n" +
     "1. SITE_URL:\n   " + (props['SITE_URL'] || "[НЕ ЗАДАНО]") + "\n\n" +
@@ -2616,7 +2638,7 @@ function toggleTelegramMenuSectionsInteractive() {
   };
 
   if (input === 'all') {
-    Object.keys(current).forEach(function(k) { current[k] = true; });
+    Object.keys(current).forEach(function (k) { current[k] = true; });
   } else if (keyMap[input]) {
     var k = keyMap[input];
     current[k] = !current[k];
@@ -2922,7 +2944,7 @@ function showRolePromptCard_(roleTitle, roleKey, defaultMission, defaultDuties, 
         }
       }
     }
-  } catch (e) {}
+  } catch (e) { }
 
   var info = '🧠 РОЛЬ ИИ: ' + roleTitle.toUpperCase() + '\n\n' +
     '• Миссия: ' + defaultMission + '\n\n' +
@@ -3175,7 +3197,7 @@ function saveMasterSeedInteractive() {
 
     if (code === 200) {
       var data = {};
-      try { data = JSON.parse(text); } catch (e) {}
+      try { data = JSON.parse(text); } catch (e) { }
       var msg = '✅ Эталон masterSeedContent.js и локальный кэш успешно зафиксированы!\n\n' +
         '• Ключей витрины: ' + (data.homeKeysCount || '0') + '\n' +
         '• Строк витрины: ' + (data.homeRowsCount || '0') + '\n' +
@@ -3456,7 +3478,7 @@ function auditPendingBankPaymentsModal() {
       pending.push('Строка ' + (i + 1) + ': ' + data[i][1] + ' : ' + data[i][9] + ' : ' + status);
     }
   }
-  var msg = pending.length > 0 
+  var msg = pending.length > 0
     ? 'Бронирования с ожиданием банковской оплаты [' + pending.length + ']:\n\n' + pending.join('\n')
     : 'Все бронирования оплачены или подтверждены онлайн. Заявок с ожиданием IBAN перевода не найдено.';
   ui.alert('💰 Банковский аудит IBAN', msg, ui.ButtonSet.OK);

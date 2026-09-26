@@ -6124,22 +6124,65 @@ const MASTER_ORDERS_ROWS = [
 
 const MASTER_ACCESS_ROWS = [
   [
+    "ACC-001",
+    "Электронный замок",
+    "Главный вход виллы",
+    "4829#",
+    "9911*",
+    "Действует в период проживания",
+    "Введите 4829 и нажмите решетку #. Замок откроется автоматически.",
+    "Enter 4829 and press hash #. Lock will open automatically.",
+    "4829 girip kare # tusuna basin. Kilit otomatik acilacaktir.",
+    "Основной гостевой PIN код"
+  ],
+  [
+    "ACC-002",
+    "Wi-Fi",
+    "Гостевая сеть виллы",
+    "Guest / villa2026",
+    "villa2026",
+    "Бессрочно для гостей",
+    "Подключитесь к сети Guest и введите пароль villa2026.",
+    "Connect to network Guest and enter password villa2026.",
+    "Guest agina baglanin ve villa2026 sifresini girin.",
+    "Высокоскоростной оптоволоконный интернет"
+  ],
+  [
+    "ACC-003",
+    "Мини-сейф для ключей",
+    "Стена у главного входа",
+    "1234",
+    "9876",
+    "Резервный доступ",
+    "Установите код 1234 на барабане и потяните рычаг вниз для открытия сейфа.",
+    "Set code 1234 on dial and pull lever down to open safe.",
+    "Kadranda 1234 kodunu ayarlayin ve kasayi acmak icin kolu asagi cekin.",
+    "Хранение физических ключей от комнат и ворот"
+  ]
+];
+
+const MASTER_GUIDE_ACCESS_ROWS = [
+  [
     "2026-05-26",
     "ivan.smirnov@example.com",
     "guide-1",
+    "Видео-гид Секретные маршруты реки Дальян",
     "Видеогиды",
     "Оплачено",
-    "Да",
-    "100% [Просмотрен полностью]"
+    "TOKEN-VT-GUIDE-001",
+    "Бессрочно",
+    "Активен"
   ],
   [
     "2026-05-26",
     "ivan.smirnov@example.com",
     "guide-2",
+    "Песчаная коса пляжа Изтузу и черепахи Каретта",
     "Видеогиды",
     "Оплачено",
-    "Да",
-    "40% [В процессе изучения]"
+    "TOKEN-VT-GUIDE-002",
+    "Бессрочно",
+    "Активен"
   ]
 ];
 
@@ -6317,6 +6360,7 @@ module.exports = {
   MASTER_ACCOUNTS_ROWS,
   MASTER_ORDERS_ROWS,
   MASTER_ACCESS_ROWS,
+  MASTER_GUIDE_ACCESS_ROWS,
   MASTER_TASKS_ROWS,
   MASTER_KNOWLEDGE_GRAPH_ROWS,
   buildHomeDerivedCollections

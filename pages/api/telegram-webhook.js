@@ -509,7 +509,7 @@ export default async function handler(req, res) {
         const siteUrl = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || 'https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app';
         const secret = process.env.REVALIDATE_SECRET_TOKEN || '';
         if (secret) {
-          await fetch(`${siteUrl.replace(/\/+$/, '')}/api/revalidate?secret=${secret}`).catch(() => {});
+          await fetch(`${siteUrl.replace(/\/+$/, '')}/api/revalidate?secret=${secret}`).catch(() => { });
         }
         await tgApi(token, 'sendMessage', {
           chat_id: chatId,
