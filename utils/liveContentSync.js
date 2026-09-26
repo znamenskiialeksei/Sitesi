@@ -29,6 +29,7 @@ export const sanitizeText = (val, fallback = '') => {
 // Глобальный кэш в оперативной памяти сервера Node.js / Vercel
 let memoryCache = global._liveContentMemoryCache || null;
 let lastCacheTime = global._liveContentLastTime || 0;
+let lastPushSource = global._liveContentPushSource || null;
 const CACHE_TTL_MS = 20 * 1000; // 20 секунд кэширования для снижения нагрузки на квоты Google
 
 /**
@@ -37,8 +38,10 @@ const CACHE_TTL_MS = 20 * 1000; // 20 секунд кэширования для
 export function clearLiveContentCache() {
   memoryCache = null;
   lastCacheTime = 0;
+  lastPushSource = null;
   global._liveContentMemoryCache = null;
   global._liveContentLastTime = 0;
+  global._liveContentPushSource = null;
 }
 
 /**
@@ -140,6 +143,15 @@ export async function fetchLiveContentFromGoogleSheets() {
     sheetMap = await getLiveSheetMap(sheets, spreadsheetId);
   } catch (authErr) {
     console.warn('[LiveContentSync] Сбой инициализации Google Auth:', authErr.message);
+    if (memoryCache && memoryCache.home && Object.keys(memoryCache.home).length > 0) {
+      return {
+        success: true,
+        source: lastPushSource || 'google_apps_script_push',
+        cached: true,
+        cacheAgeSeconds: Math.round((Date.now() - lastCacheTime) / 1000),
+        ...memoryCache
+      };
+    }
     const fallbackData = readLocalFallback();
     return {
       success: true,
@@ -184,7 +196,16 @@ export async function fetchLiveContentFromGoogleSheets() {
   ]);
 
   if (hasReadErrors && homeRows.length === 0 && galleryRows.length === 0) {
-    console.warn('[LiveContentSync] Все запросы к Google Sheets завершились ошибкой JWT: используем локальный резерв');
+    console.warn('[LiveContentSync] Все запросы к Google Sheets завершились ошибкой JWT: проверяем память');
+    if (memoryCache && memoryCache.home && Object.keys(memoryCache.home).length > 0) {
+      return {
+        success: true,
+        source: lastPushSource || 'google_apps_script_push',
+        cached: true,
+        cacheAgeSeconds: Math.round((Date.now() - lastCacheTime) / 1000),
+        ...memoryCache
+      };
+    }
     const fallbackData = readLocalFallback();
     return {
       success: true,
@@ -698,8 +719,10 @@ export function updateLiveContentFromPayload(rawPayload) {
   // Обновление кэша в оперативной памяти сервера
   memoryCache = content;
   lastCacheTime = Date.now();
+  lastPushSource = 'google_apps_script_push';
   global._liveContentMemoryCache = content;
   global._liveContentLastTime = lastCacheTime;
+  global._liveContentPushSource = lastPushSource;
 
   // Попытка фоновой записи в utils/content.json на диске
   if (Object.keys(content.home).length > 0 && Object.keys(content.about).length > 0) {
@@ -742,7 +765,16 @@ export async function getOrFetchLiveContent(forceRefresh = false) {
     const liveData = await fetchLiveContentFromGoogleSheets();
     return liveData;
   } catch (err) {
-    console.warn('[LiveContentSync] Сбой обращения к Google Sheets, используем резерв:', err.message);
+    console.warn('[LiveContentSync] Сбой обращения к Google Sheets, проверяем память:', err.message);
+    if (memoryCache && memoryCache.home && Object.keys(memoryCache.home).length > 0) {
+      return {
+        success: true,
+        source: lastPushSource || 'google_apps_script_push',
+        cached: true,
+        cacheAgeSeconds: Math.round((Date.now() - lastCacheTime) / 1000),
+        ...memoryCache
+      };
+    }
     const fallbackData = readLocalFallback();
     return {
       success: true,

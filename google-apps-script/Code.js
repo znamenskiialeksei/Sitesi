@@ -438,35 +438,13 @@ function getEffectiveSiteUrl_() {
   var props = PropertiesService.getScriptProperties();
   var siteUrl = (props.getProperty('SITE_URL') || '').trim().replace(/\/+$/, '');
 
-  // Если URL не задан или указывает на localhost: очищаем и вычисляем боевой URL
-  if (!siteUrl || siteUrl.indexOf('localhost') !== -1 || siteUrl.indexOf('127.0.0.1') !== -1) {
-    var targetUrl = '';
-    try {
-      var ss = SpreadsheetApp.getActiveSpreadsheet();
-      var setSheet = findSheetByConfigKey(ss, 'SETTINGS');
-      if (setSheet) {
-        var vals = setSheet.getDataRange().getValues();
-        for (var i = 1; i < vals.length; i++) {
-          var k = String(vals[i][1] || '').trim();
-          var v = String(vals[i][2] || '').trim();
-          if (k === 'vercel_url' && v && v.indexOf('http') === 0 && v.indexOf('localhost') === -1) {
-            targetUrl = v.replace(/\/+$/, '');
-            break;
-          }
-        }
-      }
-    } catch (e) {}
-
-    if (!targetUrl) {
-      targetUrl = 'https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app';
-    }
-
-    // Перманентная перезапись Свойств скрипта для исключения localhost
+  // Принудительно отдаем канонический боевой домен виллы, если указан localhost или устаревший URL
+  if (!siteUrl || siteUrl.indexOf('localhost') !== -1 || siteUrl.indexOf('127.0.0.1') !== -1 || siteUrl.indexOf('sitesi-git-v1-airbnb') !== -1) {
+    var targetUrl = 'https://www.villaturaman.com';
     try {
       props.setProperty('SITE_URL', targetUrl);
       props.setProperty('REVALIDATE_API_URL', targetUrl + '/api/revalidate');
     } catch (propErr) {}
-
     return targetUrl;
   }
 
@@ -539,17 +517,6 @@ function triggerRevalidateWebhook() {
 
   var props = PropertiesService.getScriptProperties();
   var siteUrl = getEffectiveSiteUrl_();
-
-  // Жесткая санация URL ревалидации от любых следов localhost
-  var rawReval = (props.getProperty('REVALIDATE_API_URL') || '').trim();
-  if (!rawReval || rawReval.indexOf('localhost') !== -1 || rawReval.indexOf('127.0.0.1') !== -1) {
-    rawReval = siteUrl + '/api/revalidate';
-    try {
-      props.setProperty('REVALIDATE_API_URL', rawReval);
-    } catch (saveErr) {}
-  }
-
-  var revalidateUrl = rawReval;
   var secret = props.getProperty('REVALIDATE_SECRET_TOKEN') || 'YOUR_VERY_SECRET_RANDOM_STRING';
 
   // 0. Сбор пакета данных всех листов таблицы: 100% независимость от ключей сервисного аккаунта
@@ -560,85 +527,73 @@ function triggerRevalidateWebhook() {
   };
   var jsonString = JSON.stringify(postBody);
 
-  var isIsrSuccess = false;
-  var responseCode = 0;
-  var responseMessage = '';
+  // Список целевых эндпоинтов: канонический боевой домен и резервные адреса
+  var targetBases = [
+    'https://www.villaturaman.com',
+    siteUrl,
+    'https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app'
+  ];
 
-  // 1. Отправка сигнала ревалидации в Next.js On-demand ISR вместе с полезной нагрузкой livePayload
-  try {
-    var res = UrlFetchApp.fetch(revalidateUrl + '?secret=' + encodeURIComponent(secret), {
-      "method": "post",
-      "contentType": "application/json",
-      "payload": jsonString,
-      "muteHttpExceptions": true,
-      "followRedirects": false
-    });
-    responseCode = res.getResponseCode();
-    var responseText = res.getContentText() || '';
-
-    // Проверка на блокировку защитой Vercel Authentication
-    var isVercelAuthRedirect = (responseCode === 307 || responseCode === 308 || responseCode === 302 || responseCode === 301);
-    var headers = res.getHeaders() || {};
-    var locationHeader = headers['Location'] || headers['location'] || '';
-
-    if (isVercelAuthRedirect && (locationHeader.indexOf('vercel.com/login') !== -1 || locationHeader.indexOf('_vercel/jwt') !== -1)) {
-      SpreadsheetApp.getUi().alert(
-        "⚠️ Доступ заблокирован защитой Vercel",
-        "Обнаружена защита Vercel [Deployment Protection : Vercel Authentication].\n\nСервер Vercel перенаправил запрос на страницу входа:\n" + locationHeader + "\n\nДействие для исправления:\n1. Перейдите на https://vercel.com/ в настройки проекта.\n2. Откройте Settings ➔ Deployment Protection.\n3. Отключите Vercel Authentication для ветки v1-airbnb.\nПодробности в файле: ИНСТРУКЦИЯ_ОТКЛЮЧЕНИЯ_VERCEL_PROTECTION.md",
-        SpreadsheetApp.getUi().ButtonSet.OK
-      );
-      return;
+  var uniqueBases = [];
+  for (var b = 0; b < targetBases.length; b++) {
+    var base = (targetBases[b] || '').trim().replace(/\/+$/, '');
+    if (base && base.indexOf('http') === 0 && base.indexOf('localhost') === -1 && uniqueBases.indexOf(base) === -1) {
+      uniqueBases.push(base);
     }
-
-    if (responseText.indexOf('Login – Vercel') !== -1 || responseText.indexOf('vercel.com/login') !== -1 || (responseText.indexOf('<html') !== -1 && responseCode === 200)) {
-      SpreadsheetApp.getUi().alert(
-        "⚠️ Запрос перехвачен экраном авторизации Vercel",
-        "Сервер вернул HTML-страницу вместо ответа API ревалидации.\nВключена защита Deployment Protection на vercel.com.\n\nПожалуйста, отключите Vercel Authentication в панели Vercel для свободного обновления контента.",
-        SpreadsheetApp.getUi().ButtonSet.OK
-      );
-      return;
-    }
-
-    var data = null;
-    try {
-      data = JSON.parse(responseText);
-    } catch (parseErr) {}
-
-    if (responseCode === 200 && data && data.success && data.revalidated) {
-      isIsrSuccess = true;
-      responseMessage = 'Контент успешно опубликован на витрине Vercel.';
-    } else if (responseCode === 401) {
-      SpreadsheetApp.getActive().toast("Ошибка авторизации [401]: проверьте REVALIDATE_SECRET_TOKEN.", "⚠️ Внимание", 6);
-      return;
-    } else {
-      var snippet = responseText.replace(/<[^>]+>/g, '').trim().substring(0, 120);
-      responseMessage = (data && data.message ? data.message : snippet);
-    }
-  } catch (isrErr) {
-    Logger.log('Сбой шага 1 ISR ревалидации: ' + isrErr.message);
   }
 
-  // 2. Дополнительная синхронная передача пакета данных в оперативный кэш /api/content
-  var isCacheCleared = false;
-  try {
-    var cacheRes = UrlFetchApp.fetch(siteUrl + '/api/content?force=true', {
-      "method": "post",
-      "contentType": "application/json",
-      "payload": jsonString,
-      "muteHttpExceptions": true
-    });
-    if (cacheRes.getResponseCode() === 200) {
-      isCacheCleared = true;
+  var isAnySuccess = false;
+  var lastCode = 0;
+  var lastMessage = '';
+
+  for (var i = 0; i < uniqueBases.length; i++) {
+    var currentBase = uniqueBases[i];
+    try {
+      // 1. Отправка полезной нагрузки livePayload на /api/revalidate
+      var revalRes = UrlFetchApp.fetch(currentBase + '/api/revalidate?secret=' + encodeURIComponent(secret), {
+        "method": "post",
+        "contentType": "application/json",
+        "payload": jsonString,
+        "muteHttpExceptions": true,
+        "followRedirects": false
+      });
+      var rCode = revalRes.getResponseCode();
+      var rText = revalRes.getContentText() || '';
+      lastCode = rCode;
+
+      if (rCode === 200) {
+        var rJson = null;
+        try { rJson = JSON.parse(rText); } catch (e) {}
+        if (rJson && rJson.success) {
+          isAnySuccess = true;
+        }
+      }
+
+      // 2. Параллельная отправка полезной нагрузки livePayload на /api/content
+      try {
+        var contentRes = UrlFetchApp.fetch(currentBase + '/api/content', {
+          "method": "post",
+          "contentType": "application/json",
+          "payload": jsonString,
+          "muteHttpExceptions": true,
+          "followRedirects": false
+        });
+        if (contentRes.getResponseCode() === 200) {
+          isAnySuccess = true;
+        }
+      } catch (cErr) {}
+
+    } catch (netErr) {
+      Logger.log("Сбой отправки на " + currentBase + ": " + netErr.message);
+      lastMessage = netErr.message;
     }
-  } catch (cacheErr) {
-    Logger.log('Сбой шага 2 сброса кэша: ' + cacheErr.message);
   }
 
   // Итоговое оповещение пользователя о публикации прямо в интерфейсе Google Таблицы
-  if (isIsrSuccess || isCacheCleared) {
-    SpreadsheetApp.getActive().toast("Сайт Vercel успешно обновлен: все листы таблицы доставлены на витрину!", "⚡ 1. Опубликовано", 6);
+  if (isAnySuccess) {
+    SpreadsheetApp.getActive().toast("Сайт www.villaturaman.com успешно обновлен: все листы таблицы доставлены на витрину!", "⚡ 1. Опубликовано", 6);
   } else {
-    SpreadsheetApp.getActive().toast("Сбой отправки сигнала на " + siteUrl + ": код " + responseCode + " : " + responseMessage, "⚠️ Ошибка связи с сайтом", 7);
+    SpreadsheetApp.getActive().toast("Сбой отправки сигнала на сайт: код " + lastCode + " : " + lastMessage, "⚠️ Ошибка связи с сайтом", 7);
   }
 }
 

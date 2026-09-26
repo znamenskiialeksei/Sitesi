@@ -249,7 +249,7 @@ export default function HomeListing({ publicData, contentData }) {
 
     const fetchLiveContent = async () => {
       try {
-        const res = await fetch('/api/content?force=true&t=' + Date.now(), {
+        const res = await fetch('/api/content?t=' + Date.now(), {
           headers: { 'Cache-Control': 'no-cache' }
         });
         if (res.ok) {
