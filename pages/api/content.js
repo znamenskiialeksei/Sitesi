@@ -7,7 +7,7 @@
 // 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
-import { getOrFetchLiveContent, clearLiveContentCache } from '../../utils/liveContentSync';
+import { getOrFetchLiveContent, clearLiveContentCache, updateLiveContentFromPayload } from '../../utils/liveContentSync';
 
 /**
  * Сброс кэша в памяти сервера для обратной совместимости
@@ -18,9 +18,24 @@ export function clearMemoryCache() {
 
 /**
  * Обработчик запроса получения контента
- * Поддерживает GET и POST: с опцией force=true для принудительного сброса кэша
+ * Поддерживает GET и POST: с опцией force=true для сброса или livePayload для прямого обновления
  */
 export default async function handler(req, res) {
+  // Прямое обновление из Google Apps Script: Duplex Push
+  if (req.method === 'POST' && req.body?.livePayload) {
+    try {
+      const data = updateLiveContentFromPayload(req.body.livePayload);
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      res.setHeader('X-Content-Source', 'google_apps_script_push');
+      return res.status(200).json(data);
+    } catch (pushErr) {
+      console.error('Ошибка прямого обновления кэша контента:', pushErr.message);
+      return res.status(500).json({ success: false, error: pushErr.message });
+    }
+  }
+
   const isForce = req.query.force === 'true' || req.body?.force === true;
 
   try {

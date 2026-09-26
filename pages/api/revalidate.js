@@ -7,7 +7,7 @@
 // 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
-import { getOrFetchLiveContent, clearLiveContentCache } from '../../utils/liveContentSync';
+import { getOrFetchLiveContent, clearLiveContentCache, updateLiveContentFromPayload } from '../../utils/liveContentSync';
 
 export default async function handler(req, res) {
   // Поддерживаем как POST так и GET запросы от Google Apps Script и браузера
@@ -31,13 +31,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 1. Принудительный сброс оперативного кэша
-    clearLiveContentCache();
+    let liveContent;
+    // 1. Если передана полезная нагрузка livePayload из Google Apps Script (Duplex Push) : обновляем память мгновенно
+    if (req.body && req.body.livePayload) {
+      liveContent = updateLiveContentFromPayload(req.body.livePayload);
+    } else {
+      // Иначе принудительно сбрасываем кэш и обращаемся к Google Sheets API
+      clearLiveContentCache();
+      liveContent = await getOrFetchLiveContent(true);
+    }
 
-    // 2. Первоочередная загрузка свежего контента из Google Sheets API в память сервера
-    const liveContent = await getOrFetchLiveContent(true);
-
-    // 3. Инвалидация статического кэша главной страницы виллы в Next.js ISR
+    // 2. Инвалидация статического кэша главной страницы виллы в Next.js ISR
     const revalidateTargets = ['/'];
 
     const results = {};

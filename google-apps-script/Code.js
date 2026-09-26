@@ -479,7 +479,60 @@ function sendUpdateSignal(e) {
   triggerRevalidateWebhook();
 }
 
-/** Отправка сигнала On-demand ISR ревалидации в Next.js: 100% без localhost */
+/** Сбор пакета данных всех листов таблицы для прямой отправки на сайт : Duplex Push */
+function collectAllSheetsPayload_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var payload = {
+    timestamp: new Date().toISOString(),
+    spreadsheetId: ss.getId(),
+    homeRows: [],
+    settingsRows: [],
+    legalRows: [],
+    templatesRows: [],
+    productsRows: [],
+    coursesRows: [],
+    galleryRows: [],
+    calendarRows: [],
+    bookingsRows: [],
+    accountsRows: [],
+    ordersRows: [],
+    accessRows: [],
+    tasksRows: [],
+    knowledgeGraphRows: []
+  };
+
+  function getRows(key) {
+    try {
+      var sh = findSheetByConfigKey(ss, key);
+      if (!sh) return [];
+      var range = sh.getDataRange();
+      if (!range) return [];
+      return range.getDisplayValues() || [];
+    } catch (e) {
+      Logger.log("Ошибка сбора листа " + key + ": " + e.message);
+      return [];
+    }
+  }
+
+  payload.homeRows = getRows("HOME");
+  payload.settingsRows = getRows("SETTINGS");
+  payload.legalRows = getRows("LEGAL");
+  payload.templatesRows = getRows("TEMPLATES");
+  payload.productsRows = getRows("SERVICES");
+  payload.coursesRows = getRows("GUIDES");
+  payload.galleryRows = getRows("GALLERY");
+  payload.calendarRows = getRows("CALENDAR");
+  payload.bookingsRows = getRows("BOOKINGS");
+  payload.accountsRows = getRows("ACCOUNTS");
+  payload.ordersRows = getRows("ORDERS");
+  payload.accessRows = getRows("ACCESS");
+  payload.tasksRows = getRows("TASKS");
+  payload.knowledgeGraphRows = getRows("KNOWLEDGE_GRAPH");
+
+  return payload;
+}
+
+/** Отправка сигнала On-demand ISR ревалидации в Next.js: 100% без localhost и с пакетом данных всех листов таблицы */
 function triggerRevalidateWebhook() {
   // Автоматическое подключение триггера при первой публикации
   ensureAutoSyncTriggerInstalled_();
@@ -499,14 +552,24 @@ function triggerRevalidateWebhook() {
   var revalidateUrl = rawReval;
   var secret = props.getProperty('REVALIDATE_SECRET_TOKEN') || 'YOUR_VERY_SECRET_RANDOM_STRING';
 
+  // 0. Сбор пакета данных всех листов таблицы: 100% независимость от ключей сервисного аккаунта
+  var livePayload = collectAllSheetsPayload_();
+  var postBody = {
+    secret: secret,
+    livePayload: livePayload
+  };
+  var jsonString = JSON.stringify(postBody);
+
   var isIsrSuccess = false;
   var responseCode = 0;
   var responseMessage = '';
 
-  // 1. Отправка сигнала ревалидации в Next.js On-demand ISR
+  // 1. Отправка сигнала ревалидации в Next.js On-demand ISR вместе с полезной нагрузкой livePayload
   try {
     var res = UrlFetchApp.fetch(revalidateUrl + '?secret=' + encodeURIComponent(secret), {
       "method": "post",
+      "contentType": "application/json",
+      "payload": jsonString,
       "muteHttpExceptions": true,
       "followRedirects": false
     });
@@ -555,11 +618,13 @@ function triggerRevalidateWebhook() {
     Logger.log('Сбой шага 1 ISR ревалидации: ' + isrErr.message);
   }
 
-  // 2. Дополнительный синхронный сброс оперативного кэша контента на сайте
+  // 2. Дополнительная синхронная передача пакета данных в оперативный кэш /api/content
   var isCacheCleared = false;
   try {
     var cacheRes = UrlFetchApp.fetch(siteUrl + '/api/content?force=true', {
-      "method": "get",
+      "method": "post",
+      "contentType": "application/json",
+      "payload": jsonString,
       "muteHttpExceptions": true
     });
     if (cacheRes.getResponseCode() === 200) {
@@ -569,9 +634,9 @@ function triggerRevalidateWebhook() {
     Logger.log('Сбой шага 2 сброса кэша: ' + cacheErr.message);
   }
 
-  // Итоговое оповещение пользователя о публикации
+  // Итоговое оповещение пользователя о публикации прямо в интерфейсе Google Таблицы
   if (isIsrSuccess || isCacheCleared) {
-    SpreadsheetApp.getActive().toast("Сайт Vercel успешно обновлен: свежие данные опубликованы на витрине.", "⚡ 1. Опубликовано", 5);
+    SpreadsheetApp.getActive().toast("Сайт Vercel успешно обновлен: все листы таблицы доставлены на витрину!", "⚡ 1. Опубликовано", 6);
   } else {
     SpreadsheetApp.getActive().toast("Сбой отправки сигнала на " + siteUrl + ": код " + responseCode + " : " + responseMessage, "⚠️ Ошибка связи с сайтом", 7);
   }

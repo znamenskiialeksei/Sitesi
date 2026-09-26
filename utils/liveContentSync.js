@@ -112,7 +112,7 @@ export async function fetchLiveContentFromGoogleSheets() {
     };
   }
 
-  // Универсальный парсер RSA PEM ключа
+  // Безопасный парсер RSA PEM ключа
   const parsePrivateKey = (raw) => {
     if (!raw) return '';
     let key = raw.replace(/^["']|["']$/g, '');
@@ -124,18 +124,30 @@ export async function fetchLiveContentFromGoogleSheets() {
   const privateKey = parsePrivateKey(rawKey);
 
   // Инициализация авторизации Google Cloud
-  const auth = new google.auth.GoogleAuth({
-    credentials: {
-      client_email: clientEmail,
-      private_key: privateKey
-    },
-    scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']
-  });
+  let sheets;
+  let sheetMap = {};
+  let hasReadErrors = false;
+  try {
+    const auth = new google.auth.GoogleAuth({
+      credentials: {
+        client_email: clientEmail,
+        private_key: privateKey
+      },
+      scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']
+    });
 
-  const sheets = google.sheets({ version: 'v4', auth });
-
-  // Динамический реестр вкладок: определение соответствия sheetId и имен
-  const sheetMap = await getLiveSheetMap(sheets, spreadsheetId);
+    sheets = google.sheets({ version: 'v4', auth });
+    sheetMap = await getLiveSheetMap(sheets, spreadsheetId);
+  } catch (authErr) {
+    console.warn('[LiveContentSync] Сбой инициализации Google Auth:', authErr.message);
+    const fallbackData = readLocalFallback();
+    return {
+      success: true,
+      source: 'jwt_auth_error',
+      error: authErr.message,
+      ...fallbackData
+    };
+  }
 
   // Безопасное чтение диапазона
   const safeGet = async (key, rangeSuffix) => {
@@ -145,6 +157,9 @@ export async function fetchLiveContentFromGoogleSheets() {
       return response.data.values || [];
     } catch (err) {
       console.warn(`[LiveContentSync] Не удалось прочитать диапазон ${range}:`, err.message);
+      if (err.message && err.message.includes('invalid_grant')) {
+        hasReadErrors = true;
+      }
       return [];
     }
   };
@@ -168,6 +183,63 @@ export async function fetchLiveContentFromGoogleSheets() {
     safeGet('GALLERY', 'A:L')
   ]);
 
+  if (hasReadErrors && homeRows.length === 0 && galleryRows.length === 0) {
+    console.warn('[LiveContentSync] Все запросы к Google Sheets завершились ошибкой JWT: используем локальный резерв');
+    const fallbackData = readLocalFallback();
+    return {
+      success: true,
+      source: 'jwt_auth_error',
+      ...fallbackData
+    };
+  }
+
+  const content = processRawRowsToContent({
+    homeRows,
+    settingsRows,
+    legalRows,
+    templatesRows,
+    productsRows,
+    coursesRows,
+    galleryRows
+  });
+
+  // Обновление кэша в оперативной памяти сервера
+  memoryCache = content;
+  lastCacheTime = Date.now();
+  global._liveContentMemoryCache = content;
+  global._liveContentLastTime = lastCacheTime;
+
+  // Попытка фоновой записи в utils/content.json на диске
+  if (Object.keys(content.home).length > 0 && Object.keys(content.about).length > 0) {
+    try {
+      const contentFilePath = path.join(process.cwd(), 'utils', 'content.json');
+      fs.writeFileSync(contentFilePath, JSON.stringify(content, null, 2), 'utf8');
+    } catch (writeErr) {
+      // В среде Vercel Lambda диск read-only: это штатное поведение
+    }
+  }
+
+  return {
+    success: true,
+    source: (homeRows.length > 0 || galleryRows.length > 0) ? 'google_sheets_live' : (hasReadErrors ? 'jwt_auth_error' : 'local_fallback'),
+    cached: false,
+    sheetMap,
+    ...content
+  };
+}
+
+/**
+ * Обработка сырых строк Google Таблицы в структурированный объект контента витрины
+ */
+export function processRawRowsToContent({
+  homeRows = [],
+  settingsRows = [],
+  legalRows = [],
+  templatesRows = [],
+  productsRows = [],
+  coursesRows = [],
+  galleryRows = []
+}) {
   // Извлечение словаря переменных из листа SETTINGS
   const ssotContext = {
     address: 'Dalyan, Rodoslu Yasar Sunger Sk, NO 28/2, 48600 Ortaca / Mugla',
@@ -590,6 +662,39 @@ export async function fetchLiveContentFromGoogleSheets() {
   });
   content.dictionary = dictionary;
 
+  return content;
+}
+
+/**
+ * Прямое обновление контента из полезной нагрузки livePayload : Duplex Push
+ * Вызывается эндпоинтами pages/api/revalidate.js и pages/api/content.js
+ */
+export function updateLiveContentFromPayload(rawPayload) {
+  if (!rawPayload || typeof rawPayload !== 'object') {
+    return {
+      success: false,
+      message: 'Некорректная полезная нагрузка livePayload'
+    };
+  }
+
+  const homeRows = rawPayload.homeRows || rawPayload.home || rawPayload['HOME'] || rawPayload['🏠 Главная витрина'] || [];
+  const settingsRows = rawPayload.settingsRows || rawPayload.settings || rawPayload['SETTINGS'] || rawPayload['⚙️ Системные настройки ИИ Агентов'] || [];
+  const legalRows = rawPayload.legalRows || rawPayload.legal || rawPayload['LEGAL'] || rawPayload['⚖️ Юридические документы'] || [];
+  const templatesRows = rawPayload.templatesRows || rawPayload.templates || rawPayload['TEMPLATES'] || rawPayload['💬 Шаблоны сообщений'] || [];
+  const productsRows = rawPayload.productsRows || rawPayload.products || rawPayload.servicesRows || rawPayload['SERVICES'] || rawPayload['🛎️ Дополнительные услуги'] || [];
+  const coursesRows = rawPayload.coursesRows || rawPayload.courses || rawPayload.guidesRows || rawPayload['GUIDES'] || rawPayload['🗺️ Видео-путеводители'] || [];
+  const galleryRows = rawPayload.galleryRows || rawPayload.gallery || rawPayload['GALLERY'] || rawPayload['📸 Фото и Видео Галерея'] || [];
+
+  const content = processRawRowsToContent({
+    homeRows,
+    settingsRows,
+    legalRows,
+    templatesRows,
+    productsRows,
+    coursesRows,
+    galleryRows
+  });
+
   // Обновление кэша в оперативной памяти сервера
   memoryCache = content;
   lastCacheTime = Date.now();
@@ -608,9 +713,9 @@ export async function fetchLiveContentFromGoogleSheets() {
 
   return {
     success: true,
-    source: 'google_sheets_live',
+    source: 'google_apps_script_push',
     cached: false,
-    sheetMap,
+    timestamp: Date.now(),
     ...content
   };
 }

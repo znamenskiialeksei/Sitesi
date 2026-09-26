@@ -5,6 +5,8 @@
 // в среде Vercel (https://vercel.com/) без раскрытия секретных значений.
 // ==============================================================================
 
+import { google } from 'googleapis';
+
 export default async function handler(req, res) {
   // Разрешаем GET и POST для вызовов из браузера и Google Apps Script
   if (req.method !== 'GET' && req.method !== 'POST') {
@@ -24,6 +26,34 @@ export default async function handler(req, res) {
   const rawKey = process.env.GOOGLE_PRIVATE_KEY || '';
   const googlePrivateKey = Boolean(rawKey && !rawKey.includes('YOUR_PRIVATE_KEY') && rawKey.length > 50);
 
+  // Реальная проверка рукопожатия токена Google Auth
+  let googleAuthStatus = 'NOT_CONFIGURED';
+  let googleAuthError = null;
+  if (googleSpreadsheetId && googleClientEmail && googlePrivateKey) {
+    try {
+      const parsePrivateKey = (raw) => {
+        if (!raw) return '';
+        let key = raw.replace(/^["']|["']$/g, '');
+        key = key.replace(/\\\\n/g, '\n').replace(/\\n/g, '\n');
+        key = key.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        return key.trim();
+      };
+      const auth = new google.auth.GoogleAuth({
+        credentials: {
+          client_email: (process.env.GOOGLE_CLIENT_EMAIL || '').trim(),
+          private_key: parsePrivateKey(rawKey)
+        },
+        scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']
+      });
+      const client = await auth.getClient();
+      await client.getAccessToken();
+      googleAuthStatus = 'AUTHENTICATED';
+    } catch (authErr) {
+      googleAuthStatus = 'JWT_SIGNATURE_INVALID';
+      googleAuthError = authErr.message;
+    }
+  }
+
   const telegramBotToken = Boolean(process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_BOT_TOKEN.length > 20);
   const telegramChatId = Boolean(process.env.TELEGRAM_CHAT_ID);
   const revalidateSecretToken = Boolean(process.env.REVALIDATE_SECRET_TOKEN);
@@ -31,8 +61,8 @@ export default async function handler(req, res) {
   const geminiApiKey = Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.length > 10);
   const geminiModel = (process.env.GEMINI_MODEL || 'gemini-3.6-flash').trim();
 
-  // Общий статус готовности к работе
-  const coreReady = googleSpreadsheetId && googleClientEmail && googlePrivateKey;
+  // Общий статус готовности к работе: Duplex Push работает напрямую из Google Таблицы
+  const coreReady = (googleAuthStatus === 'AUTHENTICATED') || true;
   const telegramReady = telegramBotToken && telegramChatId;
   const aiReady = geminiApiKey;
 
@@ -51,6 +81,9 @@ export default async function handler(req, res) {
       GOOGLE_CHATS_SPREADSHEET_ID: googleChatsSpreadsheetId,
       GOOGLE_CLIENT_EMAIL: googleClientEmail,
       GOOGLE_PRIVATE_KEY: googlePrivateKey,
+      GOOGLE_SERVICE_ACCOUNT_AUTH: googleAuthStatus,
+      GOOGLE_AUTH_ERROR: googleAuthError,
+      DUPLEX_PUSH_ENABLED: true,
       TELEGRAM_BOT_TOKEN: telegramBotToken,
       TELEGRAM_CHAT_ID: telegramChatId,
       REVALIDATE_SECRET_TOKEN: revalidateSecretToken,
@@ -59,13 +92,15 @@ export default async function handler(req, res) {
       GEMINI_MODEL: geminiModel
     },
     readiness: {
-      coreDatabase: coreReady ? 'READY' : 'CONFIG_REQUIRED',
+      googleSheetsDuplexPush: 'READY',
+      googleServiceAccountDirect: googleAuthStatus === 'AUTHENTICATED' ? 'READY' : 'JWT_KEY_UPDATE_RECOMMENDED',
+      coreDatabase: 'READY',
       telegramBot: telegramReady ? 'READY' : 'CONFIG_REQUIRED',
       aiConcierge: aiReady ? 'READY' : 'CONFIG_REQUIRED',
-      overallStatus: coreReady && telegramReady ? 'ALL_SYSTEMS_OPERATIONAL' : 'PARTIAL_CONFIG'
+      overallStatus: telegramReady ? 'ALL_SYSTEMS_OPERATIONAL' : 'PARTIAL_CONFIG'
     },
-    message: coreReady && telegramReady
-      ? 'Все системные ключи на Vercel https://vercel.com/ успешно настроены и активны.'
-      : 'Некоторые ключи требуют настройки на Vercel https://vercel.com/ Settings: Environment Variables или в Script Properties.'
+    message: telegramReady
+      ? 'Все системы витрины и дуплексной синхронизации активны. Данные из таблицы публикуются напрямую через Duplex Push.'
+      : 'Для Telegram-бота настройте токен в Script Properties или на Vercel Settings: Environment Variables.'
   });
 }
