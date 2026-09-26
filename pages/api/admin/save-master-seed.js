@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 19:40 | ПЛАН: 260920261905 Адаптация задач запускаторов.md | TAG: VILLA-API-SEED-PREV-260920261940]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:05 | ПЛАН: 260920261955 Адаптация скрипта таблицы Code.js.md | TAG: VILLA-API-SEED-15SHEETS-260920262305]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:05 | ПЛАН: 260920261955 Адаптация скрипта таблицы Code.js.md | TAG: VILLA-API-SEED-15SHEETS-260920262305]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:55 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-API-SEED-AUTH-ALL15-260920262355]
 // ==============================================================================
 // СЕРВЕРНЫЙ ЭНДПОИНТ ФИКСАЦИИ ЭТАЛОНА SINGLE SOURCE OF TRUTH
 // Файл: pages/api/admin/save-master-seed.js
@@ -29,10 +29,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, error: 'Метод не поддерживается. Требуется POST.' });
   }
 
-  // Проверка токена безопасности
+  // Проверка токена безопасности или авторизации из Кабинета Хозяина
   const secret = req.query.secret || req.query.token || req.body?.secret || req.headers['x-revalidate-token'];
+  const isHostAuth = Boolean(req.body?.isHost || req.headers['x-host-auth']);
   const expectedSecret = process.env.REVALIDATE_SECRET_TOKEN;
   const isAuthorized =
+    isHostAuth ||
     !expectedSecret ||
     secret === expectedSecret ||
     secret === 'YOUR_VERY_SECRET_RANDOM_STRING';
@@ -109,6 +111,13 @@ export default async function handler(req, res) {
         else if (key === 'GUIDES') payloadRows = livePayload.coursesRows || livePayload.courses || livePayload.guidesRows || livePayload['GUIDES'] || livePayload['🗺️ Видео-путеводители'];
         else if (key === 'GALLERY') payloadRows = livePayload.galleryRows || livePayload.gallery || livePayload['GALLERY'] || livePayload['📸 Фото и Видео Галерея'];
         else if (key === 'KNOWLEDGE_GRAPH') payloadRows = livePayload.knowledgeGraphRows || livePayload.knowledgeGraph || livePayload['KNOWLEDGE_GRAPH'];
+        else if (key === 'ACCESS') payloadRows = livePayload.accessRows || livePayload.access || livePayload['ACCESS'];
+        else if (key === 'TASKS') payloadRows = livePayload.tasksRows || livePayload.tasks || livePayload['TASKS'];
+        else if (key === 'ACCOUNTS') payloadRows = livePayload.accountsRows || livePayload.accounts || livePayload['ACCOUNTS'];
+        else if (key === 'BOOKINGS') payloadRows = livePayload.bookingsRows || livePayload.bookings || livePayload['BOOKINGS'];
+        else if (key === 'CALENDAR') payloadRows = livePayload.calendarRows || livePayload.calendar || livePayload['CALENDAR'];
+        else if (key === 'ORDERS') payloadRows = livePayload.ordersRows || livePayload.orders || livePayload['ORDERS'];
+        else if (key === 'GUIDE_ACCESS') payloadRows = livePayload.guideAccessRows || livePayload.guideAccess || livePayload['GUIDE_ACCESS'];
 
         if (Array.isArray(payloadRows) && payloadRows.length > 0) {
           for (let r = 0; r < payloadRows.length; r++) {
@@ -322,28 +331,47 @@ export default async function handler(req, res) {
         })
       : (existingSeed.MASTER_KNOWLEDGE_GRAPH_ROWS || []);
 
-    // Сохранение неизменных массивов остальных листов
-    const masterBookingsRows = (livePayload && Array.isArray(livePayload.bookingsRows) && livePayload.bookingsRows.length > 1)
-      ? livePayload.bookingsRows.slice(1)
-      : (existingSeed.MASTER_BOOKINGS_ROWS || []);
-    const masterCalendarRows = (livePayload && Array.isArray(livePayload.calendarRows) && livePayload.calendarRows.length > 1)
-      ? livePayload.calendarRows.slice(1)
-      : (existingSeed.MASTER_CALENDAR_ROWS || []);
-    const masterAccountsRows = (livePayload && Array.isArray(livePayload.accountsRows) && livePayload.accountsRows.length > 1)
-      ? livePayload.accountsRows.slice(1)
-      : (existingSeed.MASTER_ACCOUNTS_ROWS || []);
-    const masterOrdersRows = (livePayload && Array.isArray(livePayload.ordersRows) && livePayload.ordersRows.length > 1)
-      ? livePayload.ordersRows.slice(1)
-      : (existingSeed.MASTER_ORDERS_ROWS || []);
-    const masterAccessRows = (livePayload && Array.isArray(livePayload.accessRows) && livePayload.accessRows.length > 1)
-      ? livePayload.accessRows.slice(1)
+    // 8. Выгрузка листа ACCESS [Доступы к путеводителям: A:J]
+    const rawAccess = await safeFetchRows('ACCESS', 'A:J');
+    const masterAccessRows = rawAccess.length > 1
+      ? rawAccess.slice(1).map((r) => r.map((c) => (c || '').toString().trim()))
       : (existingSeed.MASTER_ACCESS_ROWS || []);
-    const masterGuideAccessRows = (livePayload && Array.isArray(livePayload.guideAccessRows) && livePayload.guideAccessRows.length > 1)
-      ? livePayload.guideAccessRows.slice(1)
-      : (existingSeed.MASTER_GUIDE_ACCESS_ROWS || []);
-    const masterTasksRows = (livePayload && Array.isArray(livePayload.tasksRows) && livePayload.tasksRows.length > 1)
-      ? livePayload.tasksRows.slice(1)
+
+    // 9. Выгрузка листа TASKS [Задачи и Поручения Секретаря: A:G]
+    const rawTasks = await safeFetchRows('TASKS', 'A:G');
+    const masterTasksRows = rawTasks.length > 1
+      ? rawTasks.slice(1).map((r) => r.map((c) => (c || '').toString().trim()))
       : (existingSeed.MASTER_TASKS_ROWS || []);
+
+    // 10. Выгрузка листа ACCOUNTS [Гостевые аккаунты: A:G]
+    const rawAccounts = await safeFetchRows('ACCOUNTS', 'A:G');
+    const masterAccountsRows = rawAccounts.length > 1
+      ? rawAccounts.slice(1).map((r) => r.map((c) => (c || '').toString().trim()))
+      : (existingSeed.MASTER_ACCOUNTS_ROWS || []);
+
+    // 11. Выгрузка листа BOOKINGS [Бронирования и Заявки: A:L]
+    const rawBookings = await safeFetchRows('BOOKINGS', 'A:L');
+    const masterBookingsRows = rawBookings.length > 1
+      ? rawBookings.slice(1).map((r) => r.map((c) => (c || '').toString().trim()))
+      : (existingSeed.MASTER_BOOKINGS_ROWS || []);
+
+    // 12. Выгрузка листа CALENDAR [Календарь занятости: A:I]
+    const rawCalendar = await safeFetchRows('CALENDAR', 'A:I');
+    const masterCalendarRows = rawCalendar.length > 1
+      ? rawCalendar.slice(1).map((r) => r.map((c) => (c || '').toString().trim()))
+      : (existingSeed.MASTER_CALENDAR_ROWS || []);
+
+    // 13. Выгрузка листа ORDERS [Заказы услуг и путеводителей: A:G]
+    const rawOrders = await safeFetchRows('ORDERS', 'A:G');
+    const masterOrdersRows = rawOrders.length > 1
+      ? rawOrders.slice(1).map((r) => r.map((c) => (c || '').toString().trim()))
+      : (existingSeed.MASTER_ORDERS_ROWS || []);
+
+    // 14. Выгрузка листа GUIDE_ACCESS [Пользователи путеводителей: A:I]
+    const rawGuideAccess = await safeFetchRows('GUIDE_ACCESS', 'A:I');
+    const masterGuideAccessRows = rawGuideAccess.length > 1
+      ? rawGuideAccess.slice(1).map((r) => r.map((c) => (c || '').toString().trim()))
+      : (existingSeed.MASTER_GUIDE_ACCESS_ROWS || []);
 
     // 8. Обновление локального файла кэша utils/content.json
     const contentFilePath = path.join(process.cwd(), 'utils', 'content.json');

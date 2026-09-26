@@ -1,12 +1,10 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 19:40 | ПЛАН: 260920261905 Адаптация задач запускаторов.md | TAG: VILLA-MASTER-PREV-260920261940]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:05 | ПЛАН: 260920261955 Адаптация скрипта таблицы Code.js.md | TAG: VILLA-MASTER-15SHEETS-260920262305]
 // ==============================================================================
 // НЕПРИКОСНОВЕННЫЙ МАСТЕР-ЭТАЛОН БАЗЫ ДАННЫХ И КОНТЕНТА VILLA TURAMAN
 // Файл: utils/masterSeedContent.js
 // Назначение: Эталонный источник истины [SSOT] для всех 15 листов Google Таблиц.
 // Защищен от случайного затирания. Обеспечивает 100% самоисцеление при удалении листов.
 // Сгенерировано автоматически через scripts/save-master-seed.js
-// Дата фиксации: 2026-09-26T10:45:58.236Z
+// Дата фиксации: 2026-09-26T20:31:12.656Z
 // 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
@@ -133,9 +131,9 @@ const MASTER_HOME_MAP = {
     "block": "1. Главный экран",
     "key": "hero_rating",
     "desc": "Числовой рейтинг виллы",
-    "ru": "4.98",
-    "en": "4.98",
-    "tr": "4.98",
+    "ru": "4",
+    "en": "4",
+    "tr": "4",
     "media": "Star",
     "status": "Вкл",
     "enabled": true
@@ -221,9 +219,9 @@ const MASTER_HOME_MAP = {
     "block": "2. Характеристики",
     "key": "host_specs_name",
     "desc": "Отображаемое имя владельца виллы",
-    "ru": "Aleksei Znamenskii",
-    "en": "Alexey Znamensky",
-    "tr": "Alexey Znamensky",
+    "ru": "Хозяин: Aleksei Znamenskii",
+    "en": "Owner: Aleksei Znamenskii",
+    "tr": "Sahibi: Aleksei Znamenskii",
     "media": "",
     "status": "Вкл",
     "enabled": true
@@ -2609,9 +2607,9 @@ const MASTER_HOME_ROWS = [
     "1. Главный экран",
     "hero_rating",
     "Числовой рейтинг виллы",
-    "4.98",
-    "4.98",
-    "4.98",
+    "4",
+    "4",
+    "4",
     "Star",
     "Вкл"
   ],
@@ -2689,9 +2687,9 @@ const MASTER_HOME_ROWS = [
     "2. Характеристики",
     "host_specs_name",
     "Отображаемое имя владельца виллы",
-    "Aleksei Znamenskii",
-    "Alexey Znamensky",
-    "Alexey Znamensky",
+    "Хозяин: Aleksei Znamenskii",
+    "Owner: Aleksei Znamenskii",
+    "Sahibi: Aleksei Znamenskii",
     "",
     "Вкл"
   ],

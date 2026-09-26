@@ -1,7 +1,10 @@
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 19:40 | ПЛАН: 260920261905 Адаптация задач запускаторов.md | TAG: VILLA-HOST-SETTINGS-260920261940]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:55 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-HOST-SETTINGS-I18N-260920262355]
 // ==============================================================================
-// УПРАВЛЕНИЕ БАЗОВЫМИ ТАРИФАМИ И ПРАВИЛАМИ ВИЛЛЫ (HOST SETTINGS)
+// УПРАВЛЕНИЕ БАЗОВЫМИ ТАРИФАМИ И ПРАВИЛАМИ ВИЛЛЫ [HOST SETTINGS]
 // Файл: components/HostCabinet/HostSettings.js
-// Назначение: Базовая цена, валюта, мин/макс ночи, время заезда и выезда
+// Назначение: Базовая цена, валюта, мин/макс ночи, время заезда и выезда, мультиязычность
+// 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
 import React, { useState, useEffect } from 'react';
@@ -28,16 +31,17 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
     try {
       const res = await fetch('/api/admin/save-master-seed', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isHost: true })
       });
       const data = await res.json();
       if (data.success) {
-        toast.success(`Эталон SSOT успешно зафиксирован: разделов ABOUT ${data.aboutCount}, ключей HOME ${data.homeKeysCount}, параметров SETTINGS ${data.settingsCount}`);
+        toast.success(t('masterSeedSaveSuccess') || `Эталон SSOT успешно зафиксирован: разделов ABOUT ${data.aboutCount}, ключей HOME ${data.homeKeysCount}, параметров SETTINGS ${data.settingsCount}`);
       } else {
-        toast.error(`Ошибка фиксации эталона: ${data.error}`);
+        toast.error(`${t('masterSeedSaveError') || 'Ошибка фиксации эталона'}: ${data.error}`);
       }
     } catch (err) {
-      toast.error(`Сбой связи: ${err.message}`);
+      toast.error(`${t('networkError') || 'Сбой связи'}: ${err.message}`);
     } finally {
       setIsSavingMasterSeed(false);
     }
@@ -193,13 +197,13 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
             </div>
             <div>
               <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                <span>ИИ-Консьерж & Gemini 3.6 Flash</span>
+                <span>{t('aiConciergeGeminiTitle') || 'ИИ-Консьерж & Gemini 3.6 Flash'}</span>
                 <span className="text-[10px] px-2 py-0.5 rounded-full font-extrabold uppercase bg-purple-500/20 text-purple-300 border border-purple-500/30">
                   {aiSettings.aiMode.toUpperCase()}
                 </span>
               </h4>
               <p className="text-xs text-slate-400">
-                Переключение режима работы ИИ в 1 клик со сквозной синхронизацией в Google Таблице и Telegram
+                {t('aiModeSwitchDesc') || 'Переключение режима работы ИИ в 1 клик со сквозной синхронизацией в Google Таблице и Telegram'}
               </p>
             </div>
           </div>
@@ -215,7 +219,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              <span>🚀 Автопилот</span>
+              <span>🚀 {t('aiModeAutopilot') || 'Автопилот'}</span>
             </button>
             <button
               type="button"
@@ -227,7 +231,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              <span>💡 Суфлер</span>
+              <span>💡 {t('aiModeCopilot') || 'Суфлер'}</span>
             </button>
             <button
               type="button"
@@ -239,23 +243,23 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              <span>⏸️ Выкл</span>
+              <span>⏸️ {t('aiModeOff') || 'Выкл'}</span>
             </button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-white/5 text-xs text-slate-300">
           <div>
-            <span className="text-[10px] text-slate-400 block uppercase">Модель Gemini:</span>
+            <span className="text-[10px] text-slate-400 block uppercase">{t('geminiModelLabel') || 'Модель Gemini:'}</span>
             <span className="font-semibold text-purple-300">{aiSettings.geminiModel}</span>
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 block uppercase">Минимальный тариф:</span>
+            <span className="text-[10px] text-slate-400 block uppercase">{t('minRateLabel') || 'Минимальный тариф:'}</span>
             <span className="font-semibold text-emerald-400">{aiSettings.minPriceUsd} USD / ночь</span>
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 block uppercase">База Знаний:</span>
-            <span className="font-semibold text-blue-300">14 шаблонов + 5 листов Таблицы</span>
+            <span className="text-[10px] text-slate-400 block uppercase">{t('knowledgeBaseLabel') || 'База Знаний:'}</span>
+            <span className="font-semibold text-blue-300">{t('kbSummaryValue') || '14 шаблонов + 5 листов Таблицы'}</span>
           </div>
         </div>
       </div>
@@ -268,8 +272,8 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
               <Shield className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Самоисцеление Google Sheets: 15 листов</h3>
-              <p className="text-xs text-slate-400 mt-0.5">Восстановить любые удаленные вкладки, структуру, формулы и эталонные данные</p>
+              <h3 className="text-base font-bold text-white">{t('selfHealingSheetsTitle') || 'Самоисцеление Google Sheets: 15 листов'}</h3>
+              <p className="text-xs text-slate-400 mt-0.5">{t('selfHealingSheetsDesc') || 'Восстановить любые удаленные вкладки, структуру, формулы и эталонные данные'}</p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2.5">
@@ -279,7 +283,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
               disabled={isRestoringSheets || isSavingMasterSeed}
               className="px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 shrink-0 disabled:opacity-50"
             >
-              {isRestoringSheets ? 'Восстановление...' : '🛠️ Восстановить листы в 1 клик'}
+              {isRestoringSheets ? (t('restoringInProgress') || 'Восстановление...') : (t('restoreSheetsBtn') || '🛠️ Восстановить листы в 1 клик')}
             </button>
             <button
               type="button"
@@ -287,7 +291,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
               disabled={isSavingMasterSeed || isRestoringSheets}
               className="px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2 shrink-0 disabled:opacity-50"
             >
-              {isSavingMasterSeed ? 'Фиксация эталона...' : '💾 Зафиксировать эталон SSOT'}
+              {isSavingMasterSeed ? (t('savingMasterSeedInProgress') || 'Фиксация эталона...') : (t('saveMasterSeedBtn') || '💾 Зафиксировать эталон SSOT')}
             </button>
           </div>
         </div>
@@ -461,16 +465,16 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
           <div className="border-b border-white/10 pb-3">
             <h4 className="text-sm font-bold text-white flex items-center gap-2">
               <CreditCard className="w-4 h-4 text-emerald-400" />
-              <span>Способы оплаты и Банковский IBAN</span>
+              <span>{t('paymentMethodsAndIbanTitle') || 'Способы оплаты и Банковский IBAN'}</span>
             </h4>
             <p className="text-xs text-slate-400 mt-0.5">
-              Управление активными вариантами оплаты для гостей и реквизиты прямого банковского перевода
+              {t('paymentMethodsAndIbanDesc') || 'Управление активными вариантами оплаты для гостей и реквизиты прямого банковского перевода'}
             </p>
           </div>
 
           <div>
             <label className="block text-xs uppercase font-bold text-slate-400 mb-2">
-              Активный режим оплаты для гостей
+              {t('activePaymentModeLabel') || 'Активный режим оплаты для гостей'}
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
               <label className={`p-3 rounded-xl border cursor-pointer flex items-center gap-2.5 transition-all ${
@@ -484,7 +488,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
                   onChange={handleChange}
                   className="hidden"
                 />
-                <span className="font-bold text-xs">🌐 Все способы: Карты и IBAN</span>
+                <span className="font-bold text-xs">{t('paymentModeAll') || '🌐 Все способы: Карты и IBAN'}</span>
               </label>
 
               <label className={`p-3 rounded-xl border cursor-pointer flex items-center gap-2.5 transition-all ${
@@ -498,7 +502,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
                   onChange={handleChange}
                   className="hidden"
                 />
-                <span className="font-bold text-xs">💳 Только онлайн-эквайринг</span>
+                <span className="font-bold text-xs">{t('paymentModeGatewayOnly') || '💳 Только онлайн-эквайринг'}</span>
               </label>
 
               <label className={`p-3 rounded-xl border cursor-pointer flex items-center gap-2.5 transition-all ${
@@ -512,7 +516,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
                   onChange={handleChange}
                   className="hidden"
                 />
-                <span className="font-bold text-xs">🏦 Только банковский IBAN</span>
+                <span className="font-bold text-xs">{t('paymentModeIbanOnly') || '🏦 Только банковский IBAN'}</span>
               </label>
             </div>
           </div>
@@ -520,7 +524,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
             <div>
               <label className="block text-xs uppercase font-bold text-slate-400 mb-1">
-                Название банка владельца
+                {t('ibanBankNameLabel') || 'Название банка владельца'}
               </label>
               <input
                 type="text"
@@ -534,7 +538,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
 
             <div>
               <label className="block text-xs uppercase font-bold text-slate-400 mb-1">
-                ФИО получателя платежа
+                {t('ibanReceiverLabel') || 'ФИО получателя платежа'}
               </label>
               <input
                 type="text"
@@ -548,7 +552,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
 
             <div>
               <label className="block text-xs uppercase font-bold text-slate-400 mb-1">
-                Номер счета IBAN
+                {t('ibanNumberLabel') || 'Номер счета IBAN'}
               </label>
               <input
                 type="text"
@@ -562,7 +566,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
 
             <div>
               <label className="block text-xs uppercase font-bold text-slate-400 mb-1">
-                SWIFT / BIC код банка
+                {t('ibanSwiftLabel') || 'SWIFT / BIC код банка'}
               </label>
               <input
                 type="text"
@@ -576,14 +580,14 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
 
             <div className="sm:col-span-2">
               <label className="block text-xs uppercase font-bold text-slate-400 mb-1">
-                Инструкция для назначения платежа
+                {t('ibanNoteLabel') || 'Инструкция для назначения платежа'}
               </label>
               <input
                 type="text"
                 name="ibanNote"
                 value={form.ibanNote}
                 onChange={handleChange}
-                placeholder="Обязательно укажите код бронирования в назначении платежа"
+                placeholder={t('ibanNotePlaceholder') || 'Обязательно укажите код бронирования в назначении платежа'}
                 className="w-full bg-slate-800 border border-white/10 p-2.5 rounded-xl text-xs font-bold text-slate-200 outline-none focus:border-emerald-500"
               />
             </div>
@@ -597,9 +601,9 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
               <MessageCircle className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-white">Официальные контакты хозяина</h4>
+              <h4 className="text-sm font-bold text-white">{t('hostContactsTitle') || 'Официальные контакты хозяина'}</h4>
               <p className="text-xs text-slate-400">
-                Используются в чате с гостем, в письмах подтверждения бронирования и ИИ агентом
+                {t('hostContactsDesc') || 'Используются в чате с гостем, в письмах подтверждения бронирования и ИИ агентом'}
               </p>
             </div>
           </div>
@@ -607,7 +611,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
             <div>
               <label className="block text-xs uppercase font-bold text-slate-400 mb-1 flex items-center gap-1.5">
-                <MessageCircle className="w-3.5 h-3.5 text-blue-400" /> Telegram хозяина
+                <MessageCircle className="w-3.5 h-3.5 text-blue-400" /> {t('hostTelegramLabel') || 'Telegram хозяина'}
               </label>
               <input
                 type="text"
@@ -617,12 +621,12 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
                 placeholder="https://t.me/marmarisyachtingru"
                 className="w-full bg-slate-800 border border-white/10 p-2.5 rounded-xl text-xs font-bold text-blue-300 outline-none focus:border-blue-500"
               />
-              <span className="text-[10px] text-slate-500 mt-1 block">Ссылка вида https://t.me/username или @username</span>
+              <span className="text-[10px] text-slate-500 mt-1 block">{t('hostTelegramHint') || 'Ссылка вида https://t.me/username или @username'}</span>
             </div>
 
             <div>
               <label className="block text-xs uppercase font-bold text-slate-400 mb-1 flex items-center gap-1.5">
-                <Mail className="w-3.5 h-3.5 text-rose-400" /> Email хозяина для связи
+                <Mail className="w-3.5 h-3.5 text-rose-400" /> {t('hostEmailLabel') || 'Email хозяина для связи'}
               </label>
               <input
                 type="email"
@@ -632,7 +636,7 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
                 placeholder="villaturaman@gmail.com"
                 className="w-full bg-slate-800 border border-white/10 p-2.5 rounded-xl text-xs font-bold text-white outline-none focus:border-rose-500"
               />
-              <span className="text-[10px] text-slate-500 mt-1 block">Email для прямых обращений гостей и уведомлений</span>
+              <span className="text-[10px] text-slate-500 mt-1 block">{t('hostEmailHint') || 'Email для прямых обращений гостей и уведомлений'}</span>
             </div>
           </div>
         </div>

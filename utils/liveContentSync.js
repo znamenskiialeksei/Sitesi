@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 19:40 | ПЛАН: 260920261905 Адаптация задач запускаторов.md | TAG: VILLA-LIVE-SYNC-PREV-260920261940]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:05 | ПЛАН: 260920261955 Адаптация скрипта таблицы Code.js.md | TAG: VILLA-LIVE-SYNC-15SHEETS-260920262305]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:05 | ПЛАН: 260920261955 Адаптация скрипта таблицы Code.js.md | TAG: VILLA-LIVE-SYNC-15SHEETS-260920262305]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:45 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-LIVE-SYNC-PERSIST-260920262345]
 // ==============================================================================
 // УНИВЕРСАЛЬНЫЙ МОДУЛЬ СИНХРОНИЗАЦИИ ЖИВОГО КОНТЕНТА ИЗ GOOGLE SHEETS
 // Файл: utils/liveContentSync.js
@@ -773,8 +773,9 @@ export function updateLiveContentFromPayload(rawPayload) {
 export async function getOrFetchLiveContent(forceRefresh = false) {
   const now = Date.now();
 
-  // 1. Быстрый возврат из кэша памяти, если он свежий и не запрошен сброс
-  if (!forceRefresh && memoryCache && now - lastCacheTime < CACHE_TTL_MS) {
+  // 1. Быстрый возврат из кэша памяти, если он получен от Duplex Push или еще свеж по TTL
+  const isPushFresh = lastPushSource === 'google_apps_script_push' && memoryCache && memoryCache.home && Object.keys(memoryCache.home).length > 0;
+  if (!forceRefresh && memoryCache && (isPushFresh || now - lastCacheTime < CACHE_TTL_MS)) {
     return {
       success: true,
       cached: true,
@@ -786,6 +787,22 @@ export async function getOrFetchLiveContent(forceRefresh = false) {
   // 2. Обращение к Google Sheets API
   try {
     const liveData = await fetchLiveContentFromGoogleSheets();
+    // Защита от деградации кэша: если Google Auth вернул ошибку или локальный fallback,
+    // но в оперативной памяти есть активный live-кэш от Duplex Push : отдаем память
+    if (
+      (liveData.source === 'jwt_auth_error' || liveData.source === 'local_fallback') &&
+      memoryCache &&
+      memoryCache.home &&
+      Object.keys(memoryCache.home).length > 0
+    ) {
+      return {
+        success: true,
+        source: lastPushSource || 'google_apps_script_push',
+        cached: true,
+        cacheAgeSeconds: Math.round((now - lastCacheTime) / 1000),
+        ...memoryCache
+      };
+    }
     return liveData;
   } catch (err) {
     console.warn('[LiveContentSync] Сбой обращения к Google Sheets, проверяем память:', err.message);

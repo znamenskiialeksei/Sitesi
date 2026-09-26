@@ -1,7 +1,10 @@
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 19:40 | ПЛАН: 260920261905 Адаптация задач запускаторов.md | TAG: VILLA-HOST-INDEX-260920261940]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:55 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-HOST-INDEX-SAFEAUTH-260920262355]
 // ==============================================================================
-// ЛИЧНЫЙ КАБИНЕТ ХОЗЯИНА ВИЛЛЫ (HOST DASHBOARD)
+// ЛИЧНЫЙ КАБИНЕТ ХОЗЯИНА ВИЛЛЫ [HOST DASHBOARD]
 // Файл: pages/host/index.js
 // Назначение: Управление бронированиями, ценами, iCal, сообщениями и 2FA безопасность
+// 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -297,7 +300,7 @@ export default function HostDashboardPage() {
       const res = await axios.post('/api/booking', {
         action: 'master_save_calendar',
         rules,
-        sender: currentUser.name
+        sender: currentUser?.name || 'Admin'
       });
       if (res.data && res.data.success) {
         toast.success(t('calendarUpdatedToast'));
@@ -421,7 +424,7 @@ export default function HostDashboardPage() {
               title="Открыть Рабочий Чат Ассистента: Секретарь, Юрист, Бухгалтер"
             >
               <Bot className="w-4 h-4 text-white" />
-              <span>Бизнес-Ассистент</span>
+              <span>{t('businessAssistant') || 'Бизнес-Ассистент'}</span>
             </button>
 
             <Link
@@ -530,7 +533,7 @@ export default function HostDashboardPage() {
                 className="flex items-center gap-2 px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all bg-gradient-to-r from-amber-500/20 to-indigo-500/20 text-amber-300 hover:text-white border border-amber-500/30 hover:border-amber-500/60 shadow-lg shadow-amber-500/10"
               >
                 <Bot className="w-4 h-4 text-amber-400" />
-                <span>Бизнес-Ассистент [ИИ]</span>
+                <span>{t('businessAssistantAi') || 'Бизнес-Ассистент [ИИ]'}</span>
               </button>
             </div>
 

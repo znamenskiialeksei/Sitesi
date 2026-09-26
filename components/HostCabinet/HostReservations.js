@@ -1,7 +1,10 @@
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 19:40 | ПЛАН: 260920261905 Адаптация задач запускаторов.md | TAG: VILLA-HOST-RESERVATIONS-260920261940]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:55 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-HOST-RESERVATIONS-I18N-260920262355]
 // ==============================================================================
-// УПРАВЛЕНИЕ БРОНИРОВАНИЯМИ И ЗАЯВКАМИ ХОЗЯИНА (HOST RESERVATIONS)
+// УПРАВЛЕНИЕ БРОНИРОВАНИЯМИ И ЗАЯВКАМИ ХОЗЯИНА [HOST RESERVATIONS]
 // Файл: components/HostCabinet/HostReservations.js
-// Назначение: Модерация заявок: одобрение (24h HOLD), спецпредложение, отклонение, отзыв
+// Назначение: Модерация заявок: одобрение [24h HOLD], спецпредложение, отклонение, отзыв
+// 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
 import React, { useState, useEffect } from 'react';
@@ -141,7 +144,7 @@ export default function HostReservations({
                 : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-white/5'
             }`}
           >
-            Все: {requests.length}
+            {t('filterAll') || 'Все'}: {requests.length}
           </button>
           <button
             type="button"
@@ -152,7 +155,7 @@ export default function HostReservations({
                 : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-white/5'
             }`}
           >
-            Ожидают решения: {pendingList.length}
+            {t('filterPending') || 'Ожидают решения'}: {pendingList.length}
           </button>
           <button
             type="button"
@@ -163,7 +166,7 @@ export default function HostReservations({
                 : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-white/5'
             }`}
           >
-            Оплаченные брони: {paidList.length}
+            {t('filterPaid') || 'Оплаченные брони'}: {paidList.length}
           </button>
           <button
             type="button"
@@ -174,14 +177,14 @@ export default function HostReservations({
                 : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-white/5'
             }`}
           >
-            Архив: {archiveList.length}
+            {t('filterArchive') || 'Архив'}: {archiveList.length}
           </button>
         </div>
       </div>
 
       {displayedRequests.length === 0 ? (
         <div className="bg-slate-900/40 border border-white/5 rounded-2xl p-8 text-center text-slate-400">
-          <p className="text-xs">В данной категории нет бронирований</p>
+          <p className="text-xs">{t('emptyCategoryMsg') || 'В данной категории нет бронирований'}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">
@@ -202,7 +205,7 @@ export default function HostReservations({
                     </span>
                     <span className="text-xs text-slate-400 font-mono">
                       {(!req.contact || req.contact.includes('#ERROR!'))
-                        ? (req.email || req.phone || 'Контакт уточняется')
+                        ? (req.email || req.phone || t('contactPending') || 'Контакт уточняется')
                         : req.contact}
                     </span>
                     <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
@@ -227,16 +230,16 @@ export default function HostReservations({
                     {countdownMap[req.rowIndex] && countdownMap[req.rowIndex] !== 'EXPIRED' ? (
                       <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-950/70 border border-rose-500/40 text-rose-300 font-bold animate-pulse">
                         <Clock className="w-3.5 h-3.5 text-rose-400" />
-                        <span>До закрытия окна оплаты: {countdownMap[req.rowIndex]}</span>
+                        <span>{t('countdownToClose') || 'До закрытия окна оплаты:'} {countdownMap[req.rowIndex]}</span>
                       </span>
                     ) : countdownMap[req.rowIndex] === 'EXPIRED' ? (
                       <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-950/60 border border-red-500/30 text-red-400 font-bold">
                         <Clock className="w-3.5 h-3.5" />
-                        <span>Время оплаты истекло: требуется отзыв</span>
+                        <span>{t('countdownExpiredMsg') || 'Время оплаты истекло: требуется отзыв'}</span>
                       </span>
                     ) : null}
                     <span className="text-[11px] text-slate-400">
-                      до {new Date(req.expiresAt).toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' })}
+                      {t('untilWord') || 'до'} {new Date(req.expiresAt).toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' })}
                     </span>
                   </div>
                 )}

@@ -1,3 +1,5 @@
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 19:40 | ПЛАН: 260920261905 Адаптация задач запускаторов.md | TAG: VILLA-HOME-PREV-260920261940]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:45 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-HOME-PERSIST-260920262345]
 // ==============================================================================
 // ГЛАВНАЯ СТРАНИЦА ВИЛЛЫ VILLA TURAMAN В СТИЛЕ AIRBNB
 // Файл: pages/index.js
@@ -125,9 +127,36 @@ export default function HomeListing({ publicData, contentData }) {
   const { currentUser, setAuthModalOpen, loginGuestDirectly } = useAuth();
   const toast = useToast();
 
-  // Динамические данные с поддержкой онлайн-регидрации из Google Sheets
-  const [currentContentData, setCurrentContentData] = useState(contentData);
-  const [currentPublicData, setCurrentPublicData] = useState(publicData);
+  // Динамические данные с поддержкой онлайн-регидрации из Google Sheets и Client Persistence Guard
+  const [currentContentData, setCurrentContentData] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('villa_live_content_cache');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.home && Object.keys(parsed.home).length > 0) {
+            return parsed;
+          }
+        }
+      } catch (storageErr) {}
+    }
+    return contentData;
+  });
+
+  const [currentPublicData, setCurrentPublicData] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('villa_live_public_cache');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && (parsed.products?.length > 0 || parsed.gallery?.length > 0)) {
+            return parsed;
+          }
+        }
+      } catch (storageErr) {}
+    }
+    return publicData;
+  });
 
   // Состояние выбранной презентации: видео-гид или консьерж-сервис
   const [selectedPresentation, setSelectedPresentation] = useState(null);
@@ -265,7 +294,7 @@ export default function HomeListing({ publicData, contentData }) {
             if (typeof buildHomeDerivedCollections === 'function') {
               buildHomeDerivedCollections(cleanHome, true);
             }
-            setCurrentContentData({
+            const newContentData = {
               home: cleanHome,
               about: liveData.about || contentData.about,
               legal: liveData.legal || contentData.legal,
@@ -273,12 +302,22 @@ export default function HomeListing({ publicData, contentData }) {
               products: liveData.products || contentData.products,
               courses: liveData.courses || contentData.courses,
               gallery: liveData.gallery || contentData.gallery
-            });
-            setCurrentPublicData({
+            };
+            const newPublicData = {
               products: liveData.products || publicData.products,
               courses: liveData.courses || publicData.courses,
               gallery: liveData.gallery || publicData.gallery
-            });
+            };
+            setCurrentContentData(newContentData);
+            setCurrentPublicData(newPublicData);
+            try {
+              if (typeof window !== 'undefined' && window.localStorage) {
+                localStorage.setItem('villa_live_content_cache', JSON.stringify(newContentData));
+                localStorage.setItem('villa_live_public_cache', JSON.stringify(newPublicData));
+              }
+            } catch (storageErr) {
+              // Защитное игнорирование переполнения квоты браузера
+            }
             if (liveData.dictionary && typeof updateLiveDictionary === 'function') {
               updateLiveDictionary(liveData.dictionary);
             }

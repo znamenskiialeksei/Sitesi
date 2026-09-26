@@ -26,9 +26,9 @@
       "block": "1. Главный экран",
       "key": "hero_rating",
       "desc": "Числовой рейтинг виллы",
-      "ru": "4.98",
-      "en": "4.98",
-      "tr": "4.98",
+      "ru": "4",
+      "en": "4",
+      "tr": "4",
       "media": "Star",
       "status": "Вкл",
       "enabled": true
@@ -114,9 +114,9 @@
       "block": "2. Характеристики",
       "key": "host_specs_name",
       "desc": "Отображаемое имя владельца виллы",
-      "ru": "Aleksei Znamenskii",
-      "en": "Alexey Znamensky",
-      "tr": "Alexey Znamensky",
+      "ru": "Хозяин: Aleksei Znamenskii",
+      "en": "Owner: Aleksei Znamenskii",
+      "tr": "Sahibi: Aleksei Znamenskii",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -3696,11 +3696,6 @@
       "category": "МАТРИЦА_ЛИСТОВ",
       "value": "РАЗРЕШЕН [ВСЕ]",
       "description": "Лист содержит историю заказов доп. услуг и путеводителей."
-    },
-    "🔑 Управление доступом": {
-      "category": "МАТРИЦА_ЛИСТОВ",
-      "value": "РАЗРЕШЕН [КОНСЬЕРЖ]",
-      "description": "Лист содержит физические ключи виллы, гостевой Wi-Fi, коды калитки и ПИН-коды смарт-замков."
     },
     "🎟️ Доступы к путеводителям": {
       "category": "МАТРИЦА_ЛИСТОВ",

@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 19:40 | ПЛАН: 260920261905 Адаптация задач запускаторов.md | TAG: VILLA-SEED-SCRIPT-PREV-260920261940]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:05 | ПЛАН: 260920261955 Адаптация скрипта таблицы Code.js.md | TAG: VILLA-SEED-SCRIPT-15SHEETS-260920262305]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:05 | ПЛАН: 260920261955 Адаптация скрипта таблицы Code.js.md | TAG: VILLA-SEED-SCRIPT-15SHEETS-260920262305]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:45 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-SEED-SCRIPT-ALL15-260920262345]
 // ==============================================================================
 // СЦЕНАРИЙ АВТОМАТИЧЕСКОЙ ФИКСАЦИИ ЭТАЛОНА SINGLE SOURCE OF TRUTH
 // Файл: scripts/save-master-seed.js
@@ -281,13 +281,89 @@ async function saveMasterSeed() {
       })
     : (existingSeed.MASTER_KNOWLEDGE_GRAPH_ROWS || []);
 
-  const masterBookingsRows = existingSeed.MASTER_BOOKINGS_ROWS || [];
-  const masterCalendarRows = existingSeed.MASTER_CALENDAR_ROWS || [];
-  const masterAccountsRows = existingSeed.MASTER_ACCOUNTS_ROWS || [];
-  const masterOrdersRows = existingSeed.MASTER_ORDERS_ROWS || [];
-  const masterAccessRows = existingSeed.MASTER_ACCESS_ROWS || [];
-  const masterGuideAccessRows = existingSeed.MASTER_GUIDE_ACCESS_ROWS || [];
-  const masterTasksRows = existingSeed.MASTER_TASKS_ROWS || [];
+  // 8. Выгрузка листа ACCESS [🔑 Управление доступом - Лист 4]
+  const rawAccess = await safeFetchRows('ACCESS', 'A:J');
+  const masterAccessRows = rawAccess.length > 1
+    ? rawAccess.slice(1).map((r) => {
+        const row = [];
+        for (let i = 0; i < 8; i++) {
+          row.push((r[i] || '').toString().trim());
+        }
+        return row;
+      })
+    : (existingSeed.MASTER_ACCESS_ROWS || []);
+
+  // 9. Выгрузка листа TASKS [📋 Задачи и Поручения Секретаря - Лист 7]
+  const rawTasks = await safeFetchRows('TASKS', 'A:G');
+  const masterTasksRows = rawTasks.length > 1
+    ? rawTasks.slice(1).map((r) => {
+        const row = [];
+        for (let i = 0; i < 7; i++) {
+          row.push((r[i] || '').toString().trim());
+        }
+        return row;
+      })
+    : (existingSeed.MASTER_TASKS_ROWS || []);
+
+  // 10. Выгрузка листа ACCOUNTS [👤 Гостевые аккаунты - Лист 9]
+  const rawAccounts = await safeFetchRows('ACCOUNTS', 'A:G');
+  const masterAccountsRows = rawAccounts.length > 1
+    ? rawAccounts.slice(1).map((r) => {
+        const row = [];
+        for (let i = 0; i < 7; i++) {
+          row.push((r[i] || '').toString().trim());
+        }
+        return row;
+      })
+    : (existingSeed.MASTER_ACCOUNTS_ROWS || []);
+
+  // 11. Выгрузка листа BOOKINGS [📋 Заявки и Бронирования - Лист 12]
+  const rawBookings = await safeFetchRows('BOOKINGS', 'A:L');
+  const masterBookingsRows = rawBookings.length > 1
+    ? rawBookings.slice(1).map((r) => {
+        const row = [];
+        for (let i = 0; i < 11; i++) {
+          row.push((r[i] || '').toString().trim());
+        }
+        return row;
+      })
+    : (existingSeed.MASTER_BOOKINGS_ROWS || []);
+
+  // 12. Выгрузка листа CALENDAR [📅 Календарь и Тарифы - Лист 13]
+  const rawCalendar = await safeFetchRows('CALENDAR', 'A:I');
+  const masterCalendarRows = rawCalendar.length > 1
+    ? rawCalendar.slice(1).map((r) => {
+        const row = [];
+        for (let i = 0; i < 7; i++) {
+          row.push((r[i] || '').toString().trim());
+        }
+        return row;
+      })
+    : (existingSeed.MASTER_CALENDAR_ROWS || []);
+
+  // 13. Выгрузка листа ORDERS [🛍️ Заказы услуг и гидов - Лист 14]
+  const rawOrders = await safeFetchRows('ORDERS', 'A:G');
+  const masterOrdersRows = rawOrders.length > 1
+    ? rawOrders.slice(1).map((r) => {
+        const row = [];
+        for (let i = 0; i < 6; i++) {
+          row.push((r[i] || '').toString().trim());
+        }
+        return row;
+      })
+    : (existingSeed.MASTER_ORDERS_ROWS || []);
+
+  // 14. Выгрузка листа GUIDE_ACCESS [🎟️ Доступы к путеводителям - Лист 15]
+  const rawGuideAccess = await safeFetchRows('GUIDE_ACCESS', 'A:I');
+  const masterGuideAccessRows = rawGuideAccess.length > 1
+    ? rawGuideAccess.slice(1).map((r) => {
+        const row = [];
+        for (let i = 0; i < 8; i++) {
+          row.push((r[i] || '').toString().trim());
+        }
+        return row;
+      })
+    : (existingSeed.MASTER_GUIDE_ACCESS_ROWS || []);
 
   // 8. Обновление локального файла кэша utils/content.json
   const contentFilePath = path.join(__dirname, '..', 'utils', 'content.json');
@@ -462,16 +538,28 @@ module.exports = {
   fs.writeFileSync(targetPath, fileContent, 'utf8');
 
   console.log(`[save-master-seed] ✅ УСПЕШНО: Эталонный файл сохранен: ${targetPath}`);
-  console.log(`[save-master-seed] Ключей HOME: ${Object.keys(masterHomeMap).length}`);
-  console.log(`[save-master-seed] Строк HOME: ${masterHomeRows.length}`);
-  console.log(`[save-master-seed] Разделов ABOUT: ${finalAboutSections.length}`);
-  console.log(`[save-master-seed] Строк настроек SETTINGS: ${masterSettingsRows.length}`);
+  console.log(`[save-master-seed] Лист 1 HOME: ${masterHomeRows.length} строк [${Object.keys(masterHomeMap).length} ключей]`);
+  console.log(`[save-master-seed] Лист 2 GALLERY: ${masterGalleryRows.length} строк`);
+  console.log(`[save-master-seed] Лист 3 LEGAL: ${masterLegalRows.length} строк`);
+  console.log(`[save-master-seed] Лист 4 ACCESS: ${masterAccessRows.length} строк`);
+  console.log(`[save-master-seed] Лист 5 TEMPLATES: ${masterTemplatesRows.length} строк`);
+  console.log(`[save-master-seed] Лист 6 SETTINGS: ${masterSettingsRows.length} строк`);
+  console.log(`[save-master-seed] Лист 7 TASKS: ${masterTasksRows.length} строк`);
+  console.log(`[save-master-seed] Лист 8 KNOWLEDGE_GRAPH: ${masterKnowledgeGraphRows.length} строк`);
+  console.log(`[save-master-seed] Лист 9 ACCOUNTS: ${masterAccountsRows.length} строк`);
+  console.log(`[save-master-seed] Лист 10 SERVICES: ${masterServicesRows.length} строк`);
+  console.log(`[save-master-seed] Лист 11 GUIDES: ${masterGuidesRows.length} строк`);
+  console.log(`[save-master-seed] Лист 12 BOOKINGS: ${masterBookingsRows.length} строк`);
+  console.log(`[save-master-seed] Лист 13 CALENDAR: ${masterCalendarRows.length} строк`);
+  console.log(`[save-master-seed] Лист 14 ORDERS: ${masterOrdersRows.length} строк`);
+  console.log(`[save-master-seed] Лист 15 GUIDE_ACCESS: ${masterGuideAccessRows.length} строк`);
   return {
     success: true,
     homeKeysCount: Object.keys(masterHomeMap).length,
     homeRowsCount: masterHomeRows.length,
     aboutCount: finalAboutSections.length,
-    settingsCount: masterSettingsRows.length
+    settingsCount: masterSettingsRows.length,
+    all15SheetsSaved: true
   };
 }
 
