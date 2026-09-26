@@ -2825,7 +2825,7 @@ function saveMasterSeedInteractive() {
 // 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
-//**
+/**
  * 🧾 Интерактивный калькулятор e-Arşiv Fatura для портала GİB
  * 100% Zero-Brackets & Zero-Emdash Стандарт.
  */
