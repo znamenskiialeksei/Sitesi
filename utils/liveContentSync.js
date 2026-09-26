@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:45 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-LIVE-SYNC-PERSIST-260920262345]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 00:25 | ПЛАН: 270920260015 Синхронизация translations.md | TAG: VILLA-LIVE-SYNC-ALIASES-270920260025]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 00:25 | ПЛАН: 270920260015 Синхронизация translations.md | TAG: VILLA-LIVE-SYNC-ALIASES-270920260025]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:26 | ПЛАН: 270920260126 Исправление синхронизации шаблонов.md | TAG: VILLA-SYNC-TEMPLATES-FIX-270920260126]
 // ==============================================================================
 // УНИВЕРСАЛЬНЫЙ МОДУЛЬ СИНХРОНИЗАЦИИ ЖИВОГО КОНТЕНТА ИЗ GOOGLE SHEETS
 // Файл: utils/liveContentSync.js
@@ -499,20 +499,20 @@ export function processRawRowsToContent({
   // 4. Шаблоны ответов [TEMPLATES]
   if (templatesRows.length > 1) {
     templatesRows.slice(1).forEach((r) => {
-      if (r[0]) {
-        if (!content.templates[r[0]]) content.templates[r[0]] = [];
-        content.templates[r[0]].push({
-          name: {
-            ru: sanitizeText(r[1], ''),
-            en: sanitizeText(r[2], ''),
-            tr: sanitizeText(r[3], '')
+      const id = r[0] ? String(r[0]).trim() : '';
+      if (id) {
+        content.templates[id] = {
+          title: {
+            ru: sanitizeText(r[1], fallbackData.templates?.[id]?.title?.ru || ''),
+            en: sanitizeText(r[2], fallbackData.templates?.[id]?.title?.en || ''),
+            tr: sanitizeText(r[3], fallbackData.templates?.[id]?.title?.tr || '')
           },
           text: {
-            ru: sanitizeText(r[4], ''),
-            en: sanitizeText(r[5], ''),
-            tr: sanitizeText(r[6], '')
+            ru: sanitizeText(r[4], fallbackData.templates?.[id]?.text?.ru || ''),
+            en: sanitizeText(r[5], fallbackData.templates?.[id]?.text?.en || ''),
+            tr: sanitizeText(r[6], fallbackData.templates?.[id]?.text?.tr || '')
           }
-        });
+        };
       }
     });
   }

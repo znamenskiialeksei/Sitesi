@@ -5,6 +5,9 @@
 // 14 динамических смарт-шаблонов из Google Таблиц с офлайн-кэшированием,
 // многострочный редактор textarea без урезания текста и ИИ-суфлер Gemini Copilot.
 // 100% Zero-Brackets & Zero-Emdash Стандарт.
+//
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:30 | ПЛАН: 260920262330 Рефакторинг инбокса.md | TAG: VILLA-HOST-INBOX-260920262330]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:48 | ПЛАН: 270920260148 Исправление кнопок ИИ и локализации инбокса.md | TAG: VILLA-HOST-AI-INBOX-I18N-270920260148]
 // ==============================================================================
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
@@ -197,19 +200,19 @@ export default function HostInbox({
     }
 
     if (isPastCheckOut) {
-      return { id: 'STAGE_5_CHECKED_OUT', label: 'Выезд [Этап 5]', badge: 'bg-purple-950/70 border-purple-500/40 text-purple-300' };
+      return { id: 'STAGE_5_CHECKED_OUT', label: t('stage5CheckedOut'), badge: 'bg-purple-950/70 border-purple-500/40 text-purple-300' };
     }
     if (isInHouse) {
-      return { id: 'STAGE_4_IN_HOUSE', label: 'Проживание [Этап 4]', badge: 'bg-emerald-950/70 border-emerald-500/40 text-emerald-300' };
+      return { id: 'STAGE_4_IN_HOUSE', label: t('stage4InHouse'), badge: 'bg-emerald-950/70 border-emerald-500/40 text-emerald-300' };
     }
     if (status.includes('ОПЛАЧЕНО') || status.includes('ПОДТВЕРЖДЕНО')) {
-      return { id: 'STAGE_3_BOOKED_PRE_ARRIVAL', label: 'Бронь подтверждена [Этап 3]', badge: 'bg-blue-950/70 border-blue-500/40 text-blue-300' };
+      return { id: 'STAGE_3_BOOKED_PRE_ARRIVAL', label: t('stage3BookedPreArrival'), badge: 'bg-blue-950/70 border-blue-500/40 text-blue-300' };
     }
     if (status.includes('ОЖИДАЕТ') || status.includes('СПЕЦПРЕДЛОЖЕНИЕ') || status.includes('HOLD')) {
-      return { id: 'STAGE_2_HOLD_PENDING', label: 'Ожидает оплаты [Этап 2]', badge: 'bg-amber-950/70 border-amber-500/40 text-amber-300' };
+      return { id: 'STAGE_2_HOLD_PENDING', label: t('stage2HoldPending'), badge: 'bg-amber-950/70 border-amber-500/40 text-amber-300' };
     }
-    return { id: 'STAGE_1_LEAD', label: 'Лид [Этап 1]', badge: 'bg-slate-800 border-white/10 text-slate-300' };
-  }, [activeChat]);
+    return { id: 'STAGE_1_LEAD', label: t('stage1Lead'), badge: 'bg-slate-800 border-white/10 text-slate-300' };
+  }, [activeChat, t]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -585,12 +588,12 @@ export default function HostInbox({
             {isKnowledgeFromCache ? (
               <>
                 <WifiOff className="w-3 h-3 text-amber-400" />
-                <span className="text-amber-300 font-medium">Офлайн-память активна</span>
+                <span className="text-amber-300 font-medium">{t('offlineMemoryActive')}</span>
               </>
             ) : (
               <>
                 <Wifi className="w-3 h-3 text-emerald-400" />
-                <span className="text-emerald-300 font-medium">Google Таблица онлайн</span>
+                <span className="text-emerald-300 font-medium">{t('googleSheetsOnline')}</span>
               </>
             )}
           </div>
@@ -601,30 +604,30 @@ export default function HostInbox({
           <button
             onClick={() => loadKnowledgeBase(true)}
             disabled={isSyncingKnowledge}
-            title="Обновить шаблоны и переменные напрямую из Google Таблицы"
+            title={t('syncFromSheetsTitle')}
             className="p-2 sm:px-3 sm:py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:text-white border border-white/10 hover:border-cyan-500/50 disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-cyan-400 ${isSyncingKnowledge ? 'animate-spin' : ''}`} />
-            <span className="hidden md:inline">{isSyncingKnowledge ? 'Синхронизация...' : 'Обновить из Таблицы'}</span>
+            <span className="hidden md:inline">{isSyncingKnowledge ? t('syncingFromSheets') : t('syncFromSheetsBtn')}</span>
           </button>
 
           <button
             onClick={handleFormatChats}
             disabled={formattingChats}
-            title="Форматировать шапки и колонки всех листов чатов Google Таблиц"
+            title={t('formatCrmChatsTitle')}
             className="p-2 sm:px-3 sm:py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:text-white border border-white/10 hover:border-emerald-500/50 disabled:opacity-50"
           >
             <Sparkles className={`w-3.5 h-3.5 text-emerald-400 ${formattingChats ? 'animate-spin' : ''}`} />
-            <span className="hidden md:inline">{formattingChats ? 'Форматирование...' : 'Форматировать CRM чаты'}</span>
+            <span className="hidden md:inline">{formattingChats ? t('formattingCrmChats') : t('formatCrmChatsBtn')}</span>
           </button>
 
           <button
             onClick={() => setIsAssistantOpen(true)}
-            title="Открыть Бизнес-Ассистент: Секретарь, Юрист, Бухгалтер"
+            title={t('businessAssistantDesc')}
             className="px-2.5 py-2 sm:px-3 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-gradient-to-r from-rose-600 to-amber-600 text-white shadow-md hover:brightness-110"
           >
             <Bot className="w-3.5 h-3.5 text-white" />
-            <span className="hidden sm:inline">Бизнес-Ассистент</span>
+            <span className="hidden sm:inline">{t('businessAssistant')}</span>
           </button>
 
           <button
@@ -643,18 +646,18 @@ export default function HostInbox({
           {/* Кнопка быстрого сворачивания / разворачивания правого сайдбара деталей брони */}
           <button
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-            title={isSidebarCollapsed ? 'Развернуть панель деталей бронирования' : 'Свернуть панель деталей для расширения чата'}
+            title={isSidebarCollapsed ? t('expandDetailsTitle') : t('collapseDetailsTitle')}
             className="hidden md:flex px-3 py-2 rounded-xl text-xs font-bold transition-all items-center gap-1.5 bg-slate-800 text-slate-300 hover:text-white border border-white/10"
           >
             {isSidebarCollapsed ? (
               <>
                 <PanelRightOpen className="w-4 h-4 text-rose-400" />
-                <span>Детали</span>
+                <span>{t('bookingDetailsTab')}</span>
               </>
             ) : (
               <>
                 <PanelRightClose className="w-4 h-4 text-slate-400" />
-                <span>Свернуть детали</span>
+                <span>{t('collapseDetailsBtn')}</span>
               </>
             )}
           </button>
@@ -680,12 +683,12 @@ export default function HostInbox({
             {/* Фильтры по статусам диалогов */}
             <div className="flex items-center gap-1 overflow-x-auto pb-1 no-scrollbar text-[11px]">
               {[
-                { id: 'all', label: 'Все' },
-                { id: 'requests', label: 'С заявками' },
-                { id: 'paid', label: 'Оплаченные' },
-                { id: 'pending', label: 'В ожидании' },
-                { id: 'registered', label: 'Зарегистр.' },
-                { id: 'unregistered', label: 'Без регистр.' }
+                { id: 'all', label: t('filterAllTab') },
+                { id: 'requests', label: t('filterRequestsTab') },
+                { id: 'paid', label: t('filterPaidTab') },
+                { id: 'pending', label: t('filterPendingTab') },
+                { id: 'registered', label: t('filterRegisteredTab') },
+                { id: 'unregistered', label: t('filterUnregisteredTab') }
               ].map((f) => (
                 <button
                   key={f.id}
@@ -703,16 +706,16 @@ export default function HostInbox({
 
             {/* Сортировка диалогов */}
             <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1">
-              <span>Сортировка:</span>
+              <span>{t('sortLabel')}</span>
               <select
                 value={activeSortOrder}
                 onChange={(e) => setActiveSortOrder(e.target.value)}
                 className="bg-slate-800 text-slate-200 text-[11px] rounded-lg px-2 py-0.5 border border-white/10 outline-none focus:border-rose-500"
               >
-                <option value="recent">Свежие сообщения</option>
-                <option value="urgent">Срочные (HOLD/Запросы)</option>
-                <option value="amount">Сумма брони</option>
-                <option value="name">Имя гостя</option>
+                <option value="recent">{t('sortRecent')}</option>
+                <option value="urgent">{t('sortUrgent')}</option>
+                <option value="amount">{t('sortAmount')}</option>
+                <option value="name">{t('sortName')}</option>
               </select>
             </div>
           </div>
@@ -777,32 +780,32 @@ export default function HostInbox({
                     <div className="flex items-center gap-1.5 flex-wrap mt-1">
                       {c.isRegistered ? (
                         <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-950/60 border border-emerald-500/30 text-emerald-300">
-                          {c.verificationLevel === 'both' ? '✓ Email и Тел' : c.verificationLevel === 'email' ? '✓ Email' : c.verificationLevel === 'phone' ? '✓ Тел' : '👤 Аккаунт'}
+                          {c.verificationLevel === 'both' ? t('verifiedBothBadge') : c.verificationLevel === 'email' ? t('verifiedEmailBadge') : c.verificationLevel === 'phone' ? t('verifiedPhoneBadge') : t('verifiedAccountBadge')}
                         </span>
                       ) : (
                         <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-800 border border-white/10 text-slate-400">
-                          👁️ Без рег.
+                          {t('unregisteredBadge')}
                         </span>
                       )}
 
                       {isPaid && (
                         <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-900/60 border border-emerald-500/40 text-emerald-200">
-                          💳 Оплачено
+                          {t('badgePaid')}
                         </span>
                       )}
                       {isHold && (
                         <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-950/60 border border-amber-500/40 text-amber-200">
-                          ⏰ HOLD 24ч
+                          {t('badgeHold24h')}
                         </span>
                       )}
                       {isOffer && (
                         <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-950/60 border border-purple-500/40 text-purple-200">
-                          🎁 Спецпредложение
+                          {t('badgeSpecialOffer')}
                         </span>
                       )}
                       {isRequest && (
                         <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-950/60 border border-blue-500/40 text-blue-200">
-                          ⏳ Запрос
+                          {t('badgeBookingRequest')}
                         </span>
                       )}
                     </div>
@@ -828,7 +831,7 @@ export default function HostInbox({
                 type="button"
                 onClick={() => setMobileActiveView('list')}
                 className="md:hidden p-1.5 rounded-lg bg-slate-700/80 text-white hover:bg-slate-600 transition-colors shrink-0"
-                title="Вернуться к списку диалогов"
+                title={t('backToDialogsTitle')}
               >
                 <ArrowLeft className="w-4 h-4" />
               </button>
@@ -855,10 +858,10 @@ export default function HostInbox({
                 type="button"
                 onClick={() => setMobileActiveView('details')}
                 className="md:hidden flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 text-xs font-bold transition-colors"
-                title="Детали бронирования и действия с заявкой"
+                title={t('bookingDetailsTitle')}
               >
                 <Info className="w-3.5 h-3.5 text-rose-400" />
-                <span>Детали</span>
+                <span>{t('bookingDetailsTab')}</span>
               </button>
             </div>
           </div>
@@ -892,11 +895,11 @@ export default function HostInbox({
                 <Sparkles className="w-4 h-4 text-purple-400 shrink-0 animate-pulse" />
                 <div className="min-w-0">
                   <div className="text-xs font-bold text-white flex items-center gap-1.5 truncate">
-                    <span>ИИ-Суфлер</span>
+                    <span>{t('aiCopilotTitle')}</span>
                     <span className="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-mono text-[10px]">Gemini 3.6 Flash</span>
                   </div>
                   <p className="text-[11px] sm:text-xs text-slate-400 truncate">
-                    Гость: «{lastGuestMsg.original || lastGuestMsg.ru || lastGuestMsg.en || lastGuestMsg.tr || ''}»
+                    {t('guestSaid')}: «{lastGuestMsg.original || lastGuestMsg.ru || lastGuestMsg.en || lastGuestMsg.tr || ''}»
                   </p>
                 </div>
               </div>
@@ -907,7 +910,7 @@ export default function HostInbox({
                 className="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition-all shadow-md shadow-purple-600/30 shrink-0 flex items-center gap-1.5 disabled:opacity-50"
               >
                 <Sparkles className={`w-3.5 h-3.5 ${isAiLoading ? 'animate-spin' : ''}`} />
-                <span>{isAiLoading ? 'Генерация...' : 'Сформировать ответ'}</span>
+                <span>{isAiLoading ? t('generatingReply') : t('generateReplyBtn')}</span>
               </button>
             </div>
           )}
@@ -925,10 +928,10 @@ export default function HostInbox({
                       ? 'bg-rose-600 text-white border-rose-500'
                       : 'bg-slate-800 text-rose-300 hover:text-white hover:bg-slate-700 border-white/10'
                   }`}
-                  title="Быстрый выбор умного шаблона для вставки в сообщение"
+                  title={t('quickTemplateSelectTitle')}
                 >
                   <FileText className="w-3.5 h-3.5" />
-                  <span>Умные шаблоны [{liveTemplates.length}]</span>
+                  <span>{t('smartTemplatesTitle')} [{liveTemplates.length}]</span>
                   {isQuickTemplatesOpen ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                 </button>
 
@@ -953,7 +956,7 @@ export default function HostInbox({
 
               {/* Стадия клиента */}
               <div className="hidden sm:flex items-center gap-1.5">
-                <span className="text-[10px] text-slate-500">Статус:</span>
+                <span className="text-[10px] text-slate-500">{t('statusFieldLabel')}</span>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${guestStageInfo.badge}`}>
                   {guestStageInfo.label}
                 </span>
@@ -966,7 +969,7 @@ export default function HostInbox({
                 <div className="flex items-center justify-between border-b border-white/10 pb-2">
                   <span className="text-xs font-bold text-white flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                    <span>Быстрый выбор шаблона для {activeChat?.clientName || 'гостя'}:</span>
+                    <span>{t('quickTemplateSelectForGuest').replace('{name}', activeChat?.clientName || t('guestLabel'))}</span>
                   </span>
                   <button
                     type="button"
@@ -988,7 +991,7 @@ export default function HostInbox({
                         : 'bg-slate-900 text-slate-400 hover:text-white border border-white/5'
                     }`}
                   >
-                    Все [{liveTemplates.length}]
+                    {t('filterAll')} [{liveTemplates.length}]
                   </button>
                   {TEMPLATE_STAGES.map((st) => (
                     <button
@@ -1034,7 +1037,7 @@ export default function HostInbox({
                           }}
                           className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-[11px] font-bold transition-colors"
                         >
-                          Вставить
+                          {t('insertTemplateBtn')}
                         </button>
                         <button
                           type="button"
@@ -1043,7 +1046,7 @@ export default function HostInbox({
                             setIsQuickTemplatesOpen(false);
                           }}
                           className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
-                          title="Отправить напрямую гостю"
+                          title={t('sendDirectTemplateTitle')}
                         >
                           <Send className="w-3 h-3" />
                         </button>
@@ -1061,7 +1064,7 @@ export default function HostInbox({
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Напишите ответ гостю или выберите один из шаблонов выше... [Shift+Enter для новой строки]"
+                placeholder={t('chatTextareaPlaceholder')}
                 className="flex-1 bg-slate-800 border border-white/10 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm text-white outline-none focus:border-rose-500 resize-none min-h-[96px] max-h-[220px] overflow-y-auto leading-relaxed"
               />
 
@@ -1070,7 +1073,7 @@ export default function HostInbox({
                   type="button"
                   onClick={handleAskAiHelp}
                   disabled={isAiLoading}
-                  title="Помощь ИИ-агента Gemini: составить ответ на языке гостя"
+                  title={t('aiHelpButtonTitle')}
                   className="p-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs transition-all flex items-center justify-center shadow-sm disabled:opacity-50"
                 >
                   <Sparkles className={`w-4 h-4 ${isAiLoading ? 'animate-spin' : 'text-amber-300'}`} />
@@ -1079,7 +1082,7 @@ export default function HostInbox({
                 <button
                   type="submit"
                   disabled={loading || !messageInput.trim()}
-                  title="Отправить сообщение гостю [Enter]"
+                  title={t('sendMessageButtonTitle')}
                   className="p-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white transition-colors disabled:opacity-40 flex items-center justify-center shadow-sm"
                 >
                   <Send className="w-4 h-4" />
@@ -1088,8 +1091,8 @@ export default function HostInbox({
             </div>
 
             <div className="flex items-center justify-between text-[10px] text-slate-500 px-1">
-              <span>Enter для отправки • Shift+Enter для новой строки</span>
-              <span>Символов: {messageInput.length}</span>
+              <span>{t('chatKeyboardHint')}</span>
+              <span>{t('charactersCount')}: {messageInput.length}</span>
             </div>
           </form>
 
@@ -1104,10 +1107,10 @@ export default function HostInbox({
                   if (mobileActiveView === 'chat') setMobileActiveView('details');
                 }}
                 className="px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white border border-white/10 shadow-sm"
-                title="Открыть панель умных шаблонов справа без перекрытия чата"
+                title={t('openTemplatesPanelTitle')}
               >
                 <FileText className="w-3.5 h-3.5 text-rose-400" />
-                <span>Умные шаблоны [{liveTemplates.length}]</span>
+                <span>{t('smartTemplatesTitle')} [{liveTemplates.length}]</span>
               </button>
 
               {/* Быстрые переключатели языка шаблонов */}
@@ -1132,11 +1135,11 @@ export default function HostInbox({
             <div className="flex items-center gap-2 text-[11px]">
               {isKnowledgeFromCache ? (
                 <span className="text-amber-400 flex items-center gap-1">
-                  <WifiOff className="w-3 h-3" /> Офлайн-память
+                  <WifiOff className="w-3 h-3" /> {t('offlineMemoryBadge')}
                 </span>
               ) : (
                 <span className="text-emerald-400 flex items-center gap-1">
-                  <Wifi className="w-3 h-3" /> Таблица онлайн
+                  <Wifi className="w-3 h-3" /> {t('sheetsOnlineBadge')}
                 </span>
               )}
             </div>
@@ -1155,7 +1158,7 @@ export default function HostInbox({
                     type="button"
                     onClick={() => setMobileActiveView('chat')}
                     className="md:hidden p-1.5 rounded-lg bg-slate-700/80 text-white hover:bg-slate-600 transition-colors"
-                    title="Вернуться к диалогу"
+                    title={t('backToDialogsTitle')}
                   >
                     <ArrowLeft className="w-4 h-4" />
                   </button>
@@ -1182,14 +1185,14 @@ export default function HostInbox({
                       }`}
                     >
                       <FileText className="w-3.5 h-3.5 text-rose-300" />
-                      <span>Шаблоны [{liveTemplates.length}]</span>
+                      <span>{t('templatesTabTitle')} [{liveTemplates.length}]</span>
                     </button>
                   </div>
                 </div>
 
                 <button
                   onClick={() => setIsSidebarCollapsed(true)}
-                  title="Свернуть панель"
+                  title={t('collapseDetailsTitle')}
                   className="hidden md:block text-slate-400 hover:text-white transition-colors"
                 >
                   <PanelRightClose className="w-4 h-4" />
@@ -1208,7 +1211,7 @@ export default function HostInbox({
                   <div className="p-3 bg-slate-900 rounded-2xl border border-white/5 space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                        Стадия клиента
+                        {t('clientStageLabel')}
                       </span>
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${guestStageInfo.badge}`}>
                         {guestStageInfo.label}
@@ -1218,19 +1221,19 @@ export default function HostInbox({
                     {pricingCorridor && (
                       <div className="border-t border-white/5 pt-2 space-y-1 text-[11px]">
                         <div className="flex justify-between text-slate-300">
-                          <span>Базовый тариф:</span>
+                          <span>{t('baseRateLabel')}</span>
                           <span className="font-bold text-white">${pricingCorridor.basePriceUsd || pricingCorridor.discountCorridor?.standardFlexiblePrice || 250}/сут</span>
                         </div>
                         <div className="flex justify-between text-amber-300">
-                          <span>Порог безопасности:</span>
+                          <span>{t('safetyFloorLabel')}</span>
                           <span className="font-bold">${pricingCorridor.minNightFloorUsd || pricingCorridor.discountCorridor?.absoluteFloor || 180}/сут</span>
                         </div>
                         <div className="flex justify-between text-emerald-400">
-                          <span>Макс. скидка:</span>
+                          <span>{t('maxDiscountLabel')}</span>
                           <span className="font-bold">до {pricingCorridor.discountCorridor?.maxDiscountPercent || 28}%</span>
                         </div>
                         <div className="text-[10px] text-slate-500 pt-0.5">
-                          Синхронизация: 6 OTA платформ [Airbnb, Booking, Vrbo, Avito, Agoda, Google]
+                          {t('otaSyncLabel')}
                         </div>
                       </div>
                     )}
@@ -1253,12 +1256,12 @@ export default function HostInbox({
                               {inboxCountdown[r.rowIndex] && inboxCountdown[r.rowIndex] !== 'EXPIRED' ? (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-950/70 border border-rose-500/40 text-[10px] font-bold text-rose-300 animate-pulse font-mono">
                                   <Clock className="w-3 h-3 text-rose-400" />
-                                  <span>До закрытия: {inboxCountdown[r.rowIndex]}</span>
+                                  <span>{t('untilPaymentCloses')} {inboxCountdown[r.rowIndex]}</span>
                                 </span>
                               ) : inboxCountdown[r.rowIndex] === 'EXPIRED' ? (
                                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-950/60 border border-red-500/30 text-[10px] font-bold text-red-400 font-mono">
                                   <Clock className="w-3 h-3" />
-                                  <span>Время оплаты истекло</span>
+                                  <span>{t('paymentTimeExpired')}</span>
                                 </span>
                               ) : null}
                             </div>
@@ -1348,7 +1351,7 @@ export default function HostInbox({
                           : 'bg-slate-900 text-slate-400 hover:text-white border border-white/5'
                       }`}
                     >
-                      Все [{liveTemplates.length}]
+                      {t('filterAll')} [{liveTemplates.length}]
                     </button>
                     {TEMPLATE_STAGES.map((st) => (
                       <button
@@ -1394,7 +1397,7 @@ export default function HostInbox({
                             {isAiMatched && (
                               <span className="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[9px] font-bold border border-amber-500/30 flex items-center gap-1 shrink-0">
                                 <Sparkles className="w-2.5 h-2.5" />
-                                <span>Рекомендация ИИ</span>
+                                <span>{t('aiRecommendationBadge')}</span>
                               </span>
                             )}
                           </div>
@@ -1412,7 +1415,7 @@ export default function HostInbox({
                               className="py-1.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-[11px] transition-colors border border-white/10 flex items-center justify-center gap-1"
                             >
                               <FileText className="w-3 h-3 text-rose-400" />
-                              <span>Вставить</span>
+                              <span>{t('insertTemplateBtn')}</span>
                             </button>
                             <button
                               type="button"
@@ -1420,7 +1423,7 @@ export default function HostInbox({
                               className="py-1.5 px-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-[11px] transition-colors shadow-sm flex items-center justify-center gap-1"
                             >
                               <Send className="w-3 h-3" />
-                              <span>Отправить</span>
+                              <span>{t('sendDirectTemplateBtn')}</span>
                             </button>
                           </div>
                         </div>

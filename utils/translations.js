@@ -3,8 +3,8 @@
 // Файл: utils/translations.js
 // Поддерживаемые языки: Русский [RU], Английский [EN], Турецкий [TR]
 // 
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 00:25 | ПЛАН: 270920260015 Синхронизация translations.md | TAG: VILLA-TRANSLATIONS-SYNC-270920260025]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:15 | ПЛАН: 270920260115 Оптимизация кабинета и виджета.md | TAG: VILLA-HOST-WIDGET-CLEAN-270920260115]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 01:15 | ПЛАН: 270920260115 Оптимизация кабинета и виджета.md | TAG: VILLA-HOST-WIDGET-CLEAN-270920260115]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:48 | ПЛАН: 270920260148 Исправление кнопок ИИ и локализации инбокса.md | TAG: VILLA-HOST-AI-INBOX-I18N-270920260148]
 // ==============================================================================
 
 export const translations = {
@@ -33,9 +33,9 @@ export const translations = {
     locationText: "Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, Ortaca / Muğla",
     showAllPhotos: "Показать все фото",
     entireVilla: "Вилла целиком [240 м², приватный бассейн]",
-    guestsSummary: "10 гостей • 4 спальни • 10 спальных мест • 4 ванные + WC",
-    aboutVillaTitle: "Об этом жилье",
-    aboutVillaText: "Villa Turaman - это премиальный оазис приватности и комфорта в живописном Дальяне. Просторный дом 240 м², приватный бассейн 36 м² с морской солью, уличное джакузи и тропический сад создают безупречные условия для отдыха.",
+    guestsSummary: "10 гостей",
+    aboutVillaTitle: "О Вилле",
+    aboutVillaText: "Villa Turaman: это гармоничное сочетание уединения, современного комфорта и первоклассного сервиса для незабываемого отпуска в сердце Дальяна.",
     readMore: "Читать далее",
 
     // --- УДОБСТВА [AMENITIES] ---
@@ -554,7 +554,92 @@ export const translations = {
     // Модальное окно ориентиров Дальяна
     landmarksModalTitle: "14 географических ориентиров Дальяна",
     landmarksModalSubtitle: "Точные расстояния, время в пути и способы перемещения от виллы",
-    landmarksModalFooter: "GPS: 36.8336° N, 28.6439° E • 250 м до центральной улицы"
+    landmarksModalFooter: "GPS: 36.8336° N, 28.6439° E • 250 м до центральной улицы",
+
+    // --- ЦЕНТР СООБЩЕНИЙ ХОЗЯИНА [HOST INBOX & CRM] ---
+    offlineMemoryActive: "Офлайн-память активна",
+    googleSheetsOnline: "Google Таблица онлайн",
+    offlineMemoryBadge: "Офлайн-память",
+    sheetsOnlineBadge: "Таблица онлайн",
+    syncFromSheetsBtn: "Обновить из Таблицы",
+    syncingFromSheets: "Синхронизация...",
+    syncFromSheetsTitle: "Обновить шаблоны и переменные напрямую из Google Таблицы",
+    formatCrmChatsBtn: "Форматировать CRM чаты",
+    formattingCrmChats: "Форматирование...",
+    formatCrmChatsTitle: "Форматировать шапки и колонки всех листов чатов Google Таблиц",
+    businessAssistantDesc: "Открыть Бизнес-Ассистент: Секретарь, Юрист, Бухгалтер",
+    expandDetailsTitle: "Развернуть панель деталей бронирования",
+    collapseDetailsTitle: "Свернуть панель деталей для расширения чата",
+    collapseDetailsBtn: "Свернуть детали",
+    bookingDetailsTab: "Детали",
+    bookingDetailsTitle: "Детали бронирования и действия с заявкой",
+    backToDialogsTitle: "Вернуться к списку диалогов",
+
+    // Вкладки фильтров диалогов
+    filterAllTab: "Все",
+    filterRequestsTab: "С заявками",
+    filterPaidTab: "Оплаченные",
+    filterPendingTab: "В ожидании",
+    filterRegisteredTab: "Зарегистр.",
+    filterUnregisteredTab: "Без регистр.",
+
+    // Сортировка диалогов
+    sortLabel: "Сортировка:",
+    sortRecent: "Свежие сообщения",
+    sortUrgent: "Срочные [HOLD/Запросы]",
+    sortAmount: "Сумма брони",
+    sortName: "Имя гостя",
+
+    // Бейджи верификации и статусов чатов
+    verifiedBothBadge: "✓ Email и Тел",
+    verifiedEmailBadge: "✓ Email",
+    verifiedPhoneBadge: "✓ Тел",
+    verifiedAccountBadge: "👤 Аккаунт",
+    unregisteredBadge: "👁️ Без рег.",
+    badgePaid: "💳 Оплачено",
+    badgeHold24h: "⏰ HOLD 24ч",
+    badgeSpecialOffer: "🎁 Спецпредложение",
+    badgeBookingRequest: "⏳ Запрос",
+
+    // Стадии жизненного цикла клиента
+    clientStageLabel: "Стадия клиента",
+    stage1Lead: "Лид [Этап 1]",
+    stage2HoldPending: "Ожидает оплаты [Этап 2]",
+    stage3BookedPreArrival: "Бронь подтверждена [Этап 3]",
+    stage4InHouse: "Проживание [Этап 4]",
+    stage5CheckedOut: "Выезд [Этап 5]",
+
+    // Ценовой коридор
+    baseRateLabel: "Базовый тариф:",
+    safetyFloorLabel: "Порог безопасности:",
+    maxDiscountLabel: "Макс. скидка:",
+    otaSyncLabel: "Синхронизация: 6 OTA платформ [Airbnb, Booking, Vrbo, Avito, Agoda, Google]",
+
+    // Блок ИИ-суфлера
+    aiCopilotTitle: "ИИ-Суфлер",
+    guestSaid: "Гость",
+    generateReplyBtn: "Сформировать ответ",
+    generatingReply: "Генерация...",
+    aiRecommendationBadge: "Рекомендация ИИ",
+    aiHelpButtonTitle: "Помощь ИИ-агента Gemini: составить ответ на языке гостя",
+
+    // Панель умных шаблонов и редактор
+    smartTemplatesTitle: "Умные шаблоны",
+    templatesTabTitle: "Шаблоны",
+    quickTemplateSelectTitle: "Быстрый выбор умного шаблона для вставки в сообщение",
+    quickTemplateSelectForGuest: "Быстрый выбор шаблона для {name}:",
+    openTemplatesPanelTitle: "Открыть панель умных шаблонов справа без перекрытия чата",
+    insertTemplateBtn: "Вставить",
+    sendDirectTemplateBtn: "Отправить",
+    sendDirectTemplateTitle: "Отправить напрямую гостю",
+    chatTextareaPlaceholder: "Напишите ответ гостю или выберите один из шаблонов выше... [Shift+Enter для новой строки]",
+    chatKeyboardHint: "Enter для отправки • Shift+Enter для новой строки",
+    charactersCount: "Символов",
+    sendMessageButtonTitle: "Отправить сообщение гостю [Enter]",
+
+    // Таймеры обратного отсчета
+    untilPaymentCloses: "До закрытия:",
+    paymentTimeExpired: "Время оплаты истекло"
   },
 
   en: {
@@ -580,9 +665,9 @@ export const translations = {
     locationText: "Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, Ortaca / Muğla",
     showAllPhotos: "Show all photos",
     entireVilla: "Entire villa [240 sq. m, private pool]",
-    guestsSummary: "10 guests • 4 bedrooms • sleeps 10 • 4 bathrooms + WC",
-    aboutVillaTitle: "About this space",
-    aboutVillaText: "Villa Turaman is a serene retreat surrounded by Dalyan's lush mountains. Featuring a sparkling private pool, manicured gardens, and outdoor BBQ lounge, it provides the ultimate Mediterranean holiday experience.",
+    guestsSummary: "10 guests",
+    aboutVillaTitle: "About Villa",
+    aboutVillaText: "Villa Turaman: a harmonious combination of privacy, modern comfort and first-class service for an unforgettable holiday in the heart of Dalyan.",
     readMore: "Read more",
 
     amenitiesTitle: "What this place offers",
@@ -1092,7 +1177,92 @@ export const translations = {
     // Dalyan landmarks modal window
     landmarksModalTitle: "14 Geographic Landmarks of Dalyan",
     landmarksModalSubtitle: "Exact distances, travel times and transportation options from the villa",
-    landmarksModalFooter: "GPS: 36.8336° N, 28.6439° E • 250 m to main pedestrian street"
+    landmarksModalFooter: "GPS: 36.8336° N, 28.6439° E • 250 m to main pedestrian street",
+
+    // --- HOST INBOX & GUEST MESSAGE CENTER ---
+    offlineMemoryActive: "Offline memory active",
+    googleSheetsOnline: "Google Sheets online",
+    offlineMemoryBadge: "Offline memory",
+    sheetsOnlineBadge: "Sheets online",
+    syncFromSheetsBtn: "Sync from Sheets",
+    syncingFromSheets: "Syncing...",
+    syncFromSheetsTitle: "Sync templates and variables directly from Google Sheets",
+    formatCrmChatsBtn: "Format CRM chats",
+    formattingCrmChats: "Formatting...",
+    formatCrmChatsTitle: "Format headers and columns for all chat sheets in Google Sheets",
+    businessAssistantDesc: "Open Business Assistant: Secretary, Lawyer, Accountant",
+    expandDetailsTitle: "Expand booking details panel",
+    collapseDetailsTitle: "Collapse details panel to expand chat view",
+    collapseDetailsBtn: "Collapse details",
+    bookingDetailsTab: "Details",
+    bookingDetailsTitle: "Booking details and request actions",
+    backToDialogsTitle: "Return to conversations list",
+
+    // Chat filter tabs
+    filterAllTab: "All",
+    filterRequestsTab: "With requests",
+    filterPaidTab: "Paid",
+    filterPendingTab: "Pending",
+    filterRegisteredTab: "Registered",
+    filterUnregisteredTab: "Unregistered",
+
+    // Chat sorting
+    sortLabel: "Sort by:",
+    sortRecent: "Recent messages",
+    sortUrgent: "Urgent [HOLD/Requests]",
+    sortAmount: "Booking amount",
+    sortName: "Guest name",
+
+    // Verification & status badges
+    verifiedBothBadge: "✓ Email & Phone",
+    verifiedEmailBadge: "✓ Email",
+    verifiedPhoneBadge: "✓ Phone",
+    verifiedAccountBadge: "👤 Account",
+    unregisteredBadge: "👁️ Unregistered",
+    badgePaid: "💳 Paid",
+    badgeHold24h: "⏰ HOLD 24h",
+    badgeSpecialOffer: "🎁 Special offer",
+    badgeBookingRequest: "⏳ Request",
+
+    // Client lifecycle stages
+    clientStageLabel: "Guest stage",
+    stage1Lead: "Lead [Stage 1]",
+    stage2HoldPending: "Payment pending [Stage 2]",
+    stage3BookedPreArrival: "Confirmed [Stage 3]",
+    stage4InHouse: "In-house [Stage 4]",
+    stage5CheckedOut: "Checked out [Stage 5]",
+
+    // Pricing corridor
+    baseRateLabel: "Base rate:",
+    safetyFloorLabel: "Safety floor:",
+    maxDiscountLabel: "Max discount:",
+    otaSyncLabel: "Synchronization: 6 OTA channels [Airbnb, Booking, Vrbo, Avito, Agoda, Google]",
+
+    // AI Copilot
+    aiCopilotTitle: "AI Copilot",
+    guestSaid: "Guest",
+    generateReplyBtn: "Generate reply",
+    generatingReply: "Generating...",
+    aiRecommendationBadge: "AI recommendation",
+    aiHelpButtonTitle: "Gemini AI assistance: compose a response in guest language",
+
+    // Smart templates and editor
+    smartTemplatesTitle: "Smart templates",
+    templatesTabTitle: "Templates",
+    quickTemplateSelectTitle: "Quickly select a smart template to insert into message",
+    quickTemplateSelectForGuest: "Quick template selection for {name}:",
+    openTemplatesPanelTitle: "Open smart templates panel on the right without covering chat",
+    insertTemplateBtn: "Insert",
+    sendDirectTemplateBtn: "Send",
+    sendDirectTemplateTitle: "Send directly to guest",
+    chatTextareaPlaceholder: "Write a reply to the guest or choose a template above... [Shift+Enter for new line]",
+    chatKeyboardHint: "Enter to send • Shift+Enter for new line",
+    charactersCount: "Characters",
+    sendMessageButtonTitle: "Send message to guest [Enter]",
+
+    // Countdown timers
+    untilPaymentCloses: "Payment closes in:",
+    paymentTimeExpired: "Payment window expired"
   },
 
   tr: {
@@ -1114,13 +1284,13 @@ export const translations = {
     hostCabinet: "Yönetim Paneli",
 
     heroTitle: "Dalyan Turaman [özel havuz, 10 kişilik]",
-    heroSubtitle: "Dalyan'da 240 m²'lik birinci sınıf bir villa. 36 m²'lik özel tuzlu su havuzu, açık hava jakuzisi, 4 yatak odası, 10 kişiye kadar konaklama kapasitesi ve merkeze 250 metre mesafede yer almaktadır.",
+    heroSubtitle: "Dalyan'da 240 m²'lik birinci sınıf bir villa. 36 m²'lik özel tuzlu su havuzu, açık jakuzi, 4 yatak odası, 10 kişiye kadar konaklama kapasitesi ve merkeze 250 metre mesafede yer almaktadır.",
     locationText: "Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, Ortaca / Muğla",
     showAllPhotos: "Tüm fotoğrafları göster",
     entireVilla: "Villanın tamamı [240 m², özel havuz]",
-    guestsSummary: "10 misafir • 4 yatak odası • 10 yatak • 4 banyo + WC",
-    aboutVillaTitle: "Bu mekan hakkında",
-    aboutVillaText: "Villa Turaman, Dalyan'ın eşsiz doğasında huzurlu ve konforlu bir tatil sunmaktadır. Özel yüzme havuzu, geniş bahçesi ve barbekü alanı ile aileniz için mükemmel bir konaklama ortamı sunar.",
+    guestsSummary: "10 misafir",
+    aboutVillaTitle: "Villa Hakkında",
+    aboutVillaText: "Villa Turaman: Dalyan'ın kalbinde unutulmaz bir tatil için mahremiyetin, modern konforun ve birinci sınıf hizmetin uyumlu birleşimi.",
     readMore: "Devamını oku",
 
     amenitiesTitle: "Konaklama yerinin sundukları",
@@ -1630,7 +1800,92 @@ export const translations = {
     // Dalyan coğrafi işaretleri modal penceresi
     landmarksModalTitle: "Dalyan'ın 14 Coğrafi İşareti",
     landmarksModalSubtitle: "Villadan kesin mesafeler, seyahat süreleri ve ulaşım seçenekleri",
-    landmarksModalFooter: "GPS: 36.8336° K, 28.6439° D • Ana caddeye 250 m"
+    landmarksModalFooter: "GPS: 36.8336° K, 28.6439° D • Ana caddeye 250 m",
+
+    // --- EV SAHİBİ MESAJ MERKEZİ [HOST INBOX & CRM] ---
+    offlineMemoryActive: "Çevrimdışı hafıza aktif",
+    googleSheetsOnline: "Google E-Tablolar çevrimiçi",
+    offlineMemoryBadge: "Çevrimdışı hafıza",
+    sheetsOnlineBadge: "E-Tablolar çevrimiçi",
+    syncFromSheetsBtn: "E-Tablolardan Güncelle",
+    syncingFromSheets: "Senkronize ediliyor...",
+    syncFromSheetsTitle: "Şablonları ve değişkenleri doğrudan Google E-Tablolardan güncelleyin",
+    formatCrmChatsBtn: "CRM Sohbetlerini Biçimlendir",
+    formattingCrmChats: "Biçimlendiriliyor...",
+    formatCrmChatsTitle: "Google E-Tablolardaki tüm sohbet sayfalarının başlıklarını ve sütunlarını biçimlendirin",
+    businessAssistantDesc: "İş Asistanını Aç: Sekreter, Hukukçu, Muhasebeci",
+    expandDetailsTitle: "Rezervasyon detay panelini genişlet",
+    collapseDetailsTitle: "Sohbeti genişletmek için detay panelini daralt",
+    collapseDetailsBtn: "Detayları daralt",
+    bookingDetailsTab: "Detaylar",
+    bookingDetailsTitle: "Rezervasyon detayları ve talep işlemleri",
+    backToDialogsTitle: "Sohbet listesine geri dön",
+
+    // Sohbet filtre sekmeleri
+    filterAllTab: "Tümü",
+    filterRequestsTab: "Talepli",
+    filterPaidTab: "Ödenmiş",
+    filterPendingTab: "Beklemede",
+    filterRegisteredTab: "Kayıtlı",
+    filterUnregisteredTab: "Kayıtsız",
+
+    // Sohbet sıralama
+    sortLabel: "Sıralama:",
+    sortRecent: "Son mesajlar",
+    sortUrgent: "Acil [HOLD/Talepler]",
+    sortAmount: "Rezervasyon tutarı",
+    sortName: "Misafir adı",
+
+    // Doğrulama ve durum rozetleri
+    verifiedBothBadge: "✓ E-posta ve Tel",
+    verifiedEmailBadge: "✓ E-posta",
+    verifiedPhoneBadge: "✓ Tel",
+    verifiedAccountBadge: "👤 Hesap",
+    unregisteredBadge: "👁️ Kayıtsız",
+    badgePaid: "💳 Ödendi",
+    badgeHold24h: "⏰ HOLD 24s",
+    badgeSpecialOffer: "🎁 Özel Teklif",
+    badgeBookingRequest: "⏳ Talep",
+
+    // Müşteri yaşam döngüsü aşamaları
+    clientStageLabel: "Müşteri aşaması",
+    stage1Lead: "Potansiyel [Aşama 1]",
+    stage2HoldPending: "Ödeme Bekleniyor [Aşama 2]",
+    stage3BookedPreArrival: "Onaylandı [Aşama 3]",
+    stage4InHouse: "Konaklama [Aşama 4]",
+    stage5CheckedOut: "Çıkış Yapıldı [Aşama 5]",
+
+    // Fiyatlandırma koridoru
+    baseRateLabel: "Temel tarife:",
+    safetyFloorLabel: "Güvenlik tabanı:",
+    maxDiscountLabel: "Maks. indirim:",
+    otaSyncLabel: "Senkronizasyon: 6 OTA kanalı [Airbnb, Booking, Vrbo, Avito, Agoda, Google]",
+
+    // Yapay Zeka Asistanı
+    aiCopilotTitle: "Yapay Zeka Asistanı",
+    guestSaid: "Misafir",
+    generateReplyBtn: "Yanıt oluştur",
+    generatingReply: "Oluşturuluyor...",
+    aiRecommendationBadge: "YZ Tavsiyesi",
+    aiHelpButtonTitle: "Gemini YZ desteği: misafirin dilinde yanıt oluşturun",
+
+    // Akıllı şablonlar ve düzenleyici
+    smartTemplatesTitle: "Akıllı şablonlar",
+    templatesTabTitle: "Şablonlar",
+    quickTemplateSelectTitle: "Mesaja eklemek için akıllı şablonu hızlıca seçin",
+    quickTemplateSelectForGuest: "{name} için hızlı şablon seçimi:",
+    openTemplatesPanelTitle: "Sohbeti kapatmadan sağdaki akıllı şablon panelini açın",
+    insertTemplateBtn: "Ekle",
+    sendDirectTemplateBtn: "Gönder",
+    sendDirectTemplateTitle: "Doğrudan misafire gönder",
+    chatTextareaPlaceholder: "Misafire yanıt yazın veya yukarıdaki şablonlardan birini seçin... [Yeni satır için Shift+Enter]",
+    chatKeyboardHint: "Göndermek için Enter • Yeni satır için Shift+Enter",
+    charactersCount: "Karakter",
+    sendMessageButtonTitle: "Mesajı misafire gönder [Enter]",
+
+    // Geri sayım sayaçları
+    untilPaymentCloses: "Kapanışa kalan:",
+    paymentTimeExpired: "Ödeme süresi doldu"
   }
 };
 

@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:55 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-BOOKING-SAFEAUTH-260920262355]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:15 | ПЛАН: 270920260115 Оптимизация кабинета и виджета.md | TAG: VILLA-HOST-WIDGET-CLEAN-270920260115]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 01:15 | ПЛАН: 270920260115 Оптимизация кабинета и виджета.md | TAG: VILLA-HOST-WIDGET-CLEAN-270920260115]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:48 | ПЛАН: 270920260148 Исправление кнопок ИИ и локализации инбокса.md | TAG: VILLA-HOST-AI-INBOX-I18N-270920260148]
 // ==============================================================================
 // ОСНОВНОЙ API СЕРВЕР GOOGLE SHEETS & CRM VILLA TURAMAN
 // Файл: pages/api/booking.js
@@ -22,6 +22,8 @@ const RULES_BACKUP_PATH = path.join(process.cwd(), 'utils', 'villa_global_rules.
 const RULES_TMP_PATH = path.join('/tmp', 'villa_global_rules.json');
 const CALENDAR_BACKUP_PATH = path.join(process.cwd(), 'utils', 'villa_calendar_rules.json');
 const CALENDAR_TMP_PATH = path.join('/tmp', 'villa_calendar_rules.json');
+const AI_SETTINGS_BACKUP_PATH = path.join(process.cwd(), 'utils', 'villa_ai_settings.json');
+const AI_SETTINGS_TMP_PATH = path.join('/tmp', 'villa_ai_settings.json');
 
 const getPersistedGlobalRules = () => {
   if (global._hostSettingsCache && Object.keys(global._hostSettingsCache).length > 0) {
@@ -88,6 +90,38 @@ const savePersistedCalendarRules = (rules) => {
   } catch (e) {}
   try {
     fs.writeFileSync(CALENDAR_BACKUP_PATH, JSON.stringify(rules, null, 2), 'utf8');
+  } catch (e) {}
+};
+
+const getPersistedAiSettings = () => {
+  if (global._aiSettingsCache && Object.keys(global._aiSettingsCache).length > 0) {
+    return global._aiSettingsCache;
+  }
+  try {
+    if (fs.existsSync(AI_SETTINGS_TMP_PATH)) {
+      const data = JSON.parse(fs.readFileSync(AI_SETTINGS_TMP_PATH, 'utf8'));
+      global._aiSettingsCache = data;
+      return data;
+    }
+  } catch (e) {}
+  try {
+    if (fs.existsSync(AI_SETTINGS_BACKUP_PATH)) {
+      const data = JSON.parse(fs.readFileSync(AI_SETTINGS_BACKUP_PATH, 'utf8'));
+      global._aiSettingsCache = data;
+      return data;
+    }
+  } catch (e) {}
+  return null;
+};
+
+const savePersistedAiSettings = (settings) => {
+  if (!settings) return;
+  global._aiSettingsCache = settings;
+  try {
+    fs.writeFileSync(AI_SETTINGS_TMP_PATH, JSON.stringify(settings, null, 2), 'utf8');
+  } catch (e) {}
+  try {
+    fs.writeFileSync(AI_SETTINGS_BACKUP_PATH, JSON.stringify(settings, null, 2), 'utf8');
   } catch (e) {}
 };
 
@@ -2777,53 +2811,73 @@ export default async function handler(req, res) {
   // --- API: Управление настройками ИИ-агента из кабинета хозяина ---
   if (action === 'update_ai_settings') {
     try {
-      await ensureSystemSheets();
       const newMode = (data.aiMode || 'copilot').toString().trim().toLowerCase();
       const newPrompt = (data.systemPrompt || '').toString().trim();
       const newMinPrice = (data.minPriceUsd || '180').toString().trim();
       const newModel = (data.geminiModel || 'gemini-3.6-flash').toString().trim();
 
+      const aiSettingsObj = {
+        aiMode: newMode,
+        aiEnabled: newMode !== 'off',
+        geminiModel: newModel,
+        minPriceUsd: parseInt(newMinPrice, 10) || 180,
+        systemPrompt: newPrompt
+      };
+      savePersistedAiSettings(aiSettingsObj);
+
+      // Обновление Google Sheets при наличии доступа
       if (sheets && spreadsheetId) {
-        // Чтение текущих настроек для точного обновления строк
-        const curRows = await sheets.spreadsheets.values.get({
-          spreadsheetId,
-          range: resolveRange(sheetMap, 'SETTINGS', 'A:D')
-        });
-        const rows = curRows.data.values || [];
+        try {
+          await ensureSystemSheets();
+          const curRows = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: resolveRange(sheetMap, 'SETTINGS', 'A:E')
+          });
+          const rows = curRows.data.values || [];
 
-        const updateRow = async (paramName, newValue, desc, status) => {
-          const idx = rows.findIndex((r) => (r[0] || '').toString().trim() === paramName);
-          if (idx >= 0) {
-            const rowNum = idx + 1;
-            await sheets.spreadsheets.values.update({
-              spreadsheetId,
-              range: resolveRange(sheetMap, 'SETTINGS', `A${rowNum}:D${rowNum}`),
-              valueInputOption: 'USER_ENTERED',
-              requestBody: { values: [[paramName, newValue, desc || rows[idx][2] || '', status || 'ACTIVE']] }
+          const updateRow = async (catName, paramKey, newValue, desc, status) => {
+            const idx = rows.findIndex((r) => {
+              const c0 = (r[0] || '').toString().trim();
+              const c1 = (r[1] || '').toString().trim();
+              return (c0 === catName && c1 === paramKey) || (c1 === paramKey) || (c0 === paramKey);
             });
-          } else {
-            await sheets.spreadsheets.values.append({
-              spreadsheetId,
-              range: resolveRange(sheetMap, 'SETTINGS', 'A:D'),
-              valueInputOption: 'USER_ENTERED',
-              insertDataOption: 'INSERT_ROWS',
-              requestBody: { values: [[paramName, newValue, desc || '', status || 'ACTIVE']] }
-            });
-          }
-        };
+            if (idx >= 0) {
+              const rowNum = idx + 1;
+              await sheets.spreadsheets.values.update({
+                spreadsheetId,
+                range: resolveRange(sheetMap, 'SETTINGS', `A${rowNum}:E${rowNum}`),
+                valueInputOption: 'USER_ENTERED',
+                requestBody: { values: [[catName, paramKey, newValue, desc || rows[idx][3] || '', status || 'ACTIVE']] }
+              });
+            } else {
+              await sheets.spreadsheets.values.append({
+                spreadsheetId,
+                range: resolveRange(sheetMap, 'SETTINGS', 'A:E'),
+                valueInputOption: 'USER_ENTERED',
+                insertDataOption: 'INSERT_ROWS',
+                requestBody: { values: [[catName, paramKey, newValue, desc || '', status || 'ACTIVE']] }
+              });
+            }
+          };
 
-        if (newMode) await updateRow('AI_MODE', newMode, 'Режим работы ИИ: autopilot или copilot или off', newMode.toUpperCase());
-        if (newPrompt) await updateRow('SYSTEM_PROMPT', newPrompt, 'Глобальный системный промпт ИИ', 'ACTIVE');
-        if (newMinPrice) await updateRow('MIN_NIGHTLY_PRICE_USD', newMinPrice, 'Минимальный тариф ночь USD', 'ENFORCED');
-        if (newModel) await updateRow('GEMINI_MODEL', newModel, 'Модель Google Gemini', 'ACTIVE');
+          if (newMode) await updateRow('СИСТЕМА', 'ai_mode', newMode, 'Режим работы ИИ: autopilot или copilot или off', newMode.toUpperCase());
+          if (newPrompt) await updateRow('СИСТЕМА', 'system_prompt', newPrompt, 'Глобальный системный промпт ИИ', 'ACTIVE');
+          if (newMinPrice) await updateRow('СИСТЕМА', 'min_night_price', newMinPrice, 'Минимальный тариф ночь USD', 'ENFORCED');
+          if (newModel) await updateRow('СИСТЕМА', 'ai_model', newModel, 'Модель Google Gemini', 'ACTIVE');
+        } catch (sheetUpdateErr) {
+          console.warn('[update_ai_settings Sheets Warning]:', sheetUpdateErr.message);
+        }
       }
 
       // Сброс кэша базы знаний
-      invalidateAiKnowledgeCache();
+      try {
+        invalidateAiKnowledgeCache();
+      } catch (invErr) {}
 
       return res.status(200).json({
         success: true,
         aiMode: newMode,
+        settings: aiSettingsObj,
         message: 'Настройки ИИ успешно сохранены'
       });
     } catch (e) {
@@ -2835,17 +2889,33 @@ export default async function handler(req, res) {
   // --- API: Получение настроек ИИ-агента ---
   if (action === 'get_ai_settings') {
     try {
-      const { getAiKnowledgeBase } = require('../../utils/aiKnowledgeBase');
-      const kb = await getAiKnowledgeBase(req.body?.force === true);
+      const persisted = getPersistedAiSettings();
+      let kb = null;
+      try {
+        kb = await getAiKnowledgeBase(req.body?.force === true);
+      } catch (kbErr) {
+        console.warn('[get_ai_settings KB Warning]:', kbErr.message);
+      }
+
+      const aiMode = persisted?.aiMode || kb?.aiMode || 'copilot';
+      const aiEnabled = aiMode !== 'off';
+      const geminiModel = persisted?.geminiModel || kb?.geminiModel || 'gemini-3.6-flash';
+      const minPriceUsd = persisted?.minPriceUsd || kb?.minPriceUsd || 180;
+      const systemPrompt = persisted?.systemPrompt || kb?.systemPrompt || '';
+
       return res.status(200).json({
         success: true,
-        aiMode: kb.aiMode,
-        aiEnabled: kb.aiEnabled,
-        geminiModel: kb.geminiModel,
-        minPriceUsd: kb.minPriceUsd,
-        systemPrompt: kb.systemPrompt
+        aiMode,
+        aiEnabled,
+        geminiModel,
+        minPriceUsd,
+        systemPrompt
       });
     } catch (e) {
+      const persisted = getPersistedAiSettings();
+      if (persisted) {
+        return res.status(200).json({ success: true, ...persisted });
+      }
       return res.status(500).json({ success: false, error: e.message });
     }
   }
