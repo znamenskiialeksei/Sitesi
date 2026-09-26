@@ -1,8 +1,10 @@
 // ==============================================================================
-// ПЛАВАЮЩИЙ ВИДЖЕТ БРОНИРОВАНИЯ В СТИЛЕ AIRBNB (STICKY BOOKING WIDGET)
+// ПЛАВАЮЩИЙ ВИДЖЕТ БРОНИРОВАНИЯ В СТИЛЕ AIRBNB [STICKY BOOKING WIDGET]
 // Файл: components/BookingWidget.js
-// Назначение: Выбор дат, подсчёт гостей, динамический расчёт стоимости, 24ч HOLD
-// Кастомный 2-месячный интерактивный календарь по образцу стартового проекта
+// Назначение: Выбор дат, подсчет гостей, динамический расчет стоимости, 24ч HOLD
+// 
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:45 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-WIDGET-STABLE-260920262345]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:15 | ПЛАН: 270920260115 Оптимизация кабинета и виджета.md | TAG: VILLA-HOST-WIDGET-CLEAN-270920260115]
 // ==============================================================================
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -812,7 +814,7 @@ export default function BookingWidget({
                 required
                 value={guestPhone}
                 onChange={(e) => setGuestPhone(e.target.value)}
-                placeholder={t('guestPhoneLabel') || 'Номер телефона (WhatsApp / Связь)'}
+                placeholder={t('guestPhoneLabel') || 'Номер телефона [WhatsApp / Связь]'}
                 className={`w-full bg-slate-900/80 border ${isPhoneVerified ? 'border-emerald-500/50' : 'border-white/10'} pl-10 pr-24 py-3.5 rounded-2xl text-xs sm:text-sm text-white focus:border-rose-500 outline-none transition-colors`}
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-medium pointer-events-none">
@@ -822,7 +824,7 @@ export default function BookingWidget({
                   </span>
                 ) : (
                   <span className="text-slate-400/80 text-[10px]">
-                    {verificationMode === 'strict' ? 'SMS код' : 'Связь'}
+                    {verificationMode === 'strict' ? (t('smsCode') || 'SMS код') : (t('contactBadge') || 'Связь')}
                   </span>
                 )}
               </span>
@@ -844,17 +846,17 @@ export default function BookingWidget({
         {effectiveMode === 'instant' && (
           <div className="pt-2 border-t border-white/10 space-y-2">
             <span className="block text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-              Способ оплаты:
+              {t('paymentMethodLabel') || 'Способ оплаты'}:
             </span>
             {dynamicRules.paymentMode === 'iban_only' ? (
               <div className="p-3 bg-slate-900/90 border border-amber-500/30 rounded-2xl flex items-center gap-2.5 text-xs text-amber-200">
                 <Landmark className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>Прямой банковский перевод на IBAN счет владельца виллы</span>
+                <span>{t('ibanOnlyDesc') || 'Прямой банковский перевод на IBAN счет владельца виллы'}</span>
               </div>
             ) : dynamicRules.paymentMode === 'gateway_only' ? (
               <div className="p-3 bg-slate-900/90 border border-rose-500/30 rounded-2xl flex items-center gap-2.5 text-xs text-rose-200">
                 <CreditCard className="w-4 h-4 text-rose-400 shrink-0" />
-                <span>Оплата онлайн банковской картой через защищенный шлюз</span>
+                <span>{t('gatewayOnlyDesc') || 'Оплата онлайн банковской картой через защищенный шлюз'}</span>
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-2">
@@ -868,7 +870,7 @@ export default function BookingWidget({
                   }`}
                 >
                   <CreditCard className="w-3.5 h-3.5" />
-                  <span>Картой онлайн</span>
+                  <span>{t('payByCardOnline') || 'Картой онлайн'}</span>
                 </button>
                 <button
                   type="button"
@@ -880,13 +882,13 @@ export default function BookingWidget({
                   }`}
                 >
                   <Landmark className="w-3.5 h-3.5" />
-                  <span>Перевод на IBAN</span>
+                  <span>{t('payByIban') || 'Перевод на IBAN'}</span>
                 </button>
               </div>
             )}
             {paymentMethod === 'iban' && dynamicRules.paymentMode !== 'gateway_only' && (
               <p className="text-[11px] text-slate-400 bg-slate-900/60 p-2.5 rounded-xl border border-white/5 leading-relaxed">
-                Реквизиты турецкого банка IBAN и уникальный код бронирования поступят на ваш email и в чат личного кабинета.
+                {t('ibanPaymentNotice') || 'Реквизиты турецкого банка IBAN и уникальный код бронирования поступят на ваш email и в чат личного кабинета.'}
               </p>
             )}
           </div>

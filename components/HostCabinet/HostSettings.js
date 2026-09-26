@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 19:40 | ПЛАН: 260920261905 Адаптация задач запускаторов.md | TAG: VILLA-HOST-SETTINGS-260920261940]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:55 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-HOST-SETTINGS-I18N-260920262355]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:55 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-HOST-SETTINGS-I18N-260920262355]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:15 | ПЛАН: 270920260115 Оптимизация кабинета и виджета.md | TAG: VILLA-HOST-WIDGET-CLEAN-270920260115]
 // ==============================================================================
 // УПРАВЛЕНИЕ БАЗОВЫМИ ТАРИФАМИ И ПРАВИЛАМИ ВИЛЛЫ [HOST SETTINGS]
 // Файл: components/HostCabinet/HostSettings.js
@@ -189,11 +189,11 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
       </div>
 
       {/* ПАНЕЛЬ УПРАВЛЕНИЯ ИИ-АГЕНТОМ GEMINI В 1 КЛИК */}
-      <div className="p-5 rounded-2xl bg-gradient-to-r from-purple-950/40 via-indigo-950/30 to-slate-900 border border-purple-500/30 space-y-4">
+      <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-950/40 via-indigo-950/30 to-slate-900 border border-purple-500/30 space-y-3">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-400">
-              <Bot className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-400">
+              <Bot className="w-4 h-4" />
             </div>
             <div>
               <h4 className="text-sm font-bold text-white flex items-center gap-2">
@@ -202,9 +202,6 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
                   {aiSettings.aiMode.toUpperCase()}
                 </span>
               </h4>
-              <p className="text-xs text-slate-400">
-                {t('aiModeSwitchDesc') || 'Переключение режима работы ИИ в 1 клик со сквозной синхронизацией в Google Таблице и Telegram'}
-              </p>
             </div>
           </div>
 
@@ -248,50 +245,50 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-white/5 text-xs text-slate-300">
+        <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-white/5 text-xs text-slate-300">
           <div>
-            <span className="text-[10px] text-slate-400 block uppercase">{t('geminiModelLabel') || 'Модель Gemini:'}</span>
+            <span className="text-[10px] text-slate-400 uppercase mr-1.5">{t('geminiModelLabel') || 'Модель:'}</span>
             <span className="font-semibold text-purple-300">{aiSettings.geminiModel}</span>
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 block uppercase">{t('minRateLabel') || 'Минимальный тариф:'}</span>
+            <span className="text-[10px] text-slate-400 uppercase mr-1.5">{t('minRateLabel') || 'Мин. тариф:'}</span>
             <span className="font-semibold text-emerald-400">{aiSettings.minPriceUsd} USD / ночь</span>
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 block uppercase">{t('knowledgeBaseLabel') || 'База Знаний:'}</span>
+            <span className="text-[10px] text-slate-400 uppercase mr-1.5">{t('knowledgeBaseLabel') || 'База:'}</span>
             <span className="font-semibold text-blue-300">{t('kbSummaryValue') || '14 шаблонов + 5 листов Таблицы'}</span>
           </div>
         </div>
       </div>
 
       {/* Карточка самоисцеления и восстановления листов Google Sheets */}
-      <div className="bg-slate-900/70 border border-emerald-500/30 rounded-3xl p-6 shadow-xl space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-              <Shield className="w-5 h-5" />
+      <div className="bg-slate-900/70 border border-emerald-500/30 rounded-2xl p-4 shadow-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+              <Shield className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">{t('selfHealingSheetsTitle') || 'Самоисцеление Google Sheets: 15 листов'}</h3>
-              <p className="text-xs text-slate-400 mt-0.5">{t('selfHealingSheetsDesc') || 'Восстановить любые удаленные вкладки, структуру, формулы и эталонные данные'}</p>
+              <h3 className="text-sm font-bold text-white">{t('selfHealingSheetsTitle') || 'Самоисцеление Google Sheets: 15 листов'}</h3>
+              <p className="text-[11px] text-slate-400">{t('selfHealingSheetsDesc') || 'Восстановление структуры, формул и эталонных данных'}</p>
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={handleRestoreSheets}
               disabled={isRestoringSheets || isSavingMasterSeed}
-              className="px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 shrink-0 disabled:opacity-50"
+              className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-1.5 shrink-0 disabled:opacity-50"
             >
-              {isRestoringSheets ? (t('restoringInProgress') || 'Восстановление...') : (t('restoreSheetsBtn') || '🛠️ Восстановить листы в 1 клик')}
+              {isRestoringSheets ? (t('restoringInProgress') || 'Восстановление...') : (t('restoreSheetsBtn') || '🛠️ Восстановить листы')}
             </button>
             <button
               type="button"
               onClick={handleSaveMasterSeed}
               disabled={isSavingMasterSeed || isRestoringSheets}
-              className="px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2 shrink-0 disabled:opacity-50"
+              className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-1.5 shrink-0 disabled:opacity-50"
             >
-              {isSavingMasterSeed ? (t('savingMasterSeedInProgress') || 'Фиксация эталона...') : (t('saveMasterSeedBtn') || '💾 Зафиксировать эталон SSOT')}
+              {isSavingMasterSeed ? (t('savingMasterSeedInProgress') || 'Фиксация...') : (t('saveMasterSeedBtn') || '💾 Эталон SSOT')}
             </button>
           </div>
         </div>

@@ -1,8 +1,11 @@
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:55 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-SYNC-CONTENT-260920262355]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:15 | ПЛАН: 270920260115 Оптимизация кабинета и виджета.md | TAG: VILLA-HOST-WIDGET-CLEAN-270920260115]
 // ==============================================================================
 // ВЫГРУЗКА И СИНХРОНИЗАЦИЯ КОНТЕНТА ИЗ GOOGLE SHEETS
 // Файл: scripts/sync-content.js
 // Назначение: Парсинг таблиц описаний, услуг, путеводителей и галереи в локальный
-// кэш utils/content.json для мгновенной серверной генерации страниц (SSG/ISR).
+// кэш utils/content.json и синхронизация словаря utils/translations.js.
+// 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
 require('dotenv').config({ path: '.env.local' });
@@ -11,6 +14,7 @@ const fs = require('fs');
 const path = require('path');
 const { getLiveSheetMap, resolveRange } = require('../utils/sheetsRegistry');
 const { MASTER_ABOUT_SECTIONS, MASTER_HOME_MAP, buildHomeDerivedCollections } = require('../utils/masterSeedContent');
+const { syncTranslationsWithMaster } = require('../utils/syncTranslationsWithMaster');
 
 // Очистка от битых формул Google Таблиц [#REF!, #VALUE!, #ERROR!, #N/A]
 const sanitizeText = (val, fallback = '') => {
@@ -345,6 +349,16 @@ async function syncContent() {
 if (fetchSuccessCount > 0 && Object.keys(content.home).length > 0 && Object.keys(content.about).length > 0) {
   fs.writeFileSync(contentFilePath, JSON.stringify(content, null, 2), 'utf8');
   console.log(`✅ Контент успешно синхронизирован [${fetchSuccessCount} листов] и сохранен в utils/content.json`);
+
+  // Синхронизация аварийного страховочного словаря витрины translations.js
+  try {
+    const translationsUpdated = syncTranslationsWithMaster(content.home);
+    if (translationsUpdated) {
+      console.log('✅ Страховочный словарь utils/translations.js успешно синхронизирован с Google Таблицей.');
+    }
+  } catch (transErr) {
+    console.warn('⚠️ Предупреждение при синхронизации translations.js:', transErr.message);
+  }
 } else {
   console.warn('⚠️ Не удалось прочитать данные с Google Sheets либо контент пуст. Локальный кэш сохранен.');
 }

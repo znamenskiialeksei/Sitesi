@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 19:40 | ПЛАН: 260920261905 Адаптация задач запускаторов.md | TAG: VILLA-HOST-INDEX-260920261940]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:55 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-HOST-INDEX-SAFEAUTH-260920262355]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:55 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-HOST-INDEX-SAFEAUTH-260920262355]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:15 | ПЛАН: 270920260115 Оптимизация кабинета и виджета.md | TAG: VILLA-HOST-WIDGET-CLEAN-270920260115]
 // ==============================================================================
 // ЛИЧНЫЙ КАБИНЕТ ХОЗЯИНА ВИЛЛЫ [HOST DASHBOARD]
 // Файл: pages/host/index.js
@@ -526,14 +526,6 @@ export default function HostDashboardPage() {
               >
                 <RefreshCw className="w-4 h-4" />
                 <span>{t('tabChannels')}</span>
-              </button>
-
-              <button
-                onClick={() => setIsAssistantModalOpen(true)}
-                className="flex items-center gap-2 px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all bg-gradient-to-r from-amber-500/20 to-indigo-500/20 text-amber-300 hover:text-white border border-amber-500/30 hover:border-amber-500/60 shadow-lg shadow-amber-500/10"
-              >
-                <Bot className="w-4 h-4 text-amber-400" />
-                <span>{t('businessAssistantAi') || 'Бизнес-Ассистент [ИИ]'}</span>
               </button>
             </div>
 

@@ -3,8 +3,8 @@
 // Файл: utils/translations.js
 // Поддерживаемые языки: Русский [RU], Английский [EN], Турецкий [TR]
 // 
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:55 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-TRANSLATIONS-HOSTCABINET-260920262355]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 00:25 | ПЛАН: 270920260015 Синхронизация translations.md | TAG: VILLA-TRANSLATIONS-SYNC-270920260025]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 00:25 | ПЛАН: 270920260015 Синхронизация translations.md | TAG: VILLA-TRANSLATIONS-SYNC-270920260025]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:15 | ПЛАН: 270920260115 Оптимизация кабинета и виджета.md | TAG: VILLA-HOST-WIDGET-CLEAN-270920260115]
 // ==============================================================================
 
 export const translations = {
@@ -82,6 +82,16 @@ export const translations = {
     totalPriceLabel: "Итого к оплате",
     holdTimerNotice: "Даты удерживаются 24 часа для онлайн-оплаты",
     minNightsAlert: "Минимальный срок проживания для выбранных дат:",
+    paymentMethodLabel: "Способ оплаты",
+    payByCardOnline: "Картой онлайн",
+    payByIban: "Перевод на IBAN",
+    ibanOnlyDesc: "Прямой банковский перевод на IBAN счет владельца виллы",
+    gatewayOnlyDesc: "Оплата онлайн банковской картой через защищенный шлюз",
+    ibanPaymentNotice: "Реквизиты турецкого банка IBAN и уникальный код бронирования поступят на ваш email и в чат личного кабинета.",
+    contactBadge: "Связь",
+    smsCode: "SMS код",
+    guestPhoneLabel: "Номер телефона [WhatsApp / Связь]",
+    phoneVerifiedBadge: "Подтвержден",
 
     // --- ЛИЧНЫЙ КАБИНЕТ ПУТЕШЕСТВЕННИКА (/guest) ---
     travelerHubTitle: "Личный кабинет путешественника",
@@ -616,6 +626,16 @@ export const translations = {
     totalPriceLabel: "Total before taxes",
     holdTimerNotice: "Dates held for 24 hours upon host approval",
     minNightsAlert: "Minimum stay for selected dates:",
+    paymentMethodLabel: "Payment method",
+    payByCardOnline: "Pay by card online",
+    payByIban: "Bank transfer [IBAN]",
+    ibanOnlyDesc: "Direct bank transfer to the villa owner's IBAN account",
+    gatewayOnlyDesc: "Online payment by credit card via secure gateway",
+    ibanPaymentNotice: "Turkish bank IBAN details and unique booking code will be sent to your email and host chat.",
+    contactBadge: "Contact",
+    smsCode: "SMS code",
+    guestPhoneLabel: "Phone number [WhatsApp / Contact]",
+    phoneVerifiedBadge: "Verified",
 
     travelerHubTitle: "Traveler Dashboard",
     tabMyTrips: "My Trips",
@@ -1144,6 +1164,16 @@ export const translations = {
     totalPriceLabel: "Toplam tutar",
     holdTimerNotice: "Tarihler onaylandıktan sonra 24 saat süreyle tutulur",
     minNightsAlert: "Seçilen tarihler için minimum konaklama:",
+    paymentMethodLabel: "Ödeme yöntemi",
+    payByCardOnline: "Kartla online ödeme",
+    payByIban: "Banka transferi [IBAN]",
+    ibanOnlyDesc: "Villa sahibinin IBAN hesabına doğrudan banka havalesi",
+    gatewayOnlyDesc: "Güvenli ağ geçidi üzerinden kredi kartı ile online ödeme",
+    ibanPaymentNotice: "Türk bankası IBAN bilgileri ve benzersiz rezervasyon kodu e-postanıza ve sohbetinize gönderilecektir.",
+    contactBadge: "İletişim",
+    smsCode: "SMS kodu",
+    guestPhoneLabel: "Telefon numarası [WhatsApp / İletişim]",
+    phoneVerifiedBadge: "Doğrulandı",
 
     travelerHubTitle: "Seyahat Paneli",
     tabMyTrips: "Seyahatlerim",
