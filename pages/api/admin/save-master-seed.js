@@ -1,11 +1,10 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:05 | ПЛАН: 260920261955 Адаптация скрипта таблицы Code.js.md | TAG: VILLA-API-SEED-15SHEETS-260920262305]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:55 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-API-SEED-AUTH-ALL15-260920262355]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:55 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-API-SEED-AUTH-ALL15-260920262355]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 00:25 | ПЛАН: 270920260015 Синхронизация translations.md | TAG: VILLA-API-SEED-TRANSLATIONS-270920260025]
 // ==============================================================================
 // СЕРВЕРНЫЙ ЭНДПОИНТ ФИКСАЦИИ ЭТАЛОНА SINGLE SOURCE OF TRUTH
 // Файл: pages/api/admin/save-master-seed.js
 // Назначение: Обеспечивает фиксацию текущего состояния Google Таблиц в эталонный
-// файл masterSeedContent.js и локальный кэш content.json по запросу из Кабинета Хозяина,
-// Google Apps Script меню или через вебхук.
+// файл masterSeedContent.js, локальный кэш content.json и словарь translations.js.
 // 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
@@ -14,6 +13,7 @@ import path from 'path';
 import { google } from 'googleapis';
 import { SHEETS_REGISTRY, getLiveSheetMap, resolveRange } from '../../../utils/sheetsRegistry';
 import { updateLiveContentFromPayload } from '../../../utils/liveContentSync';
+import { syncTranslationsWithMaster } from '../../../utils/syncTranslationsWithMaster';
 
 // Регулярное выражение для выявления формульных ошибок Google Таблиц
 const FORMULA_ERROR_REGEX = /#(REF!|VALUE!|ERROR!|N\/A|NAME\?|NUM!|DIV\/0!)/i;
@@ -559,6 +559,14 @@ module.exports = {
       console.warn('[save-master-seed] Предупреждение при записи masterSeedContent.js:', targetErr.message);
     }
 
+    // Автоматическая актуализация аварийного словаря витрины в utils/translations.js
+    let translationsUpdated = false;
+    try {
+      translationsUpdated = syncTranslationsWithMaster(masterHomeMap);
+    } catch (syncErr) {
+      console.warn('[save-master-seed] Предупреждение при синхронизации translations.js:', syncErr.message);
+    }
+
     // Обновляем память и ревалидируем страницы
     if (livePayload) {
       try {
@@ -584,7 +592,8 @@ module.exports = {
       servicesCount: masterServicesRows.length,
       guidesCount: masterGuidesRows.length,
       galleryCount: masterGalleryRows.length,
-      message: 'Эталон SSOT masterSeedContent.js и локальный кэш content.json успешно зафиксированы на основе актуальных Google Таблиц.'
+      translationsUpdated,
+      message: 'Эталон SSOT masterSeedContent.js, локальный кэш content.json и словарь translations.js успешно зафиксированы на основе актуальных Google Таблиц.'
     });
   } catch (error) {
     console.error('Ошибка фиксации эталона SSOT:', error.message);

@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:05 | ПЛАН: 260920261955 Адаптация скрипта таблицы Code.js.md | TAG: VILLA-SEED-SCRIPT-15SHEETS-260920262305]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:45 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-SEED-SCRIPT-ALL15-260920262345]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:45 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-SEED-SCRIPT-ALL15-260920262345]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 00:25 | ПЛАН: 270920260015 Синхронизация translations.md | TAG: VILLA-SEED-SCRIPT-TRANSLATIONS-270920260025]
 // ==============================================================================
 // СЦЕНАРИЙ АВТОМАТИЧЕСКОЙ ФИКСАЦИИ ЭТАЛОНА SINGLE SOURCE OF TRUTH
 // Файл: scripts/save-master-seed.js
@@ -536,6 +536,14 @@ module.exports = {
 
   const targetPath = path.join(__dirname, '..', 'utils', 'masterSeedContent.js');
   fs.writeFileSync(targetPath, fileContent, 'utf8');
+
+  // Автоматическая синхронизация страховочного словаря витрины в utils/translations.js
+  try {
+    const { syncTranslationsWithMaster } = require('../utils/syncTranslationsWithMaster');
+    syncTranslationsWithMaster(masterHomeMap);
+  } catch (syncErr) {
+    console.warn('[save-master-seed] Предупреждение при синхронизации translations.js:', syncErr.message);
+  }
 
   console.log(`[save-master-seed] ✅ УСПЕШНО: Эталонный файл сохранен: ${targetPath}`);
   console.log(`[save-master-seed] Лист 1 HOME: ${masterHomeRows.length} строк [${Object.keys(masterHomeMap).length} ключей]`);

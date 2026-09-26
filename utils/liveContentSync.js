@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:05 | ПЛАН: 260920261955 Адаптация скрипта таблицы Code.js.md | TAG: VILLA-LIVE-SYNC-15SHEETS-260920262305]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:45 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-LIVE-SYNC-PERSIST-260920262345]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:45 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-LIVE-SYNC-PERSIST-260920262345]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 00:25 | ПЛАН: 270920260015 Синхронизация translations.md | TAG: VILLA-LIVE-SYNC-ALIASES-270920260025]
 // ==============================================================================
 // УНИВЕРСАЛЬНЫЙ МОДУЛЬ СИНХРОНИЗАЦИИ ЖИВОГО КОНТЕНТА ИЗ GOOGLE SHEETS
 // Файл: utils/liveContentSync.js
@@ -696,6 +696,34 @@ export function processRawRowsToContent({
       if (item.ru) dictionary.ru[k] = item.ru;
       if (item.en) dictionary.en[k] = item.en;
       if (item.tr) dictionary.tr[k] = item.tr;
+
+      // Автоматическое дублирование snake_case в camelCase для хука t[...]
+      const camelK = k.replace(/_([a-z0-9])/g, (_, letter) => letter.toUpperCase());
+      if (camelK !== k) {
+        if (item.ru && !dictionary.ru[camelK]) dictionary.ru[camelK] = item.ru;
+        if (item.en && !dictionary.en[camelK]) dictionary.en[camelK] = item.en;
+        if (item.tr && !dictionary.tr[camelK]) dictionary.tr[camelK] = item.tr;
+      }
+    }
+  });
+
+  // Явные UI-псевдонимы для витрины
+  const uiAliases = {
+    heroTitle: 'hero_title',
+    heroSubtitle: 'hero_subtitle',
+    locationText: 'hero_location',
+    aboutVillaTitle: 'about_title',
+    aboutVillaText: 'about_text',
+    reviewsCountText: 'hero_reviews_count',
+    entireVilla: 'badge_entire_home',
+    guestsSummary: 'specs_summary'
+  };
+  Object.entries(uiAliases).forEach(([uiKey, sheetKey]) => {
+    const item = content.home[sheetKey];
+    if (item && typeof item === 'object') {
+      if (item.ru) dictionary.ru[uiKey] = item.ru;
+      if (item.en) dictionary.en[uiKey] = item.en;
+      if (item.tr) dictionary.tr[uiKey] = item.tr;
     }
   });
   content.dictionary = dictionary;

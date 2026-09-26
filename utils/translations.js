@@ -3,8 +3,8 @@
 // Файл: utils/translations.js
 // Поддерживаемые языки: Русский [RU], Английский [EN], Турецкий [TR]
 // 
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:00 | ПЛАН: 260920261955 Адаптация скрипта таблицы Code.js.md | TAG: VILLA-TRANSLATIONS-48REV-260920262300]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:55 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-TRANSLATIONS-HOSTCABINET-260920262355]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:55 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-TRANSLATIONS-HOSTCABINET-260920262355]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 00:25 | ПЛАН: 270920260015 Синхронизация translations.md | TAG: VILLA-TRANSLATIONS-SYNC-270920260025]
 // ==============================================================================
 
 export const translations = {
@@ -13,7 +13,7 @@ export const translations = {
     brandName: "Villa Turaman",
     superhostBadge: "Суперхозяин",
     ratingStars: "4.98",
-    reviewsCountText: "28 отзывов",
+    reviewsCountText: "48 отзывов",
     navAbout: "О вилле",
     navAmenities: "Удобства",
     navReviews: "Отзывы",
@@ -28,21 +28,21 @@ export const translations = {
     hostCabinet: "Панель управления",
 
     // --- ПУБЛИЧНАЯ ВИТРИНА AIRBNB ---
-    heroTitle: "Премиальная Villa Turaman в Дальяне",
-    heroSubtitle: "Приватная вилла с личным бассейном, видом на горы и эксклюзивным сервисом от Алексея Знаменского.",
-    locationText: "Дальян, Мугла, Турция",
+    heroTitle: "Dalyan Turaman [частный бассейн, 10 спальных мест]",
+    heroSubtitle: "Премиальная вилла 240 м² в Дальяне. Приватный бассейн с соленой водой 36 м², уличное джакузи, 4 спальни, 10 спальных мест, 250 м до центра.",
+    locationText: "Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, Ortaca / Muğla",
     showAllPhotos: "Показать все фото",
-    entireVilla: "Вилла целиком",
-    guestsSummary: "до 10 гостей • 4 спальни • 5 кроватей • 3 ванные комнаты",
+    entireVilla: "Вилла целиком [240 м², приватный бассейн]",
+    guestsSummary: "10 гостей • 4 спальни • 10 спальных мест • 4 ванные + WC",
     aboutVillaTitle: "Об этом жилье",
-    aboutVillaText: "Villa Turaman — это оазис тишины и комфорта среди живописных гор Дальяна. Просторная территория, кристально чистый бассейн, зоны отдыха и барбекю создают идеальные условия как для семейного отдыха, так и для уединенной работы.",
+    aboutVillaText: "Villa Turaman - это премиальный оазис приватности и комфорта в живописном Дальяне. Просторный дом 240 м², приватный бассейн 36 м² с морской солью, уличное джакузи и тропический сад создают безупречные условия для отдыха.",
     readMore: "Читать далее",
 
-    // --- УДОБСТВА (AMENITIES) ---
+    // --- УДОБСТВА [AMENITIES] ---
     amenitiesTitle: "Что предлагает это жилье",
     amenityPool: "Приватный бассейн с шезлонгами",
     amenityMountain: "Панорамный вид на горы",
-    amenityWifi: "Высокоскоростной Wi-Fi (до 100 Мбит/с)",
+    amenityWifi: "Высокоскоростной Wi-Fi [до 100 Мбит/с]",
     amenityAC: "Кондиционеры во всех комнатах",
     amenityKitchen: "Полностью оборудованная кухня",
     amenityParking: "Бесплатная парковка на территории",
@@ -551,7 +551,7 @@ export const translations = {
     brandName: "Villa Turaman",
     superhostBadge: "Superhost",
     ratingStars: "4.98",
-    reviewsCountText: "28 reviews",
+    reviewsCountText: "48 reviews",
     navAbout: "About",
     navAmenities: "Amenities",
     navReviews: "Reviews",
@@ -565,12 +565,12 @@ export const translations = {
     guestCabinet: "My trips",
     hostCabinet: "Host Dashboard",
 
-    heroTitle: "Luxury Villa Turaman in Dalyan",
-    heroSubtitle: "Exclusive private villa with private pool, mountain views, and VIP concierge by Aleksei Znamenskii.",
-    locationText: "Dalyan, Muğla, Turkey",
+    heroTitle: "Dalyan Turaman [private pool, sleeps 10]",
+    heroSubtitle: "A premium 240 m² villa in Dalyan. A private 36 m² saltwater pool, an outdoor jacuzzi, 4 bedrooms, sleeps 10, and is 250 m from the center.",
+    locationText: "Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, Ortaca / Muğla",
     showAllPhotos: "Show all photos",
-    entireVilla: "Entire villa",
-    guestsSummary: "up to 10 guests • 4 bedrooms • 5 beds • 3 baths",
+    entireVilla: "Entire villa [240 sq. m, private pool]",
+    guestsSummary: "10 guests • 4 bedrooms • sleeps 10 • 4 bathrooms + WC",
     aboutVillaTitle: "About this space",
     aboutVillaText: "Villa Turaman is a serene retreat surrounded by Dalyan's lush mountains. Featuring a sparkling private pool, manicured gardens, and outdoor BBQ lounge, it provides the ultimate Mediterranean holiday experience.",
     readMore: "Read more",
@@ -1079,7 +1079,7 @@ export const translations = {
     brandName: "Villa Turaman",
     superhostBadge: "Süper Ev Sahibi",
     ratingStars: "4.98",
-    reviewsCountText: "28 değerlendirme",
+    reviewsCountText: "48 değerlendirme",
     navAbout: "Villa Hakkında",
     navAmenities: "Olanaklar",
     navReviews: "Yorumlar",
@@ -1093,12 +1093,12 @@ export const translations = {
     guestCabinet: "Seyahatlerim",
     hostCabinet: "Yönetim Paneli",
 
-    heroTitle: "Dalyan'da Lüks Villa Turaman",
-    heroSubtitle: "Özel havuzlu, dağ manzaralı ve Aleksei Znamenskii rehberliğinde unutulmaz bir tatil villası.",
-    locationText: "Dalyan, Muğla, Türkiye",
+    heroTitle: "Dalyan Turaman [özel havuz, 10 kişilik]",
+    heroSubtitle: "Dalyan'da 240 m²'lik birinci sınıf bir villa. 36 m²'lik özel tuzlu su havuzu, açık hava jakuzisi, 4 yatak odası, 10 kişiye kadar konaklama kapasitesi ve merkeze 250 metre mesafede yer almaktadır.",
+    locationText: "Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, Ortaca / Muğla",
     showAllPhotos: "Tüm fotoğrafları göster",
-    entireVilla: "Müstakil villa",
-    guestsSummary: "10 misafir • 4 yatak odası • 5 yatak • 3 banyo",
+    entireVilla: "Villanın tamamı [240 m², özel havuz]",
+    guestsSummary: "10 misafir • 4 yatak odası • 10 yatak • 4 banyo + WC",
     aboutVillaTitle: "Bu mekan hakkında",
     aboutVillaText: "Villa Turaman, Dalyan'ın eşsiz doğasında huzurlu ve konforlu bir tatil sunmaktadır. Özel yüzme havuzu, geniş bahçesi ve barbekü alanı ile aileniz için mükemmel bir konaklama ortamı sunar.",
     readMore: "Devamını oku",
