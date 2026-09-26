@@ -41,150 +41,160 @@ var VILLA_SHEETS_CONFIG = {
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
 
-  // 1. Блок 1: Смарт-менеджер и Навигатор листов
-  var jumpMenu = ui.createMenu("🚀 Быстрый переход к листу")
-    .addItem("🏠 Главная витрина", "jumpToSheet_HOME")
-    .addItem("📸 Фото и видео галерея", "jumpToSheet_GALLERY")
-    .addItem("🛎️ Дополнительные услуги", "jumpToSheet_SERVICES")
-    .addItem("🗺️ Видео-путеводители", "jumpToSheet_GUIDES")
-    .addItem("⚖️ Юридические документы", "jumpToSheet_LEGAL")
-    .addSeparator()
-    .addItem("📋 Заявки и бронирования", "jumpToSheet_BOOKINGS")
-    .addItem("📅 Календарь и тарифы", "jumpToSheet_CALENDAR")
-    .addItem("👤 База гостей и аккаунты", "jumpToSheet_ACCOUNTS")
-    .addItem("💳 Заказы услуг и путеводителей", "jumpToSheet_ORDERS")
-    .addItem("🎟️ Доступы к путеводителям", "jumpToSheet_ACCESS")
-    .addSeparator()
-    .addItem("💬 Шаблоны сообщений", "jumpToSheet_TEMPLATES")
-    .addItem("⚙️ Системные настройки ИИ", "jumpToSheet_SETTINGS")
-    .addItem("📋 Задачи и поручения", "jumpToSheet_TASKS")
-    .addItem("🧠 Граф знаний и безопасность", "jumpToSheet_KNOWLEDGE_GRAPH");
+  // 1. ПЕРВОЕ ГЛАВНОЕ МЕНЮ: 🏡 1. Villa Turaman Suite
+  try {
+    var jumpMenu = ui.createMenu("🚀 Быстрый переход к листу")
+      .addItem("🏠 Главная витрина", "jumpToSheet_HOME")
+      .addItem("📸 Фото и видео галерея", "jumpToSheet_GALLERY")
+      .addItem("🛎️ Дополнительные услуги", "jumpToSheet_SERVICES")
+      .addItem("🗺️ Видео-путеводители", "jumpToSheet_GUIDES")
+      .addItem("⚖️ Юридические документы", "jumpToSheet_LEGAL")
+      .addSeparator()
+      .addItem("📋 Заявки и бронирования", "jumpToSheet_BOOKINGS")
+      .addItem("📅 Календарь и тарифы", "jumpToSheet_CALENDAR")
+      .addItem("👤 База гостей и аккаунты", "jumpToSheet_ACCOUNTS")
+      .addItem("💳 Заказы услуг и путеводителей", "jumpToSheet_ORDERS")
+      .addItem("🎟️ Доступы к путеводителям", "jumpToSheet_ACCESS")
+      .addSeparator()
+      .addItem("💬 Шаблоны сообщений", "jumpToSheet_TEMPLATES")
+      .addItem("⚙️ Системные настройки ИИ", "jumpToSheet_SETTINGS")
+      .addItem("📋 Задачи и поручения", "jumpToSheet_TASKS")
+      .addItem("🧠 Граф знаний и безопасность", "jumpToSheet_KNOWLEDGE_GRAPH");
 
-  var focusMenu = ui.createMenu("👁️ Режимы фокуса: скрыть лишнее")
-    .addItem("🏠 Витрина для гостей: Витрина, Фото, Услуги, Гиды, Юр. документы", "applyPresetShowcase")
-    .addItem("💼 Бронирования и гости: Заявки, Календарь, Аккаунты, Заказы", "applyPresetOperations")
-    .addItem("⚙️ Настройки и бэк-офис: Шаблоны, Настройки ИИ, Задачи, Граф", "applyPresetSettings");
+    var focusMenu = ui.createMenu("👁️ Режимы фокуса: скрыть лишнее")
+      .addItem("🏠 Витрина для гостей: Витрина, Фото, Услуги, Гиды, Юр. документы", "applyPresetShowcase")
+      .addItem("💼 Бронирования и гости: Заявки, Календарь, Аккаунты, Заказы", "applyPresetOperations")
+      .addItem("⚙️ Настройки и бэк-офис: Шаблоны, Настройки ИИ, Задачи, Граф", "applyPresetSettings");
 
-  var sheetManagerMenu = ui.createMenu("🧭 1. Листы таблицы: быстрый переход и режимы фокуса")
-    .addItem("🌟 Показать все вкладки", "applyPresetAllOpen")
-    .addSeparator()
-    .addSubMenu(focusMenu)
-    .addSubMenu(jumpMenu)
-    .addSeparator()
-    .addItem("🏷️ Переименовать вкладки в русский стандарт", "renameSheetsToRussianStandard")
-    .addItem("🔢 Расставить вкладки по порядку", "sortSheetsCanonically")
-    .addItem("📊 Паспорт листов и проверка структуры", "showSheetsPassportModal")
-    .addSeparator()
-    .addItem("ℹ️ Справка по менеджеру листов", "showSheetManagerHelp");
+    var sheetManagerMenu = ui.createMenu("🧭 1. Листы таблицы: быстрый переход и режимы фокуса")
+      .addItem("🌟 Показать все вкладки", "applyPresetAllOpen")
+      .addSeparator()
+      .addSubMenu(focusMenu)
+      .addSubMenu(jumpMenu)
+      .addSeparator()
+      .addItem("🏷️ Переименовать вкладки в русский стандарт", "renameSheetsToRussianStandard")
+      .addItem("🔢 Расставить вкладки по порядку", "sortSheetsCanonically")
+      .addItem("📊 Паспорт листов и проверка структуры", "showSheetsPassportModal")
+      .addSeparator()
+      .addItem("ℹ️ Справка по менеджеру листов", "showSheetManagerHelp");
 
-  // 2. Блок 2: Синхронизация с платформой Next.js: Дуплекс
-  var syncMenu = ui.createMenu("🔄 2. Публикация и связь с сайтом")
-    .addItem("⚡ 1. Опубликовать изменения на сайте прямо сейчас", "triggerRevalidateWebhook")
-    .addItem("🔄 2. Включить авто-синхронизацию правок таблицы с сайтом", "setupAutoSyncTrigger")
-    .addItem("💾 3. Сохранить текущую таблицу как эталон сайта: content.json", "saveMasterSeedInteractive")
-    .addSeparator()
-    .addItem("🚀 Полный перезапуск и пересборка сайта Vercel", "triggerVercelDeployHook")
-    .addItem("⏱️ Проверить доступность сайта: тест связи", "checkWebsiteHealth");
+    var syncMenu = ui.createMenu("🔄 2. Публикация и связь с сайтом")
+      .addItem("⚡ 1. Опубликовать изменения на сайте прямо сейчас", "triggerRevalidateWebhook")
+      .addItem("🔄 2. Включить авто-синхронизацию правок таблицы с сайтом", "setupAutoSyncTrigger")
+      .addItem("💾 3. Сохранить текущую таблицу как эталон сайта: content.json", "saveMasterSeedInteractive")
+      .addSeparator()
+      .addItem("🚀 Полный перезапуск и пересборка сайта Vercel", "triggerVercelDeployHook")
+      .addItem("⏱️ Проверить доступность сайта: тест связи", "checkWebsiteHealth");
 
-  // 3. Блок 3: Управление бронированиями и календарем
-  var calendarMenu = ui.createMenu("📅 3. Календарь, Брони и Цены")
-    .addItem("🔍 Проверить даты на накладки и статус оплаты", "auditCalendarHolds")
-    .addItem("🧹 Снять брони с истекшим сроком оплаты", "clearExpiredHolds")
-    .addItem("📥 Получить ссылку календаря iCal для каналов", "showIcalExportUrl");
+    var calendarMenu = ui.createMenu("📅 3. Календарь, Брони и Цены")
+      .addItem("🔍 Проверить даты на накладки и статус оплаты", "auditCalendarHolds")
+      .addItem("🧹 Снять брони с истекшим сроком оплаты", "clearExpiredHolds")
+      .addItem("📥 Получить ссылку календаря iCal для каналов", "showIcalExportUrl");
 
-  // 4. Блок 4: Каталог услуг и путеводителей
-  var catalogMenu = ui.createMenu("🛎️ 4. Услуги, Цены и Фотографии")
-    .addItem("💱 Автоматически пересчитать цены во всех валютах по курсу ЦБ", "recalculateAllCatalogCurrencies")
-    .addItem("🌍 Перевести каталог услуг на английский и турецкий языки", "refreshCatalogTranslations")
-    .addItem("🖼️ Проверить медиафайлы Google Drive", "auditDriveMediaLinks");
+    var catalogMenu = ui.createMenu("🛎️ 4. Услуги, Цены и Фотографии")
+      .addItem("💱 Автоматически пересчитать цены во всех валютах по курсу ЦБ", "recalculateAllCatalogCurrencies")
+      .addItem("🌍 Перевести каталог услуг на английский и турецкий языки", "refreshCatalogTranslations")
+      .addItem("🖼️ Проверить медиафайлы Google Drive", "auditDriveMediaLinks");
 
-  // 5. Блок 5: Гостевой сервис и CRM-мессенджер
-  var crmMenu = ui.createMenu("💬 5. Сообщения и Чат с гостями")
-    .addItem("📨 Проверить новые сообщения от гостей", "checkGuestChatsStatus")
-    .addItem("📝 Проверить шаблоны сообщений", "auditTemplatesFormat");
+    var crmMenu = ui.createMenu("💬 5. Сообщения и Чат с гостями")
+      .addItem("📨 Проверить новые сообщения от гостей", "checkGuestChatsStatus")
+      .addItem("📝 Проверить шаблоны сообщений", "auditTemplatesFormat");
 
-  // 6. Блок 6: Системный аудит, формулы и Свойства скрипта
-  var auditMenu = ui.createMenu("⚙️ 6. Сервисное обслуживание и Безопасность")
-    .addItem("🔑 Настройка ключей и параметров: Свойства скрипта", "setupScriptPropertiesInteractive")
-    .addItem("🌐 Проверить статус переменных на Vercel", "checkVercelEnvStatusInteractive")
-    .addItem("📋 Показать текущие Свойства скрипта", "viewCurrentScriptProperties")
-    .addSeparator()
-    .addItem("🧪 Проверить формулы таблицы на ошибки точки с запятой", "auditFormulasSemicolon")
-    .addItem("🔍 Комплексная проверка целостности и токенов", "auditScriptIntegrityAndTokens")
-    .addItem("🛠️ Восстановить структуру таблицы: при необходимости", "ensureAllSystemSheets")
-    .addItem("💾 Сохранить текущую таблицу как вечный эталон сайта", "saveMasterSeedInteractive")
-    .addSeparator()
-    .addItem("📧 Тестовая отправка письма через почту хозяина", "testGmailRelayInteractive");
+    var auditMenu = ui.createMenu("⚙️ 6. Сервисное обслуживание и Безопасность")
+      .addItem("🔑 Настройка ключей и параметров: Свойства скрипта", "setupScriptPropertiesInteractive")
+      .addItem("🌐 Проверить статус переменных на Vercel", "checkVercelEnvStatusInteractive")
+      .addItem("📋 Показать текущие Свойства скрипта", "viewCurrentScriptProperties")
+      .addSeparator()
+      .addItem("🧪 Проверить формулы таблицы на ошибки точки с запятой", "auditFormulasSemicolon")
+      .addItem("🔍 Комплексная проверка целостности и токенов", "auditScriptIntegrityAndTokens")
+      .addItem("🛠️ Восстановить структуру таблицы: при необходимости", "ensureAllSystemSheets")
+      .addItem("💾 Сохранить текущую таблицу как вечный эталон сайта", "saveMasterSeedInteractive")
+      .addSeparator()
+      .addItem("📧 Тестовая отправка письма через почту хозяина", "testGmailRelayInteractive");
 
-  // Сборка первого главного меню верхнего уровня: 🏡 1. Villa Turaman Suite
-  ui.createMenu("🏡 1. Villa Turaman Suite")
-    .addSubMenu(sheetManagerMenu)
-    .addSeparator()
-    .addSubMenu(syncMenu)
-    .addSubMenu(calendarMenu)
-    .addSubMenu(catalogMenu)
-    .addSubMenu(crmMenu)
-    .addSeparator()
-    .addSubMenu(auditMenu)
-    .addToUi();
+    ui.createMenu("🏡 1. Villa Turaman Suite")
+      .addSubMenu(sheetManagerMenu)
+      .addSeparator()
+      .addSubMenu(syncMenu)
+      .addSubMenu(calendarMenu)
+      .addSubMenu(catalogMenu)
+      .addSubMenu(crmMenu)
+      .addSeparator()
+      .addSubMenu(auditMenu)
+      .addToUi();
+  } catch (err1) {
+    Logger.log("Сбой регистрации Меню 1: " + err1.message);
+  }
 
-  // ВТОРОЕ ГЛАВНОЕ МЕНЮ ВЕРХНЕГО УРОВНЯ: 🤖 2. Управление Telegram-ботом
-  registerTelegramBotMenu();
+  // 2. ВТОРОЕ ГЛАВНОЕ МЕНЮ: 🤖 2. Управление Telegram-ботом
+  try {
+    registerTelegramBotMenu();
+  } catch (err2) {
+    Logger.log("Сбой регистрации Меню 2: " + err2.message);
+  }
 
-  // ТРЕТЬЕ ГЛАВНОЕ МЕНЮ ВЕРХНЕГО УРОВНЯ: 🧠 3. ИИ-Агент & Gemini
-  var aiModeSubMenu = ui.createMenu("🎯 1. Режим работы ИИ: Кто отвечает гостю?")
-    .addItem("🚀 Режим Автопилот: самостоятельные ответы гостям 24/7", "setAiModeAutopilot")
-    .addItem("💡 Режим Суфлер: подготовка черновиков для владельца", "setAiModeCopilot")
-    .addItem("⏸️ Режим Выключен: ручной режим владельца", "setAiModeOff")
-    .addSeparator()
-    .addItem("ℹ️ Показать текущий режим и статус ИИ", "showAiFullStatusModal");
+  // 3. ТРЕТЬЕ ГЛАВНОЕ МЕНЮ: 🧠 3. ИИ-Агент & Gemini
+  try {
+    var aiModeSubMenu = ui.createMenu("🎯 1. Режим работы ИИ: Кто отвечает гостю?")
+      .addItem("🚀 Режим Автопилот: самостоятельные ответы гостям 24/7", "setAiModeAutopilot")
+      .addItem("💡 Режим Суфлер: подготовка черновиков для владельца", "setAiModeCopilot")
+      .addItem("⏸️ Режим Выключен: ручной режим владельца", "setAiModeOff")
+      .addSeparator()
+      .addItem("ℹ️ Показать текущий режим и статус ИИ", "showAiFullStatusModal");
 
-  var aiRolesSubMenu = ui.createMenu("🎭 2. Роли ИИ и Специализации")
-    .addItem("👑 Персональный консьерж виллы", "showConciergePromptInfo")
-    .addItem("⚖️ Юрист по законодательству Турции", "showLawyerPromptInfo")
-    .addItem("💰 Бухгалтер по налогам и платежам", "showFinancePromptInfo");
+    var aiRolesSubMenu = ui.createMenu("🎭 2. Роли ИИ и Специализации")
+      .addItem("👑 Персональный консьерж виллы", "showConciergePromptInfo")
+      .addItem("⚖️ Юрист по законодательству Турции", "showLawyerPromptInfo")
+      .addItem("💰 Бухгалтер по налогам и платежам", "showFinancePromptInfo");
 
-  var aiRulesSubMenu = ui.createMenu("🛡️ 3. Правила безопасности и лимитов ИИ")
-    .addItem("💰 Минимальная цена за ночь: настройка порога скидок из таблицы", "setupAiMinPriceInteractive")
-    .addItem("🔒 Скрытие кодов доступа и паролей до подтверждения оплаты", "showSecurityCodeRuleInfo")
-    .addItem("🚕 Контакты официального трансфера виллы из таблицы", "showTransferRuleInfo");
+    var aiRulesSubMenu = ui.createMenu("🛡️ 3. Правила безопасности и лимитов ИИ")
+      .addItem("💰 Минимальная цена за ночь: настройка порога скидок из таблицы", "setupAiMinPriceInteractive")
+      .addItem("🔒 Скрытие кодов доступа и паролей до подтверждения оплаты", "showSecurityCodeRuleInfo")
+      .addItem("🚕 Контакты официального трансфера виллы из таблицы", "showTransferRuleInfo");
 
-  var aiMainMenu = ui.createMenu("🧠 3. ИИ-Агент & Gemini")
-    .addSubMenu(aiModeSubMenu)
-    .addSubMenu(aiRolesSubMenu)
-    .addSubMenu(aiRulesSubMenu)
-    .addSeparator()
-    .addItem("📚 4. Передать свежие знания из таблицы в память сайта", "syncAiKnowledgeToVercel")
-    .addItem("🤖 5. Выбрать рабочую модель нейросети", "setupAiModelInteractive")
-    .addItem("🌐 6. Проверить подключение нейросети к сайту на Vercel", "checkGeminiVercelStatusInteractive")
-    .addItem("🛠️ 7. Обновить структуру системных таблиц базы знаний", "initAiKnowledgeBaseSheets");
-  aiMainMenu.addToUi();
+    var aiMainMenu = ui.createMenu("🧠 3. ИИ-Агент & Gemini")
+      .addSubMenu(aiModeSubMenu)
+      .addSubMenu(aiRolesSubMenu)
+      .addSubMenu(aiRulesSubMenu)
+      .addSeparator()
+      .addItem("📚 4. Передать свежие знания из таблицы в память сайта", "syncAiKnowledgeToVercel")
+      .addItem("🤖 5. Выбрать рабочую модель нейросети", "setupAiModelInteractive")
+      .addItem("🌐 6. Проверить подключение нейросети к сайту на Vercel", "checkGeminiVercelStatusInteractive")
+      .addItem("🛠️ 7. Обновить структуру системных таблиц базы знаний", "initAiKnowledgeBaseSheets");
+    aiMainMenu.addToUi();
+  } catch (err3) {
+    Logger.log("Сбой регистрации Меню 3: " + err3.message);
+  }
 
-  // ЧЕТВЕРТОЕ ГЛАВНОЕ МЕНЮ: 💼 4. Секретарь • Юрист • Бухгалтер
-  var assistantMenu = ui.createMenu("💼 4. Секретарь • Юрист • Бухгалтер");
+  // 4. ЧЕТВЕРТОЕ ГЛАВНОЕ МЕНЮ: 💼 4. Секретарь • Юрист • Бухгалтер
+  try {
+    var assistantMenu = ui.createMenu("💼 4. Секретарь • Юрист • Бухгалтер");
 
-  var bAccSubMenu = ui.createMenu("🧾 1. Бухгалтерия и Налоги Турции: e-Arşiv Fatura GİB")
-    .addItem("🧾 Калькулятор турецкой фактуры: e-Arşiv Fatura", "openInvoiceCalculatorModal")
-    .addItem("💰 Проверить поступления на банковский счет IBAN", "auditPendingBankPaymentsModal");
+    var bAccSubMenu = ui.createMenu("🧾 1. Бухгалтерия и Налоги Турции: e-Arşiv Fatura GİB")
+      .addItem("🧾 Калькулятор турецкой фактуры: e-Arşiv Fatura", "openInvoiceCalculatorModal")
+      .addItem("💰 Проверить поступления на банковский счет IBAN", "auditPendingBankPaymentsModal");
 
-  var bLawSubMenu = ui.createMenu("⚖️ 2. Юрист: Закон № 7464 и Полиция KBS")
-    .addItem("⚖️ Экспресс-проверка бронирования по закону № 7464", "openLegalCheckModal")
-    .addItem("👮 Чек-лист регистрации паспортов в полиции: KBS", "openKbsChecklistModal");
+    var bLawSubMenu = ui.createMenu("⚖️ 2. Юрист: Закон № 7464 и Полиция KBS")
+      .addItem("⚖️ Экспресс-проверка бронирования по закону № 7464", "openLegalCheckModal")
+      .addItem("👮 Чек-лист регистрации паспортов в полиции: KBS", "openKbsChecklistModal");
 
-  var bSecSubMenu = ui.createMenu("📋 3. Секретарь: Поручения и Чек-листы персоналу")
-    .addItem("📋 Поставить новую задачу или поручение", "openNewTaskModal")
-    .addItem("📑 Открыть лист Задач и Поручений", "jumpToSheet_TASKS");
+    var bSecSubMenu = ui.createMenu("📋 3. Секретарь: Поручения и Чек-листы персоналу")
+      .addItem("📋 Поставить новую задачу или поручение", "openNewTaskModal")
+      .addItem("📑 Открыть лист Задач и Поручений", "jumpToSheet_TASKS");
 
-  var bArcSubMenu = ui.createMenu("📁 4. Архивариус: Папки и Документы Google Drive")
-    .addItem("📁 Создать новую папку гостя или сезона в Google Drive", "openCreateDriveFolderModal")
-    .addItem("🗄️ Открыть корень архива виллы на Google Drive", "openDriveRootLink");
+    var bArcSubMenu = ui.createMenu("📁 4. Архивариус: Папки и Документы Google Drive")
+      .addItem("📁 Создать новую папку гостя или сезона в Google Drive", "openCreateDriveFolderModal")
+      .addItem("🗄️ Открыть корень архива виллы на Google Drive", "openDriveRootLink");
 
-  assistantMenu
-    .addSubMenu(bAccSubMenu)
-    .addSubMenu(bLawSubMenu)
-    .addSubMenu(bSecSubMenu)
-    .addSubMenu(bArcSubMenu)
-    .addToUi();
+    assistantMenu
+      .addSubMenu(bAccSubMenu)
+      .addSubMenu(bLawSubMenu)
+      .addSubMenu(bSecSubMenu)
+      .addSubMenu(bArcSubMenu)
+      .addToUi();
+  } catch (err4) {
+    Logger.log("Сбой регистрации Меню 4: " + err4.message);
+  }
 }
 
 // ==============================================================================
@@ -435,20 +445,25 @@ function ensureAutoSyncTriggerInstalled_() {
  *            3. Боевой production URL Vercel ветки v1-airbnb
  */
 function getEffectiveSiteUrl_() {
-  var props = PropertiesService.getScriptProperties();
-  var siteUrl = (props.getProperty('SITE_URL') || '').trim().replace(/\/+$/, '');
+  var targetUrl = 'https://www.villaturaman.com';
+  try {
+    var props = PropertiesService.getScriptProperties();
+    if (!props) return targetUrl;
+    var siteUrl = (props.getProperty('SITE_URL') || '').trim().replace(/\/+$/, '');
 
-  // Принудительно отдаем канонический боевой домен виллы, если указан localhost или устаревший URL
-  if (!siteUrl || siteUrl.indexOf('localhost') !== -1 || siteUrl.indexOf('127.0.0.1') !== -1 || siteUrl.indexOf('sitesi-git-v1-airbnb') !== -1) {
-    var targetUrl = 'https://www.villaturaman.com';
-    try {
-      props.setProperty('SITE_URL', targetUrl);
-      props.setProperty('REVALIDATE_API_URL', targetUrl + '/api/revalidate');
-    } catch (propErr) {}
+    // Принудительно отдаем канонический боевой домен виллы, если указан localhost или устаревший URL
+    if (!siteUrl || siteUrl.indexOf('localhost') !== -1 || siteUrl.indexOf('127.0.0.1') !== -1 || siteUrl.indexOf('sitesi-git-v1-airbnb') !== -1) {
+      try {
+        props.setProperty('SITE_URL', targetUrl);
+        props.setProperty('REVALIDATE_API_URL', targetUrl + '/api/revalidate');
+      } catch (propErr) {}
+      return targetUrl;
+    }
+
+    return siteUrl;
+  } catch (err) {
     return targetUrl;
   }
-
-  return siteUrl;
 }
 
 /** Триггер редактирования ячеек для отправки сигнала ревалидации в Next.js */
@@ -2390,31 +2405,24 @@ function registerTelegramBotMenu() {
  * Получение активных разделов меню Telegram-бота из Script Properties
  */
 function getTelegramActiveSections_() {
-  var props = PropertiesService.getScriptProperties();
-  var raw = props.getProperty('TG_ACTIVE_SECTIONS');
-  if (!raw) {
-    return {
-      launch: true,
-      requests: true,
-      crm: true,
-      calendar: true,
-      vscode: true,
-      sync: true,
-      settings: true
-    };
-  }
+  var defaults = {
+    launch: true,
+    requests: true,
+    crm: true,
+    calendar: true,
+    vscode: true,
+    sync: true,
+    settings: true
+  };
   try {
-    return JSON.parse(raw);
+    var props = PropertiesService.getScriptProperties();
+    if (!props) return defaults;
+    var raw = props.getProperty('TG_ACTIVE_SECTIONS');
+    if (!raw) return defaults;
+    var parsed = JSON.parse(raw);
+    return parsed || defaults;
   } catch (e) {
-    return {
-      launch: true,
-      requests: true,
-      crm: true,
-      calendar: true,
-      vscode: true,
-      sync: true,
-      settings: true
-    };
+    return defaults;
   }
 }
 
