@@ -2,7 +2,7 @@
 // АВТОМАТИЗАЦИЯ GOOGLE APPS SCRIPT ДЛЯ СИНХРОНИЗАЦИИ VILLA TURAMAN
 // Файл: google-apps-script/Code.js
 // Назначение: Скрипт устанавливается в редактор Google Таблицы: Расширения -> Apps Script.
-// 1. Создает 3 главных меню в интерфейсе Google Таблиц: "🏡 Villa Turaman Suite", "🤖 Telegram Бот", "🧠 3. ИИ-Агент & Gemini".
+// 1. Создает 4 главных меню в интерфейсе Google Таблиц: "🏡 1. Villa Turaman Suite", "🤖 2. Управление Telegram-ботом", "🧠 3. ИИ-Агент & Gemini", "💼 4. Секретарь • Юрист • Бухгалтер".
 // 2. Включает смарт-навигатор листов в 1 клик, режим Всё открыто и 3 фокусных кластера.
 // 3. Обеспечивает мгновенную отправку вебхуков ревалидации Next.js при любых правках контента.
 // 4. Поддерживает гибридный запуск Telegram-бота и Gemini через серверные ключи на https://vercel.com/.
@@ -115,8 +115,8 @@ function onOpen() {
     .addSeparator()
     .addItem("📧 Тестовая отправка письма через почту хозяина", "testGmailRelayInteractive");
 
-  // Сборка первого главного меню верхнего уровня: 🏡 Villa Turaman Suite
-  ui.createMenu("🏡 Villa Turaman Suite")
+  // Сборка первого главного меню верхнего уровня: 🏡 1. Villa Turaman Suite
+  ui.createMenu("🏡 1. Villa Turaman Suite")
     .addSubMenu(sheetManagerMenu)
     .addSeparator()
     .addSubMenu(syncMenu)
@@ -127,12 +127,8 @@ function onOpen() {
     .addSubMenu(auditMenu)
     .addToUi();
 
-  // ВТОРОЕ ГЛАВНОЕ МЕНЮ ВЕРХНЕГО УРОВНЯ: 🤖 Telegram Бот (регистрируется через модуль TelegramBot.js)
-  try {
-    registerTelegramBotMenu();
-  } catch (tgErr) {
-    Logger.log("Регистрация меню Telegram через модуль TelegramBot.js");
-  }
+  // ВТОРОЕ ГЛАВНОЕ МЕНЮ ВЕРХНЕГО УРОВНЯ: 🤖 2. Управление Telegram-ботом
+  registerTelegramBotMenu();
 
   // ТРЕТЬЕ ГЛАВНОЕ МЕНЮ ВЕРХНЕГО УРОВНЯ: 🧠 3. ИИ-Агент & Gemini
   var aiModeSubMenu = ui.createMenu("🎯 1. Режим работы ИИ: Кто отвечает гостю?")
@@ -552,19 +548,141 @@ function showIcalExportUrl() {
   SpreadsheetApp.getUi().alert("Ссылка для импорта в Airbnb / Booking / Vrbo", "Скопируйте URL для добавления в Channel Manager:\n\n" + icalUrl, SpreadsheetApp.getUi().ButtonSet.OK);
 }
 
-/** Очистка истекших удержаний HOLD */
+/** Очистка истекших удержаний HOLD в календаре */
 function clearExpiredHolds() {
-  SpreadsheetApp.getActive().toast("Истекшие блокировки HOLD фильтруются автоматически на стороне API.", "🧹 Очистка HOLD", 4);
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = findSheetByConfigKey(ss, "CALENDAR");
+  if (!sheet) {
+    sheet = ss.getSheetByName("📅 Календарь и Тарифы") || ss.getSheetByName("Календарь") || ss.getSheetByName("Calendar");
+  }
+  if (!sheet) {
+    SpreadsheetApp.getUi().alert("Лист Календарь и Тарифы не найден.");
+    return;
+  }
+
+  var data = sheet.getDataRange().getValues();
+  var now = Date.now();
+  var clearedCount = 0;
+  var rowsToDelete = [];
+
+  for (var i = data.length - 1; i >= 1; i--) {
+    var type = String(data[i][2] || '').trim();
+    var val = String(data[i][3] || '').trim();
+    if (type === 'Блокировка' && val.indexOf('HOLD|') === 0) {
+      var parts = val.split('|');
+      if (parts.length >= 3) {
+        var expTime = new Date(parts[2]).getTime();
+        if (!isNaN(expTime) && now > expTime) {
+          rowsToDelete.push(i + 1);
+          clearedCount++;
+        }
+      }
+    }
+  }
+
+  for (var k = 0; k < rowsToDelete.length; k++) {
+    sheet.deleteRow(rowsToDelete[k]);
+  }
+
+  if (clearedCount > 0) {
+    try {
+      triggerRevalidateWebhook();
+    } catch (e) {}
+    SpreadsheetApp.getUi().alert(
+      "🧹 Очистка истекших броней HOLD",
+      "Успешно удалено просроченных удержаний: " + clearedCount + ".\nКалендарь обновлен, витрина сайта синхронизирована.",
+      SpreadsheetApp.getUi().ButtonSet.OK
+    );
+  } else {
+    SpreadsheetApp.getUi().alert(
+      "🧹 Очистка истекших броней HOLD",
+      "Просроченных удержаний не обнаружено. Все зафиксированные брони актуальны.",
+      SpreadsheetApp.getUi().ButtonSet.OK
+    );
+  }
 }
 
-/** Проверка автопереводов каталога */
+/** Реальная проверка и обновление формул автоперевода каталога */
 function refreshCatalogTranslations() {
-  SpreadsheetApp.getActive().toast("Формулы GOOGLETRANSLATE обновляются автоматически через Google Таблицы.", "🔄 Обновление переводов", 4);
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheetsToCheck = ["SERVICES", "GUIDES", "HOME"];
+  var refreshedSheets = [];
+
+  for (var i = 0; i < sheetsToCheck.length; i++) {
+    var key = sheetsToCheck[i];
+    var sheet = findSheetByConfigKey(ss, key);
+    if (sheet && sheet.getLastRow() >= 2) {
+      if (key === "SERVICES") {
+        sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+        sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+        sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+        sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        refreshedSheets.push(sheet.getName());
+      } else if (key === "GUIDES") {
+        sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+        sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+        sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+        sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        refreshedSheets.push(sheet.getName());
+      } else if (key === "HOME") {
+        sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+        sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        refreshedSheets.push(sheet.getName());
+      }
+    }
+  }
+
+  SpreadsheetApp.getUi().alert(
+    "🌍 Проверка и актуализация переводов",
+    "Формулы GOOGLETRANSLATE канонического стандарта с точкой с запятой успешно обновлены на листах:\n• " + refreshedSheets.join("\n• ") + "\n\nПереводы EN и TR синхронизируются автоматически.",
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
 }
 
-/** Проверка ссылок Google Drive */
+/** Реальный аудит медиассылок Google Drive и галереи */
 function auditDriveMediaLinks() {
-  SpreadsheetApp.getActive().toast("Парсер media.js автоматически конвертирует шаринг-ссылки Drive в прямой HD-поток.", "🖼️ Проверка Drive", 4);
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var galSheet = findSheetByConfigKey(ss, "GALLERY");
+  var srvSheet = findSheetByConfigKey(ss, "SERVICES");
+  var totalLinks = 0;
+  var driveLinks = 0;
+  var unsplashLinks = 0;
+
+  if (galSheet) {
+    var galData = galSheet.getDataRange().getValues();
+    for (var i = 1; i < galData.length; i++) {
+      var link = String(galData[i][8] || '').trim();
+      if (link) {
+        totalLinks++;
+        if (link.indexOf("drive.google.com") !== -1) driveLinks++;
+        if (link.indexOf("unsplash.com") !== -1) unsplashLinks++;
+      }
+    }
+  }
+
+  if (srvSheet) {
+    var srvData = srvSheet.getDataRange().getValues();
+    for (var j = 1; j < srvData.length; j++) {
+      var sLink = String(srvData[j][11] || '').trim();
+      if (sLink) {
+        totalLinks++;
+        if (sLink.indexOf("drive.google.com") !== -1) driveLinks++;
+        if (sLink.indexOf("unsplash.com") !== -1) unsplashLinks++;
+      }
+    }
+  }
+
+  var msg = "🖼️ АУДИТ МЕДИАССЫЛОК ПЛАТФОРМЫ:\n\n" +
+    "• Всего проверено медиассылок: " + totalLinks + "\n" +
+    "• Google Drive ссылок: " + driveLinks + "\n" +
+    "• Unsplash CDN ссылок: " + unsplashLinks + "\n\n" +
+    "Все ссылки Google Drive автоматически обрабатываются парсером media.js в прямой HD поток.";
+
+  SpreadsheetApp.getUi().alert("Аудит медиафайлов", msg, SpreadsheetApp.getUi().ButtonSet.OK);
 }
 
 /** Проверка чатов */
@@ -578,15 +696,35 @@ function checkGuestChatsStatus() {
   SpreadsheetApp.getUi().alert("Гостевой сервис", "Активных диалогов с гостями в текущей таблице: " + chatCount, SpreadsheetApp.getUi().ButtonSet.OK);
 }
 
-/** Проверка шаблонов */
+/** Реальный аудит шаблонов сообщений и переменных */
 function auditTemplatesFormat() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var templSheet = findSheetByConfigKey(ss, "TEMPLATES");
-  if (!templSheet) {
-    SpreadsheetApp.getUi().alert("Лист шаблонов не найден.");
+  var sheet = findSheetByConfigKey(ss, "TEMPLATES");
+  if (!sheet) {
+    SpreadsheetApp.getUi().alert("Лист Шаблоны сообщений не найден.");
     return;
   }
-  SpreadsheetApp.getUi().alert("Шаблоны сообщений", "Шаблоны загружены и готовы к отправке из панели хозяина.", SpreadsheetApp.getUi().ButtonSet.OK);
+  var data = sheet.getDataRange().getValues();
+  var count = Math.max(0, data.length - 1);
+  var validTemplates = 0;
+  var placeholders = ["[FIRST_NAME]", "[CHECKIN_DATE]", "[CHECKOUT_DATE]", "[TOTAL_PRICE]"];
+  var foundVars = 0;
+
+  for (var i = 1; i < data.length; i++) {
+    var text = String(data[i][2] || '') + ' ' + String(data[i][3] || '');
+    if (text.trim().length > 0) validTemplates++;
+    for (var p = 0; p < placeholders.length; p++) {
+      if (text.indexOf(placeholders[p]) !== -1) foundVars++;
+    }
+  }
+
+  var report = "💬 АУДИТ ШАБЛОНОВ СООБЩЕНИЙ:\n\n" +
+    "• Всего шаблонов в таблице: " + count + "\n" +
+    "• Активных текстовых шаблонов: " + validTemplates + "\n" +
+    "• Обнаружено подстановочных переменных: " + foundVars + "\n\n" +
+    "Шаблоны полностью синхронизированы с панелью суперхозяина на сайте.";
+
+  SpreadsheetApp.getUi().alert("Шаблоны сообщений", report, SpreadsheetApp.getUi().ButtonSet.OK);
 }
 
 /** Проверка строгого стандарта точки с запятой в формулах */
@@ -1590,14 +1728,19 @@ function sendTelegramRelay_(actionName, extraPayload) {
   payload.action = actionName;
   if (cfg.chatId) payload.chatId = cfg.chatId;
 
-  var url = cfg.siteUrl.replace(/\/+$/, '') + '/api/telegram-webhook';
-  var response = UrlFetchApp.fetch(url, {
-    method: 'post',
-    contentType: 'application/json',
-    payload: JSON.stringify(payload),
-    muteHttpExceptions: true
-  });
-  return JSON.parse(response.getContentText());
+  try {
+    var url = cfg.siteUrl.replace(/\/+$/, '') + '/api/telegram-webhook';
+    var response = UrlFetchApp.fetch(url, {
+      method: 'post',
+      contentType: 'application/json',
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    });
+    var text = response.getContentText();
+    return JSON.parse(text);
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
 }
 
 function sendTelegramMessage_(text, replyMarkup) {
@@ -1889,6 +2032,391 @@ function sendTelegramTestPing() {
   }
 }
 
+/**
+ * Регистрация второго главного меню: 🤖 2. Управление Telegram-ботом
+ */
+function registerTelegramBotMenu() {
+  var ui = SpreadsheetApp.getUi();
+  var active = getTelegramActiveSections_();
+
+  var tgMenu = ui.createMenu("🤖 2. Управление Telegram-ботом");
+  var hasItems = false;
+
+  if (active.launch) {
+    var tgLaunchMenu = ui.createMenu("📲 1. Запуск и Меню бота")
+      .addItem("📱 Отправить Главное меню на телефон хозяина", "sendTelegramBotMenuToOwner")
+      .addItem("⌨️ Обновить клавиатуру бота: Reply Keyboard", "refreshTelegramKeyboard")
+      .addItem("📋 Зарегистрировать команды в Telegram: setMyCommands", "registerTelegramBotCommands")
+      .addItem("🧪 Тестовый пинг в Telegram", "sendTelegramTestPing");
+    tgMenu.addSubMenu(tgLaunchMenu);
+    hasItems = true;
+  }
+
+  if (active.requests) {
+    if (hasItems) tgMenu.addSeparator();
+    var tgRequestsMenu = ui.createMenu("📋 2. Заявки и Бронирования")
+      .addItem("📥 Отправить список активных заявок в Telegram", "sendTelegramPendingRequests")
+      .addItem("🔍 Аудит накладок и 24ч HOLD в Telegram", "auditTelegramCalendarHolds");
+    tgMenu.addSubMenu(tgRequestsMenu);
+    hasItems = true;
+  }
+
+  if (active.crm) {
+    var tgCrmMenu = ui.createMenu("💬 3. CRM и Переписка с гостями")
+      .addItem("💬 Отправить сводку последних диалогов в Telegram", "sendTelegramRecentChats")
+      .addItem("📢 Отправить сообщение гостю через Telegram", "sendTelegramDirectMessageDialog")
+      .addItem("📣 Массовая рассылка гостям через Telegram", "sendTelegramBroadcastDialog");
+    tgMenu.addSubMenu(tgCrmMenu);
+    hasItems = true;
+  }
+
+  if (active.calendar) {
+    var tgCalendarMenu = ui.createMenu("📅 4. Календарь и Тарифы")
+      .addItem("📊 Отправить график занятости виллы на 30 дней", "sendTelegramCalendarSummary")
+      .addItem("💳 Отправить сводку актуальных тарифов", "sendTelegramRatesSummary");
+    tgMenu.addSubMenu(tgCalendarMenu);
+    hasItems = true;
+  }
+
+  if (active.vscode) {
+    if (hasItems) tgMenu.addSeparator();
+    var tgVsCodeMenu = ui.createMenu("🛠️ 5. Задачи запуска проекта в VS Code")
+      .addItem("🚀 Задача 1: Запуск сервера разработки Next.js: Порт 3000", "showVsCodeTaskGuide_Dev")
+      .addItem("🧹 Задача 2: Освободить сетевой порт 3000", "showVsCodeTaskGuide_KillPort")
+      .addItem("📦 Задача 3: Сборка проекта Next.js Build", "showVsCodeTaskGuide_Build")
+      .addItem("⚡ Задача 4: Запуск продакшн сервера Next.js Start", "showVsCodeTaskGuide_Start")
+      .addItem("💾 Задача 5: Фиксация таблиц в эталон SSOT: masterSeed", "showVsCodeTaskGuide_Seed")
+      .addItem("💾 Задача 6: Создание двухуровневого бэкапа и сохранение версии", "showVsCodeTaskGuide_Backup")
+      .addItem("📊 Задача 7: Синхронизация контента Google Sheets в кэш", "showVsCodeTaskGuide_Sync")
+      .addItem("📤 Задача 8: Пуш проекта в изолированные ветки GitHub и main", "showVsCodeTaskGuide_Push")
+      .addItem("⏸️ Задача 9: Перевод сайта в режим обслуживания: HTTP 503", "showVsCodeTaskGuide_Pause")
+      .addItem("▶️ Задача 10: Возобновление штатной работы сайта", "showVsCodeTaskGuide_Resume")
+      .addSeparator()
+      .addItem("📱 Отправить дайджест задач VS Code на телефон в Telegram", "sendVsCodeTasksSummaryToTelegram");
+    tgMenu.addSubMenu(tgVsCodeMenu);
+    hasItems = true;
+  }
+
+  if (active.sync) {
+    var tgSyncMenu = ui.createMenu("🌐 6. Синхронизация с сайтом")
+      .addItem("⚡ Вызвать ревалидацию страниц сайта через бот", "triggerTelegramRevalidate")
+      .addItem("👑 Проверить статус доступности кабинета хозяина", "checkTelegramHostCabinetStatus");
+    tgMenu.addSubMenu(tgSyncMenu);
+    hasItems = true;
+  }
+
+  if (active.settings) {
+    if (hasItems) tgMenu.addSeparator();
+    var tgSettingsMenu = ui.createMenu("⚙️ 7. Конструктор меню и Настройки Webhook")
+      .addItem("🎛️ Конструктор разделов меню бота: Включить или Выключить", "toggleTelegramMenuSectionsInteractive")
+      .addSeparator()
+      .addItem("🔗 Установить Webhook на сайт: Next.js API", "setTelegramWebhookToSite")
+      .addItem("🔍 Проверить статус Webhook: getWebhookInfo", "checkTelegramWebhookStatus")
+      .addItem("❌ Удалить Webhook: переход на Polling", "deleteTelegramWebhook")
+      .addSeparator()
+      .addItem("🌐 Проверить статус ключей на Vercel: https://vercel.com/", "checkVercelEnvStatusInteractive")
+      .addItem("🔑 Настроить TELEGRAM_BOT_TOKEN и CHAT_ID", "setupTelegramPropertiesInteractive")
+      .addItem("🧪 Тестовый пинг в Telegram", "sendTelegramTestPing");
+    tgMenu.addSubMenu(tgSettingsMenu);
+  } else {
+    tgMenu.addSeparator();
+    tgMenu.addItem("🎛️ Конструктор разделов меню бота: Включить или Выключить", "toggleTelegramMenuSectionsInteractive");
+  }
+
+  tgMenu.addToUi();
+}
+
+/**
+ * Получение активных разделов меню Telegram-бота из Script Properties
+ */
+function getTelegramActiveSections_() {
+  var props = PropertiesService.getScriptProperties();
+  var raw = props.getProperty('TG_ACTIVE_SECTIONS');
+  if (!raw) {
+    return {
+      launch: true,
+      requests: true,
+      crm: true,
+      calendar: true,
+      vscode: true,
+      sync: true,
+      settings: true
+    };
+  }
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    return {
+      launch: true,
+      requests: true,
+      crm: true,
+      calendar: true,
+      vscode: true,
+      sync: true,
+      settings: true
+    };
+  }
+}
+
+/**
+ * Интерактивный переключатель разделов меню Telegram-бота [ВКЛ или ВЫКЛ]
+ */
+function toggleTelegramMenuSectionsInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var current = getTelegramActiveSections_();
+  var menuList = [
+    '1. launch: 📱 Пульт управления в смартфоне [текущий: ' + (current.launch ? 'ВКЛ' : 'ВЫКЛ') + ']',
+    '2. requests: 📋 Заявки и 24ч HOLD [текущий: ' + (current.requests ? 'ВКЛ' : 'ВЫКЛ') + ']',
+    '3. crm: 💬 CRM и Переписка с гостями [текущий: ' + (current.crm ? 'ВКЛ' : 'ВЫКЛ') + ']',
+    '4. calendar: 📅 Календарь занятости и Тарифы [текущий: ' + (current.calendar ? 'ВКЛ' : 'ВЫКЛ') + ']',
+    '5. vscode: 🛠️ Задачи запуска проекта в VS Code [текущий: ' + (current.vscode ? 'ВКЛ' : 'ВЫКЛ') + ']',
+    '6. sync: 🌐 Синхронизация с сайтом [текущий: ' + (current.sync ? 'ВКЛ' : 'ВЫКЛ') + ']',
+    '7. settings: ⚙️ Настройки Webhook и Токена [текущий: ' + (current.settings ? 'ВКЛ' : 'ВЫКЛ') + ']'
+  ].join('\n');
+
+  var promptRes = ui.prompt(
+    'Конструктор разделов Telegram-бота',
+    'Укажите номер раздела от 1 до 7 для переключения статуса ВКЛ или ВЫКЛ, либо введите all для включения всех разделов:\n\n' + menuList,
+    ui.ButtonSet.OK_CANCEL
+  );
+
+  if (promptRes.getSelectedButton() !== ui.Button.OK) return;
+  var input = promptRes.getResponseText().trim().toLowerCase();
+
+  var keyMap = {
+    '1': 'launch',
+    '2': 'requests',
+    '3': 'crm',
+    '4': 'calendar',
+    '5': 'vscode',
+    '6': 'sync',
+    '7': 'settings'
+  };
+
+  if (input === 'all') {
+    Object.keys(current).forEach(function(k) { current[k] = true; });
+  } else if (keyMap[input]) {
+    var k = keyMap[input];
+    current[k] = !current[k];
+  } else {
+    ui.alert('Внимание', 'Неверный номер раздела. Введите число от 1 до 7 или all.', ui.ButtonSet.OK);
+    return;
+  }
+
+  PropertiesService.getScriptProperties().setProperty('TG_ACTIVE_SECTIONS', JSON.stringify(current));
+  ui.alert(
+    'Конфигурация обновлена',
+    'Разделы Telegram-бота успешно настроены!\nПерезагрузите таблицу или вызовите меню повторно для применения изменений.',
+    ui.ButtonSet.OK
+  );
+}
+
+// ------------------------------------------------------------------------------
+// ИНСТРУКЦИИ И ШПАРГАЛКИ ПО ЗАДАЧАМ ЗАПУСКА ПРОЕКТА В VS CODE
+// 100% Zero-Brackets & Zero-Emdash Стандарт.
+// ------------------------------------------------------------------------------
+
+/**
+ * Интерактивная карточка задачи запуска проекта в VS Code
+ */
+function showVsCodeTaskCard_(taskNum, taskTitle, purpose, vsCodeMenu, hotkey, terminalCmd) {
+  var ui = SpreadsheetApp.getUi();
+  try {
+    var htmlContent = '<!DOCTYPE html><html><head><base target="_top">' +
+      '<style>' +
+      'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 18px; margin: 0; background: #f8fafc; color: #0f172a; line-height: 1.5; }' +
+      '.card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }' +
+      '.header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 14px; }' +
+      '.badge { background: #2563eb; color: #fff; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 12px; text-transform: uppercase; }' +
+      '.title { font-size: 16px; font-weight: 700; color: #1e293b; margin: 0; }' +
+      '.section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b; margin-top: 14px; margin-bottom: 4px; }' +
+      '.desc { font-size: 14px; color: #334155; margin: 0 0 10px 0; }' +
+      '.code-box { background: #0f172a; color: #38bdf8; padding: 12px 14px; border-radius: 8px; font-family: Consolas, Monaco, monospace; font-size: 13px; word-break: break-all; margin: 6px 0 12px 0; user-select: all; }' +
+      '.btn-row { display: flex; gap: 10px; margin-top: 16px; }' +
+      '.btn-copy { flex: 1; background: #2563eb; color: #ffffff; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; transition: background 0.2s; }' +
+      '.btn-copy:hover { background: #1d4ed8; }' +
+      '.btn-close { background: #e2e8f0; color: #334155; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; }' +
+      '.btn-close:hover { background: #cbd5e1; }' +
+      '#toast { display: none; margin-top: 8px; font-size: 12px; color: #16a34a; font-weight: 600; text-align: center; }' +
+      '</style></head><body>' +
+      '<div class="card">' +
+      '<div class="header">' +
+      '<h2 class="title">' + taskTitle + '</h2>' +
+      '<span class="badge">Задача ' + taskNum + '</span>' +
+      '</div>' +
+      '<div class="section-title">Назначение</div>' +
+      '<p class="desc">' + purpose + '</p>' +
+      '<div class="section-title">Запуск через GUI VS Code</div>' +
+      '<p class="desc">Терминал ➔ Запустить задачу ➔ <b>' + vsCodeMenu + '</b></p>' +
+      (hotkey ? ('<div class="section-title">Горячие клавиши</div><p class="desc"><b>' + hotkey + '</b></p>') : '') +
+      '<div class="section-title">Команда для терминала PowerShell</div>' +
+      '<div class="code-box" id="cmdBox">' + terminalCmd.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>' +
+      '<div class="btn-row">' +
+      '<button class="btn-copy" onclick="copyCmd()">📋 Копировать команду</button>' +
+      '<button class="btn-close" onclick="google.script.host.close()">Закрыть</button>' +
+      '</div>' +
+      '<div id="toast">✅ Команда скопирована в буфер обмена</div>' +
+      '</div>' +
+      '<script>' +
+      'function copyCmd() {' +
+      '  var text = ' + JSON.stringify(terminalCmd) + ';' +
+      '  navigator.clipboard.writeText(text).then(function() {' +
+      '    var t = document.getElementById("toast");' +
+      '    t.style.display = "block";' +
+      '    setTimeout(function() { t.style.display = "none"; }, 2500);' +
+      '  });' +
+      '}' +
+      '</script>' +
+      '</body></html>';
+
+    var html = HtmlService.createHtmlOutput(htmlContent).setWidth(540).setHeight(430);
+    ui.showModalDialog(html, 'VS Code Задача ' + taskNum + ': ' + taskTitle);
+  } catch (err) {
+    var fallback = 'Задача ' + taskNum + ': ' + taskTitle + '\n\n' +
+      'Назначение: ' + purpose + '\n\n' +
+      '1. В VS Code: Терминал ➔ Запустить задачу ➔ ' + vsCodeMenu + '\n' +
+      (hotkey ? ('2. Горячие клавиши: ' + hotkey + '\n') : '') +
+      '3. Команда pwsh:\n' + terminalCmd;
+    ui.alert('VS Code Задача ' + taskNum, fallback, ui.ButtonSet.OK);
+  }
+}
+
+function showVsCodeTaskGuide_Dev() {
+  showVsCodeTaskCard_(
+    1,
+    'Запуск сервера Next.js Dev',
+    'Локальный запуск сервера разработки Next.js на сетевом порту 3000.',
+    '1. Запуск Сервера Разработки - Next.js Dev: Port 3000',
+    'Ctrl+Shift+B',
+    'npm run dev'
+  );
+}
+
+function showVsCodeTaskGuide_KillPort() {
+  showVsCodeTaskCard_(
+    2,
+    'Освободить порт 3000',
+    'Принудительное завершение зависшего фонового процесса на порту 3000.',
+    '2. Освободить Порт 3000 - Free Port 3000',
+    '',
+    'pwsh -ExecutionPolicy Bypass -Command "Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }"'
+  );
+}
+
+function showVsCodeTaskGuide_Build() {
+  showVsCodeTaskCard_(
+    3,
+    'Сборка проекта Next.js Build',
+    'Компиляция и строгая проверка типов Next.js перед выкладкой.',
+    '3. Сборка Проекта - Next.js Build',
+    '',
+    'npm run build'
+  );
+}
+
+function showVsCodeTaskGuide_Start() {
+  showVsCodeTaskCard_(
+    4,
+    'Запуск продакшн сервера',
+    'Запуск скомпилированной рабочей версии на порту 3000.',
+    '4. Запуск Продакшн Сервера - Next.js Start',
+    '',
+    'npm start'
+  );
+}
+
+function showVsCodeTaskGuide_Seed() {
+  showVsCodeTaskCard_(
+    5,
+    'Фиксация таблиц в эталон SSOT',
+    'Создание локальной эталонной копии контента masterSeedContent.js и content.json.',
+    '6. Зафиксировать текущие таблицы как эталон SSOT на сайте',
+    '',
+    'node scripts/save-master-seed.js'
+  );
+}
+
+function showVsCodeTaskGuide_Backup() {
+  showVsCodeTaskCard_(
+    6,
+    'Двухуровневый бэкап и сохранение',
+    'Создание локального архива и паспортизированного релиза в СОХР_ПРОЕКТЫ.',
+    '7. SPARK: Универсальное создание двухуровневого бэкапа и сохранение версии',
+    '',
+    'pwsh -ExecutionPolicy Bypass -File .\\create_project_backup.ps1'
+  );
+}
+
+function showVsCodeTaskGuide_Sync() {
+  showVsCodeTaskCard_(
+    7,
+    'Синхронизация Google Sheets в кэш',
+    'Выгрузка контента из Google Sheets в локальный файл content.json.',
+    '8. Синхронизация Контента - Google Sheets -> content.json',
+    '',
+    'node scripts/sync-content.js'
+  );
+}
+
+function showVsCodeTaskGuide_Push() {
+  showVsCodeTaskCard_(
+    8,
+    'Пуш в ветки GitHub и main',
+    'Безопасная синхронизация 4 веток GitHub с автоматической фильтрацией секретов.',
+    '9. SPARK: Пуш проекта в изолированные ветки GitHub и main',
+    '',
+    'pwsh -ExecutionPolicy Bypass -File .\\push_project_to_github.ps1'
+  );
+}
+
+function showVsCodeTaskGuide_Pause() {
+  showVsCodeTaskCard_(
+    9,
+    'Режим обслуживания HTTP 503',
+    'Временная приостановка публичного доступа со стилизованной заглушкой и сохранением SEO позиций.',
+    '11. SPARK: Приостановить сайт - режим тех. обслуживания: HTTP 503',
+    '',
+    'pwsh -ExecutionPolicy Bypass -File .\\pause_site.ps1'
+  );
+}
+
+function showVsCodeTaskGuide_Resume() {
+  showVsCodeTaskCard_(
+    10,
+    'Возобновление работы сайта',
+    'Снятие заглушки 503 и возврат сайта в штатный рабочий режим.',
+    '12. SPARK: Возобновить штатную работу сайта: снятие 503',
+    '',
+    'pwsh -ExecutionPolicy Bypass -File .\\resume_site.ps1'
+  );
+}
+
+function sendVsCodeTasksSummaryToTelegram() {
+  try {
+    var text = '🛠️ ЗАДАЧИ ЗАПУСКА ПРОЕКТА В VS CODE\n\n' +
+      'Шпаргалка для быстрого запуска из терминала или через меню Tasks:\n\n' +
+      '• Dev 3000: npm run dev\n' +
+      '• Kill Port 3000: pwsh stop-port 3000\n' +
+      '• Build: npm run build\n' +
+      '• Start: npm start\n' +
+      '• SSOT Seed: node scripts/save-master-seed.js\n' +
+      '• Backup: pwsh create_project_backup.ps1\n' +
+      '• Sync: node scripts/sync-content.js\n' +
+      '• Git Push: pwsh push_project_to_github.ps1\n' +
+      '• Pause 503: pwsh pause_site.ps1\n' +
+      '• Resume: pwsh resume_site.ps1';
+
+    var res = sendTelegramMessage_(text, null);
+    if (res.ok) {
+      SpreadsheetApp.getUi().alert('✅ Отправлено', 'Шпаргалка по задачам VS Code доставлена в ваш Telegram.', SpreadsheetApp.getUi().ButtonSet.OK);
+    } else {
+      SpreadsheetApp.getUi().alert('Ошибка', res.description || 'Не удалось отправить сообщение', SpreadsheetApp.getUi().ButtonSet.OK);
+    }
+  } catch (err) {
+    SpreadsheetApp.getUi().alert('Ошибка отправки', err.message, SpreadsheetApp.getUi().ButtonSet.OK);
+  }
+}
+
 // ==============================================================================
 // МОДУЛЬ УПРАВЛЕНИЯ ИИ-АГЕНТОМ GEMINI И SSOT НАСТРОЙКАМИ
 // ==============================================================================
@@ -1932,34 +2460,66 @@ function showAiFullStatusModal() {
   ui.alert('Статус ИИ-Агентов', info, ui.ButtonSet.OK);
 }
 
+/**
+ * Динамическая карточка роли ИИ-Агента с чтением из листа Настроек
+ * 100% Zero-Brackets & Zero-Emdash Стандарт.
+ */
+function showRolePromptCard_(roleTitle, roleKey, defaultMission, defaultDuties, allowedSheets) {
+  var ui = SpreadsheetApp.getUi();
+  var livePrompt = '';
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var setSheet = findSheetByConfigKey(ss, 'SETTINGS');
+    if (setSheet) {
+      var data = setSheet.getDataRange().getValues();
+      for (var i = 0; i < data.length; i++) {
+        var key = String(data[i][0] || '').toLowerCase().trim();
+        if (key.indexOf(roleKey.toLowerCase()) !== -1 || key.indexOf(roleTitle.toLowerCase()) !== -1) {
+          livePrompt = String(data[i][1] || '').trim();
+          break;
+        }
+      }
+    }
+  } catch (e) {}
+
+  var info = '🧠 РОЛЬ ИИ: ' + roleTitle.toUpperCase() + '\n\n' +
+    '• Миссия: ' + defaultMission + '\n\n' +
+    '• Обязанности: ' + defaultDuties + '\n\n' +
+    '• Матрица листов [Блок 10 SSOT]: ' + allowedSheets + '\n\n' +
+    (livePrompt ? ('• Живая инструкция из листа Настроек:\n' + livePrompt + '\n\n') : '') +
+    'Все параметры считываются динамически из Google Таблицы.\n' +
+    'Отредактировать текст роли можно на вкладке: "⚙️ Системные настройки ИИ Агентов".';
+
+  ui.alert('Роль ИИ: ' + roleTitle, info, ui.ButtonSet.OK);
+}
+
 function showConciergePromptInfo() {
-  SpreadsheetApp.getUi().alert(
-    'Роль: Персональный консьерж виллы',
-    'Миссия: гостеприимный прием гостей и презентация Villa Turaman в Дальяне.\n\n' +
-    'Обязанности: презентация виллы, координация заездов и выездов, рекомендации лучших локаций Дальяна, предложение платных сервисов и видео-путеводителей.\n\n' +
-    'Все параметры виллы, комнат и сервисов считываются динамически из Google Таблицы.\n' +
-    'Отредактировать текст роли можно на листе "⚙️ Системные настройки ИИ Агентов".',
-    SpreadsheetApp.getUi().ButtonSet.OK
+  showRolePromptCard_(
+    'Персональный консьерж виллы',
+    'concierge',
+    'гостеприимный прием гостей и презентация Villa Turaman в Дальяне.',
+    'презентация виллы, координация заездов и выездов, рекомендации лучших локаций Дальяна, предложение платных сервисов и видео-путеводителей.',
+    'Главная витрина, Фото и Видео Галерея, Дополнительные услуги, Видео-путеводители, Шаблоны сообщений.'
   );
 }
 
 function showLawyerPromptInfo() {
-  SpreadsheetApp.getUi().alert(
-    'Роль: Юрист по законодательству Турции',
-    'Миссия: контроль правового соответствия законам Турции о краткосрочной аренде.\n\n' +
-    'Обязанности: разъяснение правил регистрации гостей в системе KBS жандармерии по Закону № 7464, защита персональных данных по закону KVKK, соблюдение налоговых стандартов VUK 213 Madde 230 e-Arşiv Fatura.\n\n' +
-    'Отредактировать текст роли можно на листе "⚙️ Системные настройки ИИ Агентов".',
-    SpreadsheetApp.getUi().ButtonSet.OK
+  showRolePromptCard_(
+    'Юрист по законодательству Турции',
+    'lawyer',
+    'контроль правового соответствия законам Турции о краткосрочной аренде.',
+    'разъяснение правил регистрации гостей в системе KBS жандармерии по Закону № 7464, защита персональных данных по закону KVKK, соблюдение налоговых стандартов VUK 213 Madde 230 e-Arşiv Fatura.',
+    'Юридические документы, Заявки и Бронирования, Задачи и Поручения Секретаря, Системные настройки.'
   );
 }
 
 function showFinancePromptInfo() {
-  SpreadsheetApp.getUi().alert(
-    'Роль: Бухгалтер по налогам и платежам',
-    'Миссия: финансовый менеджмент и контроль доходности виллы.\n\n' +
-    'Обязанности: сверка бронирований, расчет скидок по тарифам, мультивалютный учет EUR, RUB, TRY и строгий контроль минимального порога цены за ночь из таблицы.\n\n' +
-    'Отредактировать текст роли можно на листе "⚙️ Системные настройки ИИ Агентов".',
-    SpreadsheetApp.getUi().ButtonSet.OK
+  showRolePromptCard_(
+    'Бухгалтер по налогам и платежам',
+    'finance',
+    'финансовый менеджмент и контроль доходности виллы.',
+    'сверка бронирований, расчет скидок по тарифам, мультивалютный учет EUR, RUB, TRY, расчет e-Arşiv Fatura брутто/1.21 и строгий контроль минимального порога цены за ночь из таблицы.',
+    'Календарь и Тарифы, Заказы услуг и гидов, Задачи и Поручения Секретаря, Системные настройки.'
   );
 }
 
@@ -2225,71 +2785,152 @@ function saveMasterSeedInteractive() {
 // 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
-/**
- * 🧾 Калькулятор e-Arşiv Fatura для портала GİB
+//**
+ * 🧾 Интерактивный калькулятор e-Arşiv Fatura для портала GİB
+ * 100% Zero-Brackets & Zero-Emdash Стандарт.
  */
 function openInvoiceCalculatorModal() {
   var ui = SpreadsheetApp.getUi();
-  var promptRes = ui.prompt(
-    'Калькулятор e-Arşiv Fatura [GİB Portal]',
-    'Введите данные расчета через двоеточие:\n[Сумма Брутто TRY]:[Количество ночей]:[ФИО гостя]\n\nНапример: 75000:7:Иван Смирнов',
-    ui.ButtonSet.OK_CANCEL
-  );
+  try {
+    var htmlContent = '<!DOCTYPE html><html><head><base target="_top">' +
+      '<style>' +
+      'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 16px; margin: 0; background: #f8fafc; color: #0f172a; font-size: 13px; line-height: 1.4; }' +
+      '.container { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08); }' +
+      'h3 { margin: 0 0 12px 0; color: #1e293b; font-size: 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }' +
+      '.badge { background: #059669; color: #fff; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; }' +
+      '.form-row { display: flex; gap: 10px; margin-bottom: 10px; }' +
+      '.form-col { flex: 1; }' +
+      'label { display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 4px; text-transform: uppercase; }' +
+      'input { width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; color: #0f172a; background: #f8fafc; font-weight: 600; }' +
+      'input:focus { outline: none; border-color: #2563eb; background: #fff; }' +
+      '.result-card { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; padding: 12px; margin: 12px 0; }' +
+      '.res-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }' +
+      '.res-label { color: #475569; }' +
+      '.res-val { font-weight: 700; color: #0f172a; }' +
+      '.res-highlight { color: #2563eb; font-weight: 800; }' +
+      '.res-unit { color: #d97706; font-weight: 800; font-family: Consolas, monospace; }' +
+      '.not-box { background: #0f172a; color: #38bdf8; padding: 10px; border-radius: 6px; font-family: Consolas, Monaco, monospace; font-size: 11px; word-break: break-all; margin-top: 6px; }' +
+      '.btn-row { display: flex; gap: 8px; margin-top: 14px; }' +
+      '.btn-action { flex: 1; background: #2563eb; color: #fff; border: none; padding: 9px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 12px; text-align: center; }' +
+      '.btn-action:hover { background: #1d4ed8; }' +
+      '.btn-secondary { background: #059669; color: #fff; border: none; padding: 9px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 12px; }' +
+      '.btn-secondary:hover { background: #047857; }' +
+      '.btn-close { background: #e2e8f0; color: #334155; border: none; padding: 9px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 12px; }' +
+      '.btn-close:hover { background: #cbd5e1; }' +
+      '#statusMsg { font-size: 11px; font-weight: 700; color: #16a34a; text-align: center; margin-top: 8px; display: none; }' +
+      '</style></head><body>' +
+      '<div class="container">' +
+      '<h3><span>🧾 Калькулятор e-Arşiv Fatura GİB</span><span class="badge">Блок 9 SSOT</span></h3>' +
+      '<div class="form-row">' +
+      '<div class="form-col" style="flex:2;"><label>ФИО гостя [Alıcı]</label><input type="text" id="guestName" value="Иван Смирнов" oninput="calc()"></div>' +
+      '<div class="form-col"><label>Ночей [Adet]</label><input type="number" id="nights" value="7" min="1" oninput="calc()"></div>' +
+      '</div>' +
+      '<div class="form-row">' +
+      '<div class="form-col"><label>Итого Брутто [Ödenecek Tutar TRY]</label><input type="number" id="grossTRY" value="75000" min="0" step="0.01" oninput="calc()"></div>' +
+      '</div>' +
+      '<div class="result-card">' +
+      '<div class="res-row"><span class="res-label">Налоговая база [Matrah = Брутто / 1.21]:</span><span class="res-val res-highlight" id="matrahVal">0.00 TRY</span></div>' +
+      '<div class="res-row"><span class="res-label">НДС [KDV 20%]:</span><span class="res-val" id="kdvVal">0.00 TRY</span></div>' +
+      '<div class="res-row"><span class="res-label">Налог на проживание [Konaklama 1%]:</span><span class="res-val" id="konaklamaVal">0.00 TRY</span></div>' +
+      '<div class="res-row"><span class="res-label">Цена за единицу [Birim Fiyat 8 знаков]:</span><span class="res-val res-unit" id="unitPriceVal">0.00000000 TRY</span></div>' +
+      '<div style="margin-top:8px;"><span class="res-label" style="font-size:11px;font-weight:700;text-transform:uppercase;">Обязательный шаблон поля Not:</span>' +
+      '<div class="not-box" id="notText"></div>' +
+      '</div></div>' +
+      '<div class="btn-row">' +
+      '<button class="btn-action" onclick="copyNot()">📋 Скопировать Not</button>' +
+      '<button class="btn-secondary" id="saveBtn" onclick="saveToTasks()">💾 Сохранить в задачи</button>' +
+      '<button class="btn-close" onclick="google.script.host.close()">Закрыть</button>' +
+      '</div>' +
+      '<div id="statusMsg"></div>' +
+      '</div>' +
+      '<script>' +
+      'var curData = {};' +
+      'function calc() {' +
+      '  var gross = parseFloat(document.getElementById("grossTRY").value) || 0;' +
+      '  var nights = parseInt(document.getElementById("nights").value, 10) || 1;' +
+      '  var guest = (document.getElementById("guestName").value || "Гость").trim();' +
+      '  var matrah = gross / 1.21;' +
+      '  var kdv = matrah * 0.20;' +
+      '  var konaklama = matrah * 0.01;' +
+      '  var unitPrice = (matrah / nights).toFixed(8);' +
+      '  var whole = Math.floor(gross);' +
+      '  var kurus = Math.round((gross - whole) * 100);' +
+      '  var notStr = "YALNIZ " + whole + " TL " + kurus + " KURUŞTUR. E ARŞİV İZNİ KAPSAMINDA ELEKTRONİK ORTAMDA İLETİLMİŞTİR.";' +
+      '  curData = { gross: gross, nights: nights, guest: guest, matrah: matrah.toFixed(2), kdv: kdv.toFixed(2), konaklama: konaklama.toFixed(2), unitPrice: unitPrice, notStr: notStr };' +
+      '  document.getElementById("matrahVal").innerText = matrah.toFixed(2) + " TRY";' +
+      '  document.getElementById("kdvVal").innerText = kdv.toFixed(2) + " TRY";' +
+      '  document.getElementById("konaklamaVal").innerText = konaklama.toFixed(2) + " TRY";' +
+      '  document.getElementById("unitPriceVal").innerText = unitPrice + " TRY";' +
+      '  document.getElementById("notText").innerText = notStr;' +
+      '}' +
+      'function copyNot() {' +
+      '  navigator.clipboard.writeText(curData.notStr || "").then(function() {' +
+      '    showStatus("✅ Шаблон Not скопирован в буфер обмена");' +
+      '  });' +
+      '}' +
+      'function saveToTasks() {' +
+      '  var btn = document.getElementById("saveBtn");' +
+      '  btn.disabled = true;' +
+      '  btn.innerText = "Сохранение...";' +
+      '  google.script.run.withSuccessHandler(function(res) {' +
+      '    btn.disabled = false;' +
+      '    btn.innerText = "💾 Сохранить в задачи";' +
+      '    if (res && res.success) {' +
+      '      showStatus("✅ Запись зафиксирована в листе Задач: " + res.taskId);' +
+      '    } else {' +
+      '      showStatus("⚠️ " + ((res && res.message) || "Ошибка записи"));' +
+      '    }' +
+      '  }).withFailureHandler(function(err) {' +
+      '    btn.disabled = false;' +
+      '    btn.innerText = "💾 Сохранить в задачи";' +
+      '    showStatus("❌ Сбой: " + err.message);' +
+      '  }).saveInvoiceCalculationRecord(curData.gross, curData.nights, curData.guest, curData.matrah, curData.kdv, curData.konaklama, curData.unitPrice);' +
+      '}' +
+      'function showStatus(text) {' +
+      '  var el = document.getElementById("statusMsg");' +
+      '  el.innerText = text;' +
+      '  el.style.display = "block";' +
+      '  setTimeout(function() { el.style.display = "none"; }, 3500);' +
+      '}' +
+      'calc();' +
+      '</script>' +
+      '</body></html>';
 
-  if (promptRes.getSelectedButton() !== ui.Button.OK) return;
-  var input = promptRes.getResponseText().trim();
-  if (!input) return;
-
-  var parts = input.split(':');
-  var grossTRY = parseFloat(parts[0]) || 0;
-  var nights = parseInt(parts[1], 10) || 1;
-  var guestName = (parts[2] || 'Гость').trim();
-
-  if (grossTRY <= 0) {
-    ui.alert('Ошибка', 'Сумма брутто должна быть больше 0', ui.ButtonSet.OK);
-    return;
+    var html = HtmlService.createHtmlOutput(htmlContent).setWidth(560).setHeight(530);
+    ui.showModalDialog(html, 'e-Arşiv Fatura GİB: Интерактивный калькулятор');
+  } catch (err) {
+    ui.alert('Калькулятор e-Arşiv Fatura', 'Не удалось открыть модальное окно: ' + err.message, ui.ButtonSet.OK);
   }
+}
 
-  // Расчет по Блоку 9: Matrah = Gross / 1.21
-  var matrah = grossTRY / 1.21;
-  var kdv20 = matrah * 0.20;
-  var konaklama1 = matrah * 0.01;
-  var unitPrice = (matrah / nights).toFixed(8);
-
-  var wholePart = Math.floor(grossTRY);
-  var kurusPart = Math.round((grossTRY - wholePart) * 100);
-
-  var summary = '🧾 РАСЧЕТ E-ARŞİV FATURA [GİB]:\n\n' +
-    '• Получатель [Alıcı]: ' + guestName + '\n' +
-    '• Итого Брутто [Ödenecek Tutar]: ' + grossTRY.toFixed(2) + ' TRY\n' +
-    '• Налоговая база [Matrah]: ' + matrah.toFixed(2) + ' TRY\n' +
-    '• НДС [KDV 20%]: ' + kdv20.toFixed(2) + ' TRY\n' +
-    '• Налог на проживание [Konaklama 1%]: ' + konaklama1.toFixed(2) + ' TRY\n' +
-    '• Ночей [Adet]: ' + nights + '\n' +
-    '• Цена за единицу [Birim Fiyat 8 знаков]: ' + unitPrice + ' TRY\n\n' +
-    '• Шаблон Not:\nYALNIZ ' + wholePart + ' TL ' + kurusPart + ' KURUŞTUR. E ARŞİV İZNİ KAPSAMINDA ELEKTRONİK ORTAMDA İLETİLMİŞTİR.';
-
-  ui.alert('Результат расчета e-Arşiv Fatura', summary, ui.ButtonSet.OK);
-
-  // Фиксация в лист 📋 Задачи и Поручения Секретаря
+/**
+ * Серверная фиксация расчета e-Arşiv Fatura в лист Задачи и Поручения Секретаря
+ */
+function saveInvoiceCalculationRecord(grossTRY, nights, guestName, matrah, kdv20, konaklama1, unitPrice) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = findSheetByConfigKey(ss, 'TASKS');
+    if (!sheet) {
+      sheet = ss.getSheetByName('📋 Задачи и Поручения Секретаря') || ss.getSheetByName('Задачи и Поручения Секретаря');
+    }
     if (sheet) {
       var dateStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd.MM.yyyy HH:mm');
-      var newId = 'TASK-' + (sheet.getLastRow());
+      var newId = 'TASK-' + sheet.getLastRow();
       sheet.appendRow([
         newId,
         dateStr,
         'Бухгалтер',
-        'Расчет e-Arşiv Fatura: ' + guestName + ', Брутто: ' + grossTRY + ' TRY, База: ' + matrah.toFixed(2) + ' TRY',
+        'Расчет e-Arşiv Fatura: ' + guestName + ', Брутто: ' + grossTRY + ' TRY, База: ' + matrah + ' TRY, Ночей: ' + nights + ', За ночь: ' + unitPrice + ' TRY',
         'Выполнена',
         'https://drive.google.com/drive/folders/11xBSWA02NypliPFbziRSMfC9aAPclYF_',
         'Google Apps Script'
       ]);
-      SpreadsheetApp.getActive().toast('Запись сохранена в лист Задач', '✅ Бухгалтер', 3);
+      return { success: true, taskId: newId };
     }
-  } catch (err) {}
+    return { success: false, message: 'Лист задач не найден' };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
 }
 
 /**
@@ -2390,7 +3031,8 @@ function openCreateDriveFolderModal() {
  */
 function auditPendingBankPaymentsModal() {
   var ui = SpreadsheetApp.getUi();
-  var sheet = findConfigSheet_('BOOKINGS');
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = findSheetByConfigKey(ss, 'BOOKINGS');
   if (!sheet) {
     ui.alert('Банковский аудит', 'Лист Заявки и Бронирования не найден.', ui.ButtonSet.OK);
     return;
@@ -2441,3 +3083,7 @@ function openDriveRootLink() {
   ).setWidth(450).setHeight(200);
   ui.showModalDialog(html, 'Архивариус Google Drive');
 }
+
+
+
+

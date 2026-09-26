@@ -8,7 +8,7 @@
 # Назначение:
 # 1. Развертывание платформы в любой новой папке в 1 команду: bash deploy-villa-turaman-airbnb.sh [FOLDER]
 # 2. Авто-создание 15 листов Google Sheets CRM: включая ⚙️ Системные настройки и базу чатов со смарт-форматированием [autoResizeDimensions, WRAP, MIDDLE, ';']
-# 3. Развертывание расширения Google Apps Script [Code.js] с поддержкой Свойств скрипта и 3 меню: 🏡 Villa Turaman Suite, 🤖 Telegram Бот, 🧠 3. ИИ-Агент & Gemini
+# 3. Развертывание монолитного расширения Google Apps Script [Code.js] с 4 главными меню: 🏡 1. Villa Turaman Suite, 🤖 2. Управление Telegram-ботом, 🧠 3. ИИ-Агент & Gemini, 💼 4. Секретарь • Юрист • Бухгалтер
 # 4. Настройка задач VS Code [.vscode/tasks.json] для среды PowerShell 7 [pwsh.exe]
 # ==============================================================================
 
@@ -249,12 +249,12 @@ echo ""
 echo -e "${YELLOW}${BOLD}📋 ИНСТРУКЦИЯ ПО НАСТРОЙКЕ GOOGLE APPS SCRIPT И КЛЮЧЕЙ (VERCEL / SCRIPT PROPERTIES):${RESET}"
 echo -e "  1. Откройте вашу Google Таблицу в браузере."
 echo -e "  2. Выберите: ${CYAN}Расширения ➔ Apps Script${RESET}."
-echo -e "  3. Скопируйте и вставьте код из: ${CYAN}google-apps-script/Code.js${RESET} или ${CYAN}google-apps-script/TelegramBot.js${RESET} и сохраните: Ctrl+S."
-echo -e "  4. Перезагрузите таблицу: F5 - появятся три меню: ${GREEN}🏡 Villa Turaman Suite${RESET}, ${GREEN}🤖 Telegram Бот${RESET} и ${GREEN}🧠 3. ИИ-Агент & Gemini${RESET}."
+echo -e "  3. Скопируйте и вставьте код из автономного монолита: ${CYAN}google-apps-script/Code.js${RESET} и сохраните: Ctrl+S."
+echo -e "  4. Перезагрузите таблицу: F5 - появятся 4 главных меню: ${GREEN}🏡 1. Villa Turaman Suite${RESET}, ${GREEN}🤖 2. Управление Telegram-ботом${RESET}, ${GREEN}🧠 3. ИИ-Агент & Gemini${RESET} и ${GREEN}💼 4. Секретарь • Юрист • Бухгалтер${RESET}."
 echo -e "  5. Ключи окружения настраиваются на ${CYAN}https://vercel.com/${RESET} (Settings ➔ Environment Variables), в ${CYAN}.env.local${RESET} или через Свойства скрипта."
-echo -e "  6. Нажмите: ${CYAN}🤖 Telegram Бот ➔ ⚙️ 6. Настройки Webhook и Токена ➔ 🔑 Настроить TELEGRAM_BOT_TOKEN и CHAT_ID${RESET}."
-echo -e "  7. Проверить статус ключей на Vercel: ${CYAN}🤖 Telegram Бот ➔ ⚙️ 6. Настройки Webhook и Токена ➔ 🌐 Проверить статус ключей на Vercel${RESET}."
-echo -e "  8. Установите Webhook: ${CYAN}🤖 Telegram Бот ➔ ⚙️ 6. Настройки Webhook и Токена ➔ 🔗 Установить Webhook на сайт${RESET}."
+echo -e "  6. Нажмите: ${CYAN}🤖 2. Управление Telegram-ботом ➔ ⚙️ 7. Конструктор меню и Настройки Webhook ➔ 🔑 Настроить TELEGRAM_BOT_TOKEN и CHAT_ID${RESET}."
+echo -e "  7. Проверить статус ключей на Vercel: ${CYAN}🤖 2. Управление Telegram-ботом ➔ ⚙️ 7. Конструктор меню и Настройки Webhook ➔ 🌐 Проверить статус ключей на Vercel${RESET}."
+echo -e "  8. Установите Webhook: ${CYAN}🤖 2. Управление Telegram-ботом ➔ ⚙️ 7. Конструктор меню и Настройки Webhook ➔ 🔗 Установить Webhook на сайт${RESET}."
 echo -e "     (Подробная инструкция: ${CYAN}google-apps-script/СВОЙСТВА_СКРИПТА_И_ИНСТРУКЦИЯ.md${RESET})"
 echo ""
 echo -e "${YELLOW}${BOLD}🚀 ВАРИАНТЫ ЗАПУСКА ПЛАТФОРМЫ (СТАНДАРТ ТРОЙНОГО ДУБЛИРОВАНИЯ VS CODE):${RESET}"
