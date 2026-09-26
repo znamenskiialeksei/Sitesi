@@ -64,7 +64,28 @@ export function readLocalFallback() {
   } catch (e) {
     console.warn('[LiveContentSync] Предупреждение при чтении резервного content.json:', e.message);
   }
-  return { home: {}, about: {}, legal: {}, templates: {}, products: [], courses: [], gallery: [] };
+  return {
+    home: {},
+    about: {},
+    legal: {},
+    templates: {},
+    products: [],
+    courses: [],
+    gallery: [],
+    settings: {},
+    dictionary: { ru: {}, en: {}, tr: {} },
+    theme: {
+      primaryColor: '#f43f5e',
+      secondaryColor: '#fb7185',
+      accentColor: '#e11d48',
+      bgColor: '#0f172a',
+      cardBg: '#1e293b',
+      textPrimary: '#f8fafc',
+      textSecondary: '#94a3b8',
+      borderRadius: '1.5rem',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }
+  };
 }
 
 /**
@@ -533,6 +554,41 @@ export async function fetchLiveContentFromGoogleSheets() {
   if (content.gallery.length === 0 && fallbackData.gallery?.length > 0) {
     content.gallery = fallbackData.gallery;
   }
+
+  // 8. Извлечение темы оформления и стилей [ДИЗАЙН_И_СТИЛЬ]
+  const theme = {
+    primaryColor: settingsObj['theme_primary_color']?.value || fallbackData.theme?.primaryColor || '#f43f5e',
+    secondaryColor: settingsObj['theme_secondary_color']?.value || fallbackData.theme?.secondaryColor || '#fb7185',
+    accentColor: settingsObj['theme_accent_color']?.value || fallbackData.theme?.accentColor || '#e11d48',
+    bgColor: settingsObj['theme_bg_color']?.value || fallbackData.theme?.bgColor || '#0f172a',
+    cardBg: settingsObj['theme_card_bg']?.value || fallbackData.theme?.cardBg || '#1e293b',
+    textPrimary: settingsObj['theme_text_primary']?.value || fallbackData.theme?.textPrimary || '#f8fafc',
+    textSecondary: settingsObj['theme_text_secondary']?.value || fallbackData.theme?.textSecondary || '#94a3b8',
+    borderRadius: settingsObj['theme_border_radius']?.value || fallbackData.theme?.borderRadius || '1.5rem',
+    fontFamily: settingsObj['theme_font_family']?.value || fallbackData.theme?.fontFamily || '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+  };
+  content.theme = theme;
+
+  // 9. Формирование динамического словаря интерфейса [UI DICTIONARY]
+  const dictionary = {
+    ru: {},
+    en: {},
+    tr: {}
+  };
+  if (fallbackData.dictionary) {
+    if (fallbackData.dictionary.ru) Object.assign(dictionary.ru, fallbackData.dictionary.ru);
+    if (fallbackData.dictionary.en) Object.assign(dictionary.en, fallbackData.dictionary.en);
+    if (fallbackData.dictionary.tr) Object.assign(dictionary.tr, fallbackData.dictionary.tr);
+  }
+  Object.keys(content.home).forEach((k) => {
+    const item = content.home[k];
+    if (item && typeof item === 'object') {
+      if (item.ru) dictionary.ru[k] = item.ru;
+      if (item.en) dictionary.en[k] = item.en;
+      if (item.tr) dictionary.tr[k] = item.tr;
+    }
+  });
+  content.dictionary = dictionary;
 
   // Обновление кэша в оперативной памяти сервера
   memoryCache = content;

@@ -45,10 +45,12 @@ export const convertPrice = (amount, targetCurrency, currentRates, fromCurrency 
   return roundToFive(inTarget);
 };
 
-export const LanguageProvider = ({ children }) => {
+export const LanguageProvider = ({ children, initialDictionary = null, initialTheme = null }) => {
   const router = useRouter();
   const [lang, setLang] = useState('ru');
   const [currency, setCurrency] = useState('RUB');
+  const [liveDictionary, setLiveDictionary] = useState(initialDictionary);
+  const [theme, setTheme] = useState(initialTheme);
   const [rates, setRates] = useState({
     USD: 1.0,
     EUR: 0.92,
@@ -56,23 +58,39 @@ export const LanguageProvider = ({ children }) => {
     RUB: 92.50
   });
 
-  // Загрузка официальных курсов ЦБ Турции (TCMB) при инициализации приложения
+  // Загрузка официальных курсов ЦБ Турции и живого словаря из Google Таблицы
   useEffect(() => {
     let isMounted = true;
-    const fetchRates = async () => {
+    const fetchLiveEcoSystem = async () => {
       try {
-        const res = await fetch('/api/rates');
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.rates && isMounted) {
-            setRates(data.rates);
+        const [ratesRes, contentRes] = await Promise.all([
+          fetch('/api/rates').catch(() => null),
+          fetch('/api/content?force=true&t=' + Date.now(), { headers: { 'Cache-Control': 'no-cache' } }).catch(() => null)
+        ]);
+
+        if (ratesRes && ratesRes.ok && isMounted) {
+          const ratesData = await ratesRes.json();
+          if (ratesData && ratesData.rates) {
+            setRates(ratesData.rates);
+          }
+        }
+
+        if (contentRes && contentRes.ok && isMounted) {
+          const contentData = await contentRes.json();
+          if (contentData) {
+            if (contentData.dictionary) {
+              setLiveDictionary(contentData.dictionary);
+            }
+            if (contentData.theme) {
+              setTheme(contentData.theme);
+            }
           }
         }
       } catch (e) {
-        console.warn('Не удалось загрузить курсы ЦБ Турции, используются кэшированные данные:', e);
+        console.warn('Используются резервные параметры экосистемы:', e.message);
       }
     };
-    fetchRates();
+    fetchLiveEcoSystem();
     return () => { isMounted = false; };
   }, []);
 
@@ -114,7 +132,7 @@ export const LanguageProvider = ({ children }) => {
     }
   };
 
-  // Функция перевода ключа с фоллбэком на русский язык и поддержкой интерполяции параметров {param}
+  // Функция перевода ключа со 100% приоритетом живого словаря Google Таблицы
   const t = (key, params, defaultText) => {
     if (!key) return defaultText || '';
     let effectiveParams = params;
@@ -123,7 +141,16 @@ export const LanguageProvider = ({ children }) => {
       fallbackText = params;
       effectiveParams = null;
     }
-    let text = translations[lang]?.[key] || translations['ru']?.[key] || fallbackText || key;
+    // Приоритет 1: Живой перевод из Google Таблицы на активном языке
+    let text = liveDictionary?.[lang]?.[key];
+    // Приоритет 2: Живой перевод из Google Таблицы на русском языке
+    if (!text) {
+      text = liveDictionary?.['ru']?.[key];
+    }
+    // Приоритет 3: Резервный файл translations.js
+    if (!text) {
+      text = translations[lang]?.[key] || translations['ru']?.[key] || fallbackText || key;
+    }
     if (effectiveParams && typeof effectiveParams === 'object') {
       Object.entries(effectiveParams).forEach(([k, v]) => {
         text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
@@ -132,7 +159,7 @@ export const LanguageProvider = ({ children }) => {
     return text;
   };
 
-  // Форматирование цены из валюты fromCurrency (по умолчанию USD) со знаком активной валюты и округлением до кратного 5
+  // Форматирование цены из валюты fromCurrency [по умолчанию USD] со знаком активной валюты и округлением до кратного 5
   const formatMoney = (amount, customCurrency, fromCurrency = 'USD') => {
     const activeCurr = customCurrency || currency;
     const symbol = CURRENCY_SYMBOLS[activeCurr] || activeCurr;
@@ -140,7 +167,7 @@ export const LanguageProvider = ({ children }) => {
     return `${num.toLocaleString('ru-RU')} ${symbol}`;
   };
 
-  // Форматирование уже рассчитанной в целевой валюте суммы (с гарантией кратности 5 без копеек)
+  // Форматирование уже рассчитанной в целевой валюте суммы [с гарантией кратности 5 без копеек]
   const formatRawMoney = (amount, customCurrency) => {
     const activeCurr = customCurrency || currency;
     const symbol = CURRENCY_SYMBOLS[activeCurr] || activeCurr;
@@ -156,6 +183,10 @@ export const LanguageProvider = ({ children }) => {
       changeCurrency,
       rates,
       t,
+      liveDictionary,
+      updateLiveDictionary: setLiveDictionary,
+      theme,
+      setTheme,
       formatMoney,
       formatRawMoney,
       roundToFive,
@@ -176,8 +207,12 @@ export const useLanguage = () => {
       currency: 'RUB',
       changeCurrency: () => {},
       rates: { USD: 1, EUR: 0.92, TRY: 34.5, RUB: 92.5 },
-      t: (key, params) => {
-        let text = key;
+      liveDictionary: null,
+      updateLiveDictionary: () => {},
+      theme: null,
+      setTheme: () => {},
+      t: (key, params, defaultText) => {
+        let text = (typeof params === 'string' ? params : defaultText) || key;
         if (params && typeof params === 'object') {
           Object.entries(params).forEach(([k, v]) => {
             text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), v);

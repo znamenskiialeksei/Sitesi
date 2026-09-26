@@ -44,6 +44,7 @@ import SpaPoolSection from '../components/SpaPoolSection';
 import HostProfileCard from '../components/HostProfileCard';
 import CatalogSection from '../components/CatalogSection';
 import GallerySection from '../components/GallerySection';
+import LawSafetyAccessibility from '../components/LawSafetyAccessibility';
 import Footer from '../components/Footer';
 
 import AuthModal from '../components/Modals/AuthModal';
@@ -120,7 +121,7 @@ export async function getStaticProps() {
 
 export default function HomeListing({ publicData, contentData }) {
   const router = useRouter();
-  const { t, lang, currency } = useLanguage();
+  const { t, lang, currency, updateLiveDictionary, setTheme } = useLanguage();
   const { currentUser, setAuthModalOpen, loginGuestDirectly } = useAuth();
   const toast = useToast();
 
@@ -273,6 +274,12 @@ export default function HomeListing({ publicData, contentData }) {
               courses: liveData.courses || publicData.courses,
               gallery: liveData.gallery || publicData.gallery
             });
+            if (liveData.dictionary && typeof updateLiveDictionary === 'function') {
+              updateLiveDictionary(liveData.dictionary);
+            }
+            if (liveData.theme && typeof setTheme === 'function') {
+              setTheme(liveData.theme);
+            }
           }
         }
       } catch (err) {
@@ -897,66 +904,48 @@ export default function HomeListing({ publicData, contentData }) {
               gallery={currentPublicData.gallery}
             />
 
-            {/* Раздел: Юридический регламент, безопасность и доступная среда */}
-            <div className="space-y-4 pb-8 border-b border-white/10">
-              <div className="flex items-center gap-2 text-amber-400 font-semibold text-xs tracking-wider uppercase">
-                <ShieldCheck className="w-4 h-4" />
-                <span>Юридический регламент и комфорт</span>
-              </div>
-              <h2 className="text-xl font-bold text-white">
-                Безопасность, Закон № 7464 и Доступная среда
-              </h2>
-              <p className="text-slate-300 leading-relaxed line-clamp-4 text-base">
-                Вилла осуществляет деятельность в строгом соответствии с Законом Турции № 7464 о краткосрочной туристической аренде. Официальный договор найма с описью имущества, обязательная регистрация всех гостей в государственной системе учета населения KBS жандармерии, наружные камеры видеонаблюдения по периметру, автономные детекторы дыма и угарного газа, безбарьерный доступ на первом этаже и подъемник для бассейна.
-              </p>
-              <button
-                type="button"
-                onClick={() => setSafetyModalOpen(true)}
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-rose-400 hover:text-rose-300 underline underline-offset-4 transition-colors"
-              >
-                Показать подробнее о безопасности и законе № 7464 <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
+            {/* Раздел 12: Юридический регламент, безопасность, доступная среда и правила отмены [100% SSOT из Google Таблицы] */}
+            <LawSafetyAccessibility homeData={homeData} />
 
-            {/* Раздел: 14 географических ориентиров Дальяна */}
+            {/* Раздел 10: 14 географических ориентиров Дальяна */}
             <div className="space-y-4 pb-8 border-b border-white/10">
               <div className="flex items-center gap-2 text-emerald-400 font-semibold text-xs tracking-wider uppercase">
                 <Compass className="w-4 h-4" />
-                <span>Географические ориентиры Дальяна</span>
+                <span>{t('landmarksCategoryTitle', 'Географические ориентиры Дальяна')}</span>
               </div>
               <h2 className="text-xl font-bold text-white">
                 {homeData.landmarksTitle || '14 географических ориентиров Дальяна'}
               </h2>
               <p className="text-slate-300 leading-relaxed line-clamp-4 text-base">
-                Идеальное расположение виллы в сердце экологического заповедника Дальян: всего 250 метров [3 минуты пешком] до главной пешеходной улицы, 400 метров до набережной реки Дальян, 450 метров до вида на Ликийские гробницы королей, 11 км до песчаного пляжа Изтузу и 30 км от международного аэропорта Даламан.
+                {homeData.landmarksSubtitle}
               </p>
               <button
                 type="button"
                 onClick={() => setLandmarksModalOpen(true)}
                 className="inline-flex items-center gap-1.5 text-sm font-semibold text-rose-400 hover:text-rose-300 underline underline-offset-4 transition-colors"
               >
-                Показать все 14 ориентиров и карту расстояний <ChevronRight className="w-4 h-4" />
+                {t('showAllLandmarksBtn', 'Показать все 14 ориентиров и карту расстояний')} <ChevronRight className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Раздел: Рейтинг и отзывы гостей */}
+            {/* Раздел 11: Рейтинг и отзывы гостей */}
             <div className="space-y-4 pb-8 border-b border-white/10">
               <div className="flex items-center gap-2 text-rose-400 font-semibold text-xs tracking-wider uppercase">
                 <Star className="w-4 h-4 fill-rose-400" />
-                <span>Рейтинг гостей и отзывы</span>
+                <span>{t('reviewsCategoryTitle', 'Рейтинг гостей и отзывы')}</span>
               </div>
               <h2 className="text-xl font-bold text-white">
-                4.98 ★ • Рейтинг гостей на основе 48 отзывов
+                {homeData.heroRating} ★ • {t('reviewsRatingTitle', 'Рейтинг гостей на основе')} {homeData.heroReviewsCount}
               </h2>
               <p className="text-slate-300 leading-relaxed line-clamp-4 text-base">
-                Гости оценивают чистоту, точность описания и мгновенное общение с хозяином на высший балл 5.0 из 5.0. Статус Суперхозяина на Airbnb более 5 лет приема гостей. Прочитайте реальные отзывы гостей о приватном бассейне с соленой водой, джакузи, тишине и морских путешествиях.
+                {homeData.reviewsData?.header?.[lang] || homeData.reviewsData?.header?.ru || homeData.highlightSuperhostDesc}
               </p>
               <button
                 type="button"
                 onClick={() => setReviewsModalOpen(true)}
                 className="inline-flex items-center gap-1.5 text-sm font-semibold text-rose-400 hover:text-rose-300 underline underline-offset-4 transition-colors"
               >
-                Показать все 48 отзывов и критерии оценок <ChevronRight className="w-4 h-4" />
+                {t('showAllReviewsBtn', 'Показать все 48 отзывов и критерии оценок')} <ChevronRight className="w-4 h-4" />
               </button>
             </div>
 
