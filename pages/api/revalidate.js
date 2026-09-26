@@ -41,8 +41,8 @@ export default async function handler(req, res) {
       liveContent = await getOrFetchLiveContent(true);
     }
 
-    // 2. Инвалидация статического кэша главной страницы виллы в Next.js ISR
-    const revalidateTargets = ['/'];
+    // 2. Инвалидация статического кэша главной страницы виллы для всех локалей в Next.js ISR
+    const revalidateTargets = ['/', '/ru', '/en', '/tr'];
 
     const results = {};
     for (const target of revalidateTargets) {

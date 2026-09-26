@@ -255,6 +255,11 @@ export default function HomeListing({ publicData, contentData }) {
         if (res.ok) {
           const liveData = await res.json();
           if (liveData && liveData.success && isMounted) {
+            // Защита от деградации кэша: если контейнер вернул аварийный старый файл из-за ошибки JWT, не перезаписываем экран
+            if (liveData.source === 'jwt_auth_error' || liveData.source === 'local_fallback' || liveData.source === 'fallback_on_error') {
+              console.info('[LiveContent] Получен ответ от неинициализированного контейнера, сохраняем актуальные данные страницы');
+              return;
+            }
             const rawHome = liveData.home || contentData.home || {};
             const cleanHome = { ...rawHome };
             if (typeof buildHomeDerivedCollections === 'function') {

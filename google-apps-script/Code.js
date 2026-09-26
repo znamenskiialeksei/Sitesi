@@ -934,17 +934,13 @@ function auditFormulasSemicolon() {
 function auditScriptIntegrityAndTokens() {
   var ui = SpreadsheetApp.getUi();
   var props = PropertiesService.getScriptProperties();
-  var siteUrl = (props.getProperty('SITE_URL') || '').trim();
+  var siteUrl = getEffectiveSiteUrl_();
   var revalUrl = (props.getProperty('REVALIDATE_API_URL') || '').trim();
   var token = (props.getProperty('REVALIDATE_SECRET_TOKEN') || '').trim();
 
   var report = "🔍 КОМПЛЕКСНЫЙ АУДИТ БЕЗОПАСНОСТИ И ТОКЕНОВ:\n\n";
 
-  if (siteUrl) {
-    report += "• SITE_URL: Задан ✅ [" + siteUrl + "]\n";
-  } else {
-    report += "• SITE_URL: Не задан ⚠️ [используется fallback]\n";
-  }
+  report += "• SITE_URL: " + siteUrl + " ✅\n";
 
   if (revalUrl) {
     report += "• REVALIDATE_API_URL: Задан ✅\n";
@@ -1640,7 +1636,7 @@ function setupScriptPropertiesInteractive() {
   var ui = SpreadsheetApp.getUi();
   var scriptProperties = PropertiesService.getScriptProperties();
 
-  var siteUrl = ui.prompt("Настройка SITE_URL", "Укажите публичный адрес сайта платформы:\nПример: https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app", ui.ButtonSet.OK_CANCEL);
+  var siteUrl = ui.prompt("Настройка SITE_URL", "Укажите публичный адрес сайта платформы:\nПример: https://www.villaturaman.com", ui.ButtonSet.OK_CANCEL);
   if (siteUrl.getSelectedButton() === ui.Button.OK && siteUrl.getResponseText().trim()) {
     var cleanSiteUrl = siteUrl.getResponseText().trim().replace(/\/+$/, '');
     scriptProperties.setProperty('SITE_URL', cleanSiteUrl);
@@ -1695,7 +1691,7 @@ function viewCurrentScriptProperties() {
 
 function setupDefaultScriptProperties() {
   var scriptProperties = PropertiesService.getScriptProperties();
-  var defaultUrl = 'https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app';
+  var defaultUrl = 'https://www.villaturaman.com';
   scriptProperties.setProperties({
     'SITE_URL': defaultUrl,
     'REVALIDATE_API_URL': defaultUrl + '/api/revalidate',
@@ -1982,7 +1978,7 @@ function getTelegramConfig_() {
   return {
     token: props['TELEGRAM_BOT_TOKEN'] || '',
     chatId: props['TELEGRAM_CHAT_ID'] || '',
-    siteUrl: props['SITE_URL'] || 'https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app'
+    siteUrl: getEffectiveSiteUrl_()
   };
 }
 
@@ -2732,7 +2728,7 @@ function showAiFullStatusModal() {
   var mode = props.getProperty('AI_MODE') || 'autopilot';
   var model = props.getProperty('GEMINI_MODEL') || 'gemini-3.6-flash';
   var minPrice = props.getProperty('MIN_NIGHT_PRICE') || 'установлен в таблице';
-  var siteUrl = props.getProperty('SITE_URL') || 'https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app';
+  var siteUrl = getEffectiveSiteUrl_();
 
   var info = '🧠 ЦЕНТР УПРАВЛЕНИЯ ИИ-АГЕНТАМИ VILLA TURAMAN:\n\n' +
     '• Текущий режим работы: ' + (mode === 'autopilot' ? '🚀 Автопилот' : (mode === 'copilot' ? '💡 Суфлер' : '⏸️ Выключен')) + '\n' +
@@ -2869,17 +2865,7 @@ function setupAiModelInteractive() {
 }
 
 function syncAiKnowledgeToVercel() {
-  var props = PropertiesService.getScriptProperties();
-  var siteUrl = (props.getProperty('SITE_URL') || '').trim().replace(/\/+$/, '');
-  if (!siteUrl) return;
-
-  try {
-    var url = siteUrl + '/api/content?force=true';
-    UrlFetchApp.fetch(url, { muteHttpExceptions: true });
-    SpreadsheetApp.getActiveSpreadsheet().toast('База Знаний обновлена в оперативной памяти сервера.', '✅ Синхронизировано', 4);
-  } catch (e) {
-    Logger.log('Сбой сброса кэша: ' + e.message);
-  }
+  triggerRevalidateWebhook();
 }
 
 function initAiKnowledgeBaseSheets() {
@@ -2906,13 +2892,7 @@ function initAiKnowledgeBaseSheets() {
 
 function checkGeminiVercelStatusInteractive() {
   var ui = SpreadsheetApp.getUi();
-  var props = PropertiesService.getScriptProperties();
-  var siteUrl = (props.getProperty('SITE_URL') || '').trim().replace(/\/+$/, '');
-
-  if (!siteUrl) {
-    ui.alert('Внимание', 'Сначала укажите SITE_URL в Свойствах скрипта.', ui.ButtonSet.OK);
-    return;
-  }
+  var siteUrl = getEffectiveSiteUrl_();
 
   try {
     var res = UrlFetchApp.fetch(siteUrl + '/api/system-status', { muteHttpExceptions: true });
@@ -2949,13 +2929,7 @@ function setupAiPropertiesInteractive() {
 
 function testAiConciergeInteractive() {
   var ui = SpreadsheetApp.getUi();
-  var props = PropertiesService.getScriptProperties();
-  var siteUrl = (props.getProperty('SITE_URL') || '').trim().replace(/\/+$/, '');
-
-  if (!siteUrl) {
-    ui.alert('Внимание', 'Сначала укажите SITE_URL в Свойствах скрипта.', ui.ButtonSet.OK);
-    return;
-  }
+  var siteUrl = getEffectiveSiteUrl_();
 
   var promptRes = ui.prompt('Тест ИИ-Консьержа', 'Введите тестовый вопрос гостя:\nНапример: Какая цена за ночь и есть ли бассейн?', ui.ButtonSet.OK_CANCEL);
   if (promptRes.getSelectedButton() !== ui.Button.OK) return;
@@ -3008,8 +2982,7 @@ function updateAiSettingInSheet_(paramKey, paramVal) {
 
 function saveMasterSeedInteractive() {
   var ui = SpreadsheetApp.getUi();
-  var props = PropertiesService.getScriptProperties();
-  var siteUrl = (props.getProperty('SITE_URL') || '').trim();
+  var siteUrl = getEffectiveSiteUrl_();
 
   var confirm = ui.alert(
     'Фиксация эталона SSOT',
@@ -3018,22 +2991,6 @@ function saveMasterSeedInteractive() {
   );
 
   if (confirm !== ui.Button.YES) return;
-
-  if (!siteUrl) {
-    var promptRes = ui.prompt(
-      'Адрес сайта не настроен',
-      'Укажите URL сайта [например: https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app]:',
-      ui.ButtonSet.OK_CANCEL
-    );
-    if (promptRes.getSelectedButton() !== ui.Button.OK) return;
-    siteUrl = promptRes.getResponseText().trim();
-    if (siteUrl) {
-      props.setProperty('SITE_URL', siteUrl);
-    } else {
-      ui.alert('Ошибка', 'SITE_URL не был указан. Операция отменена.', ui.ButtonSet.OK);
-      return;
-    }
-  }
 
   try {
     var endpoint = siteUrl.replace(/\/+$/, '') + '/api/admin/save-master-seed';

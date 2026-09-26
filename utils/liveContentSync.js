@@ -48,6 +48,21 @@ export function clearLiveContentCache() {
  * Чтение локального резервного JSON файла контента
  */
 export function readLocalFallback() {
+  // Приоритет 1: Проверка живого кэша, сохраненного в /tmp при Duplex Push
+  try {
+    const tmpCachePath = path.join('/tmp', 'villa_live_content.json');
+    if (fs.existsSync(tmpCachePath)) {
+      const rawTmp = fs.readFileSync(tmpCachePath, 'utf8');
+      const parsedTmp = JSON.parse(rawTmp);
+      if (parsedTmp && parsedTmp.home && Object.keys(parsedTmp.home).length > 0) {
+        if (typeof buildHomeDerivedCollections === 'function') {
+          buildHomeDerivedCollections(parsedTmp.home, true);
+        }
+        return parsedTmp;
+      }
+    }
+  } catch (tmpErr) {}
+
   const contentFilePath = path.join(process.cwd(), 'utils', 'content.json');
   try {
     if (fs.existsSync(contentFilePath)) {
@@ -732,6 +747,12 @@ export function updateLiveContentFromPayload(rawPayload) {
     } catch (writeErr) {
       // В среде Vercel Lambda диск read-only: это штатное поведение
     }
+
+    // Сохранение в /tmp для обмена кэшем между бессерверными контейнерами Vercel Lambda
+    try {
+      const tmpCachePath = path.join('/tmp', 'villa_live_content.json');
+      fs.writeFileSync(tmpCachePath, JSON.stringify(content), 'utf8');
+    } catch (tmpErr) {}
   }
 
   return {
