@@ -78,7 +78,7 @@ export async function getStaticProps() {
       if (fs.existsSync(contentPath)) {
         contentData = JSON.parse(fs.readFileSync(contentPath, 'utf8'));
         if (contentData.home) {
-          buildHomeDerivedCollections(contentData.home);
+          buildHomeDerivedCollections(contentData.home, true);
         }
       }
     } catch (err) {
@@ -248,12 +248,19 @@ export default function HomeListing({ publicData, contentData }) {
 
     const fetchLiveContent = async () => {
       try {
-        const res = await fetch('/api/content?t=' + Date.now());
+        const res = await fetch('/api/content?force=true&t=' + Date.now(), {
+          headers: { 'Cache-Control': 'no-cache' }
+        });
         if (res.ok) {
           const liveData = await res.json();
-          if (liveData.success && isMounted) {
+          if (liveData && liveData.success && isMounted) {
+            const rawHome = liveData.home || contentData.home || {};
+            const cleanHome = { ...rawHome };
+            if (typeof buildHomeDerivedCollections === 'function') {
+              buildHomeDerivedCollections(cleanHome, true);
+            }
             setCurrentContentData({
-              home: liveData.home || contentData.home,
+              home: cleanHome,
               about: liveData.about || contentData.about,
               legal: liveData.legal || contentData.legal,
               templates: liveData.templates || contentData.templates,

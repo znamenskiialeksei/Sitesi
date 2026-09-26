@@ -25,6 +25,12 @@ export default async function handler(req, res) {
 
   try {
     const data = await getOrFetchLiveContent(isForce);
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    if (data && data.source) {
+      res.setHeader('X-Content-Source', String(data.source));
+    }
     return res.status(200).json(data);
   } catch (err) {
     console.error('Ошибка в API получения контента:', err.message);

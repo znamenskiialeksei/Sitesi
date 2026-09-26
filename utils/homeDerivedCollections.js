@@ -6,11 +6,11 @@
 // 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
-function buildHomeDerivedCollections(home) {
+function buildHomeDerivedCollections(home, forceRebuild = false) {
   if (!home) return;
 
   // 1. Спальни
-  if (!home.bedrooms || home.bedrooms.length === 0) {
+  if (forceRebuild || !home.bedrooms || home.bedrooms.length === 0) {
     const bedroomsList = [];
     [1, 2, 3, 4].forEach((i) => {
       const item = home[`bedroom_${i}`];
@@ -39,7 +39,7 @@ function buildHomeDerivedCollections(home) {
   }
 
   // 2. Удобства основные [Main Amenities]
-  if (!home.mainAmenities || home.mainAmenities.length === 0) {
+  if (forceRebuild || !home.mainAmenities || home.mainAmenities.length === 0) {
     const mainAmenitiesList = [];
     for (let i = 1; i <= 20; i++) {
       const item = home[`amenity_main_${i}`];
@@ -55,7 +55,7 @@ function buildHomeDerivedCollections(home) {
   }
 
   // 3. Удобства сгруппированные для модального окна [Grouped Amenities]
-  if (!home.amenitiesGrouped || home.amenitiesGrouped.length === 0) {
+  if (forceRebuild || !home.amenitiesGrouped || home.amenitiesGrouped.length === 0) {
     const groupedAmenitiesList = [];
     for (let c = 1; c <= 10; c++) {
       const catTitleItem = home[`amenity_cat${c}_title`];
@@ -86,7 +86,7 @@ function buildHomeDerivedCollections(home) {
   }
 
   // 4. Отзывы и критерии оценок [Reviews]
-  if (!home.reviewsData || !home.reviewsData.reviews || home.reviewsData.reviews.length === 0) {
+  if (forceRebuild || !home.reviewsData || !home.reviewsData.reviews || home.reviewsData.reviews.length === 0) {
     const reviewCatsList = [];
     for (let c = 1; c <= 10; c++) {
       const item = home[`review_cat_${c}`];
@@ -121,7 +121,7 @@ function buildHomeDerivedCollections(home) {
   }
 
   // 5. Описание виллы и правила [About & Rules]
-  if (!home.aboutSections || home.aboutSections.length === 0) {
+  if (forceRebuild || !home.aboutSections || home.aboutSections.length === 0) {
     const aboutSectionsList = [];
     for (let s = 1; s <= 10; s++) {
       const titleItem = home[`about_sec_${s}_title`];
@@ -138,7 +138,7 @@ function buildHomeDerivedCollections(home) {
   }
 
   // 6. Географические ориентиры Дальяна [Landmarks] [14 локаций]
-  if (!home.landmarksList || home.landmarksList.length === 0) {
+  if (forceRebuild || !home.landmarksList || home.landmarksList.length === 0) {
     const landmarksList = [];
     const landmarkCategoryMap = {
       1: 'walk', 2: 'walk', 3: 'food', 4: 'food', 5: 'walk',
@@ -190,7 +190,7 @@ function buildHomeDerivedCollections(home) {
   }
 
   // 7. Спа-комплекс, бассейн и сад [Spa & Pool Data]
-  if (!home.spaData) {
+  if (forceRebuild || !home.spaData) {
     home.spaData = {
       title: home.spa_title || { ru: 'Спа-комплекс и бассейн с соленой водой', en: 'Spa Complex & Saltwater Pool', tr: 'Spa Kompleksi ve Tuzlu Su Havuzu' },
       subtitle: home.spa_subtitle || { ru: 'Приватная закрытая территория, солевой бассейн 36 м², гидромассажное джакузи и лаунж-зона отдыха', en: 'Gated private territory, 36 sqm saltwater pool, hydro-massage jacuzzi and outdoor relaxation lounge', tr: 'Özel korunaklı alan, 36 m² tuzlu su havuzu, hidromasajlı jakuzi ve açık dinlenme alanı' },
@@ -216,7 +216,7 @@ function buildHomeDerivedCollections(home) {
   }
 
   // 8. Безопасность, Закон № 7464 и доступная среда [Safety, Law 7464 & Accessibility]
-  if (!home.safetyData) {
+  if (forceRebuild || !home.safetyData) {
     home.safetyData = {
       title: home.legal_safety_title || { ru: 'Безопасность, Закон № 7464 и Доступная среда', en: 'Safety, Law No. 7464 & Accessible Environment', tr: 'Güvenlik, 7464 Sayılı Kanun ve Engelsiz Erişim' },
       subtitle: home.legal_safety_subtitle || { ru: 'Полное соответствие законодательству Турции о краткосрочной аренде, защита гостей и безбарьерный доступ', en: 'Full compliance with Turkish short-term rental laws, guest protection and barrier-free access', tr: 'Türkiye kısa dönem kiralama mevzuatına tam uyum, misafir güvenliği ve engelsiz erişim' },

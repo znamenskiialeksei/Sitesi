@@ -10,7 +10,7 @@ const { google } = require('googleapis');
 const fs = require('fs');
 const path = require('path');
 const { getLiveSheetMap, resolveRange } = require('../utils/sheetsRegistry');
-const { MASTER_ABOUT_SECTIONS, MASTER_HOME_MAP } = require('../utils/masterSeedContent');
+const { MASTER_ABOUT_SECTIONS, MASTER_HOME_MAP, buildHomeDerivedCollections } = require('../utils/masterSeedContent');
 
 // Очистка от битых формул Google Таблиц [#REF!, #VALUE!, #ERROR!, #N/A]
 const sanitizeText = (val, fallback = '') => {
@@ -118,24 +118,89 @@ async function syncContent() {
 
     console.log('Синхронизация контента (Главная, О вилле, Юридический блок, Шаблоны)...');
 
-    // 1. Главная страница [Hero и базовые заголовки]
-    const homeData = await safeGet(resolveRange(sheetMap, 'HOME', 'A:E'));
+    // 1. Главная страница [Конструктор витрины 8 колонок A:H либо стандарт 5 колонок]
+    const homeData = await safeGet(resolveRange(sheetMap, 'HOME', 'A:H'));
     if (homeData.data.values && homeData.data.values.length > 1) {
-      homeData.data.values.slice(1).forEach((r) => {
-        if (r[0]) {
-          content.home[r[0]] = {
-            ru: sanitizeText(r[1], existingContent.home?.[r[0]]?.ru || MASTER_HOME_MAP[r[0]]?.ru || ''),
-            en: sanitizeText(r[2], existingContent.home?.[r[0]]?.en || MASTER_HOME_MAP[r[0]]?.en || ''),
-            tr: sanitizeText(r[3], existingContent.home?.[r[0]]?.tr || MASTER_HOME_MAP[r[0]]?.tr || ''),
-            media: sanitizeText(r[4], existingContent.home?.[r[0]]?.media || MASTER_HOME_MAP[r[0]]?.media || '')
-          };
+      const homeRows = homeData.data.values;
+      const isConstructorFormat = homeRows[0] && homeRows[0].length >= 7;
+
+      homeRows.slice(1).forEach((r) => {
+        let block = '', key = '', desc = '', ru = '', en = '', tr = '', media = '', status = 'Вкл';
+        if (isConstructorFormat) {
+          block = r[0] ? String(r[0]).trim() : '';
+          key = r[1] ? String(r[1]).trim() : '';
+          desc = r[2] ? String(r[2]).trim() : '';
+          ru = r[3] || '';
+          en = r[4] || '';
+          tr = r[5] || '';
+          media = r[6] || '';
+          status = r[7] ? String(r[7]).trim() : 'Вкл';
+        } else {
+          key = r[0] ? String(r[0]).trim() : '';
+          ru = r[1] || '';
+          en = r[2] || '';
+          tr = r[3] || '';
+          media = r[4] || '';
+          status = 'Вкл';
+        }
+
+        if (!key) return;
+        const isEnabled = !status.toLowerCase().startsWith('выкл') && status.toLowerCase() !== 'off' && status.toLowerCase() !== 'false';
+        const fallbackItem = MASTER_HOME_MAP[key] || existingContent.home?.[key] || {};
+
+        content.home[key] = {
+          block: block || fallbackItem.block || '',
+          key,
+          desc: desc || fallbackItem.desc || '',
+          ru: sanitizeText(ru, fallbackItem.ru || ''),
+          en: sanitizeText(en, fallbackItem.en || fallbackItem.ru || ''),
+          tr: sanitizeText(tr, fallbackItem.tr || fallbackItem.ru || ''),
+          media: sanitizeText(media, fallbackItem.media || ''),
+          status: isEnabled ? 'Вкл' : 'Выкл',
+          enabled: isEnabled
+        };
+      });
+
+      // Синхронизация camelCase и snake_case алиасов
+      const aliasPairs = [
+        ['heroTitle', 'hero_title'],
+        ['heroSubtitle', 'hero_subtitle'],
+        ['heroImage', 'hero_image'],
+        ['hostHeader', 'host_specs_header'],
+        ['hostName', 'host_specs_name'],
+        ['hostAvatar', 'host_specs_avatar'],
+        ['highlightSuperhostTitle', 'highlight_1_title'],
+        ['highlightSuperhostDesc', 'highlight_1_desc'],
+        ['highlightCheckinTitle', 'highlight_2_title'],
+        ['highlightCheckinDesc', 'highlight_2_desc'],
+        ['highlightCancellationTitle', 'highlight_3_title'],
+        ['highlightCancellationDesc', 'highlight_3_desc'],
+        ['aboutTitle', 'about_title'],
+        ['aboutText', 'about_text'],
+        ['locationTitle', 'location_title'],
+        ['locationDesc', 'location_desc'],
+        ['locationImage', 'location_image']
+      ];
+      aliasPairs.forEach(([camelKey, snakeKey]) => {
+        if (!content.home[camelKey] && content.home[snakeKey]) {
+          content.home[camelKey] = content.home[snakeKey];
+        }
+        if (!content.home[snakeKey] && content.home[camelKey]) {
+          content.home[snakeKey] = content.home[camelKey];
         }
       });
+
+      if (typeof buildHomeDerivedCollections === 'function') {
+        buildHomeDerivedCollections(content.home, true);
+      }
     }
     if (Object.keys(content.home).length === 0) {
       content.home = existingContent.home && Object.keys(existingContent.home).length > 0
         ? existingContent.home
         : { ...MASTER_HOME_MAP };
+      if (typeof buildHomeDerivedCollections === 'function') {
+        buildHomeDerivedCollections(content.home, true);
+      }
     }
 
     // 2. Описание виллы, юридические документы, шаблоны CRM

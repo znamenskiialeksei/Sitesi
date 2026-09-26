@@ -1344,6 +1344,63 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
+    // --- Действие: Ролевое назначение ответственного исполнителя задачи ---
+    if (data.startsWith('task_assign_')) {
+      const parts = data.replace('task_assign_', '').split('_');
+      const targetTaskId = parts[0];
+      const targetRole = parts.slice(1).join(' ') || 'Персонал';
+      try {
+        if (sheets && spreadsheetId) {
+          const taskData = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: resolveRange(sheetMap, 'TASKS', 'A:G')
+          });
+          const allRows = taskData.data.values || [];
+          let foundRowIndex = -1;
+          for (let i = 1; i < allRows.length; i++) {
+            if (String(allRows[i][0] || '').trim() === targetTaskId) {
+              foundRowIndex = i + 1;
+              break;
+            }
+          }
+          if (foundRowIndex !== -1) {
+            const targetSheetTitle = sheetMap['TASKS'] || '📋 Задачи и Поручения Секретаря';
+            await sheets.spreadsheets.values.update({
+              spreadsheetId,
+              range: `'${targetSheetTitle}'!F${foundRowIndex}`,
+              valueInputOption: 'USER_ENTERED',
+              requestBody: {
+                values: [[targetRole]]
+              }
+            });
+            await tgApi(token, 'answerCallbackQuery', {
+              callback_query_id: cqId,
+              text: '✅ Ответственный назначен: ' + targetRole,
+              show_alert: true
+            });
+            await tgApi(token, 'sendMessage', {
+              chat_id: chatId,
+              text: '✅ Задача ' + targetTaskId + ': ответственным назначен модуль «' + targetRole + '» [зафиксировано в CRM]!',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '✅ Завершить #' + targetTaskId, callback_data: 'task_done_' + targetTaskId }],
+                  [{ text: '📋 Все задачи персонала', callback_data: 'bot_list_tasks' }]
+                ]
+              }
+            });
+            return res.status(200).json({ ok: true });
+          }
+        }
+      } catch (aErr) {
+        await tgApi(token, 'answerCallbackQuery', {
+          callback_query_id: cqId,
+          text: 'Ошибка: ' + aErr.message,
+          show_alert: true
+        });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
     // --- Действие: Интерактивный реестр всех 10 задач VS Code ---
     if (data === 'vscode_tasks_list') {
       await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId });
@@ -2030,12 +2087,28 @@ export default async function handler(req, res) {
           `• Содержание: ${taskBody}\n` +
           `• Статус: Новая\n` +
           `• Назначена: Суперхозяин Алексей\n` +
-          `• Папка Google Drive: Villa Turaman Проект`;
+          `• Папка Google Drive: Villa Turaman Проект\n\n` +
+          `👇 Выберите ответственного исполнителя:`;
 
         await tgApi(token, 'sendMessage', {
           chat_id: chatId,
           text: confirmMsg,
-          reply_markup: MAIN_KEYBOARD
+          reply_markup: {
+            inline_keyboard: [
+              [
+                { text: '👑 Консьерж', callback_data: `task_assign_${taskId}_Консьерж` },
+                { text: '🧹 Клининг', callback_data: `task_assign_${taskId}_Клининг` }
+              ],
+              [
+                { text: '🏊 Бассейн и Сад', callback_data: `task_assign_${taskId}_Бассейн` },
+                { text: '🧾 Бухгалтер', callback_data: `task_assign_${taskId}_Бухгалтер` }
+              ],
+              [
+                { text: '⚖️ Юрист', callback_data: `task_assign_${taskId}_Юрист` },
+                { text: '📋 Список задач', callback_data: 'bot_list_tasks' }
+              ]
+            ]
+          }
         });
         return res.status(200).json({ ok: true });
       }

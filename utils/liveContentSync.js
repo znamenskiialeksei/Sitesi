@@ -51,7 +51,7 @@ export function readLocalFallback() {
       const raw = fs.readFileSync(contentFilePath, 'utf8');
       const parsed = JSON.parse(raw);
       if (parsed.home) {
-        buildHomeDerivedCollections(parsed.home);
+        buildHomeDerivedCollections(parsed.home, true);
         if (parsed.home.aboutSections && parsed.home.aboutSections.length > 0 && (!parsed.about || Object.keys(parsed.about).length === 0)) {
           parsed.about = {};
           parsed.home.aboutSections.forEach((sec) => {
@@ -324,7 +324,7 @@ export async function fetchLiveContentFromGoogleSheets() {
   });
 
   // Формирование структурированных коллекций для динамического рендеринга
-  buildHomeDerivedCollections(content.home);
+  buildHomeDerivedCollections(content.home, true);
 
   // 2. Описание виллы [ABOUT]
   if (content.home.aboutSections && content.home.aboutSections.length > 0) {
