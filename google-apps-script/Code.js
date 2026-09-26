@@ -633,6 +633,10 @@ function onSheetEditTrigger(e) {
     }
   } catch (err) {}
 
+  try {
+    SpreadsheetApp.getActive().toast("Передача правок таблицы на сайт...", "🔄 Авто-синхронизация", 3);
+  } catch (tErr) {}
+
   triggerRevalidateWebhook();
 }
 
@@ -643,18 +647,14 @@ function setupAutoSyncTrigger() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var ui = SpreadsheetApp.getUi();
   var triggers = ScriptApp.getUserTriggers(ss);
-  var exists = false;
 
+  // Удаление старых триггеров onSheetEditTrigger для гарантированного обновления разрешений
   for (var i = 0; i < triggers.length; i++) {
     if (triggers[i].getHandlerFunction() === 'onSheetEditTrigger') {
-      exists = true;
-      break;
+      try {
+        ScriptApp.deleteTrigger(triggers[i]);
+      } catch (delErr) {}
     }
-  }
-
-  if (exists) {
-    ui.alert('Авто-синхронизация активна', 'Триггер автоматической синхронизации уже подключен к таблице.', ui.ButtonSet.OK);
-    return;
   }
 
   try {
@@ -662,9 +662,18 @@ function setupAutoSyncTrigger() {
       .forSpreadsheet(ss)
       .onEdit()
       .create();
-    ui.alert('✅ Авто-синхронизация включена!', 'Теперь при любых изменениях данных в таблице сайт будет автоматически обновляться.', ui.ButtonSet.OK);
+    SpreadsheetApp.getActive().toast("Триггер авто-синхронизации успешно подключен к таблице!", "🔄 Авто-синхронизация", 5);
+    ui.alert(
+      '✅ Авто-синхронизация включена!',
+      'Триггер успешно зарегистрирован с правами отправки данных на сайт.\nТеперь любые правки ячеек автоматически передаются на сайт www.villaturaman.com без необходимости нажимать кнопку публикации.',
+      ui.ButtonSet.OK
+    );
   } catch (err) {
-    ui.alert('Ошибка создания триггера', err.message, ui.ButtonSet.OK);
+    ui.alert(
+      'Ошибка создания триггера',
+      'Не удалось зарегистрировать триггер: ' + err.message + '\n\nУбедитесь, что вы подтвердили необходимые разрешения для скрипта.',
+      ui.ButtonSet.OK
+    );
   }
 }
 
@@ -3001,10 +3010,18 @@ function saveMasterSeedInteractive() {
   if (confirm !== ui.Button.YES) return;
 
   try {
+    SpreadsheetApp.getActive().toast("Сбор данных всех листов таблицы...", "💾 Фиксация эталона", 4);
     var endpoint = siteUrl.replace(/\/+$/, '') + '/api/admin/save-master-seed';
+    var secret = PropertiesService.getScriptProperties().getProperty('REVALIDATE_SECRET_TOKEN') || 'YOUR_VERY_SECRET_RANDOM_STRING';
+    var livePayload = collectAllSheetsPayload_();
+    var postBody = {
+      secret: secret,
+      livePayload: livePayload
+    };
     var response = UrlFetchApp.fetch(endpoint, {
       method: 'post',
       contentType: 'application/json',
+      payload: JSON.stringify(postBody),
       muteHttpExceptions: true
     });
 
@@ -3021,10 +3038,10 @@ function saveMasterSeedInteractive() {
         '• Настроек: ' + (data.settingsCount || '0');
       ui.alert('Успешная фиксация SSOT', msg, ui.ButtonSet.OK);
     } else {
-      ui.alert('Ответ сервера [' + code + ']', 'Сервер вернул ошибку:\n' + text, ui.ButtonSet.OK);
+      ui.alert('Ответ сервера код: ' + code, 'Сервер вернул ошибку:\n' + text, ui.ButtonSet.OK);
     }
   } catch (err) {
-    ui.alert('Справка по сохранению', 'Сетевой запрос к сайту не прошел [' + err.message + '].\nУбедитесь, что сервер запущен и доступен по адресу ' + siteUrl, ui.ButtonSet.OK);
+    ui.alert('Справка по сохранению', 'Сетевой запрос к сайту не прошел: ' + err.message + '.\nУбедитесь, что сервер запущен и доступен по адресу ' + siteUrl, ui.ButtonSet.OK);
   }
 }
 

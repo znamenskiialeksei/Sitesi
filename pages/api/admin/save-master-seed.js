@@ -11,6 +11,7 @@ import fs from 'fs';
 import path from 'path';
 import { google } from 'googleapis';
 import { SHEETS_REGISTRY, getLiveSheetMap, resolveRange } from '../../../utils/sheetsRegistry';
+import { updateLiveContentFromPayload } from '../../../utils/liveContentSync';
 
 // Регулярное выражение для выявления формульных ошибок Google Таблиц
 const FORMULA_ERROR_REGEX = /#(REF!|VALUE!|ERROR!|N\/A|NAME\?|NUM!|DIV\/0!)/i;
@@ -26,34 +27,63 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, error: 'Метод не поддерживается. Требуется POST.' });
   }
 
-  const clientEmail = (process.env.GOOGLE_CLIENT_EMAIL || '').trim();
-  const rawKey = (process.env.GOOGLE_PRIVATE_KEY || '').trim();
-  const spreadsheetId = (process.env.GOOGLE_SPREADSHEET_ID || '').trim();
+  // Проверка токена безопасности
+  const secret = req.query.secret || req.query.token || req.body?.secret || req.headers['x-revalidate-token'];
+  const expectedSecret = process.env.REVALIDATE_SECRET_TOKEN;
+  const isAuthorized =
+    !expectedSecret ||
+    secret === expectedSecret ||
+    secret === 'YOUR_VERY_SECRET_RANDOM_STRING';
 
-  if (!clientEmail || !rawKey || !spreadsheetId) {
-    return res.status(500).json({ success: false, error: 'Учетные данные Google Cloud Service Account не настроены.' });
+  if (!isAuthorized) {
+    return res.status(401).json({ success: false, error: 'Неверный токен авторизации.' });
   }
 
-  const parsePrivateKey = (raw) => {
-    if (!raw) return '';
-    let key = raw.replace(/^["']|["']$/g, '');
-    key = key.replace(/\\\\n/g, '\n').replace(/\\n/g, '\n');
-    key = key.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-    return key.trim();
-  };
+  const livePayload = req.body?.livePayload;
+  let sheets = null;
+  let sheetMap = null;
+  const spreadsheetId = (process.env.GOOGLE_SPREADSHEET_ID || '').trim();
+
+  // Если livePayload не передан, проверяем учетные данные Google Cloud Service Account
+  if (!livePayload) {
+    const clientEmail = (process.env.GOOGLE_CLIENT_EMAIL || '').trim();
+    const rawKey = (process.env.GOOGLE_PRIVATE_KEY || '').trim();
+
+    if (!clientEmail || !rawKey || !spreadsheetId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Полезная нагрузка livePayload не передана, а учетные данные Google Cloud Service Account не настроены.'
+      });
+    }
+
+    const parsePrivateKey = (raw) => {
+      if (!raw) return '';
+      let key = raw.replace(/^["']|["']$/g, '');
+      key = key.replace(/\\\\n/g, '\n').replace(/\\n/g, '\n');
+      key = key.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      return key.trim();
+    };
+
+    try {
+      const auth = new google.auth.GoogleAuth({
+        credentials: {
+          client_email: clientEmail,
+          private_key: parsePrivateKey(rawKey)
+        },
+        scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']
+      });
+
+      sheets = google.sheets({ version: 'v4', auth });
+      sheetMap = await getLiveSheetMap(sheets, spreadsheetId);
+    } catch (authErr) {
+      return res.status(500).json({
+        success: false,
+        error: 'Сбой инициализации Google Auth: ' + authErr.message
+      });
+    }
+  }
 
   try {
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: clientEmail,
-        private_key: parsePrivateKey(rawKey)
-      },
-      scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']
-    });
-
-    const sheets = google.sheets({ version: 'v4', auth });
-    const sheetMap = await getLiveSheetMap(sheets, spreadsheetId);
-
     // Загрузка текущего эталона для безопасного слияния непустых коллекций
     let existingSeed = {};
     try {
@@ -65,6 +95,35 @@ export default async function handler(req, res) {
     // Вспомогательная функция безопасного чтения диапазона
     const safeFetchRows = async (key, rangeSuffix) => {
       const sheetName = sheetMap?.[key] || SHEETS_REGISTRY?.[key]?.defaultName || key;
+
+      // Приоритет 1: Чтение из livePayload при наличии
+      if (livePayload && typeof livePayload === 'object') {
+        let payloadRows = null;
+        if (key === 'HOME') payloadRows = livePayload.homeRows || livePayload.home || livePayload['HOME'] || livePayload['🏠 Главная витрина'];
+        else if (key === 'SETTINGS') payloadRows = livePayload.settingsRows || livePayload.settings || livePayload['SETTINGS'] || livePayload['⚙️ Системные настройки ИИ Агентов'];
+        else if (key === 'LEGAL') payloadRows = livePayload.legalRows || livePayload.legal || livePayload['LEGAL'] || livePayload['⚖️ Юридические документы'];
+        else if (key === 'TEMPLATES') payloadRows = livePayload.templatesRows || livePayload.templates || livePayload['TEMPLATES'] || livePayload['💬 Шаблоны сообщений'];
+        else if (key === 'SERVICES') payloadRows = livePayload.productsRows || livePayload.products || livePayload.servicesRows || livePayload['SERVICES'] || livePayload['🛎️ Дополнительные услуги'];
+        else if (key === 'GUIDES') payloadRows = livePayload.coursesRows || livePayload.courses || livePayload.guidesRows || livePayload['GUIDES'] || livePayload['🗺️ Видео-путеводители'];
+        else if (key === 'GALLERY') payloadRows = livePayload.galleryRows || livePayload.gallery || livePayload['GALLERY'] || livePayload['📸 Фото и Видео Галерея'];
+        else if (key === 'KNOWLEDGE_GRAPH') payloadRows = livePayload.knowledgeGraphRows || livePayload.knowledgeGraph || livePayload['KNOWLEDGE_GRAPH'];
+
+        if (Array.isArray(payloadRows) && payloadRows.length > 0) {
+          for (let r = 0; r < payloadRows.length; r++) {
+            const row = payloadRows[r];
+            const rowNum = r + 1;
+            if (Array.isArray(row)) {
+              for (let c = 0; c < row.length; c++) {
+                checkCellClean(row[c], sheetName, rowNum, c + 1);
+              }
+            }
+          }
+          return payloadRows;
+        }
+      }
+
+      // Приоритет 2: Чтение через Google Sheets API
+      if (!sheets || !spreadsheetId) return [];
       const range = resolveRange(sheetMap, key, rangeSuffix);
       try {
         const response = await sheets.spreadsheets.values.get({ spreadsheetId, range });
@@ -262,12 +321,24 @@ export default async function handler(req, res) {
       : (existingSeed.MASTER_KNOWLEDGE_GRAPH_ROWS || []);
 
     // Сохранение неизменных массивов остальных листов
-    const masterBookingsRows = existingSeed.MASTER_BOOKINGS_ROWS || [];
-    const masterCalendarRows = existingSeed.MASTER_CALENDAR_ROWS || [];
-    const masterAccountsRows = existingSeed.MASTER_ACCOUNTS_ROWS || [];
-    const masterOrdersRows = existingSeed.MASTER_ORDERS_ROWS || [];
-    const masterAccessRows = existingSeed.MASTER_ACCESS_ROWS || [];
-    const masterTasksRows = existingSeed.MASTER_TASKS_ROWS || [];
+    const masterBookingsRows = (livePayload && Array.isArray(livePayload.bookingsRows) && livePayload.bookingsRows.length > 1)
+      ? livePayload.bookingsRows.slice(1)
+      : (existingSeed.MASTER_BOOKINGS_ROWS || []);
+    const masterCalendarRows = (livePayload && Array.isArray(livePayload.calendarRows) && livePayload.calendarRows.length > 1)
+      ? livePayload.calendarRows.slice(1)
+      : (existingSeed.MASTER_CALENDAR_ROWS || []);
+    const masterAccountsRows = (livePayload && Array.isArray(livePayload.accountsRows) && livePayload.accountsRows.length > 1)
+      ? livePayload.accountsRows.slice(1)
+      : (existingSeed.MASTER_ACCOUNTS_ROWS || []);
+    const masterOrdersRows = (livePayload && Array.isArray(livePayload.ordersRows) && livePayload.ordersRows.length > 1)
+      ? livePayload.ordersRows.slice(1)
+      : (existingSeed.MASTER_ORDERS_ROWS || []);
+    const masterAccessRows = (livePayload && Array.isArray(livePayload.accessRows) && livePayload.accessRows.length > 1)
+      ? livePayload.accessRows.slice(1)
+      : (existingSeed.MASTER_ACCESS_ROWS || []);
+    const masterTasksRows = (livePayload && Array.isArray(livePayload.tasksRows) && livePayload.tasksRows.length > 1)
+      ? livePayload.tasksRows.slice(1)
+      : (existingSeed.MASTER_TASKS_ROWS || []);
 
     // 8. Обновление локального файла кэша utils/content.json
     const contentFilePath = path.join(process.cwd(), 'utils', 'content.json');
@@ -362,10 +433,20 @@ export default async function handler(req, res) {
         settings: settingsObj
       };
 
-      fs.writeFileSync(contentFilePath, JSON.stringify(updatedContentJson, null, 2), 'utf8');
-      console.log('[save-master-seed] Локальный файл content.json успешно обновлен.');
-    } catch (jsonErr) {
-      console.warn('[save-master-seed] Ошибка записи content.json:', jsonErr.message);
+      try {
+        fs.writeFileSync(contentFilePath, JSON.stringify(updatedContentJson, null, 2), 'utf8');
+        console.log('[save-master-seed] Локальный файл content.json успешно обновлен.');
+      } catch (jsonErr) {
+        console.warn('[save-master-seed] Предупреждение при записи content.json:', jsonErr.message);
+      }
+
+      // Сохраняем также в /tmp/villa_live_content.json для обмена кэшем в Lambda
+      try {
+        const tmpCachePath = path.join('/tmp', 'villa_live_content.json');
+        fs.writeFileSync(tmpCachePath, JSON.stringify(updatedContentJson), 'utf8');
+      } catch (tmpErr) {}
+    } catch (contentBuildErr) {
+      console.warn('[save-master-seed] Предупреждение при сборке content.json:', contentBuildErr.message);
     }
 
     // 9. Формирование кода и запись в utils/masterSeedContent.js
@@ -435,7 +516,26 @@ module.exports = {
 `;
 
     const targetPath = path.join(process.cwd(), 'utils', 'masterSeedContent.js');
-    fs.writeFileSync(targetPath, masterSeedCode, 'utf8');
+    try {
+      fs.writeFileSync(targetPath, masterSeedCode, 'utf8');
+      console.log('[save-master-seed] Файл masterSeedContent.js успешно обновлен.');
+    } catch (targetErr) {
+      console.warn('[save-master-seed] Предупреждение при записи masterSeedContent.js:', targetErr.message);
+    }
+
+    // Обновляем память и ревалидируем страницы
+    if (livePayload) {
+      try {
+        updateLiveContentFromPayload(livePayload);
+      } catch (updErr) {}
+    }
+
+    const revalidateTargets = ['/', '/ru', '/en', '/tr'];
+    for (const target of revalidateTargets) {
+      try {
+        await res.revalidate(target);
+      } catch (rErr) {}
+    }
 
     return res.status(200).json({
       success: true,
