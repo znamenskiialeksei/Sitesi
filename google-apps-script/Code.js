@@ -15,24 +15,24 @@
  */
 var VILLA_SHEETS_CONFIG = {
   // Кластер 1: Публичная витрина и презентация листинга [5 листов]
-  HOME: { name: "🏠 Главная витрина", suggestedSheetId: 101, aliases: ["🏠 Главная витрина", "Главная витрина", "Главная", "Витрина", "📖 О вилле и Правила", "О вилле и Правила", "О вилле"], cluster: "showcase" },
-  GALLERY: { name: "📸 Фото и Видео Галерея", suggestedSheetId: 102, aliases: ["📸 Фото и Видео Галерея", "Фото и Видео Галерея", "Фотогалерея", "Галерея", "Медиа"], cluster: "showcase" },
-  SERVICES: { name: "🛎️ Дополнительные услуги", suggestedSheetId: 104, aliases: ["🛎️ Дополнительные услуги", "Дополнительные услуги", "Услуги", "Сервисы", "Платные услуги"], cluster: "showcase" },
-  GUIDES: { name: "🗺️ Видео-путеводители", suggestedSheetId: 105, aliases: ["🗺️ Видео-путеводители", "Видео-путеводители", "Видеопутеводители", "Путеводители", "Гиды"], cluster: "showcase" },
-  LEGAL: { name: "⚖️ Юридические документы", suggestedSheetId: 106, aliases: ["⚖️ Юридические документы", "Юридические документы", "Юридическая информация", "Реквизиты"], cluster: "showcase" },
+  HOME: { name: "🏠 Главная витрина", suggestedSheetId: 101, aliases: ["🏠 Главная витрина", "Главная витрина", "Главная", "Витрина", "📖 О вилле и Правила", "О вилле и Правила", "О вилле"], cluster: "showcase", minWidths: [160, 170, 240, 420, 420, 420, 260, 100] },
+  GALLERY: { name: "📸 Фото и Видео Галерея", suggestedSheetId: 102, aliases: ["📸 Фото и Видео Галерея", "Фото и Видео Галерея", "Фотогалерея", "Галерея", "Медиа"], cluster: "showcase", minWidths: [80, 180, 200, 220, 200, 200, 160, 260, 280, 100, 100, 100] },
+  SERVICES: { name: "🛎️ Дополнительные услуги", suggestedSheetId: 104, aliases: ["🛎️ Дополнительные услуги", "Дополнительные услуги", "Услуги", "Сервисы", "Платные услуги"], cluster: "showcase", minWidths: [160, 180, 320, 120, 120, 120, 120, 140, 220, 100, 100, 100, 100, 100, 120, 200, 200, 200] },
+  GUIDES: { name: "🗺️ Видео-путеводители", suggestedSheetId: 105, aliases: ["🗺️ Видео-путеводители", "Видео-путеводители", "Видеопутеводители", "Путеводители", "Гиды"], cluster: "showcase", minWidths: [160, 200, 350, 140, 260, 260, 100, 120, 120, 140, 100, 100, 100, 100, 120, 200, 200, 200] },
+  LEGAL: { name: "⚖️ Юридические документы", suggestedSheetId: 106, aliases: ["⚖️ Юридические документы", "Юридические документы", "Юридическая информация", "Реквизиты"], cluster: "showcase", minWidths: [160, 160, 220, 450, 450, 450, 100] },
 
   // Кластер 2: Бронирования, Кабинет Хозяина, Продажи и CRM [4 листа]
-  BOOKINGS: { name: "📋 Заявки и Бронирования", suggestedSheetId: 201, aliases: ["📋 Заявки и Бронирования", "Заявки и Бронирования", "Заявки на бронирование", "Бронирования", "Заявки", "Вилла"], cluster: "host" },
-  CALENDAR: { name: "📅 Календарь и Тарифы", suggestedSheetId: 202, aliases: ["📅 Календарь и Тарифы", "Календарь и Тарифы", "Календарь и Занятость", "Календарь", "Тарифы", "Настройки календаря"], cluster: "host" },
-  ACCOUNTS: { name: "👤 Гостевые аккаунты", suggestedSheetId: 203, aliases: ["👤 Гостевые аккаунты", "Гостевые аккаунты", "Аккаунты гостей", "Гости"], cluster: "host" },
-  ORDERS: { name: "💳 Заказы услуг и гидов", suggestedSheetId: 205, aliases: ["💳 Заказы услуг и гидов", "Заказы услуг и гидов", "Заказы", "Заказы услуг"], cluster: "host" },
+  BOOKINGS: { name: "📋 Заявки и Бронирования", suggestedSheetId: 201, aliases: ["📋 Заявки и Бронирования", "Заявки и Бронирования", "Заявки на бронирование", "Бронирования", "Заявки", "Вилла"], cluster: "host", minWidths: [120, 180, 160, 120, 120, 100, 140, 140, 140, 140, 160, 200] },
+  CALENDAR: { name: "📅 Календарь и Тарифы", suggestedSheetId: 202, aliases: ["📅 Календарь и Тарифы", "Календарь и Тарифы", "Календарь и Занятость", "Календарь", "Тарифы", "Настройки календаря"], cluster: "host", minWidths: [120, 140, 140, 140, 180, 160, 140, 140, 160] },
+  ACCOUNTS: { name: "👤 Гостевые аккаунты", suggestedSheetId: 203, aliases: ["👤 Гостевые аккаунты", "Гостевые аккаунты", "Аккаунты гостей", "Гости"], cluster: "host", minWidths: [120, 180, 160, 180, 160, 140, 140, 100] },
+  ORDERS: { name: "💳 Заказы услуг и гидов", suggestedSheetId: 205, aliases: ["💳 Заказы услуг и гидов", "Заказы услуг и гидов", "Заказы", "Заказы услуг"], cluster: "host", minWidths: [120, 160, 180, 220, 120, 140, 140, 160, 200] },
 
   // Кластер 3: Бэк-офис, Шаблоны и Системный SSOT [5 листов]
-  ACCESS: { name: "🎟️ Доступы к путеводителям", suggestedSheetId: 206, aliases: ["🎟️ Доступы к путеводителям", "Доступы к путеводителям", "Доступы к гидам", "Доступы"], cluster: "host" },
-  TEMPLATES: { name: "💬 Шаблоны сообщений", suggestedSheetId: 207, aliases: ["💬 Шаблоны сообщений", "Шаблоны сообщений", "Шаблоны", "Быстрые ответы"], cluster: "host" },
-  SETTINGS: { name: "⚙️ Системные настройки ИИ Агентов", suggestedSheetId: 209, aliases: ["⚙️ Системные настройки ИИ Агентов", "Системные настройки ИИ Агентов", "Системные настройки", "Настройки ИИ", "🔑 Управление доступом", "Управление доступом", "MasterAccount", "🧩 Словарь переменных", "Словарь переменных"], cluster: "system" },
-  TASKS: { name: "📋 Задачи и Поручения Секретаря", suggestedSheetId: 210, aliases: ["📋 Задачи и Поручения Секретаря", "Задачи и Поручения Секретаря", "Задачи Секретаря", "Поручения Секретаря", "Задачи и Поручения"], cluster: "host" },
-  KNOWLEDGE_GRAPH: { name: "🧠 Граф Знаний и Безопасность", suggestedSheetId: 211, aliases: ["🧠 Граф Знаний и Безопасность", "Граф Знаний и Безопасность", "Граф Знаний", "KnowledgeGraph", "Безопасность", "Security"], cluster: "system" }
+  ACCESS: { name: "🎟️ Доступы к путеводителям", suggestedSheetId: 206, aliases: ["🎟️ Доступы к путеводителям", "Доступы к путеводителям", "Доступы к гидам", "Доступы"], cluster: "host", minWidths: [140, 160, 200, 180, 220, 180, 160, 100] },
+  TEMPLATES: { name: "💬 Шаблоны сообщений", suggestedSheetId: 207, aliases: ["💬 Шаблоны сообщений", "Шаблоны сообщений", "Шаблоны", "Быстрые ответы"], cluster: "host", minWidths: [160, 180, 240, 420, 420, 420, 180, 100] },
+  SETTINGS: { name: "⚙️ Системные настройки ИИ Агентов", suggestedSheetId: 209, aliases: ["⚙️ Системные настройки ИИ Агентов", "Системные настройки ИИ Агентов", "Системные настройки", "Настройки ИИ", "🔑 Управление доступом", "Управление доступом", "MasterAccount", "🧩 Словарь переменных", "Словарь переменных"], cluster: "system", minWidths: [180, 200, 260, 260, 200, 100] },
+  TASKS: { name: "📋 Задачи и Поручения Секретаря", suggestedSheetId: 210, aliases: ["📋 Задачи и Поручения Секретаря", "Задачи и Поручения Секретаря", "Задачи Секретаря", "Поручения Секретаря", "Задачи и Поручения"], cluster: "host", minWidths: [140, 180, 320, 160, 140, 140, 200] },
+  KNOWLEDGE_GRAPH: { name: "🧠 Граф Знаний и Безопасность", suggestedSheetId: 211, aliases: ["🧠 Граф Знаний и Безопасность", "Граф Знаний и Безопасность", "Граф Знаний", "KnowledgeGraph", "Безопасность", "Security"], cluster: "system", minWidths: [160, 200, 350, 200, 160, 100, 100] }
 };
 
 /**
@@ -68,6 +68,7 @@ function onOpen() {
 
     var sheetManagerMenu = ui.createMenu("🧭 1. Листы таблицы: быстрый переход и режимы фокуса")
       .addItem("🌟 Показать все вкладки", "applyPresetAllOpen")
+      .addItem("✨ Автоформатирование всех листов таблицы CRM", "autoFormatAllSheetsInteractive")
       .addSeparator()
       .addSubMenu(focusMenu)
       .addSubMenu(jumpMenu)
@@ -240,6 +241,26 @@ function findSheetByConfigKey(ss, configKey) {
 }
 
 /**
+ * Обратный поиск ключа конфигурации VILLA_SHEETS_CONFIG по объекту листа
+ */
+function getConfigKeyBySheet_(ss, sheet) {
+  if (!sheet) return null;
+  var sId = sheet.getSheetId();
+  var sName = sheet.getName().trim().toLowerCase();
+  for (var key in VILLA_SHEETS_CONFIG) {
+    var cfg = VILLA_SHEETS_CONFIG[key];
+    if (cfg.suggestedSheetId && cfg.suggestedSheetId === sId) return key;
+    if (cfg.name && cfg.name.toLowerCase() === sName) return key;
+    if (cfg.aliases) {
+      for (var a = 0; a < cfg.aliases.length; a++) {
+        if (cfg.aliases[a].toLowerCase() === sName) return key;
+      }
+    }
+  }
+  return null;
+}
+
+/**
  * Базовый исполнитель пресетов видимости листов.
  */
 function applyVisibilityPreset(targetConfigKeys, presetTitle) {
@@ -360,9 +381,9 @@ function applyPresetSettings() {
 function sortSheetsCanonically() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var canonicalOrder = [
-    "HOME", "GALLERY", "SERVICES", "GUIDES", "LEGAL",
-    "BOOKINGS", "CALENDAR", "ACCOUNTS", "ORDERS",
-    "ACCESS", "TEMPLATES", "SETTINGS", "TASKS", "KNOWLEDGE_GRAPH"
+    "HOME", "GALLERY", "LEGAL", "ACCESS", "TEMPLATES", "SETTINGS",
+    "TASKS", "KNOWLEDGE_GRAPH", "ACCOUNTS", "SERVICES", "GUIDES",
+    "BOOKINGS", "CALENDAR", "ORDERS"
   ];
 
   var currentIndex = 1;
@@ -375,7 +396,7 @@ function sortSheetsCanonically() {
     }
   }
 
-  SpreadsheetApp.getActive().toast("Вкладки упорядочены: Витрина ➔ CRM ➔ Настройки", "📑 Сортировка завершена", 5);
+  SpreadsheetApp.getActive().toast("Вкладки упорядочены по каноническому реестру [1..14]", "📑 Сортировка завершена", 5);
 }
 
 /** Пакетное авто-переименование в понятный русский стандарт */
@@ -397,6 +418,115 @@ function renameSheetsToRussianStandard() {
   }
 
   SpreadsheetApp.getActive().toast("Обновлено названий листов: " + renamedCount, "🏷️ Русская локализация", 5);
+}
+
+/**
+ * Комплексное автоформатирование всех листов CRM: дизайн, шапки, пастель, минимальная ширина колонок
+ */
+function autoFormatAllSheetsInteractive() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ui = SpreadsheetApp.getUi();
+  var formattedList = [];
+
+  // 16 пастельных тонов для мягкого зонирования Листа 1 [HOME]
+  var pastelPalette = [
+    '#eff6ff', // 1. Главный экран : светло-небесный
+    '#f0fdf4', // 2. Фото : нежно-мятный
+    '#fefce8', // 3. Параметры : мягкий кремовый
+    '#fff7ed', // 4. О вилле : светлый персик
+    '#fdf2f8', // 5. Спальни : нежно-розовый
+    '#f5f3ff', // 6. Удобства : светло-лавандовый
+    '#ecfdf5', // 7. Отзывы : нежный изумруд
+    '#f0f9ff', // 8. Локация : лазурный бриз
+    '#fef2f2', // 9. Хозяин : светло-коралловый
+    '#fffbeb', // 10. Ориентиры : теплый янтарь
+    '#f0fdfa', // 11. Спа и Бассейн : аквамарин
+    '#f8fafc', // 12. Безопасность : платиновый
+    '#f1f5f9', // 13. Словарь интерфейса : легкий дымчатый
+    '#faf5ff', // 14. Словарь бронирования : светлая орхидея
+    '#f3f4f6', // 15. Словарь отзывов : нейтральный лед
+    '#fff1f2'  // 16. Словарь чата : нежная роза
+  ];
+
+  var keys = Object.keys(VILLA_SHEETS_CONFIG);
+  for (var k = 0; k < keys.length; k++) {
+    var key = keys[k];
+    var cfg = VILLA_SHEETS_CONFIG[key];
+    var sheet = findSheetByConfigKey(ss, key);
+    if (!sheet) continue;
+
+    var lastRow = sheet.getLastRow();
+    var lastCol = sheet.getLastColumn();
+    if (lastCol < 1) continue;
+
+    // 1. Форматирование шапки: темно-синий фон #1e293b, белый жирный текст, высота 35, закрепление
+    var headerRange = sheet.getRange(1, 1, 1, lastCol);
+    headerRange.setBackground('#1e293b');
+    headerRange.setFontColor('#ffffff');
+    headerRange.setFontWeight('bold');
+    headerRange.setFontSize(10);
+    headerRange.setHorizontalAlignment('center');
+    headerRange.setVerticalAlignment('middle');
+    headerRange.setWrapStrategy(SpreadsheetApp.WrapStrategy.WRAP);
+    sheet.setRowHeight(1, 35);
+    sheet.setFrozenRows(1);
+
+    // 2. Установка ширины колонок с защитным минимальным порогом
+    var minWidths = cfg.minWidths || [];
+    for (var c = 1; c <= lastCol; c++) {
+      sheet.autoResizeColumn(c);
+      var minW = minWidths[c - 1] || 100;
+      if (sheet.getColumnWidth(c) < minW) {
+        sheet.setColumnWidth(c, minW);
+      }
+    }
+
+    // 3. Выравнивание данных в строках
+    if (lastRow > 1) {
+      var dataRange = sheet.getRange(2, 1, lastRow - 1, lastCol);
+      dataRange.setVerticalAlignment('middle');
+
+      // Специальное пастельное зонирование 16 блоков для Листа 1 [HOME]
+      if (key === 'HOME') {
+        var colAValues = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
+        var currentBlockIdx = 0;
+        var blockStartRow = 2;
+        var lastBlockName = colAValues[0][0] ? String(colAValues[0][0]).trim() : '';
+
+        for (var r = 0; r < colAValues.length; r++) {
+          var rowName = colAValues[r][0] ? String(colAValues[r][0]).trim() : '';
+          var isLast = (r === colAValues.length - 1);
+
+          if (rowName !== lastBlockName || isLast) {
+            var rowCount = isLast ? (r - (blockStartRow - 2) + 1) : (r - (blockStartRow - 2));
+            if (rowCount > 0) {
+              var color = pastelPalette[currentBlockIdx % pastelPalette.length];
+              var blockRange = sheet.getRange(blockStartRow, 1, rowCount, lastCol);
+              blockRange.setBackground(color);
+              blockRange.setFontColor('#0f172a');
+            }
+            if (!isLast) {
+              currentBlockIdx++;
+              blockStartRow = r + 2;
+              lastBlockName = rowName;
+            }
+          }
+        }
+      }
+    }
+
+    formattedList.push(sheet.getName());
+  }
+
+  var report = "✨ АВТОФОРМАТИРОВАНИЕ ЛИСТОВ CRM ЗАВЕРШЕНО:\n\n" +
+    "Успешно обработано листов: " + formattedList.length + "\n\n" +
+    "Примененные стандарты:\n" +
+    "1. Темная шапка #1e293b, белый жирный шрифт, высота 35px, закрепление строки 1\n" +
+    "2. Защитные минимальные ширины колонок из реестра архитектуры\n" +
+    "3. Мягкое пастельное зонирование 16 блоков витрины с контрастным шрифтом #0f172a\n" +
+    "4. Вертикальное центрирование и автоперенос строк WRAP";
+
+  ui.alert("Автоформатирование листов", report, ui.ButtonSet.OK);
 }
 
 /** Справка по менеджеру и навигатору листов */
@@ -1007,7 +1137,7 @@ function showSheetsPassportModal() {
 /**
  * Единое эталонное форматирование темной шапки таблицы
  */
-function styleSheetHeader_(sheet, headers, frozenRows) {
+function styleSheetHeader_(sheet, headers, frozenRows, minWidths) {
   if (!sheet || !headers) return;
   var range = sheet.getRange(1, 1, 1, headers.length);
   range.setValues([headers]);
@@ -1020,8 +1150,23 @@ function styleSheetHeader_(sheet, headers, frozenRows) {
   range.setWrapStrategy(SpreadsheetApp.WrapStrategy.WRAP);
   sheet.setRowHeight(1, 35);
   if (frozenRows) sheet.setFrozenRows(frozenRows);
+
+  if (!minWidths) {
+    try {
+      var ss = sheet.getParent();
+      var cfgKey = getConfigKeyBySheet_(ss, sheet);
+      if (cfgKey && VILLA_SHEETS_CONFIG[cfgKey] && VILLA_SHEETS_CONFIG[cfgKey].minWidths) {
+        minWidths = VILLA_SHEETS_CONFIG[cfgKey].minWidths;
+      }
+    } catch (e) {}
+  }
+
   for (var c = 1; c <= headers.length; c++) {
     sheet.autoResizeColumn(c);
+    var minW = (minWidths && minWidths[c - 1]) ? minWidths[c - 1] : 100;
+    if (sheet.getColumnWidth(c) < minW) {
+      sheet.setColumnWidth(c, minW);
+    }
   }
 }
 

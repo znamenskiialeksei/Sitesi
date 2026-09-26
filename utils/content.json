@@ -17,7 +17,7 @@
       "desc": "Подзаголовок виллы под главным заголовком",
       "ru": "Премиальная вилла 240 м² в Дальяне. Приватный бассейн с соленой водой 36 м², уличное джакузи, 4 спальни, 10 спальных мест, 250 м до центра.",
       "en": "A premium 240 m² villa in Dalyan. A private 36 m² saltwater pool, an outdoor jacuzzi, 4 bedrooms, sleeps 10, and is 250 m from the center.",
-      "tr": "Dalyan'da 240 m²'lik birinci sınıf bir villa. 36 m²'lik özel tuzlu su havuzu, açık jakuzi, 4 yatak odası, 10 kişiye kadar konaklama kapasitesi ve merkeze 250 metre mesafede yer almaktadır.",
+      "tr": "Dalyan'da 240 m²'lik birinci sınıf bir villa. 36 m²'lik özel tuzlu su havuzu, açık hava jakuzisi, 4 yatak odası, 10 kişiye kadar konaklama kapasitesi ve merkeze 250 metre mesafede yer almaktadır.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -114,7 +114,7 @@
       "block": "2. Характеристики",
       "key": "host_specs_name",
       "desc": "Отображаемое имя владельца виллы",
-      "ru": "Алексей Знаменский",
+      "ru": "Aleksei Znamenskii",
       "en": "Alexey Znamensky",
       "tr": "Alexey Znamensky",
       "media": "",
@@ -302,8 +302,8 @@
       "key": "about_sec_1_text",
       "desc": "Модальное окно: Раздел 1 Текст",
       "ru": "Dalyan Turaman [частный бассейн, 10 спальных мест] - это цифровая веб-платформа прямого онлайн-бронирования двухэтажной виллы премиум-класса в экологическом заповедном курорте Дальян [район Ортаджа, провинция Мугла, Турция], расположенном между рекой Дальян и озером Кёйджегиз.\n\nОфициальный адрес и навигация:\n* Адрес виллы: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Turkey.\n* Ссылка на геолокацию в Google Maps: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n* Точные координаты GPS: 36.8336° N, 28.6439° E.\n\nПолный реестр ключевых географических ориентиров:\n* Пешеходный центр Дальяна: всего 250 метров [3 минуты пешком] до главной пешеходной улицы с магазинами, рынками, аптеками и сувенирными лавками.\n* Речная набережная реки Дальян: 400 метров для утренних пробежек, вечерних прогулок и наблюдения за речными лодками.\n* Гастрономия: популярный ресторан высокой кухни La Boheme Dalyan - 350 метров; традиционный рыбный ресторан Çiçek Restoran - 500 метров.\n* Ликийские скальные гробницы королей Кауноса [IV век до н.э.]: панорамный вид с набережной Дальяна [450 метров], вечерняя подсветка скал и 10 минут на лодке.\n* Античный город Каунос, древний акрополь и амфитеатр: 1.5 км [переправа на весельной лодке через реку Дальян и пеший маршрут].\n* Всемирно известный песчаный пляж Изтузу [İztuzu]: 11 км [около 15 минут на машине или 30-40 минут на живописном речном катере-такси через лабиринты камышей]. Заповедная зона обитания гигантских морских черепах Caretta-Caretta.\n* Термальные радоновые источники и омолаживающие грязи Султание [Sultaniye Kaplıcaları]: 4 км по воде на озере Кёйджегиз.\n* Озеро Кёйджегиз [Köyceğiz Gölü]: 5 км до выхода из русла реки в открытую озерную акваторию.\n* Смотровая площадка Радар [Radar Tepesi]: 8 км [панорамный обзор 360° на всю дельту реки, озеро и косу пляжа Изтузу с высоты 500 метров].\n* Международный аэропорт Даламан [DLM]: 30 км [25-30 минут на машине или индивидуальном трансфере].\n* Субботний фермерский рынок Дальяна: 600 метров [свежие фермерские сыры, оливки, гранатовый сок, инжир и фрукты].\n* Морские курорты: город Мармарис - 85 км, город Фетхие и бухта Олюдениз - 60 км.",
-      "en": "Dalyan Turaman [private pool, sleeps 10] is a digital web platform for direct online booking of a premium, two-story villa in the eco-reserve resort of Dalyan [Ortaca district, Muğla Province, Turkey], located between the Dalyan River and Lake Köyceğiz.\n\nOfficial address and navigation:\n* Villa address: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Turkey.\n* Google Maps geolocation link: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n* Exact GPS coordinates: 36.8336° N, 28.6439° E.\n\nFull list of key geographical landmarks:\n* Dalyan Pedestrian Center: just 250 meters [3-minute walk] to the main pedestrian street with shops, markets, pharmacies, and souvenir shops.\n* Dalyan River Promenade: 400 meters for morning jogs, evening strolls, and boat watching.\n* Cuisine: popular fine dining restaurant La Boheme Dalyan - 350 meters; traditional fish restaurant Çiçek Restoran - 500 meters.\n* Lycian Rock Tombs of the Kings of Kaunos [4th century BC]: panoramic view from the Dalyan waterfront [450 meters], evening cliff illumination, and a 10-minute boat ride.\n* Ancient City of Kaunos, ancient acropolis, and amphitheater: 1.5 km [rowboat crossing the Dalyan River and hiking trail].\n* World-famous sandy beach of Iztuzu: 11 km [about 15 minutes by car or 30-40 minutes by scenic river taxi through a labyrinth of reeds]. Protected habitat of the giant Caretta-Caretta sea turtles.\n* Thermal radon springs and rejuvenating mud of Sultaniye: 4 km by boat on Lake Köyceğiz. * Köyceğiz Lake [Köyceğiz Gölü]: 5 km before leaving the riverbed for the open lake.\n* Radar Viewpoint [Radar Tepesi]: 8 km [360° panoramic view of the entire river delta, lake, and Iztuzu Beach spit from an altitude of 500 meters].\n* Dalaman International Airport [DLM]: 30 km [25-30 minutes by car or private transfer].\n* Dalyan Saturday Farmers' Market: 600 meters [fresh farm cheeses, olives, pomegranate juice, figs, and fruit].\n* Seaside resorts: Marmaris - 85 km, Fethiye and Ölüdeniz Bay - 60 km.",
-      "tr": "Dalyan Turaman [özel havuz, 10 kişi kapasiteli], Dalyan Nehri ve Köyceğiz Gölü arasında yer alan Dalyan'daki [Ortaca ilçesi, Muğla ili, Türkiye] ekolojik rezerv alanında bulunan birinci sınıf, iki katlı bir villanın doğrudan çevrimiçi rezervasyonu için dijital bir web platformudur.\n\nResmi adres ve yol tarifi:\n* Villa adresi: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Türkiye.\n\n* Google Haritalar konum bağlantısı: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n* Tam GPS koordinatları: 36.8336° K, 28.6439° D.\n\nÖnemli coğrafi yer işaretlerinin tam listesi:\n* Dalyan Yaya Merkezi: Mağazaların, pazarların, eczanelerin ve hediyelik eşya dükkanlarının bulunduğu ana yaya caddesine sadece 250 metre [3 dakikalık yürüme mesafesi].\n* Dalyan Nehri Gezinti Yolu: Sabah koşuları, akşam yürüyüşleri ve tekne izleme için 400 metre.\n\n* Mutfak: Popüler lüks restoran La Boheme Dalyan - 350 metre; geleneksel balık restoranı Çiçek Restoran - 500 metre.\n\n* Kaunos Krallarının Likya Kaya Mezarları [MÖ 4. yüzyıl]: Dalyan kıyısından panoramik manzara [450 metre], akşam kaya aydınlatması ve 10 dakikalık tekne yolculuğu.\n\n* Kaunos Antik Kenti, antik akropolis ve amfitiyatro: 1,5 km [Dalyan Nehri'ni kürekli tekneyle geçme ve yürüyüş parkuru].\n\n* Dünyaca ünlü İztuzu kumlu plajı: 11 km [arabayla yaklaşık 15 dakika veya sazlık labirentinden geçen manzaralı nehir taksisiyle 30-40 dakika]. Dev Caretta-Caretta deniz kaplumbağalarının koruma altındaki yaşam alanı.\n* Sultaniye'nin termal radon kaynakları ve gençleştirici çamuru: Köyceğiz Gölü'nde tekneyle 4 km. * Köyceğiz Gölü: Nehir yatağından açık göle geçmeden 5 km önce.\n\n* Radar Gözlem Noktası: 8 km [500 metre yükseklikten tüm nehir deltası, göl ve İztuzu Plajı'nın 360° panoramik manzarası].\n\n* Dalaman Uluslararası Havalimanı: 30 km [araba veya özel transferle 25-30 dakika].\n\n* Dalyan Cumartesi Çiftçi Pazarı: 600 metre [taze çiftlik peynirleri, zeytin, nar suyu, incir ve meyve].\n\n* Sahil beldeleri: Marmaris - 85 km, Fethiye ve Ölüdeniz Koyu - 60 km.",
+      "en": "Dalyan Turaman [private pool, sleeps 10] is a digital web platform for direct online booking of a premium, two-story villa in the eco-reserve resort of Dalyan [Ortaca district, Muğla Province, Turkey], located between the Dalyan River and Lake Köyceğiz.\n\nOfficial address and navigation:\n* Villa address: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Turkey.\n* Google Maps geolocation link: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n* Exact GPS coordinates: 36.8336° N, 28.6439° E.\n\nFull list of key geographical landmarks:\n* Dalyan Pedestrian Center: just 250 meters (3-minute walk) to the main pedestrian street with shops, markets, pharmacies, and souvenir shops.\n* Dalyan River Promenade: 400 meters for morning jogs, evening strolls, and boat watching.\n* Cuisine: popular fine dining restaurant La Boheme Dalyan - 350 meters; traditional fish restaurant Çiçek Restoran - 500 meters.\n* Lycian Rock Tombs of the Kings of Kaunos [4th century BC]: panoramic view from the Dalyan waterfront [450 meters], evening cliff illumination, and a 10-minute boat ride.\n* Ancient City of Kaunos, ancient acropolis, and amphitheater: 1.5 km [rowboat crossing the Dalyan River and hiking trail].\n* World-famous sandy beach of Iztuzu: 11 km [about 15 minutes by car or 30-40 minutes by scenic river taxi through a labyrinth of reeds]. Protected habitat of the giant Caretta-Caretta sea turtles.\n* Thermal radon springs and rejuvenating mud of Sultaniye: 4 km by boat on Lake Köyceğiz. * Köyceğiz Lake [Köyceğiz Gölü]: 5 km before leaving the riverbed for the open lake.\n* Radar Viewpoint [Radar Tepesi]: 8 km [360° panoramic view of the entire river delta, lake, and Iztuzu Beach spit from an altitude of 500 meters].\n* Dalaman International Airport [DLM]: 30 km [25-30 minutes by car or private transfer].\n* Dalyan Saturday Farmers' Market: 600 meters [fresh farm cheeses, olives, pomegranate juice, figs, and fruit].\n* Seaside resorts: Marmaris - 85 km, Fethiye and Ölüdeniz Bay - 60 km.",
+      "tr": "Dalyan Turaman [özel havuz, 10 kişi kapasiteli], Dalyan Nehri ve Köyceğiz Gölü arasında yer alan Dalyan'daki [Ortaca ilçesi, Muğla ili, Türkiye] ekolojik rezerv alanında bulunan birinci sınıf, iki katlı bir villanın doğrudan çevrimiçi rezervasyonu için dijital bir web platformudur.\n\nResmi adres ve yol tarifi:\n* Villa adresi: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Türkiye.\n\n* Google Haritalar konum bağlantısı: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n* Tam GPS koordinatları: 36.8336° K, 28.6439° D.\n\nÖnemli coğrafi yer işaretlerinin tam listesi:\n* Dalyan Yaya Merkezi: Mağazaların, pazarların, eczanelerin ve hediyelik eşya dükkanlarının bulunduğu ana yaya caddesine sadece 250 metre (3 dakikalık yürüme mesafesi).\n* Dalyan Nehri Gezinti Yolu: Sabah koşuları, akşam yürüyüşleri ve tekne izleme için 400 metre.\n\n* Mutfak: Popüler lüks restoran La Boheme Dalyan - 350 metre; geleneksel balık restoranı Çiçek Restoran - 500 metre.\n\n* Kaunos Krallarının Likya Kaya Mezarları [MÖ 4. yüzyıl]: Dalyan kıyısından panoramik manzara [450 metre], akşam kaya aydınlatması ve 10 dakikalık tekne yolculuğu.\n\n* Kaunos Antik Kenti, antik akropolis ve amfitiyatro: 1,5 km [Dalyan Nehri'ni kürekli tekneyle geçme ve yürüyüş parkuru].\n\n* Dünyaca ünlü İztuzu kumlu plajı: 11 km [arabayla yaklaşık 15 dakika veya sazlık labirentinden geçen manzaralı nehir taksisiyle 30-40 dakika]. Dev Caretta-Caretta deniz kaplumbağalarının koruma altındaki yaşam alanı.\n* Sultaniye'nin termal radon kaynakları ve gençleştirici çamuru: Köyceğiz Gölü'nde tekneyle 4 km. * Köyceğiz Gölü: Nehir yatağından açık göle geçmeden 5 km önce.\n\n* Radar Gözlem Noktası: 8 km [500 metre yükseklikten tüm nehir deltası, göl ve İztuzu Plajı'nın 360° panoramik manzarası].\n\n* Dalaman Uluslararası Havalimanı: 30 km [araba veya özel transferle 25-30 dakika].\n\n* Dalyan Cumartesi Çiftçi Pazarı: 600 metre [taze çiftlik peynirleri, zeytin, nar suyu, incir ve meyve].\n\n* Sahil beldeleri: Marmaris - 85 km, Fethiye ve Ölüdeniz Koyu - 60 km.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -346,8 +346,8 @@
       "key": "about_sec_3_text",
       "desc": "Модальное окно: Раздел 3 Текст",
       "ru": "Приватный бассейн с соленой водой: чаша 4×9 метров [площадь 36 кв. м], постоянная глубина 150 см. Без запаха хлора. Доступен с 1 мая по 1 ноября. Чистка в день заселения и каждые 7 дней. Подсветка бассейна: 20:00 - 01:00.\nУличное приватное джакузи: на 4 персоны, автоматический цикл [15 минут работы каждые 45 минут в период 10:00 - 17:00]. Подсветка джакузи: 20:00 - 01:00. Сезон: 1 мая - 1 ноября.\nОсвещение территории: автоматическое [20:00 - 01:00 и 04:00 - 06:00].\nПарковка: бесплатная закрытая частная парковка на территории на 2 авто.\nОткрытые зоны отдыха: огороженный сад, барбекю [BBQ], крыльцо с кофейными столиками, обеденный стол на 8 мест, шезлонги и летний душ.",
-      "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor seating areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
-      "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava oturma alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır.",
+      "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor recreation areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
+      "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava dinlenme alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -389,9 +389,9 @@
       "block": "4. О вилле",
       "key": "about_sec_5_text",
       "desc": "Модальное окно: Раздел 5 Текст",
-      "ru": "Владелец: Алексей Знаменский [Aleksei Znamenskii]. Проживает в Мармарисе, яхтсмен на пенсии. Жизненное кредо: «Хочешь сделать хорошо - сделай сам». Мечта: отправиться в Португалию и увидеть океан. Хобби: велоспорт, парусный спорт, природа. Штампы путешествий: Дубай [3 поездки], Абу-Даби [март 2026 г.]. Языки: русский, английский, турецкий. Налоговые реквизиты: Ortaca Vergi Dairesi, VKN: 9991120181.",
-      "en": "Owner: Aleksei Znamenskii. Lives in Marmaris, retired yachtsman. Life motto: \"If you want something done right, do it yourself.\" Dream: to go to Portugal and see the ocean. Hobbies: cycling, sailing, nature. Travel highlights: Dubai [3 trips], Abu Dhabi [March 2026]. Languages: Russian, English, Turkish. Tax details: Ortaca Vergi Dairesi, VKN: 9991120181.",
-      "tr": "Sahibi: Aleksei Znamenskii. Marmaris'te yaşıyor, emekli yatçı. Hayat felsefesi: \"Bir şeyin doğru yapılmasını istiyorsanız, kendiniz yapın.\" Hayali: Portekiz'e gidip okyanusu görmek. Hobileri: bisiklet, yelken, doğa. Seyahat deneyimleri: Dubai [3 gezi], Abu Dabi [Mart 2026]. Diller: Rusça, İngilizce, Türkçe. Vergi bilgileri: Ortaca Vergi Dairesi, VKN: 9991120181.",
+      "ru": "Владелец: Алексей Знаменский [Aleksei Znamenskii]. Проживает в Мармарисе, яхтсмен на пенсии. Жизненное кредо: «Хочешь сделать хорошо - сделай сам». Мечта: отправиться в Португалию и увидеть океан. Хобби: велоспорт, парусный спорт, природа. Штампы путешествий: Дубай [3 поездки], Абу-Даби [март 2026 г.]. Языки: русский, английский, турецкий. Налоговые реквизиты: Ortaca Vergi Dairesi, VKN: 9991120181.\nМастер-доступ суперхозяина: villaturaman@gmail.com, логин admin / пароль admin123, роль: Владелец [Финансы, Периоды, Блокировки, Окно брони, Чаты].",
+      "en": "Owner: Aleksei Znamenskii. Lives in Marmaris, retired yachtsman. Life motto: \"If you want something done right, do it yourself.\" Dream: to go to Portugal and see the ocean. Hobbies: cycling, sailing, nature. Travel stamps: Dubai [3 trips], Abu Dhabi [March 2026]. Languages: Russian, English, Turkish. Tax details: Ortaca Vergi Dairesi, VKN: 9991120181.\nSuperhost master access: villaturaman@gmail.com, login admin / password admin123, role: Owner [Finances, Periods, Blocks, Booking Window, Chats].",
+      "tr": "Sahibi: Aleksei Znamenskii. Marmaris'te yaşıyor, emekli yatçı. Hayat felsefesi: \"Bir şeyin doğru yapılmasını istiyorsanız, kendiniz yapın.\" Hayali: Portekiz'e gidip okyanusu görmek. Hobileri: bisiklet, yelken, doğa. Seyahat damgaları: Dubai [3 gezi], Abu Dhabi [Mart 2026]. Diller: Rusça, İngilizce, Türkçe. Vergi bilgileri: Ortaca Vergi Dairesi, VKN: 9991120181.\nSüper ev sahibi ana erişimi: villaturaman@gmail.com, kullanıcı adı admin / şifre admin123, rol: Sahip [Finans, Dönemler, Bloklar, Rezervasyon Penceresi, Sohbetler].",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -400,9 +400,9 @@
       "block": "4. О вилле",
       "key": "about_sec_6_title",
       "desc": "Модальное окно: Раздел 6 Заголовок",
-      "ru": "6. Морские экспедиции: Собственная парусно-моторная яхта BAVARIA C45",
-      "en": "6. Sea expeditions: Own sailing yacht BAVARIA C45",
-      "tr": "6. Deniz seferleri: BAVARIA C45 yelkenli yat",
+      "ru": "6. Возможна прогулка на морской яхте",
+      "en": "6. A trip on a sea yacht is possible",
+      "tr": "6. Deniz yatıyla seyahat mümkündür.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -411,9 +411,9 @@
       "block": "4. О вилле",
       "key": "about_sec_6_text",
       "desc": "Модальное окно: Раздел 6 Текст",
-      "ru": "Яхта произведена в Германии в 2022 году.\nМодель: BAVARIA C45. На площади более 60 м² организовано уютное и комфортное пространство для морских путешествий.\n\nКаюты и спальные места:\n* Три отдельные двухместные каюты: в каждой каюте установлена комфортная кровать 140 см на 200 см.\n* Просторный салон: стол-трансформер раскладывается в полноценное двуспальное место 140 см на 200 см.\n* Кокпит: столы трансформируются в широкие лежаки, где два взрослых человека комфортно разместятся на ночевку или во время вахты.\n* Итоговая вместимость: 10 полноценных спальных мест.\n\nУдобства и санитарный комплекс:\n* Постоянное горячее и холодное водоснабжение.\n* Два туалета с электрической системой слива, каждый оборудован баком-накопителем по 70 литров.\n* Две закрытые душевые кабинки внутри и один открытый душ с теплой водой на откидной платформе для купания.\n\nКамбуз и кухня:\n* Два вместительных холодильника и отдельная глубокая морозильная камера.\n* Газовая плита, духовой шкаф, посудомоечная машина, кофемашина, полный набор посуды и кухонной техники.\n* Возможность самостоятельного приготовления блюд либо организация авторского кейтеринга нашей командой.\n\nАвтономность и комфорт в дальних переходах:\n* Бортовой дизельный генератор и мощные солнечные батареи на палубе.\n* Две затененные зоны отдыха под защитными навесами и просторные открытые зоны для загара.\n* Откидная кормовая платформа для купания с удобной безопасной системой спуска в воду.\n\nТехнические параметры судна:\n* Общая длина: 14.06 м. Ширина корпуса: 4.49 м. Осадка [киль]: 2.60 м. Вес балласта: 2984 кг.\n* Запас топлива: 250 литров. Резервуар для пресной воды: 650 литров.\n* Парусное вооружение: грот с закруткой 51.0 м², кливер 45.0 м², генуя 52.0 м². Высота мачты от ватерлинии: 22.00 м.\n* Категория плавания CE: А10/Б14/С16 [неограниченный морской район]. Дизайн корпуса: Cossutti Yacht Design.\n\nБезопасность и водные развлечения:\n* Полный регламентный комплект спасательных средств: 12 спасательных жилетов, спасательный плот на 10 человек, моторная надувная лодка [динги] на 6 человек.\n* Для активного отдыха на воде: надувной каяк, SUP-борд, ватрушка и профессиональные маски для подводного плавания.",
-      "en": "Built in Germany in 2022.\nModel: BAVARIA C45. Over 60 m² of meticulously designed space offers exceptional comfort for marine voyages.\n\nCabins & Berths:\n* Three private double cabins: each featuring a 140 cm x 200 cm bed.\n* Spacious salon: transformable dining table converts into a double bed [140 cm x 200 cm].\n* Cockpit: tables convert into wide daybeds accommodating two adults.\n* Total capacity: 10 berths.\n\nSanitary & Water Amenities:\n* Pressurized hot and cold water system.\n* Two electric flush toilets, each with dedicated 70-liter holding tanks.\n* Two interior shower stalls + outdoor freshwater shower on the swim platform.\n\nGalley & Kitchen:\n* Two refrigerators + separate deep freezer.\n* Gas stove, oven, dishwasher, espresso coffee machine, comprehensive cookware and tableware.\n* Self-catering or gourmet crew catering available.\n\nAutonomy & Deck Comfort:\n* Onboard diesel generator and high-efficiency solar panels.\n* Two bimini-shaded relaxation areas and generous open sun decks.\n* Hydraulic drop-down transom swim platform with easy ladder water access.\n\nTechnical Specifications:\n* LOA: 14.06 m. Beam: 4.49 m. Draft [keel]: 2.60 m. Ballast weight: 2984 kg.\n* Fuel capacity: 250 L. Fresh water capacity: 650 L.\n* Sails: furling mainsail 51.0 m², jib 45.0 m², genoa 52.0 m². Mast height from waterline: 22.00 m.\n* CE Category: A10/B14/C16 [unlimited ocean]. Yacht design: Cossutti Yacht Design.\n\nSafety & Water Sports:\n* 12 certified life jackets, 10-person liferaft, 6-person motorized dinghy.\n* Water equipment: inflatable kayak, SUP board, towable tube, and snorkeling masks.",
-      "tr": "2022 yılında Almanya'da inşa edilmiştir.\nModel: BAVARIA C45. 60 m²'den fazla alan, deniz seferleri için olağanüstü konfor sunar.\n\nKabinler ve Yataklar:\n* Üç ayrı çift kişilik kabin: her birinde 140 cm x 200 cm yatak.\n* Geniş salon: 140 cm x 200 cm çift kişilik yatağa dönüşebilen masa.\n* Havuzluk: iki yetişkinin uyuyabileceği geniş güneşlenme şezlonglarına dönüşen masalar.\n* Toplam kapasite: 10 yatak.\n\nSıhhi Tesisat ve Su Donanımı:\n* Sıcak ve soğuk su sistemi.\n* Her biri 70 litrelik atık tankına sahip 2 elektrikli tuvalet.\n* İki kapalı duş kabini + katlanır yüzme platformunda açık tatlı su duşu.\n\nMutfak:\n* İki buzdolabı + ayrı derin dondurucu.\n* Gazlı ocak, fırın, bulaşık makinesi, kahve makinesi ve eksiksiz mutfak gereçleri.\n\nÖzerklik ve Güverte:\n* Jeneratör ve yüksek verimli güneş panelleri.\n* Gölgelikli oturma alanları ve geniş güneşlenme güvertesi.\n* Suya kolay iniş sağlayan katlanır yüzme platformu.\n\nTeknik Veriler:\n* Tam boy: 14.06 m. Genişlik: 4.49 m. Su çekimi: 2.60 m. Balast: 2984 kg.\n* Yakıt deposu: 250 L. Su deposu: 650 L.\n* Yelkenler: sarma ana yelken 51.0 m², flok 45.0 m², cenova 52.0 m².\n* CE Kategorisi: A10/B14/C16 [sınırsız deniz]. Tasarım: Cossutti Yacht Design.\n\nGüvenlik ve Su Sporları:\n* 12 can yeleği, 10 kişilik can salı, 6 kişilik motorlu bot.\n* Şişme kano, SUP tahtası, su simidi ve şnorkel maskeleri.",
+      "ru": "Яхта произведена в Германии в 2022 году. \nМодель BAVARIA C45. На площади более 60 м² организовано уютное пространство для путешествий.\nТри каюты, в каждой из них кровать 140 см на 200 см. Такое же спальное место [140 см на 200 см] можно организовать в салоне [стол трансформер]. В кокпите так же столы трансформируются в лежаки, где два взрослых человека комфортно разместятся на ночевку и вахту. Итого 10 спальных мест.\nХолодная и горячая вода присутствует. \nДва туалета с электрической системой слива оборудованы баком-накопителем по 70 литров каждый. Две душевые кабинки и один открытый душ на откидной платформе для купания. \nДва холодильника и отдельная морозильная камера, газовая плита, духовой шкаф, посудомоечная машина, посуда, кухонная техника с кофемашиной - к услугам тех, кто хочет отличиться на кухне и удивить команду. Так же возможно приготовление блюд нашей командой. \nДля дальних переходов на яхте имеется генератор и солнечные панели. \nДве зоны отдыха под навесами, а так же открытые зоны для загара на палубе яхты. \nДля купания откидная платформа имеет удобную систему спуска в воду. \nТехнические данные:\nОбщая длина 14,06 м. Ширина корпуса 4,49 м. Осадка [Киль] 2,60 м. Вес балласта [киль] 2,984 кг. Топливный бак 250 литров. Резервуар для воды 650 литров. Паруса: Грот [закрутка] 51,0 м². Кливер 45,0 м². Генуя 52,0 м². Длина мачты [макс.] от ватерлинии 22,00 м. Район плавания Категория CE А10/Б14/С16 [неограниченно]. Дизайн яхты Cossutti. Безопасность на яхте обеспечена необходимым комплектом: 12 спасательных жилетов, спасательный плот на 10 человек, динги с мотором на 6 человек и другое спасательное оборудование по регламенту. \nТак же на борту имеются: надувные каяк, саб, ватрушка и маски для подводного плавания, применяемые для водных развлечений.",
+      "en": "The yacht was built in Germany in 2022.\nModel BAVARIA C45. Over 60 m² of space offers a cozy space for exploring.\nThree cabins, each with a 140 cm x 200 cm bed. A similar berth (140 cm x 200 cm) can be arranged in the salon (transformable table). The cockpit tables also transform into sun loungers, comfortably accommodating two adults for overnight stays and watchkeeping. A total of 10 berths are provided.\nHot and cold running water is available.\nTwo toilets with electric flush systems are equipped with a 70-liter holding tank each. Two shower stalls and one outdoor shower on a fold-down bathing platform.\nTwo refrigerators and a separate freezer, a gas stove, oven, dishwasher, dishes, and kitchen appliances with a coffee machine are available for those who want to excel in the kitchen and impress the crew. Meals can also be prepared by the crew.\n\nFor long-distance cruising, the yacht is equipped with a generator and solar panels.\n\nTwo recreation areas under awnings, as well as open sunbathing areas on the yacht's deck, are available.\n\nFor swimming, a folding platform has a convenient launch system.\n\nTechnical data:\nOverall length: 14.06 m. Hull width: 4.49 m. Draft: 2.60 m. Ballast weight: 2.984 kg. Fuel tank: 250 liters. Water tank: 650 liters. Sails: Mainsail (furling): 51.0 m². Jib: 45.0 m². Genoa 52.0 m². Mast length [max.] from waterline 22.00 m. Sailing area Category CE A10/B14/C16 [unlimited]. Yacht design by Cossutti. Safety on board is ensured by the necessary equipment: 12 life jackets, a 10-person life raft, a 6-person motorized dinghy, and other required safety equipment. \nAlso on board are an inflatable kayak, a SUP, a tube, and snorkeling masks for water activities.",
+      "tr": "Yat, 2022 yılında Almanya'da inşa edilmiştir.\nBAVARIA C45 modeli. 60 m²'den fazla alan, keşif için rahat bir ortam sunmaktadır.\nHer biri 140 cm x 200 cm yatak bulunan üç kabin. Salonda (dönüştürülebilir masa) benzer bir yatak (140 cm x 200 cm) düzenlenebilir. Kokpit masaları ayrıca güneşlenme şezlonglarına dönüşerek, gece konaklamaları ve nöbet tutma için iki yetişkini rahatça ağırlayabilir. Toplam 10 yatak mevcuttur.\nSıcak ve soğuk akan su mevcuttur.\nHer biri 70 litrelik atık su tankına sahip elektrikli sifon sistemli iki tuvalet. İki duş kabini ve katlanır yüzme platformu üzerinde bir açık duş.\nMutfakta ustalaşmak ve mürettebatı etkilemek isteyenler için iki buzdolabı ve ayrı bir dondurucu, gazlı ocak, fırın, bulaşık makinesi, tabaklar ve kahve makinesi içeren mutfak aletleri mevcuttur. Yemekler mürettebat tarafından da hazırlanabilir.\n\nUzun mesafeli seyirler için yat, jeneratör ve güneş panelleriyle donatılmıştır.\n\nİki adet tente altında dinlenme alanı ve yatın güvertesinde açık güneşlenme alanları mevcuttur.\n\nYüzme için, kullanışlı bir fırlatma sistemine sahip katlanır bir platform bulunmaktadır.\n\nTeknik veriler:\nToplam uzunluk: 14,06 m. Gövde genişliği: 4,49 m. Su çekimi: 2,60 m. Balast ağırlığı: 2,984 kg. Yakıt deposu: 250 litre. Su deposu: 650 litre. Yelkenler: Ana yelken (sarmalı): 51,0 m². Flok: 45,0 m². Cenova: 52,0 m². Direk uzunluğu [maks.] su hattından 22,00 m. Yelken alanı Kategorisi CE A10/B14/C16 [sınırsız]. Yat tasarımı: Cossutti. Gemideki güvenlik, gerekli ekipmanlarla sağlanmaktadır: 12 can yeleği, 10 kişilik can salı, 6 kişilik motorlu bot ve diğer gerekli güvenlik ekipmanları.\n\nAyrıca gemide şişme kayak, SUP, tüp ve su aktiviteleri için şnorkel maskeleri de bulunmaktadır.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -422,9 +422,9 @@
       "block": "4. О вилле",
       "key": "about_sec_7_title",
       "desc": "Модальное окно: Раздел 7 Заголовок",
-      "ru": "7. Мобильный комфорт: Премиальный кемпер Adria Adora 673 PK и Тур «Всё»",
-      "en": "7. Mobile comfort: Premium camper Adria Adora 673 PK and 'Everything' Tour",
-      "tr": "7. Mobil konfor: Premium karavan Adria Adora 673 PK ve 'Her Şey' Turu",
+      "ru": "7. Возможно путешествие на кемпере",
+      "en": "7. Traveling by camper is possible",
+      "tr": "7. Karavanla seyahat mümkündür.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -433,9 +433,9 @@
       "block": "4. О вилле",
       "key": "about_sec_7_text",
       "desc": "Модальное окно: Раздел 7 Текст",
-      "ru": "Тур «Всё» - это возможность за 1 неделю неспешно отдохнуть, меняя ритм, стиль и локации отдыха. За это время вы прочувствуете невероятное природное разнообразие Турции и заповедного Дальяна.\n\nНазвание программы: Тур «Всё» [Вилла Turaman, яхта Vasilisa, кемпер Adria Adora, SUP, каяк, горные велосипеды].\n\nМаршрут и тайминг тура:\n* Дни 1 и 2: Villa Turaman [2 дня и 2 ночи]: индивидуальный трансфер из аэропорта, заселение на виллу после 16:00, вечерний променад по набережной Дальяна, ужин в ресторане. День 2: отдых на вилле, бассейн с соленой водой, лодочная экскурсия по реке, ловля голубых крабов, пляж Изтузу.\n* Дни 3 и 4: Яхта Vasilisa [2 дня и 1 ночь]: выезд в марину Мармариса в 06:00, посадка на яхту в 09:30. Переход по маршруту: Marmaris Yacht Marina - живописная бухта Ekincik. Ночевка на яхте под звездами.\n* Дни 4 и 5: Кемпер Adria Adora 673 PK [1 день и 2 ночи]: в 16:00 переход на моторной лодке на береговую линию бухты Ekincik, где в тишине соснового леса подготовлена стоянка премиум-каравана.\n* Дни 6 и 7: Возвращение на Villa Turaman [2 дня и 1 ночь]: финальный релакс, субботний фермерский рынок Дальяна, прощальный ужин, трансфер в аэропорт Даламан.\n\nОснащение кемпера Adria Adora 673 PK [производство Словения]:\n* Три раздельные спальные зоны: в передней части - двуспальная кровать с панорамным фронтальным окном; в середине - обеденная зона со столом-трансформером в большую кровать и оборудованная кухня; в задней части - изолированная комната с диваном и вторым спальным ярусом.\n* Полный климатический комфорт: автономное отопление и бойлер горячей воды, электрический теплый пол, кондиционер.\n* Энергонезависимость: увеличенный аккумулятор, солнечные батареи, бак чистой воды, бак для серой воды.\n* Кухня и быт: увеличенный холодильник, кухонная вытяжка, раздельный санузел с душем, комплекты посуды.\n* Для отдыха на природе: пляжная уличная мебель, уличный гриль BBQ со всеми принадлежностями, маски для снорклинга.",
-      "en": "The 'Everything' Tour is a premier 1-week curated journey blending luxury villa living, sailing, and scenic camper exploration across Turkey's Turquoise Coast.\n\nProgram Title: 'Everything' Tour [Villa Turaman, Yacht Vasilisa, Camper Adria Adora, SUP, kayak, bikes].\n\nItinerary Overview:\n* Days 1-2: Villa Turaman [2 days & 2 nights]: airport transfer, check-in after 16:00, Dalyan promenade walk, fine dining. Day 2: pool relaxation, Dalyan river boat tour, blue crab safari, Iztuzu Turtle Beach.\n* Days 3-4: Yacht Vasilisa [2 days & 1 night]: departure to Marmaris Marina at 06:00, embarkation at 09:30. Coastal cruise Marmaris - Ekincik Bay. Overnight anchored under the stars.\n* Days 4-5: Camper Adria Adora 673 PK [1 day & 2 nights]: dinghy transfer to a secluded pine-forest shoreline campsite at Ekincik Bay.\n* Days 6-7: Return to Villa Turaman [2 days & 1 night]: relaxing wrap-up, Saturday market, farewell dinner, transfer to Dalaman Airport [DLM].\n\nAdria Adora 673 PK Caravan Amenities [Made in Slovenia]:\n* Three separate sleeping zones: forward queen bed with panoramic window; central dining lounge converting into double bed + kitchen; rear kids lounge with sofa and bunk bed.\n* All-season comfort: heating system, hot water boiler, underfloor heating, air conditioning.\n* Autonomous power: high-capacity batteries, solar setup, fresh & grey water holding tanks.\n* Full kitchen, separate bathroom with shower, premium outdoor camping furniture and BBQ grill set.",
-      "tr": "'Her Şey' Turu, Türkiye'nin Turkuaz Kıyısında villa konaklaması, yatçılık ve karavan macerasını birleştiren 1 haftalık özel bir programdır.\n\nProgram Adı: 'Her Şey' Turu [Villa Turaman, Vasilisa Yat, Adria Adora Karavan, SUP, kano, bisikletler].\n\nTur Güzergahı:\n* 1-2. Günler: Villa Turaman [2 gün 2 gece]: havalimanı transferi, 16:00 sonrası giriş, Dalyan kordon yürüyüşü. 2. Gün: havuz keyfi, nehir tekne turu, mavi yengeç avı, İztuzu plajı.\n* 3-4. Günler: Vasilisa Yat [2 gün 1 gece]: Marmaris Marina'ya hareket, 09:30 biniş. Marmaris - Ekincik Koyu seyri ve yıldızlar altında konaklama.\n* 4-5. Günler: Adria Adora 673 PK Karavan [1 gün 2 gece]: Ekincik Koyu kıyısında çam ormanı içindeki özel donanımlı karavan alanında konaklama.\n* 6-7. Günler: Villa Turaman'a Dönüş [2 gün 1 gece]: veda akşam yemeği ve Dalaman Havalimanı transferi.\n\nAdria Adora 673 PK Karavan Donanımı:\n* Üç ayrı uyku alanı: panoramik ön yatak, orta yemek alanı yatağı ve arka çocuk ranzalı oda.\n* Yerden ısıtma, klima, sıcak su boyleri, özerk akü ve güneş panelleri.\n* Tam donanımlı mutfak, ayrı duşlu banyo, dış mekan kamp mobilyaları ve barbekü seti.",
+      "ru": "Тур «Всё» - это возможность за 1 неделю неспешно отдохнуть меняя ритм, стиль и вид отдыха. Это очень круто. За это время вы однозначно почувствуете разнообразие и красоту Турции и в том числе замечательного места города Дальян [провинция Мугла]. Предъявляя разные требования и пожелания к своему досугу, вы в конечном итоге, будете удовлетворены и поймете, что это было замечательно и великолепно. И скажите мне: Спасибо. Это было настоящее приключение. \nНазвание: Тур «Всё». Вилла, яхта, кемпер, SUP, каяк, велосипеды...\nПлан тура:\nVilla Turaman [2 дня 2 ночи] - Яхта Vasilisa [2 дня 1 ночь] - Кемпер [1 день 2 ночи] - Villa Turaman [2 дня 1 ночь]\n\n1 и 2 день - Villa Turaman [2 дня 2 ночи]: \n1 день. Трансфер из аэропорта. Заселение на виллу после 16.00. Вечерний променад по набережной и пешеходной улице города Дальян. Ужин в ресторане.\n2 день. Отдых на вилле, бассейн. Можно выехать в древний город или взять напрокат лодку с экскурсией по реке. Половить крабов и в конечном итоге по реке добраться до пляжа. День свободный, сможете принять сами решение как его провести. Мы со своей стороны обеспечим вас транспортом и сопровождением по всем местам, что мы знаем всё вам покажем. Этот день мы можем с вами спланировать при формировании брони и сделать его максимально интересным для вас.\n3 и 4 день - Яхта Vasilisa [2 дня 1 ночь]:\n3 день. 6:00 подъем. Сборы. Завтрак. Выезд на яхту Vasilisa в Marmaris. 9.30 заходим на яхту. Готовимся отходить. Маршрут: Marmaris Yacht Marina - Ekincik.\n4 и 5 день - Кемпер Adria Adora 673 PK [1 день 2 ночи]:\n4 день. 16:00 Сборы. На моторной лодке отчаливаем с яхты Vasilisa и двигаемся 5 - 10 минут к берегу бухты Ekincik. Там на береговой линии бухты нас ждет оборудованная площадка для отдыха на караване.\nНеобычный и абсолютно новый семейный караван Adria Adora 673 PK на берегу Средиземного моря в прекрасном тихом месте Ekincik находится в 60 минутах езды от виллы Turaman, выполненный в стиле минимализма, вмещает 3 спальные зоны:\n- в передней части: двуспальная кровать с панорамным видом;\n- в середине: раздельный санузел, обеденная зона со столом, которая разбирается в большую кровать, а напротив кухня;\n- в задней части: комната с диваном и вторым спальным ярусом, отлично подойдет в качестве детской комнаты;\nВ Кемпере Adria Adora 673 PK есть все для полного комфорта: два входа, отопление и бойлер, пол с подогревом, кондиционер, штатное место для аккумулятора, увеличенный холодильник, автоматический слив воды, аудиосистема, установлен бак для воды, вытяжка в кухне, а в комплекте идут: ковры, бак для серой воды, противооткатные упоры. Тип санузла: Раздельный.\nТак же вам будут предоставлены: гриль и принадлежности, маски для плавания, уличная пляжная мебель и посуда.\n6 и 7 день - Villa Turaman [2 дня 2 ночи]:\n6 день. Возвращаемся на виллу. Вечерний променад по набережной и пешеходной улице города Дальян. Ужин в ресторане.\n7 день. Выезд с виллы до 9.00: Завтрак. Трансфер до аэропорта.\nВсе это можно продлить по вашему желанию.\nЕсли у вас есть вопросы, свяжитесь с суперхозяином Алексеем в чате.",
+      "en": "The \"Everything\" tour is an opportunity to unwind in one week, changing your pace, style, and type of vacation. It's absolutely fantastic. During this time, you'll definitely experience the diversity and beauty of Turkey, including the wonderful city of Dalyan (Mugla Province). Although you may have different expectations and desires for your leisure time, you'll ultimately be satisfied and realize that it was wonderful and magnificent. And tell me: Thank you. It was a real adventure.\n\nTitle: \"Everything\" Tour. Villa, yacht, camper, SUP, kayak, bicycles...\nTour Plan:\nVilla Turaman [2 days 2 nights] - Yacht Vasilisa [2 days 1 night] - Camper [1 day 2 nights] - Villa Turaman [2 days 1 night]\n\nDays 1 and 2 - Villa Turaman [2 days 2 nights]:\nDay 1. Airport transfer. Check-in at the villa after 4:00 PM. An evening stroll along the Dalyan promenade and pedestrian street. Dinner at a restaurant.\nDay 2. Relax at the villa, pool. You can visit the ancient city or rent a boat for a river excursion. Catch crabs and eventually reach the beach by boat. The day is free, and you can decide how to spend it. We will provide transportation and escort you to all the places we know and will show you. We can plan this day together when making your reservation and make it as interesting as possible for you.\nDays 3 and 4 - Yacht Vasilisa [2 days, 1 night]:\nDay 3. Wake up at 6:00 AM. Pack up. Breakfast. Departure for the yacht Vasilisa in Marmaris. Board the yacht at 9:30 AM. Prepare to depart. Route: Marmaris Yacht Marina - Ekincik.\nDays 4 and 5 - Adria Adora 673 PK Camper [1 day 2 nights]:\nDay 4. 4:00 PM. We depart the Vasilisa yacht by motorboat and travel 5-10 minutes to the shore of Ekincik Bay. There, on the bay's shoreline, a well-equipped campervan area awaits.\nThis unique and brand-new family caravan, the Adria Adora 673 PK, is located on the Mediterranean coast in the beautiful, quiet location of Ekincik, a 60-minute drive from Villa Turaman. Designed in a minimalist style, it features three sleeping areas:\n- Forward: a double bed with panoramic views;\n- Middle: separate bathroom, dining area with table that converts into a large bed, and opposite is the kitchen;\n- Rear: a room with a sofa and a second bunk, perfect for a children's room;\nThe Adria Adora 673 PK camper has everything you need for complete comfort: two entrances, heating and a boiler, underfloor heating, air conditioning, a dedicated battery compartment, an oversized refrigerator, automatic drain, an audio system, a water tank, a kitchen hood, and carpets, a grey water tank, and wheel chocks are included. Bathroom type: Separate.\nYou will also be provided with a grill and accessories, snorkels, outdoor beach furniture, and dishes.\nDays 6 and 7 - Villa Turaman [2 days 2 nights]:\nDay 6. Return to the villa. Evening promenade along the promenade and pedestrian street of Dalyan. Dinner at the restaurant.\nDay 7. Check-out before 9:00 AM: Breakfast. Airport transfer.\nAll of this can be extended at your request.\nIf you have any questions, please contact superhost Alexey via chat.",
+      "tr": "\"Her Şey\" turu, bir hafta boyunca rahatlamak, tempoyu, tarzı ve tatil türünü değiştirmek için bir fırsattır. Kesinlikle harika. Bu süre zarfında, Dalyan'ın (Muğla ili) muhteşem şehri de dahil olmak üzere Türkiye'nin çeşitliliğini ve güzelliğini kesinlikle deneyimleyeceksiniz. Boş zamanınız için farklı beklentileriniz ve istekleriniz olsa da, sonunda memnun kalacak ve harika ve muhteşem olduğunu anlayacaksınız. Ve bana söyleyin: Teşekkür ederim. Gerçek bir maceraydı.\n\nBaşlık: \"Her Şey\" Turu. Villa, yat, karavan, SUP, kayak, bisikletler...\nTur Planı:\nVilla Turaman [2 gün 2 gece] - Yat Vasilisa [2 gün 1 gece] - Karavan [1 gün 2 gece] - Villa Turaman [2 gün 1 gece]\n\n1. ve 2. Günler - Villa Turaman [2 gün 2 gece]:\n1. Gün. Havaalanı transferi. Saat 16:00'dan sonra villaya giriş. Dalyan sahil şeridi ve yaya caddesinde akşam yürüyüşü. Restoranda akşam yemeği.\n2. Gün. Villada, havuzda dinlenin. Antik kenti ziyaret edebilir veya nehir gezisi için tekne kiralayabilirsiniz. Yengeç yakalayabilir ve sonunda tekneyle sahile ulaşabilirsiniz. Gün serbesttir ve nasıl geçireceğinize siz karar verebilirsiniz. Bildiğimiz ve size göstereceğimiz tüm yerlere ulaşımınızı sağlayacağız ve size eşlik edeceğiz. Rezervasyonunuzu yaparken bu günü birlikte planlayabilir ve sizin için mümkün olduğunca ilgi çekici hale getirebiliriz.\n3. ve 4. Günler - Vasilisa Yat [2 gün, 1 gece]:\n3. Gün. Sabah 6:00'da uyanın. Eşyalarınızı toplayın. Kahvaltı. Marmaris'teki Vasilisa yatına hareket. Saat 9:30'da yata binin. Harekete hazırlanın. Güzergah: Marmaris Yat Limanı - Ekincik.\n4. ve 5. Günler - Adria Adora 673 PK Karavan [1 gün 2 gece]:\n4. Gün. 16:00. Vasilisa yatından motorlu tekneyle ayrılıp Ekincik Koyu kıyısına 5-10 dakika yolculuk yapıyoruz. Orada, koyun kıyısında, iyi donanımlı bir karavan alanı bizi bekliyor.\nBu eşsiz ve yepyeni aile karavanı, Adria Adora 673 PK, Akdeniz kıyısında, güzel ve sakin Ekincik bölgesinde, Villa Turaman'a 60 dakikalık sürüş mesafesinde yer almaktadır. Minimalist bir tarzda tasarlanan karavan, üç uyku alanına sahiptir:\n- Ön: Panoramik manzaralı çift kişilik yatak;\n\n- Orta: Ayrı banyo, büyük bir yatağa dönüşen masa bulunan yemek alanı ve karşısında mutfak;\n\n- Arka: Çocuk odası için mükemmel olan, kanepe ve ikinci bir ranza bulunan bir oda;\n\nAdria Adora 673 PK karavanı, tam konfor için ihtiyacınız olan her şeye sahiptir: iki giriş, ısıtma ve kazan, yerden ısıtma, klima, özel akü bölmesi, büyük boy buzdolabı, otomatik tahliye, ses sistemi, su deposu, mutfak davlumbazı ve halılar, gri su deposu ve tekerlek takozları dahildir. Banyo tipi: Ayrı.\n\nAyrıca size mangal ve aksesuarları, şnorkeller, dış mekan plaj mobilyaları ve tabaklar da sağlanacaktır.\n6. ve 7. Günler - Villa Turaman [2 gün 2 gece]:\n6. Gün. Villaya dönüş. Dalyan'ın sahil şeridi ve yaya caddesinde akşam gezintisi. Restoranda akşam yemeği.\n\n7. Gün. Sabah 9:00'dan önce çıkış: Kahvaltı. Havaalanı transferi.\nTüm bunlar isteğiniz üzerine uzatılabilir.\nHerhangi bir sorunuz varsa, lütfen süper ev sahibi Alexey ile sohbet yoluyla iletişime geçin.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -611,7 +611,7 @@
       "desc": "Основное удобство 1 на главной",
       "ru": "Приватный открытый бассейн 36 м²",
       "en": "Private outdoor pool 36 m²",
-      "tr": "Özel açık yüzme havuzu 36 m²",
+      "tr": "36 m²'lik özel açık yüzme havuzu",
       "media": "Waves",
       "status": "Вкл",
       "enabled": true
@@ -874,7 +874,7 @@
       "key": "amenity_cat3_item5",
       "desc": "Модальное окно: Категория 3 Пункт 5",
       "ru": "Полный комплект посуды и бокалов для вина",
-      "en": "A complete set of dishes and wine glasses",
+      "en": "A complete set of tableware and wine glasses",
       "tr": "Komple bir yemek takımı ve şarap kadehleri ​​seti.",
       "media": "Check",
       "status": "Вкл",
@@ -1006,8 +1006,8 @@
       "key": "review_cat_1",
       "desc": "Критерий 1: Чистота",
       "ru": "Чистота",
-      "en": "Cleanliness",
-      "tr": "Temizlik",
+      "en": "Purity",
+      "tr": "Saflık",
       "media": "5.0|100",
       "status": "Вкл",
       "enabled": true
@@ -1017,8 +1017,8 @@
       "key": "review_cat_2",
       "desc": "Критерий 2: Точность описания",
       "ru": "Точность описания",
-      "en": "Accuracy",
-      "tr": "Doğruluk",
+      "en": "Accuracy of description",
+      "tr": "Tanımın doğruluğu",
       "media": "4.9|98",
       "status": "Вкл",
       "enabled": true
@@ -1028,8 +1028,8 @@
       "key": "review_cat_3",
       "desc": "Критерий 3: Общение с хозяином",
       "ru": "Общение с хозяином",
-      "en": "Communication",
-      "tr": "İletişim",
+      "en": "Communication with the owner",
+      "tr": "Mülk sahibiyle iletişim",
       "media": "5.0|100",
       "status": "Вкл",
       "enabled": true
@@ -1050,8 +1050,8 @@
       "key": "review_cat_5",
       "desc": "Критерий 5: Прибытие и заезд",
       "ru": "Прибытие и заезд",
-      "en": "Check-in",
-      "tr": "Giriş",
+      "en": "Arrival and check-in",
+      "tr": "Varış ve giriş işlemleri",
       "media": "5.0|100",
       "status": "Вкл",
       "enabled": true
@@ -1061,8 +1061,8 @@
       "key": "review_cat_6",
       "desc": "Критерий 6: Цена / качество",
       "ru": "Соотношение цена/качество",
-      "en": "Value",
-      "tr": "Fiyat / Fayda",
+      "en": "Price/quality ratio",
+      "tr": "Fiyat/kalite oranı",
       "media": "4.9|98",
       "status": "Вкл",
       "enabled": true
@@ -1127,7 +1127,7 @@
       "key": "review_3_text",
       "desc": "Отзыв 3: Текст отзыва",
       "ru": "Dalyan'da kaldığımız en konforlu villa. 4 banyolu 4 yatak odası ailemiz için mükemmeldi. Bahçe ve havuz bakımı harikaydı, teşekkürler Aleksei!",
-      "en": "The most comfortable villa we stayed in in Dalyan. Four bedrooms with four bathrooms were perfect for our family. The garden and pool maintenance was fantastic, thank you Aleksei!",
+      "en": "The most comfortable villa we stayed in Dalyan. Four bedrooms with four bathrooms were perfect for our family. The garden and pool maintenance was fantastic, thank you Aleksei!",
       "tr": "Dalyan'da kaldığımız en konforlu villa. 4 banyolu 4 yatak odası ailemiz için mükemmeldi. Bahçe ve havuz bakımı harikaydı, teşekkürler Aleksei!",
       "media": "",
       "status": "Вкл",
@@ -1172,7 +1172,7 @@
       "desc": "Подробный текст об окрестностях Дальяна",
       "ru": "Вилла Turaman находится в самом центре Дальяна: всего 250 метров до пешеходной улицы, 400 метров до речной набережной, 350 метров до ресторана La Boheme Dalyan. Песчаный пляж Изтузу - 11 км [15 минут на машине или лодке], аэропорт Даламан - 30 км. В пешей доступности древний город Каунос и Ликийские гробницы.",
       "en": "Villa Turaman is located in the heart of Dalyan: just 250 meters from the pedestrian street, 400 meters from the river promenade, and 350 meters from the La Boheme Dalyan restaurant. Iztuzu Beach is 11 km away (15 minutes by car or boat), and Dalaman Airport is 30 km away. The ancient city of Kaunos and the Lycian tombs are within walking distance.",
-      "tr": "Villa Turaman, Dalyan'ın kalbinde yer almaktadır: yaya caddesine sadece 250 metre, nehir kıyısına 400 metre ve La Boheme Dalyan restoranına 350 metre mesafededir. İztuzu Plajı 11 km (araba veya tekneyle 15 dakika), Dalyan Havalimanı ise 30 km uzaklıktadır. Kaunos antik kenti ve Likya mezarları yürüme mesafesindedir.",
+      "tr": "Villa Turaman, Dalyan'ın kalbinde yer almaktadır: yaya caddesine sadece 250 metre, nehir kıyısına 400 metre ve La Boheme Dalyan restoranına 350 metre mesafededir. İztuzu Plajı 11 km (araba veya tekneyle 15 dakika) ve Dalyan Havalimanı 30 km uzaklıktadır. Kaunos antik kenti ve Likya mezarları yürüme mesafesindedir.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -1203,9 +1203,9 @@
       "block": "9. Хозяин",
       "key": "host_card_title",
       "desc": "Заголовок карточки владельца",
-      "ru": "Хозяин: Aleksei Znamenskii",
-      "en": "Owner: Aleksei Znamenskii",
-      "tr": "Sahibi: Aleksei Znamenskii",
+      "ru": "Хозяин: Алексей Знаменский",
+      "en": "Owner: Alexey Znamensky",
+      "tr": "Sahibi: Alexey Znamensky",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -1337,7 +1337,7 @@
       "desc": "Заголовок секции ориентиров",
       "ru": "14 географических ориентиров Дальяна",
       "en": "14 Geographical Landmarks of Dalyan",
-      "tr": "Dalyan'ın 14 Coğrafi Yer İşareti",
+      "tr": "Dalyan'ın 14 Coğrafi Özelliği",
       "media": "MapPin",
       "status": "Вкл",
       "enabled": true
@@ -2028,9 +2028,9 @@
       "block": "12. Безопасность",
       "key": "legal_cancellation_item2",
       "desc": "Пункт 2: Менее 14 дней",
-      "ru": "При отмене менее чем за 14 суток до заезда удерживается стоимость проживания за первые сутки",
-      "en": "If cancelled less than 14 days prior to arrival, the cost of the first night's stay will be retained.",
-      "tr": "Varış tarihinden 14 günden daha kısa bir süre önce iptal edilmesi durumunda, ilk gecenin konaklama ücreti iade edilmeyecektir.",
+      "ru": "Отсутствие ключей Vercel KV: В предоставленном .env.local параметры KV_REST_API_URL и KV_REST_API_TOKEN оставлены пустыми. Эти ключи требуются для кэширования статусов форматирования листов и быстрых сессий",
+      "en": "Missing Vercel KV keys: In the provided .env.local file, the KV_REST_API_URL and KV_REST_API_TOKEN parameters are left blank. These keys are required for caching sheet formatting statuses and quick sessions.",
+      "tr": "Vercel KV anahtarları eksik: Sağlanan .env.local dosyasında, KV_REST_API_URL ve KV_REST_API_TOKEN parametreleri boş bırakılmıştır. Bu anahtarlar, sayfa biçimlendirme durumlarının önbelleğe alınması ve hızlı oturumlar için gereklidir.",
       "media": "AlertCircle",
       "status": "Вкл",
       "enabled": true
@@ -2039,10 +2039,439 @@
       "block": "12. Безопасность",
       "key": "legal_cancellation_item3",
       "desc": "Пункт 3: Инвойс e-Arşiv Fatura",
-      "ru": "Официальное оформление e-Arşiv Fatura на имя гостя согласно VUK 213 Madde 230",
-      "en": "Official registration of e-Arşiv Fatura in the name of the guest according to VUK 213 Madde 230",
-      "tr": "VUK 213 Madde 230 uyarınca misafir adına e-Arşiv Faturasının resmi kaydı.",
+      "ru": "Да, это безопасно и технически необходимо для работы вашей архитектуры.",
+      "en": "Yes, it is safe and technically necessary for your architecture to work.",
+      "tr": "Evet, güvenli ve mimarinizin çalışması için teknik olarak gerekli.",
       "media": "FileText",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "brandName": {
+      "block": "13. Словарь интерфейса",
+      "key": "brandName",
+      "desc": "Название бренда в шапке",
+      "ru": "Villa Turaman",
+      "en": "Villa Turaman",
+      "tr": "Villa Turaman",
+      "media": "",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "login": {
+      "block": "13. Словарь интерфейса",
+      "key": "login",
+      "desc": "Кнопка входа в аккаунт",
+      "ru": "Войти",
+      "en": "Login",
+      "tr": "Giriş yapmak",
+      "media": "LogIn",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "register": {
+      "block": "13. Словарь интерфейса",
+      "key": "register",
+      "desc": "Кнопка регистрации",
+      "ru": "Регистрация",
+      "en": "Registration",
+      "tr": "Kayıt",
+      "media": "UserPlus",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "logout": {
+      "block": "13. Словарь интерфейса",
+      "key": "logout",
+      "desc": "Кнопка выхода из системы",
+      "ru": "Выйти",
+      "en": "Exit",
+      "tr": "Çıkış",
+      "media": "LogOut",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "guestCabinet": {
+      "block": "13. Словарь интерфейса",
+      "key": "guestCabinet",
+      "desc": "Кнопка кабинета гостя",
+      "ru": "Мои поездки",
+      "en": "My trips",
+      "tr": "Seyahatlerim",
+      "media": "Compass",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "hostCabinet": {
+      "block": "13. Словарь интерфейса",
+      "key": "hostCabinet",
+      "desc": "Кнопка панели суперхозяина",
+      "ru": "Панель управления",
+      "en": "Control Panel",
+      "tr": "Kontrol Paneli",
+      "media": "LayoutDashboard",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "navAbout": {
+      "block": "13. Словарь интерфейса",
+      "key": "navAbout",
+      "desc": "Пункт меню О вилле",
+      "ru": "О вилле",
+      "en": "About the villa",
+      "tr": "Villa hakkında",
+      "media": "",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "navAmenities": {
+      "block": "13. Словарь интерфейса",
+      "key": "navAmenities",
+      "desc": "Пункт меню Удобства",
+      "ru": "Удобства",
+      "en": "Facilities",
+      "tr": "Tesisler",
+      "media": "",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "navReviews": {
+      "block": "13. Словарь интерфейса",
+      "key": "navReviews",
+      "desc": "Пункт меню Отзывы",
+      "ru": "Отзывы",
+      "en": "Reviews",
+      "tr": "Yorumlar",
+      "media": "",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "navLocation": {
+      "block": "13. Словарь интерфейса",
+      "key": "navLocation",
+      "desc": "Пункт меню Расположение",
+      "ru": "Расположение",
+      "en": "Location",
+      "tr": "Konum",
+      "media": "",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "navCatalog": {
+      "block": "13. Словарь интерфейса",
+      "key": "navCatalog",
+      "desc": "Пункт меню Услуги и гиды",
+      "ru": "Услуги и гиды",
+      "en": "Services and guides",
+      "tr": "Hizmetler ve rehberler",
+      "media": "",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "bookNow": {
+      "block": "14. Словарь интерфейса",
+      "key": "bookNow",
+      "desc": "Главная кнопка бронирования",
+      "ru": "Забронировать",
+      "en": "Book now",
+      "tr": "Şimdi rezervasyon yapın",
+      "media": "CalendarCheck",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "checkIn": {
+      "block": "14. Словарь интерфейса",
+      "key": "checkIn",
+      "desc": "Поле даты заезда",
+      "ru": "Заезд",
+      "en": "Arrival",
+      "tr": "Varış",
+      "media": "Calendar",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "checkOut": {
+      "block": "14. Словарь интерфейса",
+      "key": "checkOut",
+      "desc": "Поле даты выезда",
+      "ru": "Выезд",
+      "en": "Departure",
+      "tr": "Kalkış",
+      "media": "Calendar",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "guests": {
+      "block": "14. Словарь интерфейса",
+      "key": "guests",
+      "desc": "Выбор количества гостей",
+      "ru": "Гости",
+      "en": "Guests",
+      "tr": "Misafirler",
+      "media": "Users",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "perNight": {
+      "block": "14. Словарь интерфейса",
+      "key": "perNight",
+      "desc": "Подпись тарифа за сутки",
+      "ru": "за ночь",
+      "en": "overnight",
+      "tr": "gece",
+      "media": "",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "nights": {
+      "block": "14. Словарь интерфейса",
+      "key": "nights",
+      "desc": "Подпись количества ночей",
+      "ru": "ночей",
+      "en": "nights",
+      "tr": "geceler",
+      "media": "",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "totalPrice": {
+      "block": "14. Словарь интерфейса",
+      "key": "totalPrice",
+      "desc": "Итоговая стоимость проживания",
+      "ru": "Итого к оплате",
+      "en": "Total to be paid",
+      "tr": "Ödenecek toplam tutar",
+      "media": "",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "cleaningFee": {
+      "block": "14. Словарь интерфейса",
+      "key": "cleaningFee",
+      "desc": "Строка сервисного сбора",
+      "ru": "Сервисный сбор и финальная уборка",
+      "en": "Service fee and final cleaning",
+      "tr": "Hizmet bedeli ve son temizlik",
+      "media": "",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "depositText": {
+      "block": "14. Словарь интерфейса",
+      "key": "depositText",
+      "desc": "Размер гарантийного залога",
+      "ru": "Возвратный депозит за сохранность имущества",
+      "en": "Refundable security deposit",
+      "tr": "İade edilebilir güvenlik depozitosu",
+      "media": "",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "confirmBooking": {
+      "block": "14. Словарь интерфейса",
+      "key": "confirmBooking",
+      "desc": "Кнопка подтверждения заявки",
+      "ru": "Подтвердить бронирование",
+      "en": "Confirm your booking",
+      "tr": "Rezervasyonunuzu onaylayın",
+      "media": "CheckCircle",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "selectDates": {
+      "block": "14. Словарь интерфейса",
+      "key": "selectDates",
+      "desc": "Подсказка выбора дат",
+      "ru": "Выберите даты поездки",
+      "en": "Select travel dates",
+      "tr": "Seyahat tarihlerini seçin",
+      "media": "Calendar",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "close": {
+      "block": "15. Словарь интерфейса",
+      "key": "close",
+      "desc": "Кнопка закрытия модального окна",
+      "ru": "Закрыть",
+      "en": "Close",
+      "tr": "Kapalı",
+      "media": "X",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "back": {
+      "block": "15. Словарь интерфейса",
+      "key": "back",
+      "desc": "Кнопка возврата назад",
+      "ru": "Назад",
+      "en": "Back",
+      "tr": "Geri",
+      "media": "ArrowLeft",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "save": {
+      "block": "15. Словарь интерфейса",
+      "key": "save",
+      "desc": "Кнопка сохранения данных",
+      "ru": "Сохранить изменения",
+      "en": "Save changes",
+      "tr": "Değişiklikleri kaydet",
+      "media": "Save",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "showAllPhotos": {
+      "block": "15. Словарь интерфейса",
+      "key": "showAllPhotos",
+      "desc": "Кнопка открытия галереи фото",
+      "ru": "Показать все фото",
+      "en": "Show all photos",
+      "tr": "Tüm fotoğrafları göster",
+      "media": "Grid",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "showAllAmenities": {
+      "block": "15. Словарь интерфейса",
+      "key": "showAllAmenities",
+      "desc": "Кнопка открытия всех удобств",
+      "ru": "Показать все удобства",
+      "en": "Show all amenities",
+      "tr": "Tüm olanakları göster",
+      "media": "List",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "showAllLandmarksBtn": {
+      "block": "15. Словарь интерфейса",
+      "key": "showAllLandmarksBtn",
+      "desc": "Кнопка показа всех ориентиров",
+      "ru": "Показать все 14 ориентиров и карту расстояний",
+      "en": "Show all 14 landmarks and distance map",
+      "tr": "14 önemli yerin tamamını ve mesafe haritasını göster",
+      "media": "Compass",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "showAllReviewsBtn": {
+      "block": "15. Словарь интерфейса",
+      "key": "showAllReviewsBtn",
+      "desc": "Кнопка показа отзывов",
+      "ru": "Показать все 48 отзывов и критерии оценок",
+      "en": "Show all 48 reviews and rating criteria",
+      "tr": "Tüm 48 yorumu ve değerlendirme kriterlerini göster",
+      "media": "Star",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "landmarksCategoryTitle": {
+      "block": "15. Словарь интерфейса",
+      "key": "landmarksCategoryTitle",
+      "desc": "Надзаголовок ориентиров",
+      "ru": "Географические ориентиры Дальяна",
+      "en": "Geographic landmarks of Dalyan",
+      "tr": "Dalyan'ın coğrafi yer işaretleri",
+      "media": "Compass",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "reviewsCategoryTitle": {
+      "block": "15. Словарь интерфейса",
+      "key": "reviewsCategoryTitle",
+      "desc": "Надзаголовок отзывов",
+      "ru": "Рейтинг гостей и отзывы",
+      "en": "Guest ratings and reviews",
+      "tr": "Konuk değerlendirmeleri ve yorumları",
+      "media": "Star",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "reviewsRatingTitle": {
+      "block": "15. Словарь интерфейса",
+      "key": "reviewsRatingTitle",
+      "desc": "Шаблон рейтинга отзывов",
+      "ru": "Рейтинг гостей на основе",
+      "en": "Guest rating based on",
+      "tr": "Misafir değerlendirmesi şu kriterlere dayanmaktadır:",
+      "media": "Star",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "legalRegulationHeader": {
+      "block": "15. Словарь интерфейса",
+      "key": "legalRegulationHeader",
+      "desc": "Надзаголовок безопасности",
+      "ru": "Юридический регламент и комфорт",
+      "en": "Legal regulations and comfort",
+      "tr": "Yasal düzenlemeler ve rahatlık",
+      "media": "ShieldCheck",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "chatWithHost": {
+      "block": "16. Словарь интерфейса",
+      "key": "chatWithHost",
+      "desc": "Кнопка вызова прямого чата с хозяином",
+      "ru": "Чат с суперхозяином",
+      "en": "Chat with a superhost",
+      "tr": "Süper sunucuyla sohbet edin",
+      "media": "MessageSquare",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "onlineStatus": {
+      "block": "16. Словарь интерфейса",
+      "key": "onlineStatus",
+      "desc": "Индикатор статуса онлайн",
+      "ru": "В сети : отвечает мгновенно",
+      "en": "Online: Responds instantly",
+      "tr": "Çevrimiçi: Anında yanıt verir",
+      "media": "Radio",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "typing": {
+      "block": "16. Словарь интерфейса",
+      "key": "typing",
+      "desc": "Индикатор набора текста",
+      "ru": "Алексей печатает ответ...",
+      "en": "Alexey types a reply...",
+      "tr": "Alexey bir yanıt yazıyor...",
+      "media": "",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "send": {
+      "block": "16. Словарь интерфейса",
+      "key": "send",
+      "desc": "Кнопка отправки сообщения в чат",
+      "ru": "Отправить",
+      "en": "Send",
+      "tr": "Göndermek",
+      "media": "Send",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "messagePlaceholder": {
+      "block": "16. Словарь интерфейса",
+      "key": "messagePlaceholder",
+      "desc": "Плейсхолдер поля ввода в чате",
+      "ru": "Напишите ваш вопрос или пожелание...",
+      "en": "Write your question or wish...",
+      "tr": "Sorunuzu veya dileğinizi yazın...",
+      "media": "",
+      "status": "Вкл",
+      "enabled": true
+    },
+    "bookingSuccess": {
+      "block": "16. Словарь интерфейса",
+      "key": "bookingSuccess",
+      "desc": "Уведомление об успешной оплате",
+      "ru": "Оплата успешно подтверждена! Бронирование внесено в календарь.",
+      "en": "Payment successfully confirmed! The reservation has been added to the calendar.",
+      "tr": "Ödeme başarıyla onaylandı! Rezervasyon takvime eklendi.",
+      "media": "CheckCircle2",
       "status": "Вкл",
       "enabled": true
     }
@@ -2056,8 +2485,8 @@
       },
       "text": {
         "ru": "Dalyan Turaman [частный бассейн, 10 спальных мест] - это цифровая веб-платформа прямого онлайн-бронирования двухэтажной виллы премиум-класса в экологическом заповедном курорте Дальян [район Ортаджа, провинция Мугла, Турция], расположенном между рекой Дальян и озером Кёйджегиз.\n\nОфициальный адрес и навигация:\n* Адрес виллы: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Turkey.\n* Ссылка на геолокацию в Google Maps: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n* Точные координаты GPS: 36.8336° N, 28.6439° E.\n\nПолный реестр ключевых географических ориентиров:\n* Пешеходный центр Дальяна: всего 250 метров [3 минуты пешком] до главной пешеходной улицы с магазинами, рынками, аптеками и сувенирными лавками.\n* Речная набережная реки Дальян: 400 метров для утренних пробежек, вечерних прогулок и наблюдения за речными лодками.\n* Гастрономия: популярный ресторан высокой кухни La Boheme Dalyan - 350 метров; традиционный рыбный ресторан Çiçek Restoran - 500 метров.\n* Ликийские скальные гробницы королей Кауноса [IV век до н.э.]: панорамный вид с набережной Дальяна [450 метров], вечерняя подсветка скал и 10 минут на лодке.\n* Античный город Каунос, древний акрополь и амфитеатр: 1.5 км [переправа на весельной лодке через реку Дальян и пеший маршрут].\n* Всемирно известный песчаный пляж Изтузу [İztuzu]: 11 км [около 15 минут на машине или 30-40 минут на живописном речном катере-такси через лабиринты камышей]. Заповедная зона обитания гигантских морских черепах Caretta-Caretta.\n* Термальные радоновые источники и омолаживающие грязи Султание [Sultaniye Kaplıcaları]: 4 км по воде на озере Кёйджегиз.\n* Озеро Кёйджегиз [Köyceğiz Gölü]: 5 км до выхода из русла реки в открытую озерную акваторию.\n* Смотровая площадка Радар [Radar Tepesi]: 8 км [панорамный обзор 360° на всю дельту реки, озеро и косу пляжа Изтузу с высоты 500 метров].\n* Международный аэропорт Даламан [DLM]: 30 км [25-30 минут на машине или индивидуальном трансфере].\n* Субботний фермерский рынок Дальяна: 600 метров [свежие фермерские сыры, оливки, гранатовый сок, инжир и фрукты].\n* Морские курорты: город Мармарис - 85 км, город Фетхие и бухта Олюдениз - 60 км.",
-        "en": "Dalyan Turaman [private pool, sleeps 10] is a digital web platform for direct online booking of a premium, two-story villa in the eco-reserve resort of Dalyan [Ortaca district, Muğla Province, Turkey], located between the Dalyan River and Lake Köyceğiz.\n\nOfficial address and navigation:\n* Villa address: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Turkey.\n* Google Maps geolocation link: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n* Exact GPS coordinates: 36.8336° N, 28.6439° E.\n\nFull list of key geographical landmarks:\n* Dalyan Pedestrian Center: just 250 meters [3-minute walk] to the main pedestrian street with shops, markets, pharmacies, and souvenir shops.\n* Dalyan River Promenade: 400 meters for morning jogs, evening strolls, and boat watching.\n* Cuisine: popular fine dining restaurant La Boheme Dalyan - 350 meters; traditional fish restaurant Çiçek Restoran - 500 meters.\n* Lycian Rock Tombs of the Kings of Kaunos [4th century BC]: panoramic view from the Dalyan waterfront [450 meters], evening cliff illumination, and a 10-minute boat ride.\n* Ancient City of Kaunos, ancient acropolis, and amphitheater: 1.5 km [rowboat crossing the Dalyan River and hiking trail].\n* World-famous sandy beach of Iztuzu: 11 km [about 15 minutes by car or 30-40 minutes by scenic river taxi through a labyrinth of reeds]. Protected habitat of the giant Caretta-Caretta sea turtles.\n* Thermal radon springs and rejuvenating mud of Sultaniye: 4 km by boat on Lake Köyceğiz. * Köyceğiz Lake [Köyceğiz Gölü]: 5 km before leaving the riverbed for the open lake.\n* Radar Viewpoint [Radar Tepesi]: 8 km [360° panoramic view of the entire river delta, lake, and Iztuzu Beach spit from an altitude of 500 meters].\n* Dalaman International Airport [DLM]: 30 km [25-30 minutes by car or private transfer].\n* Dalyan Saturday Farmers' Market: 600 meters [fresh farm cheeses, olives, pomegranate juice, figs, and fruit].\n* Seaside resorts: Marmaris - 85 km, Fethiye and Ölüdeniz Bay - 60 km.",
-        "tr": "Dalyan Turaman [özel havuz, 10 kişi kapasiteli], Dalyan Nehri ve Köyceğiz Gölü arasında yer alan Dalyan'daki [Ortaca ilçesi, Muğla ili, Türkiye] ekolojik rezerv alanında bulunan birinci sınıf, iki katlı bir villanın doğrudan çevrimiçi rezervasyonu için dijital bir web platformudur.\n\nResmi adres ve yol tarifi:\n* Villa adresi: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Türkiye.\n\n* Google Haritalar konum bağlantısı: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n* Tam GPS koordinatları: 36.8336° K, 28.6439° D.\n\nÖnemli coğrafi yer işaretlerinin tam listesi:\n* Dalyan Yaya Merkezi: Mağazaların, pazarların, eczanelerin ve hediyelik eşya dükkanlarının bulunduğu ana yaya caddesine sadece 250 metre [3 dakikalık yürüme mesafesi].\n* Dalyan Nehri Gezinti Yolu: Sabah koşuları, akşam yürüyüşleri ve tekne izleme için 400 metre.\n\n* Mutfak: Popüler lüks restoran La Boheme Dalyan - 350 metre; geleneksel balık restoranı Çiçek Restoran - 500 metre.\n\n* Kaunos Krallarının Likya Kaya Mezarları [MÖ 4. yüzyıl]: Dalyan kıyısından panoramik manzara [450 metre], akşam kaya aydınlatması ve 10 dakikalık tekne yolculuğu.\n\n* Kaunos Antik Kenti, antik akropolis ve amfitiyatro: 1,5 km [Dalyan Nehri'ni kürekli tekneyle geçme ve yürüyüş parkuru].\n\n* Dünyaca ünlü İztuzu kumlu plajı: 11 km [arabayla yaklaşık 15 dakika veya sazlık labirentinden geçen manzaralı nehir taksisiyle 30-40 dakika]. Dev Caretta-Caretta deniz kaplumbağalarının koruma altındaki yaşam alanı.\n* Sultaniye'nin termal radon kaynakları ve gençleştirici çamuru: Köyceğiz Gölü'nde tekneyle 4 km. * Köyceğiz Gölü: Nehir yatağından açık göle geçmeden 5 km önce.\n\n* Radar Gözlem Noktası: 8 km [500 metre yükseklikten tüm nehir deltası, göl ve İztuzu Plajı'nın 360° panoramik manzarası].\n\n* Dalaman Uluslararası Havalimanı: 30 km [araba veya özel transferle 25-30 dakika].\n\n* Dalyan Cumartesi Çiftçi Pazarı: 600 metre [taze çiftlik peynirleri, zeytin, nar suyu, incir ve meyve].\n\n* Sahil beldeleri: Marmaris - 85 km, Fethiye ve Ölüdeniz Koyu - 60 km."
+        "en": "Dalyan Turaman [private pool, sleeps 10] is a digital web platform for direct online booking of a premium, two-story villa in the eco-reserve resort of Dalyan [Ortaca district, Muğla Province, Turkey], located between the Dalyan River and Lake Köyceğiz.\n\nOfficial address and navigation:\n* Villa address: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Turkey.\n* Google Maps geolocation link: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n* Exact GPS coordinates: 36.8336° N, 28.6439° E.\n\nFull list of key geographical landmarks:\n* Dalyan Pedestrian Center: just 250 meters (3-minute walk) to the main pedestrian street with shops, markets, pharmacies, and souvenir shops.\n* Dalyan River Promenade: 400 meters for morning jogs, evening strolls, and boat watching.\n* Cuisine: popular fine dining restaurant La Boheme Dalyan - 350 meters; traditional fish restaurant Çiçek Restoran - 500 meters.\n* Lycian Rock Tombs of the Kings of Kaunos [4th century BC]: panoramic view from the Dalyan waterfront [450 meters], evening cliff illumination, and a 10-minute boat ride.\n* Ancient City of Kaunos, ancient acropolis, and amphitheater: 1.5 km [rowboat crossing the Dalyan River and hiking trail].\n* World-famous sandy beach of Iztuzu: 11 km [about 15 minutes by car or 30-40 minutes by scenic river taxi through a labyrinth of reeds]. Protected habitat of the giant Caretta-Caretta sea turtles.\n* Thermal radon springs and rejuvenating mud of Sultaniye: 4 km by boat on Lake Köyceğiz. * Köyceğiz Lake [Köyceğiz Gölü]: 5 km before leaving the riverbed for the open lake.\n* Radar Viewpoint [Radar Tepesi]: 8 km [360° panoramic view of the entire river delta, lake, and Iztuzu Beach spit from an altitude of 500 meters].\n* Dalaman International Airport [DLM]: 30 km [25-30 minutes by car or private transfer].\n* Dalyan Saturday Farmers' Market: 600 meters [fresh farm cheeses, olives, pomegranate juice, figs, and fruit].\n* Seaside resorts: Marmaris - 85 km, Fethiye and Ölüdeniz Bay - 60 km.",
+        "tr": "Dalyan Turaman [özel havuz, 10 kişi kapasiteli], Dalyan Nehri ve Köyceğiz Gölü arasında yer alan Dalyan'daki [Ortaca ilçesi, Muğla ili, Türkiye] ekolojik rezerv alanında bulunan birinci sınıf, iki katlı bir villanın doğrudan çevrimiçi rezervasyonu için dijital bir web platformudur.\n\nResmi adres ve yol tarifi:\n* Villa adresi: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Türkiye.\n\n* Google Haritalar konum bağlantısı: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n* Tam GPS koordinatları: 36.8336° K, 28.6439° D.\n\nÖnemli coğrafi yer işaretlerinin tam listesi:\n* Dalyan Yaya Merkezi: Mağazaların, pazarların, eczanelerin ve hediyelik eşya dükkanlarının bulunduğu ana yaya caddesine sadece 250 metre (3 dakikalık yürüme mesafesi).\n* Dalyan Nehri Gezinti Yolu: Sabah koşuları, akşam yürüyüşleri ve tekne izleme için 400 metre.\n\n* Mutfak: Popüler lüks restoran La Boheme Dalyan - 350 metre; geleneksel balık restoranı Çiçek Restoran - 500 metre.\n\n* Kaunos Krallarının Likya Kaya Mezarları [MÖ 4. yüzyıl]: Dalyan kıyısından panoramik manzara [450 metre], akşam kaya aydınlatması ve 10 dakikalık tekne yolculuğu.\n\n* Kaunos Antik Kenti, antik akropolis ve amfitiyatro: 1,5 km [Dalyan Nehri'ni kürekli tekneyle geçme ve yürüyüş parkuru].\n\n* Dünyaca ünlü İztuzu kumlu plajı: 11 km [arabayla yaklaşık 15 dakika veya sazlık labirentinden geçen manzaralı nehir taksisiyle 30-40 dakika]. Dev Caretta-Caretta deniz kaplumbağalarının koruma altındaki yaşam alanı.\n* Sultaniye'nin termal radon kaynakları ve gençleştirici çamuru: Köyceğiz Gölü'nde tekneyle 4 km. * Köyceğiz Gölü: Nehir yatağından açık göle geçmeden 5 km önce.\n\n* Radar Gözlem Noktası: 8 km [500 metre yükseklikten tüm nehir deltası, göl ve İztuzu Plajı'nın 360° panoramik manzarası].\n\n* Dalaman Uluslararası Havalimanı: 30 km [araba veya özel transferle 25-30 dakika].\n\n* Dalyan Cumartesi Çiftçi Pazarı: 600 metre [taze çiftlik peynirleri, zeytin, nar suyu, incir ve meyve].\n\n* Sahil beldeleri: Marmaris - 85 km, Fethiye ve Ölüdeniz Koyu - 60 km."
       }
     },
     "2": {
@@ -2080,8 +2509,8 @@
       },
       "text": {
         "ru": "Приватный бассейн с соленой водой: чаша 4×9 метров [площадь 36 кв. м], постоянная глубина 150 см. Без запаха хлора. Доступен с 1 мая по 1 ноября. Чистка в день заселения и каждые 7 дней. Подсветка бассейна: 20:00 - 01:00.\nУличное приватное джакузи: на 4 персоны, автоматический цикл [15 минут работы каждые 45 минут в период 10:00 - 17:00]. Подсветка джакузи: 20:00 - 01:00. Сезон: 1 мая - 1 ноября.\nОсвещение территории: автоматическое [20:00 - 01:00 и 04:00 - 06:00].\nПарковка: бесплатная закрытая частная парковка на территории на 2 авто.\nОткрытые зоны отдыха: огороженный сад, барбекю [BBQ], крыльцо с кофейными столиками, обеденный стол на 8 мест, шезлонги и летний душ.",
-        "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor seating areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
-        "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava oturma alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır."
+        "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor recreation areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
+        "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava dinlenme alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır."
       }
     },
     "4": {
@@ -2103,9 +2532,9 @@
         "tr": "5. Süper sunucu profili ve ana erişim"
       },
       "text": {
-        "ru": "Владелец: Алексей Знаменский [Aleksei Znamenskii]. Проживает в Мармарисе, яхтсмен на пенсии. Жизненное кредо: «Хочешь сделать хорошо - сделай сам». Мечта: отправиться в Португалию и увидеть океан. Хобби: велоспорт, парусный спорт, природа. Штампы путешествий: Дубай [3 поездки], Абу-Даби [март 2026 г.]. Языки: русский, английский, турецкий. Налоговые реквизиты: Ortaca Vergi Dairesi, VKN: 9991120181.",
-        "en": "Owner: Aleksei Znamenskii. Lives in Marmaris, retired yachtsman. Life motto: \"If you want something done right, do it yourself.\" Dream: to go to Portugal and see the ocean. Hobbies: cycling, sailing, nature. Travel highlights: Dubai [3 trips], Abu Dhabi [March 2026]. Languages: Russian, English, Turkish. Tax details: Ortaca Vergi Dairesi, VKN: 9991120181.",
-        "tr": "Sahibi: Aleksei Znamenskii. Marmaris'te yaşıyor, emekli yatçı. Hayat felsefesi: \"Bir şeyin doğru yapılmasını istiyorsanız, kendiniz yapın.\" Hayali: Portekiz'e gidip okyanusu görmek. Hobileri: bisiklet, yelken, doğa. Seyahat deneyimleri: Dubai [3 gezi], Abu Dabi [Mart 2026]. Diller: Rusça, İngilizce, Türkçe. Vergi bilgileri: Ortaca Vergi Dairesi, VKN: 9991120181."
+        "ru": "Владелец: Алексей Знаменский [Aleksei Znamenskii]. Проживает в Мармарисе, яхтсмен на пенсии. Жизненное кредо: «Хочешь сделать хорошо - сделай сам». Мечта: отправиться в Португалию и увидеть океан. Хобби: велоспорт, парусный спорт, природа. Штампы путешествий: Дубай [3 поездки], Абу-Даби [март 2026 г.]. Языки: русский, английский, турецкий. Налоговые реквизиты: Ortaca Vergi Dairesi, VKN: 9991120181.\nМастер-доступ суперхозяина: villaturaman@gmail.com, логин admin / пароль admin123, роль: Владелец [Финансы, Периоды, Блокировки, Окно брони, Чаты].",
+        "en": "Owner: Aleksei Znamenskii. Lives in Marmaris, retired yachtsman. Life motto: \"If you want something done right, do it yourself.\" Dream: to go to Portugal and see the ocean. Hobbies: cycling, sailing, nature. Travel stamps: Dubai [3 trips], Abu Dhabi [March 2026]. Languages: Russian, English, Turkish. Tax details: Ortaca Vergi Dairesi, VKN: 9991120181.\nSuperhost master access: villaturaman@gmail.com, login admin / password admin123, role: Owner [Finances, Periods, Blocks, Booking Window, Chats].",
+        "tr": "Sahibi: Aleksei Znamenskii. Marmaris'te yaşıyor, emekli yatçı. Hayat felsefesi: \"Bir şeyin doğru yapılmasını istiyorsanız, kendiniz yapın.\" Hayali: Portekiz'e gidip okyanusu görmek. Hobileri: bisiklet, yelken, doğa. Seyahat damgaları: Dubai [3 gezi], Abu Dhabi [Mart 2026]. Diller: Rusça, İngilizce, Türkçe. Vergi bilgileri: Ortaca Vergi Dairesi, VKN: 9991120181.\nSüper ev sahibi ana erişimi: villaturaman@gmail.com, kullanıcı adı admin / şifre admin123, rol: Sahip [Finans, Dönemler, Bloklar, Rezervasyon Penceresi, Sohbetler]."
       }
     },
     "6": {
@@ -2115,9 +2544,9 @@
         "tr": "6. Deniz yatıyla seyahat mümkündür."
       },
       "text": {
-        "ru": "Яхта произведена в Германии в 2022 году. \nМодель BAVARIA C45. На площади более 60 м² организовано уютное пространство для путешествий.\nТри каюты, в каждой из них кровать 140 см на 200 см. Такое же спальное место (140 см на 200 см) можно организовать в салоне (стол трансформер). В кокпите так же столы трансформируются в лежаки, где два взрослых человека комфортно разместятся на ночёвку и вахту. Итого 10 спальных мест.\nХолодная и горячая вода присутствует. \nДва туалета с электрической системой слива оборудованы баком-накопителем по 70 литров каждый. Две душевые кабинки и один открытый душ на откидной платформе для купания. \nДва холодильника и отдельная морозильная камера, газовая плита, духовой шкаф, посудомоечная машина, посуда, кухонная техника с кофемашиной - к услугам тех, кто хочет отличиться на кухне и удивить команду. Так же возможно приготовление блюд нашей командой. \nДля дальних переходов на яхте имеется генератор и солнечные панели. \nДве зоны отдыха под навесами, а так же открытые зоны для загара на палубе яхты. \nДля купания откидная платформа имеет удобную систему спуска в воду. \nТехнические данные.\n Общая длина 14,06 м. Ширина корпуса 4,49 м. Осадка (Киль) 2,60 м. Вес балласта (киль) 2,984 кг. Топливный бак 250 литров. Резервуар для воды 650 литров. Паруса: Грот (закрутка) 51,0 м². Кливер 45,0 м². Генуя 52,0 м². Длина мачты (макс.) от ватерлинии 22,00 м. Район плавания Категория CE А10/Б14/С16 (неограниченно). Дизайн яхты Cossutti. Безопасность на яхте обеспечена необходимым комплектом из: двенадцати спасательных жилетов, спасательного плота на 10 человек, динги с мотором на 6 человек и другим спасательным оборудованием по регламенту. \nТак же на борту имеются:  надувные каяк, саб, ватрушка и маски для подводного плавания, применяемые для водных развлечений.",
-        "en": "The yacht was built in Germany in 2022.\nModel BAVARIA C45. Over 60 m² of space offers a cozy space for exploring.\nThree cabins, each with a 140 cm x 200 cm bed. A similar berth (140 cm x 200 cm) can be arranged in the salon (with a transformable table). The cockpit tables also transform into sun loungers, comfortably accommodating two adults overnight and during watchkeeping. A total of 10 berths are provided.\nHot and cold running water is available.\nTwo toilets with electric flush systems are equipped with a 70-liter holding tank each. Two shower stalls and one outdoor shower on a fold-down bathing platform.\nTwo refrigerators and a separate freezer, a gas stove, oven, dishwasher, dishes, and kitchen appliances with a coffee machine are available for those who want to excel in the kitchen and impress the crew. Meals can also be prepared by the crew.\n\nFor long-distance cruising, the yacht is equipped with a generator and solar panels.\n\nTwo recreation areas under awnings, as well as open sunbathing areas on the yacht's deck.\n\nFor swimming, a folding platform has a convenient launch system.\n\nTechnical specifications.\nOverall length: 14.06 m. Hull width: 4.49 m. Draft (keel): 2.60 m. Ballast weight (keel): 2.984 kg. Fuel tank: 250 liters. Water tank: 650 liters. Sails: Mainsail (furling): 51.0 m². Jib: 45.0 m². Genoa 52.0 m². Mast length (max.) from waterline 22.00 m. Sailing area Category CE A10/B14/C16 (unlimited). Yacht design by Cossutti. Safety on board is ensured by the necessary set of: twelve life jackets, a 10-person life raft, a 6-person motorized dinghy, and other safety equipment as required. \nAlso on board are an inflatable kayak, a SUP, a tube, and snorkeling masks for water activities.",
-        "tr": "Yat, 2022 yılında Almanya'da inşa edilmiştir.\nBAVARIA C45 modeli. 60 m²'den fazla alan, keşif için rahat bir ortam sunmaktadır.\nHer biri 140 cm x 200 cm yatak bulunan üç kabin. Salonda (dönüştürülebilir masa ile) benzer bir yatak (140 cm x 200 cm) düzenlenebilir. Kokpit masaları ayrıca güneşlenme şezlonglarına dönüşerek, gece ve nöbet sırasında iki yetişkini rahatça ağırlayabilir. Toplam 10 yatak mevcuttur.\nSıcak ve soğuk akan su mevcuttur.\nHer biri 70 litrelik atık su tankına sahip, elektrikli sifon sistemli iki tuvalet. İki duş kabini ve katlanır yüzme platformu üzerinde bir açık duş.\nMutfakta ustalaşmak ve mürettebatı etkilemek isteyenler için iki buzdolabı ve ayrı bir dondurucu, gazlı ocak, fırın, bulaşık makinesi, tabaklar ve kahve makinesi içeren mutfak aletleri mevcuttur. Yemekler mürettebat tarafından da hazırlanabilir.\n\nUzun mesafeli seyirler için yat, jeneratör ve güneş panelleriyle donatılmıştır.\n\nİki adet tente altında dinlenme alanı ve yatın güvertesinde açık güneşlenme alanları mevcuttur.\n\nYüzme için, kullanışlı bir fırlatma sistemine sahip katlanır bir platform bulunmaktadır.\n\nTeknik Özellikler:\n\nToplam uzunluk: 14,06 m. Gövde genişliği: 4,49 m. Su çekimi (omurga): 2,60 m. Balast ağırlığı (omurga): 2,984 kg. Yakıt deposu: 250 litre. Su deposu: 650 litre. Yelkenler: Ana yelken (sarmalı): 51,0 m². Flok: 45,0 m². Cenova: 52,0 m². Direk uzunluğu (maks.) su hattından 22,00 m. Yelken alanı Kategorisi CE A10/B14/C16 (sınırsız). Yat tasarımı: Cossutti. Gemideki güvenlik, gerekli ekipmanlarla sağlanmaktadır: on iki can yeleği, 10 kişilik can salı, 6 kişilik motorlu bot ve gerektiğinde diğer güvenlik ekipmanları.\n\nAyrıca gemide şişme kayak, SUP, tüp ve su aktiviteleri için şnorkel maskeleri de bulunmaktadır."
+        "ru": "Яхта произведена в Германии в 2022 году. \nМодель BAVARIA C45. На площади более 60 м² организовано уютное пространство для путешествий.\nТри каюты, в каждой из них кровать 140 см на 200 см. Такое же спальное место [140 см на 200 см] можно организовать в салоне [стол трансформер]. В кокпите так же столы трансформируются в лежаки, где два взрослых человека комфортно разместятся на ночевку и вахту. Итого 10 спальных мест.\nХолодная и горячая вода присутствует. \nДва туалета с электрической системой слива оборудованы баком-накопителем по 70 литров каждый. Две душевые кабинки и один открытый душ на откидной платформе для купания. \nДва холодильника и отдельная морозильная камера, газовая плита, духовой шкаф, посудомоечная машина, посуда, кухонная техника с кофемашиной - к услугам тех, кто хочет отличиться на кухне и удивить команду. Так же возможно приготовление блюд нашей командой. \nДля дальних переходов на яхте имеется генератор и солнечные панели. \nДве зоны отдыха под навесами, а так же открытые зоны для загара на палубе яхты. \nДля купания откидная платформа имеет удобную систему спуска в воду. \nТехнические данные:\nОбщая длина 14,06 м. Ширина корпуса 4,49 м. Осадка [Киль] 2,60 м. Вес балласта [киль] 2,984 кг. Топливный бак 250 литров. Резервуар для воды 650 литров. Паруса: Грот [закрутка] 51,0 м². Кливер 45,0 м². Генуя 52,0 м². Длина мачты [макс.] от ватерлинии 22,00 м. Район плавания Категория CE А10/Б14/С16 [неограниченно]. Дизайн яхты Cossutti. Безопасность на яхте обеспечена необходимым комплектом: 12 спасательных жилетов, спасательный плот на 10 человек, динги с мотором на 6 человек и другое спасательное оборудование по регламенту. \nТак же на борту имеются: надувные каяк, саб, ватрушка и маски для подводного плавания, применяемые для водных развлечений.",
+        "en": "The yacht was built in Germany in 2022.\nModel BAVARIA C45. Over 60 m² of space offers a cozy space for exploring.\nThree cabins, each with a 140 cm x 200 cm bed. A similar berth (140 cm x 200 cm) can be arranged in the salon (transformable table). The cockpit tables also transform into sun loungers, comfortably accommodating two adults for overnight stays and watchkeeping. A total of 10 berths are provided.\nHot and cold running water is available.\nTwo toilets with electric flush systems are equipped with a 70-liter holding tank each. Two shower stalls and one outdoor shower on a fold-down bathing platform.\nTwo refrigerators and a separate freezer, a gas stove, oven, dishwasher, dishes, and kitchen appliances with a coffee machine are available for those who want to excel in the kitchen and impress the crew. Meals can also be prepared by the crew.\n\nFor long-distance cruising, the yacht is equipped with a generator and solar panels.\n\nTwo recreation areas under awnings, as well as open sunbathing areas on the yacht's deck, are available.\n\nFor swimming, a folding platform has a convenient launch system.\n\nTechnical data:\nOverall length: 14.06 m. Hull width: 4.49 m. Draft: 2.60 m. Ballast weight: 2.984 kg. Fuel tank: 250 liters. Water tank: 650 liters. Sails: Mainsail (furling): 51.0 m². Jib: 45.0 m². Genoa 52.0 m². Mast length [max.] from waterline 22.00 m. Sailing area Category CE A10/B14/C16 [unlimited]. Yacht design by Cossutti. Safety on board is ensured by the necessary equipment: 12 life jackets, a 10-person life raft, a 6-person motorized dinghy, and other required safety equipment. \nAlso on board are an inflatable kayak, a SUP, a tube, and snorkeling masks for water activities.",
+        "tr": "Yat, 2022 yılında Almanya'da inşa edilmiştir.\nBAVARIA C45 modeli. 60 m²'den fazla alan, keşif için rahat bir ortam sunmaktadır.\nHer biri 140 cm x 200 cm yatak bulunan üç kabin. Salonda (dönüştürülebilir masa) benzer bir yatak (140 cm x 200 cm) düzenlenebilir. Kokpit masaları ayrıca güneşlenme şezlonglarına dönüşerek, gece konaklamaları ve nöbet tutma için iki yetişkini rahatça ağırlayabilir. Toplam 10 yatak mevcuttur.\nSıcak ve soğuk akan su mevcuttur.\nHer biri 70 litrelik atık su tankına sahip elektrikli sifon sistemli iki tuvalet. İki duş kabini ve katlanır yüzme platformu üzerinde bir açık duş.\nMutfakta ustalaşmak ve mürettebatı etkilemek isteyenler için iki buzdolabı ve ayrı bir dondurucu, gazlı ocak, fırın, bulaşık makinesi, tabaklar ve kahve makinesi içeren mutfak aletleri mevcuttur. Yemekler mürettebat tarafından da hazırlanabilir.\n\nUzun mesafeli seyirler için yat, jeneratör ve güneş panelleriyle donatılmıştır.\n\nİki adet tente altında dinlenme alanı ve yatın güvertesinde açık güneşlenme alanları mevcuttur.\n\nYüzme için, kullanışlı bir fırlatma sistemine sahip katlanır bir platform bulunmaktadır.\n\nTeknik veriler:\nToplam uzunluk: 14,06 m. Gövde genişliği: 4,49 m. Su çekimi: 2,60 m. Balast ağırlığı: 2,984 kg. Yakıt deposu: 250 litre. Su deposu: 650 litre. Yelkenler: Ana yelken (sarmalı): 51,0 m². Flok: 45,0 m². Cenova: 52,0 m². Direk uzunluğu [maks.] su hattından 22,00 m. Yelken alanı Kategorisi CE A10/B14/C16 [sınırsız]. Yat tasarımı: Cossutti. Gemideki güvenlik, gerekli ekipmanlarla sağlanmaktadır: 12 can yeleği, 10 kişilik can salı, 6 kişilik motorlu bot ve diğer gerekli güvenlik ekipmanları.\n\nAyrıca gemide şişme kayak, SUP, tüp ve su aktiviteleri için şnorkel maskeleri de bulunmaktadır."
       }
     },
     "7": {
@@ -2127,9 +2556,9 @@
         "tr": "7. Karavanla seyahat mümkündür."
       },
       "text": {
-        "ru": "Тур \"Всё\" - это возможность за 1 неделю неспешно отдохнуть меняя ритм, стиль и вид отдыха. Это очень круто. За это время вы однозначно почувствуете разнообразие и красоту Турции и в том числе замечательного места города Дальян (провинция Мугла). Предъявляя разные требования и пожелания к своему досугу, вы в конечном итоге, будете удовлетворены и поймете, что это было замечательно и великолепно. И скажите мне: Спасибо. Это было настоящее приключение. \nНазвание: Тур \"Всё\". Вилла, яхта, кемпер, SUP, каяк, велосипеды.....\nПлан тура:\nVilla Turaman (2 дня 2 ночи) - Яхта Vasilisa (2 дня 1ночь) - Кемпер ( 1 день 2 ночи) - Villa Turaman (2 дня 1ночь)\n\n1 и 2 день - Villa Turaman (2 дня 2 ночи): \n1 день. Трансфер из аэропорта. Заселение на виллу после 16.00. Вечерний променад по набережной и пешеходной улице города Дальян. Ужин в ресторане.\n2 день. Отдых на вилле, бассейн. Можно выехать в древний город или взять на прокат лодку с экскурсией по реке. Половить крабов и в конечном итоге по реке добраться до пляжа. День свободный, сможете принять сами решение как его провести. Мы со своей стороны обеспечим вас транспортом и сопровождением по всем местам, что мы знаем всё вам покажем. Этот день мы можем с вами спланировать при формировании брони и сделать его максимально интересным для вас.\n3 и 4 день - Яхта Vasilisa (2 дня 1ночь):\n3 день. 6:00 подъём. Сборы. Завтрак. Выезд на яхту Vasilisa в Marmaris. 9.30 заходим на яхту. Готовимся отходить. Маршрут: Marmaris Yacht Marina - Ekincik       ссылка на маршрут .\n4 и 5 день - Кемпер Adria Adora 673 PK ( 1 день 2 ночи):\n4 день. 16:00 Сборы. На моторной лодке отчаливаем с яхты Vasilisa и двигаемся 5 - 10 минут к берегу бухты Ekincik. Там на береговой линии бухты нас ждёт оборудованная площадка для отдыха на караване.\nНеобычный и абсолютно новый семейный караван Adria Adora 673 PK на берегу Средиземного моря в прекрасном тихом месте Ekincik находится в 60 минутах езды от вилы Turaman, выполненный в стиле минимализма, вмещает 3 спальные зоны:\n— в передней части: двуспальная кровать с панорамным видом;\n— в середине: раздельный санузел, обеденная зона со столом, которая разбирается в большую кровать, а напротив кухня;\n— в задней части: комната с диваном и вторым спальным ярусом, отлично подойдет в качестве детской комнаты;\nВ Кемпер Adria Adora 673 PK есть все для полного комфорта: два входа, отопление и бойлер, пол с подогревом, кондиционер, штатное место для аккумулятора, увеличенный холодильник, автоматический слив воды, аудиосистема, установлен бак для воды, вытяжка в кухне, а в комплекте идут: ковры, бак для серой воды, противооткатные упоры.  Тип санузла: Раздельный \nТак же вам будут предоставлены:\nГриль и принадлежности\nМаски для плавания\nУличная пляжная мебель и посуда.\n6 и 7 день - Villa Turaman (2 дня 2 ночи):\n6день. Возврвщаемся на виллу. Вечерний променад по набережной и пешеходной улице города Дальян. Ужин в ресторане.\n7 день. Выезд с виллы до 9.00: Завтрак. Трансфер до аэропорта.\nВсё это можно продлить по вашему желанию.\nЕсли у вас есть вопросы просто нажмите на эту кнопку и я вам перезвоню по WhatsApp.  Начиная диалог, вы соглашаетесь с Политикой конфиденциальности.",
-        "en": "The \"Everything\" tour is an opportunity to unwind in one week, changing your pace, style, and type of vacation. It's absolutely fantastic. During this time, you'll definitely experience the diversity and beauty of Turkey, including the wonderful city of Dalyan (Mugla Province). Although you may have different expectations and wishes for your leisure time, you'll ultimately be satisfied and realize that it was wonderful and magnificent. And tell me: Thank you. It was a real adventure.\n\nTitle: \"Everything\" Tour. Villa, yacht, camper, SUP, kayak, bicycles...\nTour Plan:\nVilla Turaman (2 days 2 nights) - Yacht Vasilisa (2 days 1 night) - Camper (1 day 2 nights) - Villa Turaman (2 days 1 night)\n\nDays 1 and 2 - Villa Turaman (2 days 2 nights):\nDay 1. Airport transfer. Check-in at the villa after 4:00 PM. An evening stroll along the Dalyan promenade and pedestrian street. Dinner at a restaurant.\nDay 2. Relax at the villa, pool. You can visit the ancient city or rent a boat for a river excursion. Catch crabs and eventually reach the beach. The day is free, so you can decide how to spend it. We will provide transportation and escort you to all the places we know and will show you. We can plan this day together when making your reservation and make it as interesting as possible for you.\nDays 3 and 4 - Yacht Vasilisa (2 days, 1 night):\nDay 3. Wake up at 6:00 AM. Pack up. Breakfast. Departure for the yacht Vasilisa in Marmaris. Board the yacht at 9:30 AM. Prepare to depart. Route: Marmaris Yacht Marina - Ekincik (link to route).\nDays 4 and 5 - Adria Adora 673 PK Camper (1 day 2 nights):\nDay 4. 4:00 PM. We depart the Vasilisa yacht by motorboat and travel 5-10 minutes to the shore of Ekincik Bay. There, on the bay's shoreline, a well-equipped campervan site awaits.\nThis unique and brand-new family caravan, the Adria Adora 673 PK, is located on the Mediterranean coast in the beautiful, quiet location of Ekincik, a 60-minute drive from Villa Turaman. Designed in a minimalist style, it features three sleeping areas:\n— Forward: a double bed with panoramic views;\n— Middle: separate bathroom, dining area with table that converts into a large bed, and opposite is the kitchen;\n— Rear: a room with a sofa and a second bunk, perfect for a children's room;\nThe Adria Adora 673 PK camper has everything you need for complete comfort: two entrances, heating and a boiler, underfloor heating, air conditioning, a dedicated battery compartment, a larger refrigerator, automatic drain, an audio system, a water tank, a kitchen hood, and carpets, a grey water tank, and wheel chocks. Bathroom type: Separate\nYou will also be provided with:\nGrill and accessories\nSwimming masks\nOutdoor beach furniture and utensils.\nDays 6 and 7 - Villa Turaman (2 days 2 nights):\nDay 6. Return to the villa. Evening promenade along the promenade and pedestrian street of Dalyan. Dinner at the restaurant.\nDay 7. Check-out before 9:00 AM: Breakfast. Airport transfer.\nAll of this can be extended at your request.\nIf you have any questions, just click this button and I will call you back via WhatsApp. By starting a dialogue, you agree to the Privacy Policy.",
-        "tr": "\"Her Şey\" turu, bir hafta boyunca rahatlamak, hızınızı, tarzınızı ve tatil türünüzü değiştirmek için bir fırsattır. Kesinlikle harika. Bu süre zarfında, Dalyan'ın (Muğla ili) muhteşem şehri de dahil olmak üzere Türkiye'nin çeşitliliğini ve güzelliğini kesinlikle deneyimleyeceksiniz. Boş zamanınız için farklı beklentileriniz ve istekleriniz olsa da, sonunda memnun kalacak ve harika ve muhteşem olduğunu anlayacaksınız. Ve bana şunu söyleyin: Teşekkür ederim. Gerçek bir maceraydı.\n\nBaşlık: \"Her Şey\" Turu. Villa, yat, karavan, SUP, kayak, bisikletler...\nTur Planı:\nVilla Turaman (2 gün 2 gece) - Yat Vasilisa (2 gün 1 gece) - Karavan (1 gün 2 gece) - Villa Turaman (2 gün 1 gece)\n\n1. ve 2. Günler - Villa Turaman (2 gün 2 gece):\n1. Gün. Havaalanı transferi. Saat 16:00'dan sonra villaya giriş. Dalyan sahil şeridi ve yaya caddesinde akşam yürüyüşü. Restoranda akşam yemeği.\n2. Gün. Villada, havuzda dinlenin. Antik kenti ziyaret edebilir veya nehir gezisi için tekne kiralayabilirsiniz. Yengeç yakalayabilir ve sonunda sahile ulaşabilirsiniz. Gün serbest, bu yüzden nasıl geçireceğinize siz karar verebilirsiniz. Bildiğimiz ve size göstereceğimiz tüm yerlere ulaşımınızı sağlayacağız ve size eşlik edeceğiz. Rezervasyonunuzu yaparken bu günü birlikte planlayabilir ve sizin için mümkün olduğunca ilgi çekici hale getirebiliriz.\n3. ve 4. Günler - Vasilisa Yat (2 gün, 1 gece):\n3. Gün. Sabah 6:00'da uyanın. Eşyalarınızı toplayın. Kahvaltı. Marmaris'teki Vasilisa yatına hareket. Saat 9:30'da yata binin. Harekete hazırlanın. Güzergah: Marmaris Yat Limanı - Ekincik (güzergah bağlantısı).\n4. ve 5. Günler - Adria Adora 673 PK Karavan (1 gün 2 gece):\n4. Gün. 16:00. Vasilisa yatından motorlu tekneyle ayrılıp Ekincik Koyu kıyısına 5-10 dakika yolculuk yapıyoruz. Orada, koyun kıyısında, iyi donanımlı bir karavan alanı bizi bekliyor.\nBu eşsiz ve yepyeni aile karavanı, Adria Adora 673 PK, Akdeniz kıyısında, güzel ve sakin Ekincik bölgesinde, Villa Turaman'a 60 dakikalık sürüş mesafesinde yer almaktadır. Minimalist bir tarzda tasarlanan karavan, üç uyku alanına sahiptir:\n— Ön: panoramik manzaralı çift kişilik yatak;\n\n— Orta: ayrı banyo, büyük bir yatağa dönüşen masa bulunan yemek alanı ve karşısında mutfak;\n\n— Arka: çocuk odası için mükemmel olan, kanepe ve ikinci bir ranza bulunan bir oda;\n\nAdria Adora 673 PK karavan, tam konfor için ihtiyacınız olan her şeye sahiptir: iki giriş, ısıtma ve kazan, yerden ısıtma, klima, özel akü bölmesi, daha büyük bir buzdolabı, otomatik tahliye, ses sistemi, su deposu, mutfak davlumbazı ve halılar, gri su deposu ve tekerlek takozları. Banyo tipi: Ayrı\nAyrıca şunlar da sağlanacaktır:\nIzgara ve aksesuarları\nYüzme maskeleri\nDış mekan plaj mobilyaları ve mutfak eşyaları.\n6. ve 7. Günler - Villa Turaman (2 gün 2 gece):\n6. Gün. Villaya dönüş. Dalyan'ın sahil şeridi ve yaya caddesinde akşam gezintisi. Restoranda akşam yemeği.\n\n7. Gün. Sabah 9:00'dan önce çıkış: Kahvaltı. Havaalanı transferi.\nTüm bunlar isteğiniz üzerine uzatılabilir.\nHerhangi bir sorunuz varsa, bu butona tıklayın ve sizi WhatsApp üzerinden arayacağım. Diyalog başlatarak Gizlilik Politikası'nı kabul etmiş olursunuz."
+        "ru": "Тур «Всё» - это возможность за 1 неделю неспешно отдохнуть меняя ритм, стиль и вид отдыха. Это очень круто. За это время вы однозначно почувствуете разнообразие и красоту Турции и в том числе замечательного места города Дальян [провинция Мугла]. Предъявляя разные требования и пожелания к своему досугу, вы в конечном итоге, будете удовлетворены и поймете, что это было замечательно и великолепно. И скажите мне: Спасибо. Это было настоящее приключение. \nНазвание: Тур «Всё». Вилла, яхта, кемпер, SUP, каяк, велосипеды...\nПлан тура:\nVilla Turaman [2 дня 2 ночи] - Яхта Vasilisa [2 дня 1 ночь] - Кемпер [1 день 2 ночи] - Villa Turaman [2 дня 1 ночь]\n\n1 и 2 день - Villa Turaman [2 дня 2 ночи]: \n1 день. Трансфер из аэропорта. Заселение на виллу после 16.00. Вечерний променад по набережной и пешеходной улице города Дальян. Ужин в ресторане.\n2 день. Отдых на вилле, бассейн. Можно выехать в древний город или взять напрокат лодку с экскурсией по реке. Половить крабов и в конечном итоге по реке добраться до пляжа. День свободный, сможете принять сами решение как его провести. Мы со своей стороны обеспечим вас транспортом и сопровождением по всем местам, что мы знаем всё вам покажем. Этот день мы можем с вами спланировать при формировании брони и сделать его максимально интересным для вас.\n3 и 4 день - Яхта Vasilisa [2 дня 1 ночь]:\n3 день. 6:00 подъем. Сборы. Завтрак. Выезд на яхту Vasilisa в Marmaris. 9.30 заходим на яхту. Готовимся отходить. Маршрут: Marmaris Yacht Marina - Ekincik.\n4 и 5 день - Кемпер Adria Adora 673 PK [1 день 2 ночи]:\n4 день. 16:00 Сборы. На моторной лодке отчаливаем с яхты Vasilisa и двигаемся 5 - 10 минут к берегу бухты Ekincik. Там на береговой линии бухты нас ждет оборудованная площадка для отдыха на караване.\nНеобычный и абсолютно новый семейный караван Adria Adora 673 PK на берегу Средиземного моря в прекрасном тихом месте Ekincik находится в 60 минутах езды от виллы Turaman, выполненный в стиле минимализма, вмещает 3 спальные зоны:\n- в передней части: двуспальная кровать с панорамным видом;\n- в середине: раздельный санузел, обеденная зона со столом, которая разбирается в большую кровать, а напротив кухня;\n- в задней части: комната с диваном и вторым спальным ярусом, отлично подойдет в качестве детской комнаты;\nВ Кемпере Adria Adora 673 PK есть все для полного комфорта: два входа, отопление и бойлер, пол с подогревом, кондиционер, штатное место для аккумулятора, увеличенный холодильник, автоматический слив воды, аудиосистема, установлен бак для воды, вытяжка в кухне, а в комплекте идут: ковры, бак для серой воды, противооткатные упоры. Тип санузла: Раздельный.\nТак же вам будут предоставлены: гриль и принадлежности, маски для плавания, уличная пляжная мебель и посуда.\n6 и 7 день - Villa Turaman [2 дня 2 ночи]:\n6 день. Возвращаемся на виллу. Вечерний променад по набережной и пешеходной улице города Дальян. Ужин в ресторане.\n7 день. Выезд с виллы до 9.00: Завтрак. Трансфер до аэропорта.\nВсе это можно продлить по вашему желанию.\nЕсли у вас есть вопросы, свяжитесь с суперхозяином Алексеем в чате.",
+        "en": "The \"Everything\" tour is an opportunity to unwind in one week, changing your pace, style, and type of vacation. It's absolutely fantastic. During this time, you'll definitely experience the diversity and beauty of Turkey, including the wonderful city of Dalyan (Mugla Province). Although you may have different expectations and desires for your leisure time, you'll ultimately be satisfied and realize that it was wonderful and magnificent. And tell me: Thank you. It was a real adventure.\n\nTitle: \"Everything\" Tour. Villa, yacht, camper, SUP, kayak, bicycles...\nTour Plan:\nVilla Turaman [2 days 2 nights] - Yacht Vasilisa [2 days 1 night] - Camper [1 day 2 nights] - Villa Turaman [2 days 1 night]\n\nDays 1 and 2 - Villa Turaman [2 days 2 nights]:\nDay 1. Airport transfer. Check-in at the villa after 4:00 PM. An evening stroll along the Dalyan promenade and pedestrian street. Dinner at a restaurant.\nDay 2. Relax at the villa, pool. You can visit the ancient city or rent a boat for a river excursion. Catch crabs and eventually reach the beach by boat. The day is free, and you can decide how to spend it. We will provide transportation and escort you to all the places we know and will show you. We can plan this day together when making your reservation and make it as interesting as possible for you.\nDays 3 and 4 - Yacht Vasilisa [2 days, 1 night]:\nDay 3. Wake up at 6:00 AM. Pack up. Breakfast. Departure for the yacht Vasilisa in Marmaris. Board the yacht at 9:30 AM. Prepare to depart. Route: Marmaris Yacht Marina - Ekincik.\nDays 4 and 5 - Adria Adora 673 PK Camper [1 day 2 nights]:\nDay 4. 4:00 PM. We depart the Vasilisa yacht by motorboat and travel 5-10 minutes to the shore of Ekincik Bay. There, on the bay's shoreline, a well-equipped campervan area awaits.\nThis unique and brand-new family caravan, the Adria Adora 673 PK, is located on the Mediterranean coast in the beautiful, quiet location of Ekincik, a 60-minute drive from Villa Turaman. Designed in a minimalist style, it features three sleeping areas:\n- Forward: a double bed with panoramic views;\n- Middle: separate bathroom, dining area with table that converts into a large bed, and opposite is the kitchen;\n- Rear: a room with a sofa and a second bunk, perfect for a children's room;\nThe Adria Adora 673 PK camper has everything you need for complete comfort: two entrances, heating and a boiler, underfloor heating, air conditioning, a dedicated battery compartment, an oversized refrigerator, automatic drain, an audio system, a water tank, a kitchen hood, and carpets, a grey water tank, and wheel chocks are included. Bathroom type: Separate.\nYou will also be provided with a grill and accessories, snorkels, outdoor beach furniture, and dishes.\nDays 6 and 7 - Villa Turaman [2 days 2 nights]:\nDay 6. Return to the villa. Evening promenade along the promenade and pedestrian street of Dalyan. Dinner at the restaurant.\nDay 7. Check-out before 9:00 AM: Breakfast. Airport transfer.\nAll of this can be extended at your request.\nIf you have any questions, please contact superhost Alexey via chat.",
+        "tr": "\"Her Şey\" turu, bir hafta boyunca rahatlamak, tempoyu, tarzı ve tatil türünü değiştirmek için bir fırsattır. Kesinlikle harika. Bu süre zarfında, Dalyan'ın (Muğla ili) muhteşem şehri de dahil olmak üzere Türkiye'nin çeşitliliğini ve güzelliğini kesinlikle deneyimleyeceksiniz. Boş zamanınız için farklı beklentileriniz ve istekleriniz olsa da, sonunda memnun kalacak ve harika ve muhteşem olduğunu anlayacaksınız. Ve bana söyleyin: Teşekkür ederim. Gerçek bir maceraydı.\n\nBaşlık: \"Her Şey\" Turu. Villa, yat, karavan, SUP, kayak, bisikletler...\nTur Planı:\nVilla Turaman [2 gün 2 gece] - Yat Vasilisa [2 gün 1 gece] - Karavan [1 gün 2 gece] - Villa Turaman [2 gün 1 gece]\n\n1. ve 2. Günler - Villa Turaman [2 gün 2 gece]:\n1. Gün. Havaalanı transferi. Saat 16:00'dan sonra villaya giriş. Dalyan sahil şeridi ve yaya caddesinde akşam yürüyüşü. Restoranda akşam yemeği.\n2. Gün. Villada, havuzda dinlenin. Antik kenti ziyaret edebilir veya nehir gezisi için tekne kiralayabilirsiniz. Yengeç yakalayabilir ve sonunda tekneyle sahile ulaşabilirsiniz. Gün serbesttir ve nasıl geçireceğinize siz karar verebilirsiniz. Bildiğimiz ve size göstereceğimiz tüm yerlere ulaşımınızı sağlayacağız ve size eşlik edeceğiz. Rezervasyonunuzu yaparken bu günü birlikte planlayabilir ve sizin için mümkün olduğunca ilgi çekici hale getirebiliriz.\n3. ve 4. Günler - Vasilisa Yat [2 gün, 1 gece]:\n3. Gün. Sabah 6:00'da uyanın. Eşyalarınızı toplayın. Kahvaltı. Marmaris'teki Vasilisa yatına hareket. Saat 9:30'da yata binin. Harekete hazırlanın. Güzergah: Marmaris Yat Limanı - Ekincik.\n4. ve 5. Günler - Adria Adora 673 PK Karavan [1 gün 2 gece]:\n4. Gün. 16:00. Vasilisa yatından motorlu tekneyle ayrılıp Ekincik Koyu kıyısına 5-10 dakika yolculuk yapıyoruz. Orada, koyun kıyısında, iyi donanımlı bir karavan alanı bizi bekliyor.\nBu eşsiz ve yepyeni aile karavanı, Adria Adora 673 PK, Akdeniz kıyısında, güzel ve sakin Ekincik bölgesinde, Villa Turaman'a 60 dakikalık sürüş mesafesinde yer almaktadır. Minimalist bir tarzda tasarlanan karavan, üç uyku alanına sahiptir:\n- Ön: Panoramik manzaralı çift kişilik yatak;\n\n- Orta: Ayrı banyo, büyük bir yatağa dönüşen masa bulunan yemek alanı ve karşısında mutfak;\n\n- Arka: Çocuk odası için mükemmel olan, kanepe ve ikinci bir ranza bulunan bir oda;\n\nAdria Adora 673 PK karavanı, tam konfor için ihtiyacınız olan her şeye sahiptir: iki giriş, ısıtma ve kazan, yerden ısıtma, klima, özel akü bölmesi, büyük boy buzdolabı, otomatik tahliye, ses sistemi, su deposu, mutfak davlumbazı ve halılar, gri su deposu ve tekerlek takozları dahildir. Banyo tipi: Ayrı.\n\nAyrıca size mangal ve aksesuarları, şnorkeller, dış mekan plaj mobilyaları ve tabaklar da sağlanacaktır.\n6. ve 7. Günler - Villa Turaman [2 gün 2 gece]:\n6. Gün. Villaya dönüş. Dalyan'ın sahil şeridi ve yaya caddesinde akşam gezintisi. Restoranda akşam yemeği.\n\n7. Gün. Sabah 9:00'dan önce çıkış: Kahvaltı. Havaalanı transferi.\nTüm bunlar isteğiniz üzerine uzatılabilir.\nHerhangi bir sorunuz varsa, lütfen süper ev sahibi Alexey ile sohbet yoluyla iletişime geçin."
       }
     }
   },
@@ -2179,7 +2608,7 @@
       "text": {
         "ru": "Полный возврат 100% предоплаты при отмене бронирования не позднее чем за 14 суток до даты заселения. При бронировании невозвратного тарифа предоставляется скидка 10%.",
         "en": "A full 100% refund of the prepayment is available if you cancel your reservation no later than 14 days before your check-in date. A 10% discount is available when booking a non-refundable rate.",
-        "tr": "Rezervasyonunuzu giriş tarihinden en geç 14 gün önce iptal etmeniz durumunda ön ödemenin tamamı (%100) iade edilir. İade edilmeyen fiyatlardan yararlanarak rezervasyon yaptığınızda %10 indirim uygulanır."
+        "tr": "Rezervasyonunuzu giriş tarihinizden en geç 14 gün önce iptal etmeniz durumunda ön ödemenin tamamı (%100) iade edilir. İade edilmeyen fiyatlardan yararlanarak rezervasyon yaptığınızda %10 indirim uygulanır."
       }
     },
     "tax_info": {
@@ -2190,7 +2619,7 @@
       },
       "text": {
         "ru": "Регистрация в налоговой инспекции Ortaca Vergi Dairesi, налоговый номер VKN: 9991120181. Выставление официальных электронных счетов e-Arşiv Fatura согласно закону VUK 213 Madde 230.",
-        "en": "Registration with the Ortaca Vergi Dairesi tax office, tax identification number VKN: 9991120181. Issuance of official electronic invoices e-Arşiv Fatura in accordance with VUK 213 Madde 230.",
+        "en": "Registration with the Ortaca Vergi Dairesi tax office, tax identification number VKN: 9991120181. Issuance of official electronic invoices e-Arşiv Fatura in accordance with the law VUK 213 Madde 230.",
         "tr": "Ortaca Vergi Dairesi'ne kayıtlı, vergi kimlik numarası VKN: 9991120181. VUK 213 Madde 230 uyarınca resmi elektronik fatura (e-Arşiv Fatura) düzenlenmesi."
       }
     },
@@ -2210,7 +2639,7 @@
       "title": {
         "ru": "Протокол заселения и передачи ключей",
         "en": "Check-in and key transfer protocol",
-        "tr": "Giriş ve anahtar teslim protokolü"
+        "tr": "Giriş yapma ve anahtar teslim protokolü"
       },
       "text": {
         "ru": "Заселение через электронный смарт-замок [CHECKIN_METHOD]. Персональный пароль генерируется в день заезда. Возврат ключей: [KEY_HANDOVER].",
@@ -2252,8 +2681,8 @@
       },
       "text": {
         "ru": "Здравствуйте, [FIRST_NAME]! Благодарю за интерес к Villa Turaman! Если вас смущает текущая стоимость или есть определенный бюджет, подскажите, какой ориентир по цене был бы для вас комфортным? С удовольствием обсудим возможные условия! С уважением, Алексей Знаменский.",
-        "en": "Hello, [FIRST_NAME]! Thank you for your interest in Villa Turaman! If the current price is concerning or you have a specific budget, could you please suggest a price point that would be comfortable for you? We'd be happy to discuss possible terms! Sincerely, Alexey Znamensky.",
-        "tr": "Merhaba, [ADINIZ]! Villa Turaman'a gösterdiğiniz ilgi için teşekkür ederiz! Mevcut fiyat sizi endişelendiriyorsa veya belirli bir bütçeniz varsa, sizin için uygun olacak bir fiyat aralığı önerebilir misiniz? Olası koşulları görüşmekten memnuniyet duyarız! Saygılarımla, Alexey Znamensky."
+        "en": "Hello, [FIRST_NAME]! Thank you for your interest in Villa Turaman! If the current price is concerning or you have a specific budget, could you please advise what price range would be comfortable for you? We'd be happy to discuss possible terms! Sincerely, Alexey Znamensky.",
+        "tr": "Merhaba, [ADINIZ]! Villa Turaman'a gösterdiğiniz ilgi için teşekkür ederiz! Mevcut fiyat sizi endişelendiriyorsa veya belirli bir bütçeniz varsa, sizin için uygun olan fiyat aralığını belirtebilir misiniz? Olası koşulları görüşmekten memnuniyet duyarız! Saygılarımla, Alexey Znamensky."
       }
     },
     "1.3_early_booking_expiry": {
@@ -2354,14 +2783,14 @@
     },
     "3.4_checkin_instructions": {
       "title": {
-        "ru": "3.4. Стандартная инструкция с разъяснение о приватном 3 этаже",
-        "en": "3.4. Standard instructions with explanations about the private 3rd floor",
-        "tr": "3.4. Özel 3. katla ilgili açıklamalar içeren standart talimatlar"
+        "ru": "3.4. Стандартная инструкция по заселению и Wi-Fi",
+        "en": "3.4. Standard instructions for check-in and Wi-Fi",
+        "tr": "3.4. Giriş ve Wi-Fi için standart talimatlar"
       },
       "text": {
-        "ru": "Здравствуйте, [FIRST_NAME]! 👋\nСпасибо за понимание и за то, что открыто поделились своими мыслями. Нам жаль, что возникла ситуация, не совпавшая с вашими ожиданиями.\nСамый верхний (3-й) этаж используется как закрытое служебное/складское помещение для личных вещей владельцев. По этой причине он закрыт на ключ и ни при каких бронированиях не входит в арендуемую жилую площадь. В нашем объявлении на [PLATFORM_NAME] количество доступных комнат, ванных и вместимость виллы указаны строго с учетом доступных для проживания этажей.\nПри этом просторный балкон на 2-м этаже, терраса у бассейна и сад являются очень комфортными, приватными и отличными местами как для утреннего загара, так и для отдыха в течение всего дня.\nМы с нетерпением ждем возможности принять вас и вашу семью на высшем уровне. Если у вас возникнут другие вопросы или пожелания, пожалуйста, пишите нам! ✨\nС уважением, Aleksei Znamenskii. Villa Turaman.",
-        "en": "Hello, [FIRST_NAME]! 👋\nThank you for your understanding and for openly sharing your thoughts. We're sorry the situation didn't meet your expectations.\nThe top (3rd) floor is used as a closed utility/storage area for the owners' personal belongings. For this reason, it is locked and is not included in the rental accommodation for any bookings. In our listing on [PLATFORM_NAME], the number of available rooms, bathrooms, and occupancy of the villa are strictly based on the available floors.\nThe spacious balcony on the 2nd floor, the pool terrace, and the garden are very comfortable, private, and perfect places for morning sunbathing and relaxing all day long.\nWe look forward to hosting you and your family in the best possible way. If you have any other questions or requests, please contact us! ✨\nSincerely, Aleksei Znamenskii, Villa Turaman.",
-        "tr": "Merhaba, [ADINIZ]! 👋\nAnlayışınız ve düşüncelerinizi açıkça paylaştığınız için teşekkür ederiz. Durumun beklentilerinizi karşılamadığı için üzgünüz.\nEn üst (3.) kat, sahiplerinin kişisel eşyaları için kapalı bir depo/kullanım alanı olarak kullanılmaktadır. Bu nedenle kilitlidir ve herhangi bir rezervasyon için kiralık konaklamaya dahil değildir. [PLATFORM ADI]'ndaki ilanımızda, villanın müsait oda, banyo ve doluluk oranı kesinlikle müsait katlara göre belirtilmiştir.\n2. kattaki geniş balkon, havuz terası ve bahçe çok rahat, özel ve sabah güneşlenmek ve tüm gün dinlenmek için mükemmel yerlerdir.\nSizi ve ailenizi en iyi şekilde ağırlamayı dört gözle bekliyoruz. Başka sorularınız veya istekleriniz varsa lütfen bizimle iletişime geçin! ✨\nSaygılarımızla, Aleksei Znamenskii, Villa Turaman."
+        "ru": "Здравствуйте, [FIRST_NAME]! Ждем вас сегодня на Villa Turaman!\nАдрес: [ADDRESS]\nСпособ заселения: [CHECKIN_METHOD]\nWi-Fi сеть: [WIFI_NAME]\nПароль: [WIFI_PASSWORD]\nЕсли возникнут вопросы, я на связи 24/7! С уважением, Алексей Знаменский.",
+        "en": "Hello, [FIRST_NAME]! We look forward to seeing you at Villa Turaman today!\nAddress: [ADDRESS]\nCheck-in method: [CHECKIN_METHOD]\nWi-Fi network: [WIFI_NAME]\nPassword: [WIFI_PASSWORD]\nIf you have any questions, I'm available 24/7! Sincerely, Alexey Znamensky.",
+        "tr": "Merhaba, [ADINIZ]! Bugün Villa Turaman'da sizi görmeyi dört gözle bekliyoruz!\n\nAdres: [ADRES]\nGiriş yöntemi: [GİRİŞ YÖNTEMİ]\nWi-Fi ağı: [WIFI_ADI]\nŞifre: [WIFI_ŞİFRESİ]\nHerhangi bir sorunuz olursa, 7/24 hizmetinizdeyim! Saygılarımla, Alexey Znamensky."
       }
     },
     "3.5_welcome_guide_dalyan": {
@@ -2414,10 +2843,10 @@
         "en": "A comfortable Mercedes Vito with air conditioning and drinks",
         "tr": "Klimalı ve içecek servisi bulunan konforlu bir Mercedes Vito."
       },
-      "priceEUR": "100",
-      "priceRUB": "92",
-      "priceTRY": "9250",
-      "image": "3800",
+      "priceEUR": "54",
+      "priceRUB": "50",
+      "priceTRY": "5000",
+      "image": "1800",
       "available": true,
       "type": "Да",
       "video": "Трансфер",
@@ -2464,10 +2893,10 @@
         "en": "4-course poolside dinner: traditional Turkish meze and seafood",
         "tr": "Havuz başında 4 çeşit yemekten oluşan akşam yemeği: geleneksel Türk mezeleri ve deniz ürünleri."
       },
-      "priceEUR": "200",
-      "priceRUB": "184",
-      "priceTRY": "18500",
-      "image": "7600",
+      "priceEUR": "130",
+      "priceRUB": "120",
+      "priceTRY": "12000",
+      "image": "4300",
       "available": true,
       "type": "Да",
       "video": "Шеф",
@@ -2482,24 +2911,24 @@
       "title": {
         "ru": "Премиальный BBQ-вечер на углях в саду виллы",
         "en": "Premium BBQ evening on coals in the villa's garden",
-        "tr": "Villanın bahçesinde kömür ateşinde enfes bir barbekü akşamı."
+        "tr": "Villanın bahçesinde kömür ateşinde birinci sınıf barbekü akşamı."
       },
       "desc": {
         "ru": "Стейки рибай, каре ягненка на косточке и овощи гриль",
         "en": "Ribeye steaks, lamb chops and grilled vegetables",
         "tr": "Antrikot biftek, kuzu pirzola ve ızgara sebzeler"
       },
-      "priceEUR": "1200",
-      "priceRUB": "1104",
-      "priceTRY": "111000",
-      "image": "45600",
+      "priceEUR": "175",
+      "priceRUB": "160",
+      "priceTRY": "16000",
+      "image": "5800",
       "available": true,
       "type": "Да",
       "video": "BBQ",
       "details": {
         "ru": "https://youtube.com/watch?v=bbq",
         "en": "В стоимость входит премиальное маринованное фермерское мясо, отборные угли, розжиг, лаваш, соусы и работа гриль-мастера в течение 3 часов.",
-        "tr": "The price includes premium marinated farm-raised meat, select charcoal, fire starter, lavash, sauces, and a 3-hour grill master."
+        "tr": "The price includes premium marinated farm-raised meat, select charcoal, kindling, lavash, sauces, and a 3-hour grill master."
       }
     },
     {
@@ -2514,10 +2943,10 @@
         "en": "Rejuvenating mineral baths and thermal springs of Lake Köyceğiz",
         "tr": "Köyceğiz Gölü'nün canlandırıcı mineral banyoları ve termal kaynakları"
       },
-      "priceEUR": "300",
-      "priceRUB": "276",
-      "priceTRY": "27750",
-      "image": "11400",
+      "priceEUR": "75",
+      "priceRUB": "70",
+      "priceTRY": "7000",
+      "image": "2500",
       "available": true,
       "type": "Да",
       "video": "СПА",
@@ -2539,17 +2968,17 @@
         "en": "2 stable SUP boards and a two-seater expedition kayak",
         "tr": "2 adet sağlam SUP tahtası ve iki kişilik bir keşif kayığı"
       },
-      "priceEUR": "100",
-      "priceRUB": "92",
-      "priceTRY": "9250",
-      "image": "3800",
+      "priceEUR": "85",
+      "priceRUB": "80",
+      "priceTRY": "8000",
+      "image": "2900",
       "available": true,
       "type": "Да",
       "video": "Спорт",
       "details": {
         "ru": "https://youtube.com/watch?v=sup",
         "en": "Доставка оборудования прямо к вилле на весь период проживания. В комплекте весла, страховочные лиши и спасательные жилеты.",
-        "tr": "Equipment delivered directly to your villa for the entire stay. Includes paddles, leashes, and life jackets."
+        "tr": "Equipment delivered directly to your villa for the entire stay. Paddles, leashes, and life jackets are included."
       }
     },
     {
@@ -2564,10 +2993,10 @@
         "en": "2 modern electric bikes with a range of up to 60 km",
         "tr": "60 km'ye kadar menzile sahip 2 adet modern elektrikli bisiklet."
       },
-      "priceEUR": "100",
-      "priceRUB": "92",
-      "priceTRY": "9250",
-      "image": "3800",
+      "priceEUR": "45",
+      "priceRUB": "40",
+      "priceTRY": "4000",
+      "image": "1500",
       "available": true,
       "type": "Да",
       "video": "Транспорт",
@@ -2589,10 +3018,10 @@
         "en": "Unscheduled wet cleaning of the villa, change of towels and bed linen",
         "tr": "Villanın planlanmamış ıslak temizliği, havlu ve nevresim değişimi."
       },
-      "priceEUR": "150",
-      "priceRUB": "138",
-      "priceTRY": "13875",
-      "image": "5700",
+      "priceEUR": "65",
+      "priceRUB": "60",
+      "priceTRY": "6000",
+      "image": "2200",
       "available": true,
       "type": "Да",
       "video": "Сервис",
@@ -2609,7 +3038,7 @@
       "title": {
         "ru": "Секретные маршруты реки Дальян и черепаший пляж Изтузу",
         "en": "Secret Routes of the Dalyan River and Iztuzu Turtle Beach",
-        "tr": "Dalyan Nehri'nin Gizli Rotaları ve İztuzu Kaplumbağa Plajı"
+        "tr": "Dalyan Nehri ve İztuzu Kaplumbağa Plajı'nın Gizli Rotaları"
       },
       "desc": {
         "ru": "Эксклюзивный 40-минутный 4K видео-гид от Алексея Знаменского",
@@ -2619,10 +3048,10 @@
       "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200",
       "category": "Локации",
       "videoUrl": "https://youtube.com/watch?v=guide1",
-      "priceEUR": "10",
-      "priceRUB": "9",
-      "priceTRY": "925",
-      "video": "380",
+      "priceEUR": "22",
+      "priceRUB": "20",
+      "priceTRY": "2000",
+      "video": "700",
       "details": {
         "ru": "https://youtube.com/watch?v=preview1",
         "en": "Где встретить гигантских черепах Caretta-Caretta, как взять лодку без наценок и какие дикие бухты скрыты от массовых туристов.",
@@ -2644,10 +3073,10 @@
       "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200",
       "category": "История",
       "videoUrl": "https://youtube.com/watch?v=guide2",
-      "priceEUR": "10",
-      "priceRUB": "9",
-      "priceTRY": "925",
-      "video": "380",
+      "priceEUR": "27",
+      "priceRUB": "25",
+      "priceTRY": "2500",
+      "video": "900",
       "details": {
         "ru": "https://youtube.com/watch?v=preview2",
         "en": "Маршрут безопасного подъема к амфитеатру Кауноса, тайные тропы древней гавани и лучшие видовые точки для фотосъемки на закате.",
@@ -2658,8 +3087,8 @@
       "id": "guide-3",
       "title": {
         "ru": "Гастрономический гид: топ-10 ресторанов и гранатовые сады",
-        "en": "Gastronomic Guide: Top 10 Restaurants and Pomegranate Orchards",
-        "tr": "Gastronomi Rehberi: En İyi 10 Restoran ve Nar Bahçesi"
+        "en": "Food Guide: Top 10 Restaurants and Pomegranate Gardens",
+        "tr": "Yemek Rehberi: En İyi 10 Restoran ve Nar Bahçesi"
       },
       "desc": {
         "ru": "Где попробовать настоящую турецкую кухню, свежую рыбу и мезе",
@@ -2669,10 +3098,10 @@
       "image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200",
       "category": "Гастрономия",
       "videoUrl": "https://youtube.com/watch?v=guide3",
-      "priceEUR": "10",
-      "priceRUB": "9",
-      "priceTRY": "925",
-      "video": "380",
+      "priceEUR": "16",
+      "priceRUB": "15",
+      "priceTRY": "1500",
+      "video": "550",
       "details": {
         "ru": "https://youtube.com/watch?v=preview3",
         "en": "Список проверенных ресторанов Дальяна, включая культовый ресторан Çiçek Restoran, явки шефов и специальные привилегии для гостей нашей виллы.",
@@ -2694,10 +3123,10 @@
       "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200",
       "category": "Здоровье",
       "videoUrl": "https://youtube.com/watch?v=guide4",
-      "priceEUR": "10",
-      "priceRUB": "9",
-      "priceTRY": "925",
-      "video": "380",
+      "priceEUR": "22",
+      "priceRUB": "20",
+      "priceTRY": "2000",
+      "video": "700",
       "details": {
         "ru": "https://youtube.com/watch?v=preview4",
         "en": "Расписание работы источников, часы отсутствия экскурсионных теплоходов, состав минеральных вод и правильный порядок принятия ванн.",
@@ -2719,10 +3148,10 @@
       "image": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200",
       "category": "Трекинг",
       "videoUrl": "https://youtube.com/watch?v=guide5",
-      "priceEUR": "10",
-      "priceRUB": "9",
-      "priceTRY": "925",
-      "video": "380",
+      "priceEUR": "16",
+      "priceRUB": "15",
+      "priceTRY": "1500",
+      "video": "550",
       "details": {
         "ru": "https://youtube.com/watch?v=preview5",
         "en": "Точные GPS-треки подъема на высоту 500 метров над уровнем моря, рекомендации по обуви, запасу воды и безопасности на Ликийской тропе.",
@@ -2744,10 +3173,10 @@
       "image": "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=1200",
       "category": "Шоппинг",
       "videoUrl": "https://youtube.com/watch?v=guide6",
-      "priceEUR": "10",
-      "priceRUB": "9",
-      "priceTRY": "925",
-      "video": "380",
+      "priceEUR": "11",
+      "priceRUB": "10",
+      "priceTRY": "1000",
+      "video": "350",
       "details": {
         "ru": "https://youtube.com/watch?v=preview6",
         "en": "С какими фермерами стоит торговаться, где найти натуральное холодное оливковое масло первого отжима и свежайший инжир.",
@@ -2769,7 +3198,7 @@
         "tr": "Güneşlenme şezlonglarıyla donatılmış, 36 metrekarelik özel tuzlu su havuzu."
       },
       "type": "Фото",
-      "media": "https://drive.google.com/file/d/1NjSHRDa5eJpQTzO9268e8LMRzDVmYtX7/view?usp=sharing",
+      "media": "https://drive.google.com/file/d/1NjSHRDa5eJpQTzO9268e8LMRzDVmYtX7/view?usp=sharing,https://drive.google.com/file/d/1IZMH6wtfLHZ6ibKHfmBhPGMFntZ_fXKU/view?usp=drive_link",
       "caption": {
         "ru": "Бассейн 36м² и зона отдыха",
         "en": "36m² swimming pool and relaxation area",
@@ -2809,7 +3238,7 @@
         "tr": "55 inçlik akıllı TV ve klima bulunan geniş oturma odası."
       },
       "type": "Фото",
-      "media": "https://drive.google.com/file/d/1IZMH6wtfLHZ6ibKHfmBhPGMFntZ_fXKU/view?usp=drive_link",
+      "media": "https://drive.google.com/file/d/1NjSHRDa5eJpQTzO9268e8LMRzDVmYtX7/view?usp=sharing,https://drive.google.com/file/d/1IZMH6wtfLHZ6ibKHfmBhPGMFntZ_fXKU/view?usp=drive_link",
       "caption": {
         "ru": "Светлая гостиная виллы",
         "en": "Bright living room of the villa",
@@ -2849,7 +3278,7 @@
         "tr": "Birinci kattaki ana yatak odası 1'de çift kişilik büyük bir yatak bulunmaktadır."
       },
       "type": "Фото",
-      "media": "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1600",
+      "media": "https://drive.google.com/file/d/1UDK3H8Kiv7VISu4JBlNf8_wDO_ESJ6Ng/view?usp=sharing",
       "caption": {
         "ru": "Спальня 1 с видом на бассейн",
         "en": "Bedroom 1 with pool view",
@@ -3182,142 +3611,161 @@
       "category": "О_ВИЛЛЕ",
       "value": "Парковка перед виллой, дворик-сад, зона барбекю, крыльцо с кофейными столиками и обеденной зоной, зона для загара с шезлонгами.",
       "description": "Территория вне виллы"
-    }
-  },
-  "theme": {
-    "primaryColor": "#f43f5e",
-    "secondaryColor": "#fb7185",
-    "accentColor": "#e11d48",
-    "bgColor": "#0f172a",
-    "cardBg": "#1e293b",
-    "textPrimary": "#f8fafc",
-    "textSecondary": "#94a3b8",
-    "borderRadius": "1.5rem",
-    "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif"
-  },
-  "dictionary": {
-    "ru": {
-      "brandName": "Villa Turaman",
-      "login": "Войти",
-      "register": "Регистрация",
-      "logout": "Выйти",
-      "guestCabinet": "Мои поездки",
-      "hostCabinet": "Панель управления",
-      "navAbout": "О вилле",
-      "navAmenities": "Удобства",
-      "navReviews": "Отзывы",
-      "navLocation": "Расположение",
-      "navCatalog": "Услуги и гиды",
-      "bookNow": "Забронировать",
-      "checkIn": "Заезд",
-      "checkOut": "Выезд",
-      "guests": "Гости",
-      "perNight": "за ночь",
-      "nights": "ночей",
-      "totalPrice": "Итого к оплате",
-      "cleaningFee": "Сервисный сбор и финальная уборка",
-      "depositText": "Возвратный депозит за сохранность имущества",
-      "confirmBooking": "Подтвердить бронирование",
-      "selectDates": "Выберите даты поездки",
-      "close": "Закрыть",
-      "back": "Назад",
-      "save": "Сохранить изменения",
-      "showAllPhotos": "Показать все фото",
-      "showAllAmenities": "Показать все удобства",
-      "showAllLandmarksBtn": "Показать все 14 ориентиров и карту расстояний",
-      "showAllReviewsBtn": "Показать все 48 отзывов и критерии оценок",
-      "landmarksCategoryTitle": "Географические ориентиры Дальяна",
-      "reviewsCategoryTitle": "Рейтинг гостей и отзывы",
-      "reviewsRatingTitle": "Рейтинг гостей на основе",
-      "legalRegulationHeader": "Юридический регламент и комфорт",
-      "chatWithHost": "Чат с суперхозяином",
-      "onlineStatus": "В сети : отвечает мгновенно",
-      "typing": "Алексей печатает ответ...",
-      "send": "Отправить",
-      "messagePlaceholder": "Напишите ваш вопрос или пожелание...",
-      "bookingSuccess": "Оплата успешно подтверждена! Бронирование внесено в календарь."
     },
-    "en": {
-      "brandName": "Villa Turaman",
-      "login": "Log in",
-      "register": "Register",
-      "logout": "Log out",
-      "guestCabinet": "My Trips",
-      "hostCabinet": "Host Dashboard",
-      "navAbout": "About",
-      "navAmenities": "Amenities",
-      "navReviews": "Reviews",
-      "navLocation": "Location",
-      "navCatalog": "Services & Guides",
-      "bookNow": "Book now",
-      "checkIn": "Check-in",
-      "checkOut": "Check-out",
-      "guests": "Guests",
-      "perNight": "per night",
-      "nights": "nights",
-      "totalPrice": "Total payment",
-      "cleaningFee": "Service fee & final cleaning",
-      "depositText": "Refundable security deposit",
-      "confirmBooking": "Confirm booking",
-      "selectDates": "Select your travel dates",
-      "close": "Close",
-      "back": "Back",
-      "save": "Save changes",
-      "showAllPhotos": "Show all photos",
-      "showAllAmenities": "Show all amenities",
-      "showAllLandmarksBtn": "Show all 14 landmarks & distance map",
-      "showAllReviewsBtn": "Show all 48 reviews & rating criteria",
-      "landmarksCategoryTitle": "Dalyan Geographic Landmarks",
-      "reviewsCategoryTitle": "Guest Rating & Reviews",
-      "reviewsRatingTitle": "Guest rating based on",
-      "legalRegulationHeader": "Legal Regulations & Comfort",
-      "chatWithHost": "Chat with Superhost",
-      "onlineStatus": "Online : replies instantly",
-      "typing": "Aleksei is typing...",
-      "send": "Send",
-      "messagePlaceholder": "Write your question or request...",
-      "bookingSuccess": "Payment successfully confirmed! Booking added to calendar."
+    "kbs_parser_prompt": {
+      "category": "KBS_ИНСТРУКЦИЯ",
+      "value": "Ты: модуль обработки данных гостей для турецкой системы KBS. Твоя задача: извлечь данные из сообщения гостя и выдать СТРОГО готовый список по шаблону, БЕЗ приветствий, БЕЗ вводных слов и БЕЗ лишнего текста.",
+      "description": "Промпт парсера KBS"
     },
-    "tr": {
-      "brandName": "Villa Turaman",
-      "login": "Giriş Yap",
-      "register": "Kayıt Ol",
-      "logout": "Çıkış Yap",
-      "guestCabinet": "Seyahatlerim",
-      "hostCabinet": "Yönetim Paneli",
-      "navAbout": "Villa Hakkında",
-      "navAmenities": "Olanaklar",
-      "navReviews": "Yorumlar",
-      "navLocation": "Konum",
-      "navCatalog": "Hizmetler ve Rehberler",
-      "bookNow": "Rezervasyon Yap",
-      "checkIn": "Giriş",
-      "checkOut": "Çıkış",
-      "guests": "Misafirler",
-      "perNight": "gecelik",
-      "nights": "gece",
-      "totalPrice": "Toplam Ödeme",
-      "cleaningFee": "Hizmet bedeli ve son temizlik",
-      "depositText": "İade edilebilir güvence depozitosu",
-      "confirmBooking": "Rezervasyonu Onayla",
-      "selectDates": "Seyahat tarihlerini seçin",
-      "close": "Kapat",
-      "back": "Geri",
-      "save": "Değişiklikleri Kaydet",
-      "showAllPhotos": "Tüm fotoğrafları göster",
-      "showAllAmenities": "Tüm olanakları göster",
-      "showAllLandmarksBtn": "Tüm 14 simge yapıyı ve mesafe haritasını göster",
-      "showAllReviewsBtn": "Tüm 48 değerlendirmeyi ve puanlama kriterlerini göster",
-      "landmarksCategoryTitle": "Dalyan Coğrafi Konum Noktaları",
-      "reviewsCategoryTitle": "Misafir Puanı ve Yorumları",
-      "reviewsRatingTitle": "Misafir değerlendirme temeli",
-      "legalRegulationHeader": "Yasal Düzenleme ve Konfor",
-      "chatWithHost": "Süper Ev Sahibi ile Sohbet",
-      "onlineStatus": "Çevrimiçi : anında yanıt verir",
-      "typing": "Aleksei yazıyor...",
-      "send": "Gönder",
-      "messagePlaceholder": "Sorunuzu veya talebinizi yazın...",
-      "bookingSuccess": "Ödeme başarıyla onaylandı! Rezervasyon takvime eklendi."
+    "kbs_template_format": {
+      "category": "KBS_ИНСТРУКЦИЯ",
+      "value": "Гость [Номер]: [ФИО], дата рождения: [DD.MM.YYYY], пол: [male/female], гражданство: [строго на английском], номер паспорта: [Номер паспорта]. Период проживания: [DD.MM.YYYY] – [DD.MM.YYYY].",
+      "description": "Канонический шаблон KBS"
+    },
+    "kbs_rules": {
+      "category": "KBS_ИНСТРУКЦИЯ",
+      "value": "Правила: Ключи шаблона остаются на русском, значения пола [male/female] и гражданства [Russian, Turkish, German, British и т.д.] : строго на английском языке. Даты строго в формате DD.MM.YYYY. Очевидные опечатки [например 25/01996 исправлять на 25.01.1996] исправлять логически, добавляя короткое пояснение под списком.",
+      "description": "Правила валидации KBS"
+    },
+    "Aleksei Znamenskii": {
+      "category": "МАСТЕР_ДОСТУП",
+      "value": "admin / admin123",
+      "description": "admin@villaturaman.com | Роль: Владелец | Все права: Финансы, Периоды, Блокировки, Окно брони, Чаты"
+    },
+    "Менеджер виллы": {
+      "category": "МАСТЕР_ДОСТУП",
+      "value": "manager / manager2026",
+      "description": "manager@villaturaman.com | Роль: Управляющий | Права: Периоды, Блокировки, Доступ к чатам"
+    },
+    "Консьерж-Мастер": {
+      "category": "РОЛЬ_АГЕНТА",
+      "value": "АКТИВЕН",
+      "description": "Ты: персональный ИИ-консьерж суперхозяина Алексея Знаменского на вилле Villa Turaman в Дальяне. Твоя миссия: гостеприимно, дипломатично и авторитетно отвечать гостям. Все факты ты берешь строго из Блоков О ВИЛЛЕ и СЛОВАРЬ ПЕРЕМЕННЫХ. Соблюдать правила дома, налоги Турции VKN 9991120181 и никогда не давать цену ниже $180 за ночь."
+    },
+    "Юрист-Консультант": {
+      "category": "РОЛЬ_АГЕНТА",
+      "value": "РЕЗЕРВ",
+      "description": "Ты: ведущий юрисконсульт Villa Turaman. Контролируешь обязательную регистрацию гостей в системе KBS жандармерии по шаблону из Блока 5, соответствие закону о защите персональных данных KVKK и налоговое оформление VUK 213 Madde 230 e-Arşiv Fatura."
+    },
+    "Финансист-Бухгалтер": {
+      "category": "РОЛЬ_АГЕНТА",
+      "value": "РЕЗЕРВ",
+      "description": "Ты: главный финансовый менеджер Villa Turaman. Ведешь учет платежей, рассчитываешь мультивалютные цены EUR/RUB/TRY, применяешь скидку 10% за невозвратный тариф при заезде до 60 дней и блокируешь любые попытки снижения цены ниже $180."
+    },
+    "🏠 Главная витрина": {
+      "category": "МАТРИЦА_ЛИСТОВ",
+      "value": "РАЗРЕШЕН [ВСЕ]",
+      "description": "Лист содержит главную витрину: 9 блоков с плейсхолдерами, спецификации [10 гостей, 4 спальни], статус Superhost и параметры спален 1-4."
+    },
+    "📸 Фото и Видео Галерея": {
+      "category": "МАТРИЦА_ЛИСТОВ",
+      "value": "РАЗРЕШЕН [ВСЕ]",
+      "description": "Лист содержит медиа-банк виллы: ссылки на фото высокого разрешения и видеотуры бассейна, сада, комнат и видов на реку."
+    },
+    "🛎️ Дополнительные услуги": {
+      "category": "МАТРИЦА_ЛИСТОВ",
+      "value": "РАЗРЕШЕН [ВСЕ]",
+      "description": "Лист содержит каталог платных сервисов: трансферы из аэропорта Даламан DLM, персональный шеф-повар, массажи, прогулка на лодке, барбекю, SUP-борды."
+    },
+    "🗺️ Видео-путеводители": {
+      "category": "МАТРИЦА_ЛИСТОВ",
+      "value": "РАЗРЕШЕН [ВСЕ]",
+      "description": "Лист содержит цифровые гиды по Дальяну, пляжу Изтузу, озеру Кёйджегиз, ресторанам и античному Кауносу."
+    },
+    "⚖️ Юридические документы": {
+      "category": "МАТРИЦА_ЛИСТОВ",
+      "value": "РАЗРЕШЕН [ВСЕ]",
+      "description": "Лист содержит официальный договор аренды, политику KVKK, реквизиты VKN 9991120181."
+    },
+    "📋 Заявки и Бронирования": {
+      "category": "МАТРИЦА_ЛИСТОВ",
+      "value": "РАЗРЕШЕН [ВСЕ]",
+      "description": "Лист фиксирует статус заявок гостей, даты заезда и выезда, число гостей и статус оплаты."
+    },
+    "📅 Календарь и Тарифы": {
+      "category": "МАТРИЦА_ЛИСТОВ",
+      "value": "РАЗРЕШЕН [ВСЕ]",
+      "description": "Лист содержит актуальную сетку занятости дат и тарифные ставки."
+    },
+    "👤 Гостевые аккаунты": {
+      "category": "МАТРИЦА_ЛИСТОВ",
+      "value": "РАЗРЕШЕН [КОНСЬЕРЖ]",
+      "description": "Лист содержит реестр зарегистрированных гостей и статусы блокировок."
+    },
+    "💳 Заказы услуг и гидов": {
+      "category": "МАТРИЦА_ЛИСТОВ",
+      "value": "РАЗРЕШЕН [ВСЕ]",
+      "description": "Лист содержит историю заказов доп. услуг и путеводителей."
+    },
+    "🎟️ Доступы к путеводителям": {
+      "category": "МАТРИЦА_ЛИСТОВ",
+      "value": "РАЗРЕШЕН [ВСЕ]",
+      "description": "Лист персональных доступов к медиа-материалам."
+    },
+    "💬 Шаблоны сообщений": {
+      "category": "МАТРИЦА_ЛИСТОВ",
+      "value": "РАЗРЕШЕН [ВСЕ]",
+      "description": "Лист содержит 14 профессиональных шаблонов общения на RU, EN, TR."
+    },
+    "📋 Задачи и Поручения Секретаря": {
+      "category": "МАТРИЦА_ЛИСТОВ",
+      "value": "РАЗРЕШЕН [ВСЕ]",
+      "description": "Лист содержит поручения, задачи и статус исполнения ассистентом."
+    },
+    "🧠 Граф Знаний и Безопасность": {
+      "category": "МАТРИЦА_ЛИСТОВ",
+      "value": "РАЗРЕШЕН [ВСЕ]",
+      "description": "Лист содержит онтологический граф знаний, узлы и политики безопасности доступа."
+    },
+    "⚙️ Системные настройки ИИ Агентов": {
+      "category": "МАТРИЦА_ЛИСТОВ",
+      "value": "РАЗРЕШЕН [ВСЕ]",
+      "description": "Лист управления системой ИИ, генеральными директивами ролей, словарем переменных и матрицей прав доступа."
+    },
+    "theme_primary_color": {
+      "category": "ДИЗАЙН_И_СТИЛЬ",
+      "value": "#f43f5e",
+      "description": "Основной цвет кнопок, бейджей и акцентов [HEX]"
+    },
+    "theme_secondary_color": {
+      "category": "ДИЗАЙН_И_СТИЛЬ",
+      "value": "#fb7185",
+      "description": "Второстепенный акцентный цвет [HEX]"
+    },
+    "theme_accent_color": {
+      "category": "ДИЗАЙН_И_СТИЛЬ",
+      "value": "#e11d48",
+      "description": "Цвет при наведении и активных состояний [HEX]"
+    },
+    "theme_bg_color": {
+      "category": "ДИЗАЙН_И_СТИЛЬ",
+      "value": "#0f172a",
+      "description": "Цвет главного фона сайта [HEX]"
+    },
+    "theme_card_bg": {
+      "category": "ДИЗАЙН_И_СТИЛЬ",
+      "value": "#1e293b",
+      "description": "Цвет фона карточек и модальных окон [HEX]"
+    },
+    "theme_text_primary": {
+      "category": "ДИЗАЙН_И_СТИЛЬ",
+      "value": "#f8fafc",
+      "description": "Основной цвет заголовков и текста [HEX]"
+    },
+    "theme_text_secondary": {
+      "category": "ДИЗАЙН_И_СТИЛЬ",
+      "value": "#94a3b8",
+      "description": "Второстепенный цвет описаний и меток [HEX]"
+    },
+    "theme_border_radius": {
+      "category": "ДИЗАЙН_И_СТИЛЬ",
+      "value": "1.5rem",
+      "description": "Радиус скругления углов карточек и кнопок"
+    },
+    "theme_font_family": {
+      "category": "ДИЗАЙН_И_СТИЛЬ",
+      "value": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+      "description": "Базовый шрифт интерфейса"
     }
   }
 }
