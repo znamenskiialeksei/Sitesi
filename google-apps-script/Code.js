@@ -1,3 +1,20 @@
+/**
+ * ============================================================================
+ * [ПРЕДЫДУЩАЯ РЕДАКЦИЯ]
+ * Редакция: 26.09.2026 19:05 | Метка: TAG: VILLA-SCRIPTS-ADAPT-260920261905
+ * План: [260920261905 Адаптация задач запускаторов.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/260920261905%20Адаптация%20задач%20запускаторов.md)
+ * ----------------------------------------------------------------------------
+ * [АКТУАЛЬНАЯ РЕДАКЦИЯ]
+ * Редакция: 26.09.2026 22:50 | Метка: TAG: VILLA-CODE-SYNC-260920262230
+ * План: [260920261955 Адаптация скрипта таблицы Code.js.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/260920261955%20Адаптация%20скрипта%20таблицы%20Code.js.md)
+ * ============================================================================
+ * МОДУЛЬ 0: ПАСПОРТ МОДУЛЯ И СИСТЕМНАЯ КОНФИГУРАЦИЯ
+ * Название: Монолитный скрипт Google Apps Script экосистемы Villa Turaman CRM
+ * Назначение: Автономное управление 15 листами CRM, синхронизация с сайтом,
+ * гостевые чаты, Telegram-бот, ИИ-агенты Gemini, налоги и бухгалтерия.
+ * ============================================================================
+ */
+
 // ==============================================================================
 // АВТОМАТИЗАЦИЯ GOOGLE APPS SCRIPT ДЛЯ СИНХРОНИЗАЦИИ VILLA TURAMAN
 // Файл: google-apps-script/Code.js
@@ -11,7 +28,7 @@
 
 /**
  * Реестр листов системы Villa Turaman: канонические русские имена,
- * смысловые кластеры и исторические технические алиасы.
+ * смысловые кластеры и исторические технические алиасы [15 листов CRM].
  */
 var VILLA_SHEETS_CONFIG = {
   // 1. HOME: Главная витрина [Лист 1]
@@ -21,40 +38,43 @@ var VILLA_SHEETS_CONFIG = {
   GALLERY: { name: "📸 Фото и Видео Галерея", suggestedSheetId: 102, aliases: ["📸 Фото и Видео Галерея", "Фото и Видео Галерея", "Фотогалерея", "Галерея", "Медиа"], cluster: "showcase", minWidths: [80, 180, 200, 220, 200, 200, 160, 260, 280, 100, 100, 100] },
 
   // 3. LEGAL: Юридические документы [Лист 3]
-  LEGAL: { name: "⚖️ Юридические документы", suggestedSheetId: 106, aliases: ["⚖️ Юридические документы", "Юридические документы", "Юридическая информация", "Реквизиты"], cluster: "showcase", minWidths: [160, 160, 220, 450, 450, 450, 100] },
+  LEGAL: { name: "⚖️ Юридические документы", suggestedSheetId: 103, aliases: ["⚖️ Юридические документы", "Юридические документы", "Юридическая информация", "Реквизиты"], cluster: "showcase", minWidths: [160, 160, 220, 450, 450, 450, 100] },
 
-  // 4. ACCESS: Доступы к путеводителям [Лист 4]
-  ACCESS: { name: "🎟️ Доступы к путеводителям", suggestedSheetId: 206, aliases: ["🎟️ Доступы к путеводителям", "Доступы к путеводителям", "Доступы к гидам", "Доступы"], cluster: "host", minWidths: [140, 160, 200, 180, 220, 180, 160, 100] },
+  // 4. ACCESS: Управление доступом [Лист 4: Физические ключи, PIN замков, Wi-Fi]
+  ACCESS: { name: "🔑 Управление доступом", suggestedSheetId: 104, aliases: ["🔑 Управление доступом", "Управление доступом", "Безопасность и Доступ", "Смарт замки", "Коды доступа", "MasterAccess"], cluster: "host", minWidths: [140, 160, 200, 180, 220, 180, 240, 100] },
 
   // 5. TEMPLATES: Шаблоны сообщений [Лист 5]
-  TEMPLATES: { name: "💬 Шаблоны сообщений", suggestedSheetId: 207, aliases: ["💬 Шаблоны сообщений", "Шаблоны сообщений", "Шаблоны", "Быстрые ответы"], cluster: "host", minWidths: [160, 180, 240, 420, 420, 420, 180, 100] },
+  TEMPLATES: { name: "💬 Шаблоны сообщений", suggestedSheetId: 105, aliases: ["💬 Шаблоны сообщений", "Шаблоны сообщений", "Шаблоны", "Быстрые ответы"], cluster: "host", minWidths: [160, 180, 240, 420, 420, 420, 180, 100] },
 
   // 6. SETTINGS: Системные настройки ИИ Агентов [Лист 6]
-  SETTINGS: { name: "⚙️ Системные настройки ИИ Агентов", suggestedSheetId: 209, aliases: ["⚙️ Системные настройки ИИ Агентов", "Системные настройки ИИ Агентов", "Системные настройки", "Настройки ИИ", "🔑 Управление доступом", "Управление доступом", "MasterAccount", "🧩 Словарь переменных", "Словарь переменных"], cluster: "system", minWidths: [180, 200, 260, 260, 200, 100] },
+  SETTINGS: { name: "⚙️ Системные настройки ИИ Агентов", suggestedSheetId: 106, aliases: ["⚙️ Системные настройки ИИ Агентов", "Системные настройки ИИ Агентов", "Системные настройки", "Настройки ИИ", "MasterAccount", "🧩 Словарь переменных", "Словарь переменных"], cluster: "system", minWidths: [180, 200, 260, 260, 200, 100] },
 
   // 7. TASKS: Задачи и Поручения Секретаря [Лист 7]
-  TASKS: { name: "📋 Задачи и Поручения Секретаря", suggestedSheetId: 210, aliases: ["📋 Задачи и Поручения Секретаря", "Задачи и Поручения Секретаря", "Задачи Секретаря", "Поручения Секретаря", "Задачи и Поручения"], cluster: "host", minWidths: [140, 180, 320, 160, 140, 140, 200] },
+  TASKS: { name: "📋 Задачи и Поручения Секретаря", suggestedSheetId: 107, aliases: ["📋 Задачи и Поручения Секретаря", "Задачи и Поручения Секретаря", "Задачи Секретаря", "Поручения Секретаря", "Задачи и Поручения"], cluster: "host", minWidths: [140, 180, 320, 160, 140, 140, 200] },
 
   // 8. KNOWLEDGE_GRAPH: Граф Знаний и Безопасность [Лист 8]
-  KNOWLEDGE_GRAPH: { name: "🧠 Граф Знаний и Безопасность", suggestedSheetId: 211, aliases: ["🧠 Граф Знаний и Безопасность", "Граф Знаний и Безопасность", "Граф Знаний", "KnowledgeGraph", "Безопасность", "Security"], cluster: "system", minWidths: [160, 200, 350, 200, 160, 100, 100] },
+  KNOWLEDGE_GRAPH: { name: "🧠 Граф Знаний и Безопасность", suggestedSheetId: 108, aliases: ["🧠 Граф Знаний и Безопасность", "Граф Знаний и Безопасность", "Граф Знаний", "KnowledgeGraph", "Безопасность", "Security"], cluster: "system", minWidths: [160, 200, 350, 200, 160, 100, 100] },
 
   // 9. ACCOUNTS: Гостевые аккаунты [Лист 9]
-  ACCOUNTS: { name: "👤 Гостевые аккаунты", suggestedSheetId: 203, aliases: ["👤 Гостевые аккаунты", "Гостевые аккаунты", "Аккаунты гостей", "Гости"], cluster: "host", minWidths: [120, 180, 160, 180, 160, 140, 140, 100] },
+  ACCOUNTS: { name: "👤 Гостевые аккаунты", suggestedSheetId: 109, aliases: ["👤 Гостевые аккаунты", "Гостевые аккаунты", "Аккаунты гостей", "Гости"], cluster: "host", minWidths: [120, 180, 160, 180, 160, 140, 140, 100] },
 
   // 10. SERVICES: Дополнительные услуги [Лист 10]
-  SERVICES: { name: "🛎️ Дополнительные услуги", suggestedSheetId: 104, aliases: ["🛎️ Дополнительные услуги", "Дополнительные услуги", "Услуги", "Сервисы", "Платные услуги"], cluster: "showcase", minWidths: [160, 180, 320, 120, 120, 120, 120, 140, 220, 100, 100, 100, 100, 100, 120, 200, 200, 200] },
+  SERVICES: { name: "🛎️ Дополнительные услуги", suggestedSheetId: 110, aliases: ["🛎️ Дополнительные услуги", "Дополнительные услуги", "Услуги", "Сервисы", "Платные услуги"], cluster: "showcase", minWidths: [160, 180, 320, 120, 120, 120, 120, 140, 220, 100, 100, 100, 100, 100, 120, 200, 200, 200] },
 
   // 11. GUIDES: Видео-путеводители [Лист 11]
-  GUIDES: { name: "🗺️ Видео-путеводители", suggestedSheetId: 105, aliases: ["🗺️ Видео-путеводители", "Видео-путеводители", "Видеопутеводители", "Путеводители", "Гиды"], cluster: "showcase", minWidths: [160, 200, 350, 140, 260, 260, 100, 120, 120, 140, 100, 100, 100, 100, 120, 200, 200, 200] },
+  GUIDES: { name: "🗺️ Видео-путеводители", suggestedSheetId: 111, aliases: ["🗺️ Видео-путеводители", "Видео-путеводители", "Видеопутеводители", "Путеводители", "Гиды"], cluster: "showcase", minWidths: [160, 200, 350, 140, 260, 260, 100, 120, 120, 140, 100, 100, 100, 100, 120, 200, 200, 200] },
 
   // 12. BOOKINGS: Заявки и Бронирования [Лист 12]
-  BOOKINGS: { name: "📋 Заявки и Бронирования", suggestedSheetId: 201, aliases: ["📋 Заявки и Бронирования", "Заявки и Бронирования", "Заявки на бронирование", "Бронирования", "Заявки", "Вилла"], cluster: "host", minWidths: [120, 180, 160, 120, 120, 100, 140, 140, 140, 140, 160, 200] },
+  BOOKINGS: { name: "📋 Заявки и Бронирования", suggestedSheetId: 112, aliases: ["📋 Заявки и Бронирования", "Заявки и Бронирования", "Заявки на бронирование", "Бронирования", "Заявки", "Вилла"], cluster: "host", minWidths: [120, 180, 160, 120, 120, 100, 140, 140, 140, 140, 160, 200] },
 
   // 13. CALENDAR: Календарь и Тарифы [Лист 13]
-  CALENDAR: { name: "📅 Календарь и Тарифы", suggestedSheetId: 202, aliases: ["📅 Календарь и Тарифы", "Календарь и Тарифы", "Календарь и Занятость", "Календарь", "Тарифы", "Настройки календаря"], cluster: "host", minWidths: [120, 140, 140, 140, 180, 160, 140, 140, 160] },
+  CALENDAR: { name: "📅 Календарь и Тарифы", suggestedSheetId: 113, aliases: ["📅 Календарь и Тарифы", "Календарь и Тарифы", "Календарь и Занятость", "Календарь", "Тарифы", "Настройки календаря"], cluster: "host", minWidths: [120, 140, 140, 140, 180, 160, 140, 140, 160] },
 
   // 14. ORDERS: Заказы услуг и гидов [Лист 14]
-  ORDERS: { name: "💳 Заказы услуг и гидов", suggestedSheetId: 205, aliases: ["💳 Заказы услуг и гидов", "Заказы услуг и гидов", "Заказы", "Заказы услуг"], cluster: "host", minWidths: [120, 160, 180, 220, 120, 140, 140, 160, 200] }
+  ORDERS: { name: "💳 Заказы услуг и гидов", suggestedSheetId: 114, aliases: ["💳 Заказы услуг и гидов", "Заказы услуг и гидов", "Заказы", "Заказы услуг"], cluster: "host", minWidths: [120, 160, 180, 220, 120, 140, 140, 160, 200] },
+
+  // 15. GUIDE_ACCESS: Доступы к путеводителям [Лист 15: LMS студенты и покупатели]
+  GUIDE_ACCESS: { name: "🎟️ Доступы к путеводителям", suggestedSheetId: 115, aliases: ["🎟️ Доступы к путеводителям", "Доступы к путеводителям", "Доступы к гидам", "Доступы", "Студенты"], cluster: "host", minWidths: [140, 160, 200, 180, 220, 180, 160, 100] }
 };
 
 /**
@@ -65,23 +85,22 @@ function onOpen() {
 
   // 1. ПЕРВОЕ ГЛАВНОЕ МЕНЮ: 🏡 1. Villa Turaman Suite
   try {
-    var jumpMenu = ui.createMenu("🚀 Быстрый переход к листу")
-      .addItem("🏠 Главная витрина", "jumpToSheet_HOME")
-      .addItem("📸 Фото и видео галерея", "jumpToSheet_GALLERY")
-      .addItem("🛎️ Дополнительные услуги", "jumpToSheet_SERVICES")
-      .addItem("🗺️ Видео-путеводители", "jumpToSheet_GUIDES")
-      .addItem("⚖️ Юридические документы", "jumpToSheet_LEGAL")
-      .addSeparator()
-      .addItem("📋 Заявки и бронирования", "jumpToSheet_BOOKINGS")
-      .addItem("📅 Календарь и тарифы", "jumpToSheet_CALENDAR")
-      .addItem("👤 База гостей и аккаунты", "jumpToSheet_ACCOUNTS")
-      .addItem("💳 Заказы услуг и путеводителей", "jumpToSheet_ORDERS")
-      .addItem("🎟️ Доступы к путеводителям", "jumpToSheet_ACCESS")
-      .addSeparator()
-      .addItem("💬 Шаблоны сообщений", "jumpToSheet_TEMPLATES")
-      .addItem("⚙️ Системные настройки ИИ", "jumpToSheet_SETTINGS")
-      .addItem("📋 Задачи и поручения", "jumpToSheet_TASKS")
-      .addItem("🧠 Граф знаний и безопасность", "jumpToSheet_KNOWLEDGE_GRAPH");
+    var jumpMenu = ui.createMenu("🚀 Быстрый переход к листу [1..15]")
+      .addItem("1. 🏠 1. Главная витрина [HOME]", "jumpToSheet_HOME")
+      .addItem("2. 📸 2. Фото и Видео Галерея [GALLERY]", "jumpToSheet_GALLERY")
+      .addItem("3. ⚖️ 3. Юридические документы [LEGAL]", "jumpToSheet_LEGAL")
+      .addItem("4. 🔑 4. Управление доступом [ACCESS]", "jumpToSheet_ACCESS")
+      .addItem("5. 💬 5. Шаблоны сообщений [TEMPLATES]", "jumpToSheet_TEMPLATES")
+      .addItem("6. ⚙️ 6. Системные настройки ИИ [SETTINGS]", "jumpToSheet_SETTINGS")
+      .addItem("7. 📋 7. Задачи и Поручения Секретаря [TASKS]", "jumpToSheet_TASKS")
+      .addItem("8. 🧠 8. Граф Знаний и Безопасность [KNOWLEDGE_GRAPH]", "jumpToSheet_KNOWLEDGE_GRAPH")
+      .addItem("9. 👤 9. Гостевые аккаунты [ACCOUNTS]", "jumpToSheet_ACCOUNTS")
+      .addItem("10. 🛎️ 10. Дополнительные услуги [SERVICES]", "jumpToSheet_SERVICES")
+      .addItem("11. 🗺️ 11. Видео-путеводители [GUIDES]", "jumpToSheet_GUIDES")
+      .addItem("12. 📋 12. Заявки и Бронирования [BOOKINGS]", "jumpToSheet_BOOKINGS")
+      .addItem("13. 📅 13. Календарь и Тарифы [CALENDAR]", "jumpToSheet_CALENDAR")
+      .addItem("14. 💳 14. Заказы услуг и гидов [ORDERS]", "jumpToSheet_ORDERS")
+      .addItem("15. 🎟️ 15. Доступы к путеводителям [GUIDE_ACCESS]", "jumpToSheet_GUIDE_ACCESS");
 
     var focusMenu = ui.createMenu("👁️ Режимы фокуса: скрыть лишнее")
       .addItem("🏠 Витрина для гостей: Витрина, Фото, Услуги, Гиды, Юр. документы", "applyPresetShowcase")
@@ -373,6 +392,7 @@ function jumpToSheet_TEMPLATES() { jumpToConfigSheet("TEMPLATES"); }
 function jumpToSheet_SETTINGS() { jumpToConfigSheet("SETTINGS"); }
 function jumpToSheet_TASKS() { jumpToConfigSheet("TASKS"); }
 function jumpToSheet_KNOWLEDGE_GRAPH() { jumpToConfigSheet("KNOWLEDGE_GRAPH"); }
+function jumpToSheet_GUIDE_ACCESS() { jumpToConfigSheet("GUIDE_ACCESS"); }
 
 /** Пресет: Раскрыть ВСЕ листы */
 function applyPresetAllOpen() {
@@ -394,9 +414,9 @@ function applyPresetOperations() {
   applyVisibilityPreset(["BOOKINGS", "CALENDAR", "ACCOUNTS", "ORDERS"], "Фокус: Управление и CRM [4 листа]");
 }
 
-/** Пресет: Настройки, Задачи и Граф Знаний [5 листов] */
+/** Пресет: Настройки, Задачи, Доступы и Граф Знаний [6 листов] */
 function applyPresetSettings() {
-  applyVisibilityPreset(["ACCESS", "TEMPLATES", "SETTINGS", "TASKS", "KNOWLEDGE_GRAPH"], "Фокус: Настройки, Задачи и Граф Знаний [5 листов]");
+  applyVisibilityPreset(["ACCESS", "TEMPLATES", "SETTINGS", "TASKS", "KNOWLEDGE_GRAPH", "GUIDE_ACCESS"], "Фокус: Настройки, Задачи, Доступы и Граф Знаний [6 листов]");
 }
 
 /** Каноническая сортировка вкладок по смысловым блокам */
@@ -405,7 +425,7 @@ function sortSheetsCanonically() {
   var canonicalOrder = [
     "HOME", "GALLERY", "LEGAL", "ACCESS", "TEMPLATES", "SETTINGS",
     "TASKS", "KNOWLEDGE_GRAPH", "ACCOUNTS", "SERVICES", "GUIDES",
-    "BOOKINGS", "CALENDAR", "ORDERS"
+    "BOOKINGS", "CALENDAR", "ORDERS", "GUIDE_ACCESS"
   ];
 
   var currentIndex = 1;
@@ -418,7 +438,7 @@ function sortSheetsCanonically() {
     }
   }
 
-  SpreadsheetApp.getActive().toast("Вкладки упорядочены по каноническому реестру [1..14]", "📑 Сортировка завершена", 5);
+  SpreadsheetApp.getActive().toast("Вкладки упорядочены по каноническому реестру [1..15]", "📑 Сортировка завершена", 5);
 }
 
 /** Пакетное авто-переименование в понятный русский стандарт */
@@ -608,7 +628,7 @@ function getEffectiveSiteUrl_() {
       try {
         props.setProperty('SITE_URL', targetUrl);
         props.setProperty('REVALIDATE_API_URL', targetUrl + '/api/revalidate');
-      } catch (propErr) { }
+      } catch (propErr) {}
       return targetUrl;
     }
 
@@ -643,7 +663,8 @@ function collectAllSheetsPayload_() {
     ordersRows: [],
     accessRows: [],
     tasksRows: [],
-    knowledgeGraphRows: []
+    knowledgeGraphRows: [],
+    guideAccessRows: []
   };
 
   function getRows(key) {
@@ -673,6 +694,7 @@ function collectAllSheetsPayload_() {
   payload.accessRows = getRows("ACCESS");
   payload.tasksRows = getRows("TASKS");
   payload.knowledgeGraphRows = getRows("KNOWLEDGE_GRAPH");
+  payload.guideAccessRows = getRows("GUIDE_ACCESS");
 
   return payload;
 }
@@ -730,7 +752,7 @@ function triggerRevalidateWebhook() {
 
       if (rCode === 200) {
         var rJson = null;
-        try { rJson = JSON.parse(rText); } catch (e) { }
+        try { rJson = JSON.parse(rText); } catch (e) {}
         if (rJson && rJson.success) {
           isAnySuccess = true;
         }
@@ -748,7 +770,7 @@ function triggerRevalidateWebhook() {
         if (contentRes.getResponseCode() === 200) {
           isAnySuccess = true;
         }
-      } catch (cErr) { }
+      } catch (cErr) {}
 
     } catch (netErr) {
       Logger.log("Сбой отправки на " + currentBase + ": " + netErr.message);
@@ -783,11 +805,11 @@ function onSheetEditTrigger(e) {
     if (sheetName && sheetName.indexOf('Chat_') === 0) {
       return;
     }
-  } catch (err) { }
+  } catch (err) {}
 
   try {
     SpreadsheetApp.getActive().toast("Передача правок таблицы на сайт...", "🔄 Авто-синхронизация", 3);
-  } catch (tErr) { }
+  } catch (tErr) {}
 
   triggerRevalidateWebhook();
 }
@@ -805,7 +827,7 @@ function setupAutoSyncTrigger() {
     if (triggers[i].getHandlerFunction() === 'onSheetEditTrigger') {
       try {
         ScriptApp.deleteTrigger(triggers[i]);
-      } catch (delErr) { }
+      } catch (delErr) {}
     }
   }
 
@@ -937,7 +959,7 @@ function clearExpiredHolds() {
   if (clearedCount > 0) {
     try {
       triggerRevalidateWebhook();
-    } catch (e) { }
+    } catch (e) {}
     SpreadsheetApp.getUi().alert(
       "🧹 Очистка истекших броней HOLD",
       "Успешно удалено просроченных удержаний: " + clearedCount + ".\nКалендарь обновлен, витрина сайта синхронизирована.",
@@ -1180,7 +1202,7 @@ function styleSheetHeader_(sheet, headers, frozenRows, minWidths) {
       if (cfgKey && VILLA_SHEETS_CONFIG[cfgKey] && VILLA_SHEETS_CONFIG[cfgKey].minWidths) {
         minWidths = VILLA_SHEETS_CONFIG[cfgKey].minWidths;
       }
-    } catch (e) { }
+    } catch (e) {}
   }
 
   for (var c = 1; c <= headers.length; c++) {
@@ -1527,8 +1549,8 @@ function initSingleSheetByKey_(sheet, key) {
       ['16. Словарь интерфейса', 'bookingSuccess', 'Уведомление об успешной оплате', 'Оплата успешно подтверждена! Бронирование внесено в календарь.', '', '', 'CheckCircle2', 'Вкл']
     ];
     // Чистая запись данных: колонки A..D и G..H
-    var colsA_D = homeRows.map(function (r) { return [r[0], r[1], r[2], r[3]]; });
-    var colsG_H = homeRows.map(function (r) { return [r[6] || '', r[7] || 'Вкл']; });
+    var colsA_D = homeRows.map(function(r) { return [r[0], r[1], r[2], r[3]]; });
+    var colsG_H = homeRows.map(function(r) { return [r[6] || '', r[7] || 'Вкл']; });
     sheet.getRange(2, 1, colsA_D.length, 4).setValues(colsA_D);
     sheet.getRange(2, 7, colsG_H.length, 2).setValues(colsG_H);
     // Инъекция формул автоперевода в строку 2
@@ -1553,8 +1575,8 @@ function initSingleSheetByKey_(sheet, key) {
       ['gal-13', 'Достопримечательности', 'Ликийские скальные гробницы IV века до н.э. с подсветкой', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600', 'Ликийские скальные гробницы', '', ''],
       ['gal-14', 'Пляжи и заповедники', 'Песчаный черепаший пляж Изтузу и озеро Кёйджегиз', '', '', '', '', 'Фото', 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1600', 'Пляж Изтузу и черепахи', '', '']
     ];
-    var colsA_C = galRows.map(function (r) { return [r[0], r[1], r[2]]; });
-    var colsH_J = galRows.map(function (r) { return [r[7], r[8], r[9]]; });
+    var colsA_C = galRows.map(function(r) { return [r[0], r[1], r[2]]; });
+    var colsH_J = galRows.map(function(r) { return [r[7], r[8], r[9]]; });
     sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
     sheet.getRange(2, 8, colsH_J.length, 3).setValues(colsH_J);
     sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
@@ -1576,8 +1598,8 @@ function initSingleSheetByKey_(sheet, key) {
       ['prod-7', 'Прокат электровелосипедов для прогулок по Дальяну', '2 современных электробайка с запасом хода до 60 км', '', '', '', '', '45', '40', '4000', '1500', 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=1200', 'Да', 'Транспорт', 'https://youtube.com/watch?v=bike', 'Идеальный способ исследовать гранатовые сады и улочки Дальяна. В комплекте шлемы, замки и держатели для смартфонов с навигатором.', '', ''],
       ['prod-8', 'Дополнительная экспресс-уборка и смена белья', 'Внеплановая влажная уборка виллы, замена полотенец и постельного белья', '', '', '', '', '65', '60', '6000', '2200', 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1200', 'Да', 'Сервис', 'https://youtube.com/watch?v=cleaning', 'Полная уборка всех 4 спален, кухни и санузлов, мытье полов эко-средствами, замена постельных комплектов сатин премиум и банных полотенец.', '', '']
     ];
-    var colsA_C = srvRows.map(function (r) { return [r[0], r[1], r[2]]; });
-    var colsH_P = srvRows.map(function (r) { return [r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]]; });
+    var colsA_C = srvRows.map(function(r) { return [r[0], r[1], r[2]]; });
+    var colsH_P = srvRows.map(function(r) { return [r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]]; });
     sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
     sheet.getRange(2, 8, colsH_P.length, 9).setValues(colsH_P);
     sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
@@ -1597,8 +1619,8 @@ function initSingleSheetByKey_(sheet, key) {
       ['guide-5', 'Горные трекинговые тропы и смотровая площадка Радар', 'Пешие маршруты с панорамными видами на дельту реки и косу Изтузу', '', '', '', '', 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200', 'Трекинг', 'https://youtube.com/watch?v=guide5', '16', '15', '1500', '550', 'https://youtube.com/watch?v=preview5', 'Точные GPS-треки подъема на высоту 500 метров над уровнем моря, рекомендации по обуви, запасу воды и безопасности на Ликийской тропе.', '', ''],
       ['guide-6', 'Субботний фермерский рынок Дальяна: секреты и покупки', 'Инструкция по выбору домашних сыров, оливок, гранатового сиропа', '', '', '', '', 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=1200', 'Шоппинг', 'https://youtube.com/watch?v=guide6', '11', '10', '1000', '350', 'https://youtube.com/watch?v=preview6', 'С какими фермерами стоит торговаться, где найти натуральное холодное оливковое масло первого отжима и свежайший инжир.', '', '']
     ];
-    var colsA_C = gRows.map(function (r) { return [r[0], r[1], r[2]]; });
-    var colsH_P = gRows.map(function (r) { return [r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]]; });
+    var colsA_C = gRows.map(function(r) { return [r[0], r[1], r[2]]; });
+    var colsH_P = gRows.map(function(r) { return [r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]]; });
     sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
     sheet.getRange(2, 8, colsH_P.length, 9).setValues(colsH_P);
     sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
@@ -1620,8 +1642,8 @@ function initSingleSheetByKey_(sheet, key) {
       ['checkin_protocol', 'Протокол заселения и передачи ключей', '', '', 'Заселение через электронный смарт-замок [CHECKIN_METHOD]. Персональный пароль генерируется в день заезда. Возврат ключей: [KEY_HANDOVER].', '', ''],
       ['emergency', 'Экстренные службы и безопасность', '', '', 'Единый номер экстренных служб Турции: 112 [Полиция, Жандармерия, Скорая помощь, Пожарная служба]. Жандармерия Дальяна: +90 252 284 20 05. Экстренная связь с суперхозяином: 24/7 в чате.', '', '']
     ];
-    var colsA_B = lRows.map(function (r) { return [r[0], r[1]]; });
-    var colE = lRows.map(function (r) { return [r[4]]; });
+    var colsA_B = lRows.map(function(r) { return [r[0], r[1]]; });
+    var colE = lRows.map(function(r) { return [r[4]]; });
     sheet.getRange(2, 1, colsA_B.length, 2).setValues(colsA_B);
     sheet.getRange(2, 5, colE.length, 1).setValues(colE);
     sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
@@ -1670,11 +1692,16 @@ function initSingleSheetByKey_(sheet, key) {
     ];
     sheet.getRange(2, 1, oRows.length, oHeaders.length).setValues(oRows);
   } else if (key === 'ACCESS') {
-    var accHeaders = ['Дата', 'Гость [Контакт]', 'Гид ID', 'Категория', 'Статус оплаты', 'Доступ [Да/Нет]', 'Прогресс'];
+    var accHeaders = ['ID', 'Тип доступа [Замок/Wi-Fi/Сейф/Ворота]', 'Локация / Название', 'Код доступа / PIN / Пароль', 'Резервный пароль / Мастер-код', 'Срок действия / Статус', 'Инструкция для гостя [RU]', 'Инструкция [EN]', 'Инструкция [TR]', 'Заметка'];
     styleSheetHeader_(sheet, accHeaders, 1);
+    sheet.getRange("D:D").setNumberFormat("@");
+    sheet.getRange("E:E").setNumberFormat("@");
     var accRows = [
-      ['2026-05-26', 'ivan.smirnov@example.com', 'guide-1', 'Видеогиды', 'Оплачено', 'Да', '100% [Просмотрен полностью]'],
-      ['2026-05-26', 'ivan.smirnov@example.com', 'guide-2', 'Видеогиды', 'Оплачено', 'Да', '40% [В процессе изучения]']
+      ['acc-wifi-guest', 'Wi-Fi гостевой', 'Вся вилла и прилегающая территория', 'villa2026', 'villa2026master', 'Постоянный / Активен', 'Подключитесь к сети Villa_Turaman_Guest и введите пароль villa2026', 'Connect to Villa_Turaman_Guest network and enter password villa2026', 'Villa_Turaman_Guest agina baglanin ve villa2026 sifresini girin', 'Выдается всем гостям при заселении'],
+      ['acc-wifi-host', 'Wi-Fi служебный', 'Роутер в гостиной 1 этаж', 'turamanAdmin99', 'turamanMasterKey!', 'Закрытый / Служебный', 'Только для персонала и владельца', 'Staff and host only', 'Sadece personel ve ev sahibi icin', 'Конфиденциально'],
+      ['acc-door-smartlock', 'Электронный замок', 'Главный вход на виллу', '147258#', '998877#', 'Сменяемый по броням', 'Введите 6-значный код на сенсорной панели входной двери и нажмите решетку', 'Enter 6-digit code on the front door keypad and press hash', 'On kapi tus takimina 6 haneli kodu girin ve kare tusuna basin', 'Код обновляется после каждого выезда'],
+      ['acc-gate-keypad', 'Автоматические ворота', 'Калитка и въездные ворота', '2580', '1234', 'Постоянный / Активен', 'Наберите 4 цифры на кодовой панели калитки для открытия ворот', 'Enter 4 digits on the gate keypad to open', 'Kapi tus takimina 4 basamakli kodu girin', 'Въезд на парковку виллы'],
+      ['acc-key-safe', 'Механический сейф', 'Справа от входной двери за декоративной панелью', '3579', 'Ключ мастера в архиве', 'Резервный', 'Наберите код на дисковом барабане мини-сейфа и опустите рычажок вниз', 'Rotate dials on the key safe box to code and pull lever down', 'Anahtar kasasindaki kadranlari koda cevirin ve kolu asagi indirin', 'Резервный доступ при разрядке батарей смарт-замка']
     ];
     sheet.getRange(2, 1, accRows.length, accHeaders.length).setValues(accRows);
   } else if (key === 'TEMPLATES') {
@@ -1696,8 +1723,8 @@ function initSingleSheetByKey_(sheet, key) {
       ['4.1_stay_care_checkin', '4.1. Забота о госте во время проживания', '', '', 'Здравствуйте, [FIRST_NAME]! Надеюсь, отдых проходит замечательно! Решил уточнить, все ли комфортно на вилле и не требуется ли помощь по технике, бассейну или рекомендации по ресторанам? С удовольствием отвечу! С уважением, Алексей Знаменский.', '', ''],
       ['5.1_checkout_instructions', '5.1. Напоминание о выезде и передача ключей', '', '', 'Здравствуйте, [FIRST_NAME]! Благодарим за выбор Villa Turaman! Напоминаем детали выезда: Дата: [CHECKOUT_DATE], Время: до [CHECKOUT_TIME]. [KEY_HANDOVER]. Будем рады видеть вас снова! С уважением, Алексей Знаменский.', '', '']
     ];
-    var colsA_B = tRows.map(function (r) { return [r[0], r[1]]; });
-    var colE = tRows.map(function (r) { return [r[4]]; });
+    var colsA_B = tRows.map(function(r) { return [r[0], r[1]]; });
+    var colE = tRows.map(function(r) { return [r[4]]; });
     sheet.getRange(2, 1, colsA_B.length, 2).setValues(colsA_B);
     sheet.getRange(2, 5, colE.length, 1).setValues(colE);
     sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
@@ -1714,7 +1741,7 @@ function initSingleSheetByKey_(sheet, key) {
       ['СИСТЕМА', 'min_night_price', '180', 'Минимально допустимая цена за сутки бронирования в USD: ниже опускать запрещено', 'Финансовый барьер'],
       ['СИСТЕМА', 'telegram_bot_token', '', 'Токен Telegram-бота от BotFather для оповещений и мобильного пульта', 'Безопасность'],
       ['СИСТЕМА', 'telegram_admin_chat_id', '', 'ID чата суперхозяина в Telegram для получения алертов и модерации', 'Суперхозяин'],
-      ['СИСТЕМА', 'vercel_url', 'https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app', 'Боевой URL платформы на Vercel для вебхуков и ревалидации', 'Синхронизация'],
+      ['СИСТЕМА', 'vercel_url', 'https://www.villaturaman.com', 'Боевой URL платформы на Vercel для вебхуков и ревалидации', 'Синхронизация'],
 
       // Блок 2: ПЕРЕМЕННАЯ [Словарь переменных - Истинный SSOT]
       ['ПЕРЕМЕННАЯ', 'wifi_name', 'Guest', 'Имя гостевой сети Wi-Fi виллы', 'Плейсхолдер [WIFI_NAME]'],
@@ -1760,20 +1787,21 @@ function initSingleSheetByKey_(sheet, key) {
       ['РОЛЬ_АГЕНТА', 'Финансист-Бухгалтер', 'РЕЗЕРВ', 'Ты: главный финансовый менеджер Villa Turaman. Ведешь учет платежей, рассчитываешь мультивалютные цены EUR/RUB/TRY, применяешь скидку 10% за невозвратный тариф при заезде до 60 дней и блокируешь любые попытки снижения цены ниже $180.', 'Финансовый модуль'],
 
       // Блок 8: МАТРИЦА_ЛИСТОВ
-      ['МАТРИЦА_ЛИСТОВ', '🏠 Главная витрина', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит главную витрину: 9 блоков с плейсхолдерами, спецификации [10 гостей, 4 спальни], статус Superhost и параметры спален 1-4.', 'Витрина'],
+      ['МАТРИЦА_ЛИСТОВ', '🏠 Главная витрина', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит главную витрину: 16 блоков с плейсхолдерами, спецификации [10 гостей, 4 спальни], статус Superhost и параметры спален 1-4.', 'Витрина'],
       ['МАТРИЦА_ЛИСТОВ', '📸 Фото и Видео Галерея', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит медиа-банк виллы: ссылки на фото высокого разрешения и видеотуры бассейна, сада, комнат и видов на реку.', 'Медиа'],
-      ['МАТРИЦА_ЛИСТОВ', '🛎️ Дополнительные услуги', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит каталог платных сервисов: трансферы из аэропорта Даламан DLM, персональный шеф-повар, массажи, прогулка на лодке, барбекю, SUP-борды.', 'Каталог услуг'],
-      ['МАТРИЦА_ЛИСТОВ', '🗺️ Видео-путеводители', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит цифровые гиды по Дальяну, пляжу Изтузу, озеру Кёйджегиз, ресторанам и античному Кауносу.', 'Каталог гидов'],
       ['МАТРИЦА_ЛИСТОВ', '⚖️ Юридические документы', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит официальный договор аренды, политику KVKK, реквизиты VKN 9991120181.', 'Юриспруденция'],
-      ['МАТРИЦА_ЛИСТОВ', '📋 Заявки и Бронирования', 'РАЗРЕШЕН [ВСЕ]', 'Лист фиксирует статус заявок гостей, даты заезда и выезда, число гостей и статус оплаты.', 'Операции CRM'],
-      ['МАТРИЦА_ЛИСТОВ', '📅 Календарь и Тарифы', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит актуальную сетку занятости дат и тарифные ставки.', 'Календарь'],
-      ['МАТРИЦА_ЛИСТОВ', '👤 Гостевые аккаунты', 'РАЗРЕШЕН [КОНСЬЕРЖ]', 'Лист содержит реестр зарегистрированных гостей и статусы блокировок.', 'Гостевой сервис'],
-      ['МАТРИЦА_ЛИСТОВ', '💳 Заказы услуг и гидов', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит историю заказов доп. услуг и путеводителей.', 'Заказы'],
-      ['МАТРИЦА_ЛИСТОВ', '🎟️ Доступы к путеводителям', 'РАЗРЕШЕН [ВСЕ]', 'Лист персональных доступов к медиа-материалам.', 'Доступы'],
+      ['МАТРИЦА_ЛИСТОВ', '🔑 Управление доступом', 'РАЗРЕШЕН [КОНСЬЕРЖ]', 'Лист физических доступов к вилле: Wi-Fi, смарт-замки, сейфы, ворота, инструкции заселения.', 'Безопасность'],
       ['МАТРИЦА_ЛИСТОВ', '💬 Шаблоны сообщений', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит 14 профессиональных шаблонов общения на RU, EN, TR.', 'Шаблоны коммуникации'],
+      ['МАТРИЦА_ЛИСТОВ', '⚙️ Системные настройки ИИ Агентов', 'РАЗРЕШЕН [ВСЕ]', 'Лист управления системой ИИ, генеральными директивами ролей, словарем переменных и матрицей прав доступа.', 'Центр управления ИИ'],
       ['МАТРИЦА_ЛИСТОВ', '📋 Задачи и Поручения Секретаря', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит поручения, задачи и статус исполнения ассистентом.', 'Секретарь'],
       ['МАТРИЦА_ЛИСТОВ', '🧠 Граф Знаний и Безопасность', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит онтологический граф знаний, узлы и политики безопасности доступа.', 'Граф знаний'],
-      ['МАТРИЦА_ЛИСТОВ', '⚙️ Системные настройки ИИ Агентов', 'РАЗРЕШЕН [ВСЕ]', 'Лист управления системой ИИ, генеральными директивами ролей, словарем переменных и матрицей прав доступа.', 'Центр управления ИИ'],
+      ['МАТРИЦА_ЛИСТОВ', '👤 Гостевые аккаунты', 'РАЗРЕШЕН [КОНСЬЕРЖ]', 'Лист содержит реестр зарегистрированных гостей и статусы блокировок.', 'Гостевой сервис'],
+      ['МАТРИЦА_ЛИСТОВ', '🛎️ Дополнительные услуги', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит каталог платных сервисов: трансферы из аэропорта Даламан DLM, персональный шеф-повар, массажи, прогулка на лодке, барбекю, SUP-борды.', 'Каталог услуг'],
+      ['МАТРИЦА_ЛИСТОВ', '🗺️ Видео-путеводители', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит цифровые гиды по Дальяну, пляжу Изтузу, озеру Кёйджегиз, ресторанам и античному Кауносу.', 'Каталог гидов'],
+      ['МАТРИЦА_ЛИСТОВ', '📋 Заявки и Бронирования', 'РАЗРЕШЕН [ВСЕ]', 'Лист фиксирует статус заявок гостей, даты заезда и выезда, число гостей и статус оплаты.', 'Операции CRM'],
+      ['МАТРИЦА_ЛИСТОВ', '📅 Календарь и Тарифы', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит актуальную сетку занятости дат и тарифные ставки.', 'Календарь'],
+      ['МАТРИЦА_ЛИСТОВ', '💳 Заказы услуг и гидов', 'РАЗРЕШЕН [ВСЕ]', 'Лист содержит историю заказов доп. услуг и путеводителей.', 'Заказы'],
+      ['МАТРИЦА_ЛИСТОВ', '🎟️ Доступы к путеводителям', 'РАЗРЕШЕН [ВСЕ]', 'Лист персональных цифровых доступов к медиа-материалам и видео-путеводителям.', 'Доступы'],
 
       // Блок 9: ДИЗАЙН_И_СТИЛЬ [100% SSOT Оформления сайта]
       ['ДИЗАЙН_И_СТИЛЬ', 'theme_primary_color', '#f43f5e', 'Основной цвет кнопок, бейджей и акцентов [HEX]', 'Фирменный стиль'],
@@ -1816,6 +1844,16 @@ function initSingleSheetByKey_(sheet, key) {
       ['node-host-master-key', 'Аутентификация', 'Секретный', 'Только Хозяин', '⚙️ Системные настройки ИИ Агентов', 'Мастер-пароль и учетные записи доступа в панель суперхозяина.', 'Активен']
     ];
     sheet.getRange(2, 1, kgRows.length, kgHeaders.length).setValues(kgRows);
+  } else if (key === 'GUIDE_ACCESS') {
+    var gaHeaders = ['Дата выдачи', 'Гость [Имя и Контакт]', 'ID Путеводителя', 'Название путеводителя', 'Категория', 'Статус оплаты', 'Токен доступа', 'Срок действия', 'Статус доступа [Активен/Отозван]'];
+    styleSheetHeader_(sheet, gaHeaders, 1);
+    sheet.getRange("B:B").setNumberFormat("@");
+    var gaRows = [
+      ['2026-05-26', 'ivan.smirnov@example.com', 'guide-1', 'Секретные маршруты реки Дальян', 'Видеогиды', 'Оплачено', 'TKN-DAL-8841', 'Бессрочно', 'Активен'],
+      ['2026-06-02', 'markus.webber@example.com', 'guide-2', 'Античный Каунос и Ликийские гробницы', 'Исторические гиды', 'Оплачено', 'TKN-KAU-3319', 'Бессрочно', 'Активен'],
+      ['2026-07-15', 'ahmet.yilmaz@example.com', 'guide-3', 'Озеро Кёйджегиз и грязевые термы', 'Природные маршруты', 'Оплачено', 'TKN-KOY-9921', 'Бессрочно', 'Активен']
+    ];
+    sheet.getRange(2, 1, gaRows.length, gaHeaders.length).setValues(gaRows);
   }
 }
 
@@ -1868,7 +1906,7 @@ function checkVercelEnvStatusInteractive() {
 
 function viewCurrentScriptProperties() {
   var props = PropertiesService.getScriptProperties().getProperties();
-  var mask = function (v) { return v ? v.substring(0, 4) + '...' + v.substring(Math.max(0, v.length - 4)) : '[НЕ ЗАДАНО]'; };
+  var mask = function(v) { return v ? v.substring(0, 4) + '...' + v.substring(Math.max(0, v.length - 4)) : '[НЕ ЗАДАНО]'; };
 
   var text = "📋 ТЕКУЩИЕ СВОЙСТВА СКРИПТА:\n\n" +
     "1. SITE_URL:\n   " + (props['SITE_URL'] || "[НЕ ЗАДАНО]") + "\n\n" +
@@ -2638,7 +2676,7 @@ function toggleTelegramMenuSectionsInteractive() {
   };
 
   if (input === 'all') {
-    Object.keys(current).forEach(function (k) { current[k] = true; });
+    Object.keys(current).forEach(function(k) { current[k] = true; });
   } else if (keyMap[input]) {
     var k = keyMap[input];
     current[k] = !current[k];
@@ -2944,7 +2982,7 @@ function showRolePromptCard_(roleTitle, roleKey, defaultMission, defaultDuties, 
         }
       }
     }
-  } catch (e) { }
+  } catch (e) {}
 
   var info = '🧠 РОЛЬ ИИ: ' + roleTitle.toUpperCase() + '\n\n' +
     '• Миссия: ' + defaultMission + '\n\n' +
@@ -3197,7 +3235,7 @@ function saveMasterSeedInteractive() {
 
     if (code === 200) {
       var data = {};
-      try { data = JSON.parse(text); } catch (e) { }
+      try { data = JSON.parse(text); } catch (e) {}
       var msg = '✅ Эталон masterSeedContent.js и локальный кэш успешно зафиксированы!\n\n' +
         '• Ключей витрины: ' + (data.homeKeysCount || '0') + '\n' +
         '• Строк витрины: ' + (data.homeRowsCount || '0') + '\n' +
@@ -3478,7 +3516,7 @@ function auditPendingBankPaymentsModal() {
       pending.push('Строка ' + (i + 1) + ': ' + data[i][1] + ' : ' + data[i][9] + ' : ' + status);
     }
   }
-  var msg = pending.length > 0
+  var msg = pending.length > 0 
     ? 'Бронирования с ожиданием банковской оплаты [' + pending.length + ']:\n\n' + pending.join('\n')
     : 'Все бронирования оплачены или подтверждены онлайн. Заявок с ожиданием IBAN перевода не найдено.';
   ui.alert('💰 Банковский аудит IBAN', msg, ui.ButtonSet.OK);

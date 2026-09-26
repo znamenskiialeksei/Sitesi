@@ -1,3 +1,5 @@
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 19:40 | ПЛАН: 260920261905 Адаптация задач запускаторов.md | TAG: VILLA-LIVE-SYNC-PREV-260920261940]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:05 | ПЛАН: 260920261955 Адаптация скрипта таблицы Code.js.md | TAG: VILLA-LIVE-SYNC-15SHEETS-260920262305]
 // ==============================================================================
 // УНИВЕРСАЛЬНЫЙ МОДУЛЬ СИНХРОНИЗАЦИИ ЖИВОГО КОНТЕНТА ИЗ GOOGLE SHEETS
 // Файл: utils/liveContentSync.js
@@ -61,7 +63,7 @@ export function readLocalFallback() {
         return parsedTmp;
       }
     }
-  } catch (tmpErr) { }
+  } catch (tmpErr) {}
 
   const contentFilePath = path.join(process.cwd(), 'utils', 'content.json');
   try {
@@ -752,7 +754,7 @@ export function updateLiveContentFromPayload(rawPayload) {
     try {
       const tmpCachePath = path.join('/tmp', 'villa_live_content.json');
       fs.writeFileSync(tmpCachePath, JSON.stringify(content), 'utf8');
-    } catch (tmpErr) { }
+    } catch (tmpErr) {}
   }
 
   return {

@@ -3697,6 +3697,11 @@
       "value": "РАЗРЕШЕН [ВСЕ]",
       "description": "Лист содержит историю заказов доп. услуг и путеводителей."
     },
+    "🔑 Управление доступом": {
+      "category": "МАТРИЦА_ЛИСТОВ",
+      "value": "РАЗРЕШЕН [КОНСЬЕРЖ]",
+      "description": "Лист содержит физические ключи виллы, гостевой Wi-Fi, коды калитки и ПИН-коды смарт-замков."
+    },
     "🎟️ Доступы к путеводителям": {
       "category": "МАТРИЦА_ЛИСТОВ",
       "value": "РАЗРЕШЕН [ВСЕ]",
@@ -3767,149 +3772,5 @@
       "value": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
       "description": "Базовый шрифт интерфейса"
     }
-  },
-  "access": [
-    {
-      "id": "ACC-001",
-      "type": "Электронный замок",
-      "name": "Главный вход виллы",
-      "code": "4829#",
-      "backupCode": "9911*",
-      "validity": "Действует в период проживания",
-      "instructions": {
-        "ru": "Введите 4829 и нажмите решетку #. Замок откроется автоматически.",
-        "en": "Enter 4829 and press hash #. Lock will open automatically.",
-        "tr": "4829 girip kare # tusuna basin. Kilit otomatik acilacaktir."
-      },
-      "note": "Основной гостевой PIN код"
-    },
-    {
-      "id": "ACC-002",
-      "type": "Wi-Fi",
-      "name": "Гостевая сеть виллы",
-      "code": "Guest / villa2026",
-      "backupCode": "villa2026",
-      "validity": "Бессрочно для гостей",
-      "instructions": {
-        "ru": "Подключитесь к сети Guest и введите пароль villa2026.",
-        "en": "Connect to network Guest and enter password villa2026.",
-        "tr": "Guest agina baglanin ve villa2026 sifresini girin."
-      },
-      "note": "Высокоскоростной оптоволоконный интернет"
-    },
-    {
-      "id": "ACC-003",
-      "type": "Мини-сейф для ключей",
-      "name": "Стена у главного входа",
-      "code": "1234",
-      "backupCode": "9876",
-      "validity": "Резервный доступ",
-      "instructions": {
-        "ru": "Установите код 1234 на барабане и потяните рычаг вниз для открытия сейфа.",
-        "en": "Set code 1234 on dial and pull lever down to open safe.",
-        "tr": "Kadranda 1234 kodunu ayarlayin ve kasayi acmak icin kolu asagi cekin."
-      },
-      "note": "Хранение физических ключей от комнат и ворот"
-    }
-  ],
-  "guideAccess": [
-    {
-      "date": "2026-05-26",
-      "guest": "ivan.smirnov@example.com",
-      "guideId": "guide-1",
-      "guideTitle": "Видео-гид Секретные маршруты реки Дальян",
-      "category": "Видеогиды",
-      "paymentStatus": "Оплачено",
-      "token": "TOKEN-VT-GUIDE-001",
-      "expiry": "Бессрочно",
-      "status": "Активен"
-    },
-    {
-      "date": "2026-05-26",
-      "guest": "ivan.smirnov@example.com",
-      "guideId": "guide-2",
-      "guideTitle": "Песчаная коса пляжа Изтузу и черепахи Каретта",
-      "category": "Видеогиды",
-      "paymentStatus": "Оплачено",
-      "token": "TOKEN-VT-GUIDE-002",
-      "expiry": "Бессрочно",
-      "status": "Активен"
-    }
-  ],
-  "tasks": [
-    [
-      "TASK-001",
-      "21.09.2026 10:00",
-      "Бухгалтер",
-      "Расчет e-Arşiv Fatura для бронирования VT-2026-01 [Иван Смирнов]",
-      "Выполнена",
-      "https://drive.google.com/drive/folders/11xBSWA02NypliPFbziRSMfC9aAPclYF_",
-      "Aleksei Znamenskii"
-    ],
-    [
-      "TASK-002",
-      "21.09.2026 10:15",
-      "Юрист",
-      "Проверка данных гостя и договора краткосрочной аренды",
-      "Выполнена",
-      "https://drive.google.com/drive/folders/11xBSWA02NypliPFbziRSMfC9aAPclYF_",
-      "ИИ-Ассистент"
-    ],
-    [
-      "TASK-003",
-      "21.09.2026 10:30",
-      "Секретарь",
-      "Организация трансфера гостя через партнера Ahmet +90 543 335 80 70",
-      "В работе",
-      "https://drive.google.com/drive/folders/11xBSWA02NypliPFbziRSMfC9aAPclYF_",
-      "Секретарь-Помощник"
-    ]
-  ],
-  "bookings": [
-    [
-      "2026-05-20",
-      "Иван Смирнов",
-      "+7 999 123-45-67",
-      "2026-06-10",
-      "2026-06-17",
-      "7",
-      "4",
-      "2",
-      "6",
-      "€2450",
-      "ОПЛАЧЕНО"
-    ]
-  ],
-  "calendar": [
-    [
-      "2026-06-10",
-      "2026-06-17",
-      "Блокировка",
-      "Бронь VT-2026-01",
-      "Иван Смирнов [6 гостей]",
-      "Система",
-      "20.05.2026 12:00"
-    ]
-  ],
-  "accounts": [
-    [
-      "2026-05-20",
-      "Иван Смирнов",
-      "ivan.smirnov@example.com",
-      "123456",
-      "Нет",
-      "Нет",
-      "Нет [Гость виллы]"
-    ]
-  ],
-  "orders": [
-    [
-      "2026-05-25",
-      "ivan.smirnov@example.com",
-      "Услуга",
-      "€50",
-      "Оплачено",
-      "prod-1: VIP-трансфер из аэропорта Даламан DLM"
-    ]
-  ]
+  }
 }

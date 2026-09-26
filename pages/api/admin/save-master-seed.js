@@ -1,3 +1,5 @@
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 19:40 | ПЛАН: 260920261905 Адаптация задач запускаторов.md | TAG: VILLA-API-SEED-PREV-260920261940]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:05 | ПЛАН: 260920261955 Адаптация скрипта таблицы Code.js.md | TAG: VILLA-API-SEED-15SHEETS-260920262305]
 // ==============================================================================
 // СЕРВЕРНЫЙ ЭНДПОИНТ ФИКСАЦИИ ЭТАЛОНА SINGLE SOURCE OF TRUTH
 // Файл: pages/api/admin/save-master-seed.js
@@ -236,88 +238,88 @@ export default async function handler(req, res) {
     const rawSettings = await safeFetchRows('SETTINGS', 'A:E');
     const masterSettingsRows = rawSettings.length > 1
       ? rawSettings.slice(1).map((r) => [
-        (r[0] || '').toString().trim(),
-        (r[1] || '').toString().trim(),
-        (r[2] || '').toString().trim(),
-        (r[3] || '').toString().trim(),
-        (r[4] || '').toString().trim()
-      ])
+          (r[0] || '').toString().trim(),
+          (r[1] || '').toString().trim(),
+          (r[2] || '').toString().trim(),
+          (r[3] || '').toString().trim(),
+          (r[4] || '').toString().trim()
+        ])
       : (existingSeed.MASTER_SETTINGS_ROWS || []);
 
     // 3. Выгрузка листа LEGAL [Юридические документы]
     const rawLegal = await safeFetchRows('LEGAL', 'A:G');
     const masterLegalRows = rawLegal.length > 1
       ? rawLegal.slice(1).map((r) => [
-        (r[0] || '').toString().trim(),
-        (r[1] || '').toString().trim(),
-        (r[2] || '').toString().trim(),
-        (r[3] || '').toString().trim(),
-        (r[4] || '').toString().trim(),
-        (r[5] || '').toString().trim(),
-        (r[6] || '').toString().trim()
-      ])
+          (r[0] || '').toString().trim(),
+          (r[1] || '').toString().trim(),
+          (r[2] || '').toString().trim(),
+          (r[3] || '').toString().trim(),
+          (r[4] || '').toString().trim(),
+          (r[5] || '').toString().trim(),
+          (r[6] || '').toString().trim()
+        ])
       : (existingSeed.MASTER_LEGAL_ROWS || []);
 
     // 4. Выгрузка листа TEMPLATES [Шаблоны сообщений]
     const rawTemplates = await safeFetchRows('TEMPLATES', 'A:G');
     const masterTemplatesRows = rawTemplates.length > 1
       ? rawTemplates.slice(1).map((r) => [
-        (r[0] || '').toString().trim(),
-        (r[1] || '').toString().trim(),
-        (r[2] || '').toString().trim(),
-        (r[3] || '').toString().trim(),
-        (r[4] || '').toString().trim(),
-        (r[5] || '').toString().trim(),
-        (r[6] || '').toString().trim()
-      ])
+          (r[0] || '').toString().trim(),
+          (r[1] || '').toString().trim(),
+          (r[2] || '').toString().trim(),
+          (r[3] || '').toString().trim(),
+          (r[4] || '').toString().trim(),
+          (r[5] || '').toString().trim(),
+          (r[6] || '').toString().trim()
+        ])
       : (existingSeed.MASTER_TEMPLATES_ROWS || []);
 
     // 5. Выгрузка листа SERVICES [Дополнительные услуги]
     const rawServices = await safeFetchRows('SERVICES', 'A:R');
     const masterServicesRows = rawServices.length > 1
       ? rawServices.slice(1).map((r) => {
-        const row = [];
-        for (let i = 0; i < 18; i++) {
-          row.push((r[i] || '').toString().trim());
-        }
-        return row;
-      })
+          const row = [];
+          for (let i = 0; i < 18; i++) {
+            row.push((r[i] || '').toString().trim());
+          }
+          return row;
+        })
       : (existingSeed.MASTER_SERVICES_ROWS || []);
 
     // 6. Выгрузка листа GUIDES [Видео-путеводители]
     const rawGuides = await safeFetchRows('GUIDES', 'A:R');
     const masterGuidesRows = rawGuides.length > 1
       ? rawGuides.slice(1).map((r) => {
-        const row = [];
-        for (let i = 0; i < 18; i++) {
-          row.push((r[i] || '').toString().trim());
-        }
-        return row;
-      })
+          const row = [];
+          for (let i = 0; i < 18; i++) {
+            row.push((r[i] || '').toString().trim());
+          }
+          return row;
+        })
       : (existingSeed.MASTER_GUIDES_ROWS || []);
 
     // 7. Выгрузка листа GALLERY [Фото и Видео Галерея]
     const rawGallery = await safeFetchRows('GALLERY', 'A:L');
     const masterGalleryRows = rawGallery.length > 1
       ? rawGallery.slice(1).map((r) => {
-        const row = [];
-        for (let i = 0; i < 12; i++) {
-          row.push((r[i] || '').toString().trim());
-        }
-        return row;
-      })
+          const row = [];
+          for (let i = 0; i < 12; i++) {
+            row.push((r[i] || '').toString().trim());
+          }
+          return row;
+        })
       : (existingSeed.MASTER_GALLERY_ROWS || []);
 
     // 7.1 Выгрузка листа KNOWLEDGE_GRAPH [Граф Знаний и Безопасность]
     const rawKnowledgeGraph = await safeFetchRows('KNOWLEDGE_GRAPH', 'A:G');
     const masterKnowledgeGraphRows = rawKnowledgeGraph.length > 1
       ? rawKnowledgeGraph.slice(1).map((r) => {
-        const row = [];
-        for (let i = 0; i < 7; i++) {
-          row.push((r[i] || '').toString().trim());
-        }
-        return row;
-      })
+          const row = [];
+          for (let i = 0; i < 7; i++) {
+            row.push((r[i] || '').toString().trim());
+          }
+          return row;
+        })
       : (existingSeed.MASTER_KNOWLEDGE_GRAPH_ROWS || []);
 
     // Сохранение неизменных массивов остальных листов
@@ -336,6 +338,9 @@ export default async function handler(req, res) {
     const masterAccessRows = (livePayload && Array.isArray(livePayload.accessRows) && livePayload.accessRows.length > 1)
       ? livePayload.accessRows.slice(1)
       : (existingSeed.MASTER_ACCESS_ROWS || []);
+    const masterGuideAccessRows = (livePayload && Array.isArray(livePayload.guideAccessRows) && livePayload.guideAccessRows.length > 1)
+      ? livePayload.guideAccessRows.slice(1)
+      : (existingSeed.MASTER_GUIDE_ACCESS_ROWS || []);
     const masterTasksRows = (livePayload && Array.isArray(livePayload.tasksRows) && livePayload.tasksRows.length > 1)
       ? livePayload.tasksRows.slice(1)
       : (existingSeed.MASTER_TASKS_ROWS || []);
@@ -444,7 +449,7 @@ export default async function handler(req, res) {
       try {
         const tmpCachePath = path.join('/tmp', 'villa_live_content.json');
         fs.writeFileSync(tmpCachePath, JSON.stringify(updatedContentJson), 'utf8');
-      } catch (tmpErr) { }
+      } catch (tmpErr) {}
     } catch (contentBuildErr) {
       console.warn('[save-master-seed] Предупреждение при сборке content.json:', contentBuildErr.message);
     }
@@ -490,6 +495,8 @@ const MASTER_ORDERS_ROWS = ${JSON.stringify(masterOrdersRows, null, 2)};
 
 const MASTER_ACCESS_ROWS = ${JSON.stringify(masterAccessRows, null, 2)};
 
+const MASTER_GUIDE_ACCESS_ROWS = ${JSON.stringify(masterGuideAccessRows, null, 2)};
+
 const MASTER_TASKS_ROWS = ${JSON.stringify(masterTasksRows, null, 2)};
 
 const MASTER_KNOWLEDGE_GRAPH_ROWS = ${JSON.stringify(masterKnowledgeGraphRows, null, 2)};
@@ -509,6 +516,7 @@ module.exports = {
   MASTER_ACCOUNTS_ROWS,
   MASTER_ORDERS_ROWS,
   MASTER_ACCESS_ROWS,
+  MASTER_GUIDE_ACCESS_ROWS,
   MASTER_TASKS_ROWS,
   MASTER_KNOWLEDGE_GRAPH_ROWS,
   buildHomeDerivedCollections
@@ -527,14 +535,14 @@ module.exports = {
     if (livePayload) {
       try {
         updateLiveContentFromPayload(livePayload);
-      } catch (updErr) { }
+      } catch (updErr) {}
     }
 
     const revalidateTargets = ['/', '/ru', '/en', '/tr'];
     for (const target of revalidateTargets) {
       try {
         await res.revalidate(target);
-      } catch (rErr) { }
+      } catch (rErr) {}
     }
 
     return res.status(200).json({

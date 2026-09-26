@@ -1,3 +1,5 @@
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 19:40 | ПЛАН: 260920261905 Адаптация задач запускаторов.md | TAG: VILLA-SEED-SCRIPT-PREV-260920261940]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:05 | ПЛАН: 260920261955 Адаптация скрипта таблицы Code.js.md | TAG: VILLA-SEED-SCRIPT-15SHEETS-260920262305]
 // ==============================================================================
 // СЦЕНАРИЙ АВТОМАТИЧЕСКОЙ ФИКСАЦИИ ЭТАЛОНА SINGLE SOURCE OF TRUTH
 // Файл: scripts/save-master-seed.js
@@ -284,6 +286,7 @@ async function saveMasterSeed() {
   const masterAccountsRows = existingSeed.MASTER_ACCOUNTS_ROWS || [];
   const masterOrdersRows = existingSeed.MASTER_ORDERS_ROWS || [];
   const masterAccessRows = existingSeed.MASTER_ACCESS_ROWS || [];
+  const masterGuideAccessRows = existingSeed.MASTER_GUIDE_ACCESS_ROWS || [];
   const masterTasksRows = existingSeed.MASTER_TASKS_ROWS || [];
 
   // 8. Обновление локального файла кэша utils/content.json
@@ -427,6 +430,8 @@ const MASTER_ORDERS_ROWS = ${JSON.stringify(masterOrdersRows, null, 2)};
 
 const MASTER_ACCESS_ROWS = ${JSON.stringify(masterAccessRows, null, 2)};
 
+const MASTER_GUIDE_ACCESS_ROWS = ${JSON.stringify(masterGuideAccessRows, null, 2)};
+
 const MASTER_TASKS_ROWS = ${JSON.stringify(masterTasksRows, null, 2)};
 
 const MASTER_KNOWLEDGE_GRAPH_ROWS = ${JSON.stringify(masterKnowledgeGraphRows, null, 2)};
@@ -446,6 +451,7 @@ module.exports = {
   MASTER_ACCOUNTS_ROWS,
   MASTER_ORDERS_ROWS,
   MASTER_ACCESS_ROWS,
+  MASTER_GUIDE_ACCESS_ROWS,
   MASTER_TASKS_ROWS,
   MASTER_KNOWLEDGE_GRAPH_ROWS,
   buildHomeDerivedCollections

@@ -1,7 +1,10 @@
 // ==============================================================================
-// БИБЛИОТЕКА ЛОКАЛИЗАЦИИ И МУЛЬТИЯЗЫЧНОСТИ VILLA TURAMAN (AIRBNB PLATFORM)
+// БИБЛИОТЕКА ЛОКАЛИЗАЦИИ И МУЛЬТИЯЗЫЧНОСТИ VILLA TURAMAN [AIRBNB PLATFORM]
 // Файл: utils/translations.js
-// Поддерживаемые языки: Русский (RU), Английский (EN), Турецкий (TR)
+// Поддерживаемые языки: Русский [RU], Английский [EN], Турецкий [TR]
+// 
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 19:40 | ПЛАН: 260920261905 Адаптация задач запускаторов.md | TAG: VILLA-TRANSLATIONS-PREV-260920261940]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:00 | ПЛАН: 260920261955 Адаптация скрипта таблицы Code.js.md | TAG: VILLA-TRANSLATIONS-48REV-260920262300]
 // ==============================================================================
 
 export const translations = {
@@ -468,7 +471,7 @@ export const translations = {
     modalAboutVillaFooter: "Официальный налогоплательщик: Ortaca Vergi Dairesi, VKN: 9991120181",
     modalClosePassportBtn: "Закрыть паспорт объекта",
     closeBtn: "Закрыть",
-
+    
     // Бейджи 7 секций паспорта объекта
     aboutSec1Badge: "Геолокация • 14 ориентиров",
     aboutSec2Badge: "Архитектура • 10 мест",
@@ -947,7 +950,7 @@ export const translations = {
     modalAboutVillaFooter: "Official taxpayer: Ortaca Tax Office, VKN: 9991120181",
     modalClosePassportBtn: "Close property passport",
     closeBtn: "Close",
-
+    
     // Badges of 7 property passport sections
     aboutSec1Badge: "Geolocation • 14 landmarks",
     aboutSec2Badge: "Architecture • Sleeps 10",
@@ -1426,7 +1429,7 @@ export const translations = {
     modalAboutVillaFooter: "Resmi vergi mükellefi: Ortaca Vergi Dairesi, VKN: 9991120181",
     modalClosePassportBtn: "Mülk pasaportunu kapat",
     closeBtn: "Kapat",
-
+    
     // 7 mülk pasaportu bölümü rozetleri
     aboutSec1Badge: "Konum • 14 coğrafi işaret",
     aboutSec2Badge: "Mimari • 10 kişilik kapasite",
