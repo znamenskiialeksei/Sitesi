@@ -288,8 +288,20 @@ export default function HomeListing({ publicData, contentData }) {
     };
 
     fetchLiveContent();
+
+    // Автоматическое обновление контента при возврате пользователя на вкладку браузера
+    let lastFocusFetch = Date.now();
+    const handleWindowFocus = () => {
+      if (Date.now() - lastFocusFetch > 4000) {
+        lastFocusFetch = Date.now();
+        fetchLiveContent();
+      }
+    };
+    window.addEventListener('focus', handleWindowFocus);
+
     return () => {
       isMounted = false;
+      window.removeEventListener('focus', handleWindowFocus);
     };
   }, []);
 

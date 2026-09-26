@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   // Определение среды выполнения
   const vercelEnv = process.env.VERCEL_ENV || 'local';
   const vercelUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null;
-  const siteUrl = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || vercelUrl || 'http://localhost:3000';
+  const siteUrl = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || vercelUrl || 'https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app';
 
   // Проверка наличия и базовой валидности ключей
   const googleSpreadsheetId = Boolean(process.env.GOOGLE_SPREADSHEET_ID && process.env.GOOGLE_SPREADSHEET_ID !== 'your_google_sheet_id');

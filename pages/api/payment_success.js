@@ -17,7 +17,7 @@ export default async function handler(req, res) {
 
       const protocol = req.headers['x-forwarded-proto'] || (req.connection?.encrypted ? 'https' : 'http');
       const host = req.headers['x-forwarded-host'] || req.headers.host;
-      const baseUrl = host ? `${protocol}://${host}` : (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000');
+      const baseUrl = host ? `${protocol}://${host}` : (process.env.NEXT_PUBLIC_SITE_URL || 'https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app');
 
       // Автоматическое обновление записи в Google Таблицах и отправка ваучера
       await fetch(`${baseUrl}/api/booking`, {

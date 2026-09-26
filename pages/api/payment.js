@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     const protocol = req.headers['x-forwarded-proto'] || (req.connection?.encrypted ? 'https' : 'http');
     const host = req.headers['x-forwarded-host'] || req.headers.host;
     const headerOrigin = host ? `${protocol}://${host}` : null;
-    const baseUrl = clientOrigin || headerOrigin || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const baseUrl = clientOrigin || headerOrigin || process.env.NEXT_PUBLIC_SITE_URL || 'https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app';
     const successUrl = `${baseUrl}/api/payment_success?data=${encodeURIComponent(JSON.stringify(bookingDetails))}`;
     const cancelUrl = `${baseUrl}/?payment=cancel`;
 

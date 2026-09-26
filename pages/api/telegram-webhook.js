@@ -506,7 +506,7 @@ export default async function handler(req, res) {
     if (data === 'menu_revalidate') {
       await tgApi(token, 'answerCallbackQuery', { callback_query_id: cqId, text: '⚡ Запуск ревалидации...' });
       try {
-        const siteUrl = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+        const siteUrl = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || 'https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app';
         const secret = process.env.REVALIDATE_SECRET_TOKEN || '';
         if (secret) {
           await fetch(`${siteUrl.replace(/\/+$/, '')}/api/revalidate?secret=${secret}`).catch(() => {});

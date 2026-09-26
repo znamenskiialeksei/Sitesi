@@ -37,14 +37,8 @@ export default async function handler(req, res) {
     // 2. Первоочередная загрузка свежего контента из Google Sheets API в память сервера
     const liveContent = await getOrFetchLiveContent(true);
 
-    // 3. Инвалидация статического кэша основных страниц виллы в Next.js ISR
-    const revalidateTargets = [
-      '/',
-      '/legal/kvkk',
-      '/legal/contract',
-      '/legal/cancellation',
-      '/legal/privacy'
-    ];
+    // 3. Инвалидация статического кэша главной страницы виллы в Next.js ISR
+    const revalidateTargets = ['/'];
 
     const results = {};
     for (const target of revalidateTargets) {

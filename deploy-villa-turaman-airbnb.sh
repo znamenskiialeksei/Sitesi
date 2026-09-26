@@ -91,7 +91,7 @@ if [ ! -f ".env.local" ]; then
     echo -e "${CYAN}[ИНФО] Создание шаблона .env.local...${RESET}"
     cat << 'EOF' > .env.local
 # Базовый URL платформы
-NEXT_PUBLIC_SITE_URL="http://localhost:3000"
+NEXT_PUBLIC_SITE_URL="https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app"
 
 # Google Cloud Service Account (Основная база данных Google Sheets)
 GOOGLE_CLIENT_EMAIL="your-service-account-email@your-project.iam.gserviceaccount.com"
@@ -262,7 +262,7 @@ echo -e "  ${BOLD}Способ 1 (Интерфейс VS Code):${RESET} Нажм�
 echo -e "  ${BOLD}Способ 2 (Задачи VS Code):${RESET}    ${CYAN}Ctrl+Shift+P${RESET} ➔ ${CYAN}Tasks: Run Task${RESET} ➔ ${GREEN}🚀 1. Запуск Сервера Разработки Airbnb${RESET}."
 echo -e "  ${BOLD}Способ 3 (Терминал VS Code):${RESET}   Выполните в pwsh: ${CYAN}npm run dev${RESET}."
 echo ""
-echo -e "  🌐 Локальный адрес витрины: ${CYAN}http://localhost:3000${RESET}"
-echo -e "  👤 Кабинет гостя:           ${CYAN}http://localhost:3000/guest${RESET}"
-echo -e "  👑 Кабинет хозяина:         ${CYAN}http://localhost:3000/host${RESET}"
+echo -e "  🌐 Адрес витрины:           ${CYAN}https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app${RESET}"
+echo -e "  👤 Кабинет гостя:           ${CYAN}https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app/guest${RESET}"
+echo -e "  👑 Кабинет хозяина:         ${CYAN}https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app/host${RESET}"
 echo ""

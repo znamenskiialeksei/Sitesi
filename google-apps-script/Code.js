@@ -403,10 +403,34 @@ function showSheetManagerHelp() {
 // ==============================================================================
 // ФУНКЦИИ СИНХРОНИЗАЦИИ, АУДИТА И ВЕБХУКОВ
 // ==============================================================================
+// ОНЛАЙН СИНХРОНИЗАЦИЯ И РЕВАЛИДАЦИЯ КОНТЕНТА: ПОЛНОЕ ИСКОРЕНЕНИЕ LOCALHOST
+// ==============================================================================
 
 /**
- * Интеллектуальное определение рабочего URL сайта платформы
- * Приоритет: 1. Script Properties SITE_URL [если не localhost]
+ * Автоматическая тихая проверка и создание триггера редактирования таблицы
+ */
+function ensureAutoSyncTriggerInstalled_() {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var triggers = ScriptApp.getUserTriggers(ss);
+    for (var i = 0; i < triggers.length; i++) {
+      if (triggers[i].getHandlerFunction() === 'onSheetEditTrigger') {
+        return true;
+      }
+    }
+    ScriptApp.newTrigger('onSheetEditTrigger')
+      .forSpreadsheet(ss)
+      .onEdit()
+      .create();
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
+ * Интеллектуальное определение рабочего URL сайта платформы: без localhost
+ * Приоритет: 1. Script Properties SITE_URL [строго без localhost]
  *            2. Параметр vercel_url из листа SETTINGS
  *            3. Боевой production URL Vercel ветки v1-airbnb
  */
@@ -414,8 +438,9 @@ function getEffectiveSiteUrl_() {
   var props = PropertiesService.getScriptProperties();
   var siteUrl = (props.getProperty('SITE_URL') || '').trim().replace(/\/+$/, '');
 
-  // Если URL не задан или указывает на localhost:3000, пробуем найти публичный URL из таблицы
+  // Если URL не задан или указывает на localhost: очищаем и вычисляем боевой URL
   if (!siteUrl || siteUrl.indexOf('localhost') !== -1 || siteUrl.indexOf('127.0.0.1') !== -1) {
+    var targetUrl = '';
     try {
       var ss = SpreadsheetApp.getActiveSpreadsheet();
       var setSheet = findSheetByConfigKey(ss, 'SETTINGS');
@@ -424,15 +449,25 @@ function getEffectiveSiteUrl_() {
         for (var i = 1; i < vals.length; i++) {
           var k = String(vals[i][1] || '').trim();
           var v = String(vals[i][2] || '').trim();
-          if (k === 'vercel_url' && v && v.indexOf('http') === 0) {
-            return v.replace(/\/+$/, '');
+          if (k === 'vercel_url' && v && v.indexOf('http') === 0 && v.indexOf('localhost') === -1) {
+            targetUrl = v.replace(/\/+$/, '');
+            break;
           }
         }
       }
     } catch (e) {}
 
-    // Если был указан localhost, сохраняем резервный боевой URL Vercel
-    return 'https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app';
+    if (!targetUrl) {
+      targetUrl = 'https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app';
+    }
+
+    // Перманентная перезапись Свойств скрипта для исключения localhost
+    try {
+      props.setProperty('SITE_URL', targetUrl);
+      props.setProperty('REVALIDATE_API_URL', targetUrl + '/api/revalidate');
+    } catch (propErr) {}
+
+    return targetUrl;
   }
 
   return siteUrl;
@@ -444,32 +479,42 @@ function sendUpdateSignal(e) {
   triggerRevalidateWebhook();
 }
 
-/** Отправка сигнала On-demand ISR ревалидации в Next.js */
+/** Отправка сигнала On-demand ISR ревалидации в Next.js: 100% без localhost */
 function triggerRevalidateWebhook() {
+  // Автоматическое подключение триггера при первой публикации
+  ensureAutoSyncTriggerInstalled_();
+
   var props = PropertiesService.getScriptProperties();
   var siteUrl = getEffectiveSiteUrl_();
-  var rawSiteProp = (props.getProperty('SITE_URL') || '').trim();
 
-  // Предупреждение если в Свойствах скрипта остался localhost
-  if (rawSiteProp && (rawSiteProp.indexOf('localhost') !== -1 || rawSiteProp.indexOf('127.0.0.1') !== -1)) {
-    Logger.log('Внимание: адрес localhost недоступен из облака Google Apps Script. Используется публичный URL: ' + siteUrl);
+  // Жесткая санация URL ревалидации от любых следов localhost
+  var rawReval = (props.getProperty('REVALIDATE_API_URL') || '').trim();
+  if (!rawReval || rawReval.indexOf('localhost') !== -1 || rawReval.indexOf('127.0.0.1') !== -1) {
+    rawReval = siteUrl + '/api/revalidate';
+    try {
+      props.setProperty('REVALIDATE_API_URL', rawReval);
+    } catch (saveErr) {}
   }
 
-  var revalidateUrl = props.getProperty('REVALIDATE_API_URL') || (siteUrl + '/api/revalidate');
+  var revalidateUrl = rawReval;
   var secret = props.getProperty('REVALIDATE_SECRET_TOKEN') || 'YOUR_VERY_SECRET_RANDOM_STRING';
 
+  var isIsrSuccess = false;
+  var responseCode = 0;
+  var responseMessage = '';
+
+  // 1. Отправка сигнала ревалидации в Next.js On-demand ISR
   try {
-    // 1. Отправка сигнала ревалидации в Next.js On-demand ISR
     var res = UrlFetchApp.fetch(revalidateUrl + '?secret=' + encodeURIComponent(secret), {
       "method": "post",
       "muteHttpExceptions": true,
       "followRedirects": false
     });
-    var code = res.getResponseCode();
+    responseCode = res.getResponseCode();
     var responseText = res.getContentText() || '';
 
     // Проверка на блокировку защитой Vercel Authentication
-    var isVercelAuthRedirect = (code === 307 || code === 308 || code === 302 || code === 301);
+    var isVercelAuthRedirect = (responseCode === 307 || responseCode === 308 || responseCode === 302 || responseCode === 301);
     var headers = res.getHeaders() || {};
     var locationHeader = headers['Location'] || headers['location'] || '';
 
@@ -482,8 +527,7 @@ function triggerRevalidateWebhook() {
       return;
     }
 
-    // Если followRedirects был выполнен и вернулась HTML-страница логина Vercel
-    if (responseText.indexOf('Login – Vercel') !== -1 || responseText.indexOf('vercel.com/login') !== -1 || (responseText.indexOf('<html') !== -1 && code === 200)) {
+    if (responseText.indexOf('Login – Vercel') !== -1 || responseText.indexOf('vercel.com/login') !== -1 || (responseText.indexOf('<html') !== -1 && responseCode === 200)) {
       SpreadsheetApp.getUi().alert(
         "⚠️ Запрос перехвачен экраном авторизации Vercel",
         "Сервер вернул HTML-страницу вместо ответа API ревалидации.\nВключена защита Deployment Protection на vercel.com.\n\nПожалуйста, отключите Vercel Authentication в панели Vercel для свободного обновления контента.",
@@ -497,27 +541,39 @@ function triggerRevalidateWebhook() {
       data = JSON.parse(responseText);
     } catch (parseErr) {}
 
-    // 2. Дополнительный синхронный сброс оперативного кэша контента на сайте
-    try {
-      UrlFetchApp.fetch(siteUrl + '/api/content?force=true', {
-        "method": "get",
-        "muteHttpExceptions": true
-      });
-    } catch (e2) {}
-
-    if (code === 200 && data && data.success && data.revalidated) {
-      SpreadsheetApp.getActive().toast("Сайт успешно обновлен: контент опубликован на витрине.", "⚡ 1. Опубликовано", 5);
-      return;
-    } else if (code === 401) {
+    if (responseCode === 200 && data && data.success && data.revalidated) {
+      isIsrSuccess = true;
+      responseMessage = 'Контент успешно опубликован на витрине Vercel.';
+    } else if (responseCode === 401) {
       SpreadsheetApp.getActive().toast("Ошибка авторизации [401]: проверьте REVALIDATE_SECRET_TOKEN.", "⚠️ Внимание", 6);
       return;
     } else {
       var snippet = responseText.replace(/<[^>]+>/g, '').trim().substring(0, 120);
-      SpreadsheetApp.getActive().toast("Код ответа: " + code + " : " + (data && data.message ? data.message : snippet), "⚠️ Ответ сервера", 7);
-      return;
+      responseMessage = (data && data.message ? data.message : snippet);
     }
-  } catch (err) {
-    SpreadsheetApp.getActive().toast("Сбой подключения к " + revalidateUrl + " : " + err.message, "⚠️ Ошибка связи с сайтом", 6);
+  } catch (isrErr) {
+    Logger.log('Сбой шага 1 ISR ревалидации: ' + isrErr.message);
+  }
+
+  // 2. Дополнительный синхронный сброс оперативного кэша контента на сайте
+  var isCacheCleared = false;
+  try {
+    var cacheRes = UrlFetchApp.fetch(siteUrl + '/api/content?force=true', {
+      "method": "get",
+      "muteHttpExceptions": true
+    });
+    if (cacheRes.getResponseCode() === 200) {
+      isCacheCleared = true;
+    }
+  } catch (cacheErr) {
+    Logger.log('Сбой шага 2 сброса кэша: ' + cacheErr.message);
+  }
+
+  // Итоговое оповещение пользователя о публикации
+  if (isIsrSuccess || isCacheCleared) {
+    SpreadsheetApp.getActive().toast("Сайт Vercel успешно обновлен: свежие данные опубликованы на витрине.", "⚡ 1. Опубликовано", 5);
+  } else {
+    SpreadsheetApp.getActive().toast("Сбой отправки сигнала на " + siteUrl + ": код " + responseCode + " : " + responseMessage, "⚠️ Ошибка связи с сайтом", 7);
   }
 }
 
@@ -1564,14 +1620,11 @@ function setupScriptPropertiesInteractive() {
   var ui = SpreadsheetApp.getUi();
   var scriptProperties = PropertiesService.getScriptProperties();
 
-  var siteUrl = ui.prompt("Настройка SITE_URL", "Укажите публичный адрес сайта платформы:\nПример: https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app\n[Примечание: адрес localhost недоступен из облачных серверов Google]", ui.ButtonSet.OK_CANCEL);
+  var siteUrl = ui.prompt("Настройка SITE_URL", "Укажите публичный адрес сайта платформы:\nПример: https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app", ui.ButtonSet.OK_CANCEL);
   if (siteUrl.getSelectedButton() === ui.Button.OK && siteUrl.getResponseText().trim()) {
-    scriptProperties.setProperty('SITE_URL', siteUrl.getResponseText().trim());
-  }
-
-  var revalUrl = ui.prompt("Настройка REVALIDATE_API_URL", "Укажите эндпоинт ревалидации:\nПример: https://.../api/revalidate", ui.ButtonSet.OK_CANCEL);
-  if (revalUrl.getSelectedButton() === ui.Button.OK && revalUrl.getResponseText().trim()) {
-    scriptProperties.setProperty('REVALIDATE_API_URL', revalUrl.getResponseText().trim());
+    var cleanSiteUrl = siteUrl.getResponseText().trim().replace(/\/+$/, '');
+    scriptProperties.setProperty('SITE_URL', cleanSiteUrl);
+    scriptProperties.setProperty('REVALIDATE_API_URL', cleanSiteUrl + '/api/revalidate');
   }
 
   var revalSecret = ui.prompt("Настройка REVALIDATE_SECRET_TOKEN", "Укажите секретный ключ ревалидации:", ui.ButtonSet.OK_CANCEL);
@@ -1584,13 +1637,7 @@ function setupScriptPropertiesInteractive() {
 
 function checkVercelEnvStatusInteractive() {
   var ui = SpreadsheetApp.getUi();
-  var props = PropertiesService.getScriptProperties();
-  var siteUrl = (props.getProperty('SITE_URL') || '').trim().replace(/\/+$/, '');
-
-  if (!siteUrl) {
-    ui.alert("Внимание", "Сначала настройте SITE_URL в Свойствах скрипта.", ui.ButtonSet.OK);
-    return;
-  }
+  var siteUrl = getEffectiveSiteUrl_();
 
   try {
     var res = UrlFetchApp.fetch(siteUrl + '/api/system-status', { muteHttpExceptions: true });
@@ -1628,15 +1675,16 @@ function viewCurrentScriptProperties() {
 
 function setupDefaultScriptProperties() {
   var scriptProperties = PropertiesService.getScriptProperties();
+  var defaultUrl = 'https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app';
   scriptProperties.setProperties({
-    'SITE_URL': "http://localhost:3000",
-    'REVALIDATE_API_URL': "http://localhost:3000/api/revalidate",
+    'SITE_URL': defaultUrl,
+    'REVALIDATE_API_URL': defaultUrl + '/api/revalidate',
     'REVALIDATE_SECRET_TOKEN': "YOUR_VERY_SECRET_RANDOM_STRING",
     'TELEGRAM_BOT_TOKEN': "",
     'TELEGRAM_CHAT_ID': ""
   }, false);
 
-  SpreadsheetApp.getActive().toast("Установлены базовые локальные свойства: SITE_URL=http://localhost:3000", "⚡ Свойства скрипта", 5);
+  SpreadsheetApp.getActive().toast("Установлены боевые свойства: SITE_URL=" + defaultUrl, "⚡ Свойства скрипта", 5);
 }
 
 // ==============================================================================
@@ -2954,7 +3002,7 @@ function saveMasterSeedInteractive() {
   if (!siteUrl) {
     var promptRes = ui.prompt(
       'Адрес сайта не настроен',
-      'Укажите URL сайта [например: https://villa-turaman-airbnb-platform.vercel.app или http://localhost:3000]:',
+      'Укажите URL сайта [например: https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app]:',
       ui.ButtonSet.OK_CANCEL
     );
     if (promptRes.getSelectedButton() !== ui.Button.OK) return;
