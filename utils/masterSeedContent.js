@@ -4,7 +4,7 @@
 // Назначение: Эталонный источник истины [SSOT] для всех 15 листов Google Таблиц.
 // Защищен от случайного затирания. Обеспечивает 100% самоисцеление при удалении листов.
 // Сгенерировано автоматически через scripts/save-master-seed.js
-// Дата фиксации: 2026-09-26T20:31:12.656Z
+// Дата фиксации: 2026-09-27T06:58:16.411Z
 // 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
@@ -16,7 +16,7 @@ const MASTER_ABOUT_SECTIONS = [
     "title": {
       "ru": "1. Концепция объекта, геолокация и расширенные географические ориентиры",
       "en": "1. Object concept, geolocation and extended geographic landmarks",
-      "tr": "1. Nesne kavramı, coğrafi konum ve genişletilmiş coğrafi işaretler"
+      "tr": "1. Nesne kavramı, coğrafi konum belirleme ve genişletilmiş coğrafi işaretler"
     },
     "text": {
       "ru": "Dalyan Turaman [частный бассейн, 10 спальных мест] - это цифровая веб-платформа прямого онлайн-бронирования двухэтажной виллы премиум-класса в экологическом заповедном курорте Дальян [район Ортаджа, провинция Мугла, Турция], расположенном между рекой Дальян и озером Кёйджегиз.\n\nОфициальный адрес и навигация:\n* Адрес виллы: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Turkey.\n* Ссылка на геолокацию в Google Maps: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n* Точные координаты GPS: 36.8336° N, 28.6439° E.\n\nПолный реестр ключевых географических ориентиров:\n* Пешеходный центр Дальяна: всего 250 метров [3 минуты пешком] до главной пешеходной улицы с магазинами, рынками, аптеками и сувенирными лавками.\n* Речная набережная реки Дальян: 400 метров для утренних пробежек, вечерних прогулок и наблюдения за речными лодками.\n* Гастрономия: популярный ресторан высокой кухни La Boheme Dalyan - 350 метров; традиционный рыбный ресторан Çiçek Restoran - 500 метров.\n* Ликийские скальные гробницы королей Кауноса [IV век до н.э.]: панорамный вид с набережной Дальяна [450 метров], вечерняя подсветка скал и 10 минут на лодке.\n* Античный город Каунос, древний акрополь и амфитеатр: 1.5 км [переправа на весельной лодке через реку Дальян и пеший маршрут].\n* Всемирно известный песчаный пляж Изтузу [İztuzu]: 11 км [около 15 минут на машине или 30-40 минут на живописном речном катере-такси через лабиринты камышей]. Заповедная зона обитания гигантских морских черепах Caretta-Caretta.\n* Термальные радоновые источники и омолаживающие грязи Султание [Sultaniye Kaplıcaları]: 4 км по воде на озере Кёйджегиз.\n* Озеро Кёйджегиз [Köyceğiz Gölü]: 5 км до выхода из русла реки в открытую озерную акваторию.\n* Смотровая площадка Радар [Radar Tepesi]: 8 км [панорамный обзор 360° на всю дельту реки, озеро и косу пляжа Изтузу с высоты 500 метров].\n* Международный аэропорт Даламан [DLM]: 30 км [25-30 минут на машине или индивидуальном трансфере].\n* Субботний фермерский рынок Дальяна: 600 метров [свежие фермерские сыры, оливки, гранатовый сок, инжир и фрукты].\n* Морские курорты: город Мармарис - 85 км, город Фетхие и бухта Олюдениз - 60 км.",
@@ -131,9 +131,9 @@ const MASTER_HOME_MAP = {
     "block": "1. Главный экран",
     "key": "hero_rating",
     "desc": "Числовой рейтинг виллы",
-    "ru": "4",
-    "en": "4",
-    "tr": "4",
+    "ru": "8",
+    "en": "8",
+    "tr": "8",
     "media": "Star",
     "status": "Вкл",
     "enabled": true
@@ -219,7 +219,7 @@ const MASTER_HOME_MAP = {
     "block": "2. Характеристики",
     "key": "host_specs_name",
     "desc": "Отображаемое имя владельца виллы",
-    "ru": "Хозяин: Aleksei Znamenskii",
+    "ru": "Хозяин:  Aleksei Znamenskii",
     "en": "Owner: Aleksei Znamenskii",
     "tr": "Sahibi: Aleksei Znamenskii",
     "media": "",
@@ -296,9 +296,9 @@ const MASTER_HOME_MAP = {
     "block": "3. Преимущества",
     "key": "highlight_1_desc",
     "desc": "Описание первого преимущества",
-    "ru": "Алексей живет в Мармарисе, яхтсмен на пенсии, рейтинг 4.98★. Девиз: «Хочешь сделать хорошо - сделай сам».",
-    "en": "Alexey lives in Marmaris, is a retired yachtsman, and has a rating of 4.98★. His motto is: \"If you want something done right, do it yourself.\"",
-    "tr": "Alexey Marmaris'te yaşıyor, emekli bir yatçı ve 4,98★ yıldızlık bir değerlendirmeye sahip. Mottosu ise: \"Bir işin doğru yapılmasını istiyorsanız, kendiniz yapın.\"",
+    "ru": "Aleksei живет в Мармарисе, яхтсмен на пенсии, рейтинг 4.98★. Девиз: «Хочешь сделать хорошо - сделай сам».",
+    "en": "Aleksei lives in Marmaris, is a retired yachtsman, and has a rating of 4.98★. His motto is: \"If you want something done right, do it yourself.\"",
+    "tr": "Aleksei Marmaris'te yaşıyor, emekli bir yatçı ve 4,98★ yıldızlık bir değerlendirmeye sahip. Mottosu ise: \"Bir işin doğru yapılmasını istiyorsanız, kendiniz yapın.\"",
     "media": "",
     "status": "Вкл",
     "enabled": true
@@ -397,7 +397,7 @@ const MASTER_HOME_MAP = {
     "desc": "Модальное окно: Раздел 1 Заголовок",
     "ru": "1. Концепция объекта, геолокация и расширенные географические ориентиры",
     "en": "1. Object concept, geolocation and extended geographic landmarks",
-    "tr": "1. Nesne kavramı, coğrafi konum ve genişletilmiş coğrafi işaretler",
+    "tr": "1. Nesne kavramı, coğrafi konum belirleme ve genişletilmiş coğrafi işaretler",
     "media": "",
     "status": "Вкл",
     "enabled": true
@@ -979,7 +979,7 @@ const MASTER_HOME_MAP = {
     "key": "amenity_cat3_item5",
     "desc": "Модальное окно: Категория 3 Пункт 5",
     "ru": "Полный комплект посуды и бокалов для вина",
-    "en": "A complete set of tableware and wine glasses",
+    "en": "A complete set of dishes and wine glasses",
     "tr": "Komple bir yemek takımı ve şarap kadehleri ​​seti.",
     "media": "Check",
     "status": "Вкл",
@@ -1134,7 +1134,7 @@ const MASTER_HOME_MAP = {
     "desc": "Критерий 3: Общение с хозяином",
     "ru": "Общение с хозяином",
     "en": "Communication with the owner",
-    "tr": "Mülk sahibiyle iletişim",
+    "tr": "Ev sahibiyle iletişim",
     "media": "5.0|100",
     "status": "Вкл",
     "enabled": true
@@ -1255,7 +1255,7 @@ const MASTER_HOME_MAP = {
     "desc": "Отзыв 4: Текст отзыва",
     "ru": "Идеально для семейного отдыха до 10 человек. Закрытая территория, 250 метров до центра Дальяна, тишина. Видео-гид от Алексея открыл нам секретные пляжи и отличные рыбные рестораны.",
     "en": "Ideal for a family vacation of up to 10 people. Gated area, 250 meters from the center of Dalyan, quiet. Alexey's video guide revealed secret beaches and excellent seafood restaurants.",
-    "tr": "10 kişiye kadar olan aileler için ideal bir tatil yeri. Güvenlikli site içerisinde, Dalyan merkezine 250 metre mesafede, sakin bir konumda. Alexey'in video rehberi gizli plajları ve mükemmel deniz ürünleri restoranlarını ortaya çıkardı.",
+    "tr": "10 kişiye kadar aile tatili için ideal. Güvenlikli site içerisinde, Dalyan merkezine 250 metre mesafede, sakin bir konumda. Alexey'in video rehberi gizli plajları ve mükemmel deniz ürünleri restoranlarını ortaya çıkardı.",
     "media": "",
     "status": "Вкл",
     "enabled": true
@@ -1308,9 +1308,9 @@ const MASTER_HOME_MAP = {
     "block": "9. Хозяин",
     "key": "host_card_title",
     "desc": "Заголовок карточки владельца",
-    "ru": "Хозяин: Алексей Знаменский",
-    "en": "Owner: Alexey Znamensky",
-    "tr": "Sahibi: Alexey Znamensky",
+    "ru": "Хозяин: Aleksei Znamenskii",
+    "en": "Owner: Aleksei Znamenskii",
+    "tr": "Sahibi: Aleksei Znamenskii",
     "media": "",
     "status": "Вкл",
     "enabled": true
@@ -1442,7 +1442,7 @@ const MASTER_HOME_MAP = {
     "desc": "Заголовок секции ориентиров",
     "ru": "14 географических ориентиров Дальяна",
     "en": "14 Geographical Landmarks of Dalyan",
-    "tr": "Dalyan'ın 14 Coğrafi Özelliği",
+    "tr": "Dalyan'ın 14 Coğrafi Yer İşareti",
     "media": "MapPin",
     "status": "Вкл",
     "enabled": true
@@ -2607,9 +2607,9 @@ const MASTER_HOME_ROWS = [
     "1. Главный экран",
     "hero_rating",
     "Числовой рейтинг виллы",
-    "4",
-    "4",
-    "4",
+    "8",
+    "8",
+    "8",
     "Star",
     "Вкл"
   ],
@@ -2687,7 +2687,7 @@ const MASTER_HOME_ROWS = [
     "2. Характеристики",
     "host_specs_name",
     "Отображаемое имя владельца виллы",
-    "Хозяин: Aleksei Znamenskii",
+    "Хозяин:  Aleksei Znamenskii",
     "Owner: Aleksei Znamenskii",
     "Sahibi: Aleksei Znamenskii",
     "",
@@ -2757,9 +2757,9 @@ const MASTER_HOME_ROWS = [
     "3. Преимущества",
     "highlight_1_desc",
     "Описание первого преимущества",
-    "Алексей живет в Мармарисе, яхтсмен на пенсии, рейтинг 4.98★. Девиз: «Хочешь сделать хорошо - сделай сам».",
-    "Alexey lives in Marmaris, is a retired yachtsman, and has a rating of 4.98★. His motto is: \"If you want something done right, do it yourself.\"",
-    "Alexey Marmaris'te yaşıyor, emekli bir yatçı ve 4,98★ yıldızlık bir değerlendirmeye sahip. Mottosu ise: \"Bir işin doğru yapılmasını istiyorsanız, kendiniz yapın.\"",
+    "Aleksei живет в Мармарисе, яхтсмен на пенсии, рейтинг 4.98★. Девиз: «Хочешь сделать хорошо - сделай сам».",
+    "Aleksei lives in Marmaris, is a retired yachtsman, and has a rating of 4.98★. His motto is: \"If you want something done right, do it yourself.\"",
+    "Aleksei Marmaris'te yaşıyor, emekli bir yatçı ve 4,98★ yıldızlık bir değerlendirmeye sahip. Mottosu ise: \"Bir işin doğru yapılmasını istiyorsanız, kendiniz yapın.\"",
     "",
     "Вкл"
   ],
@@ -2849,7 +2849,7 @@ const MASTER_HOME_ROWS = [
     "Модальное окно: Раздел 1 Заголовок",
     "1. Концепция объекта, геолокация и расширенные географические ориентиры",
     "1. Object concept, geolocation and extended geographic landmarks",
-    "1. Nesne kavramı, coğrafi konum ve genişletilmiş coğrafi işaretler",
+    "1. Nesne kavramı, coğrafi konum belirleme ve genişletilmiş coğrafi işaretler",
     "",
     "Вкл"
   ],
@@ -3378,7 +3378,7 @@ const MASTER_HOME_ROWS = [
     "amenity_cat3_item5",
     "Модальное окно: Категория 3 Пункт 5",
     "Полный комплект посуды и бокалов для вина",
-    "A complete set of tableware and wine glasses",
+    "A complete set of dishes and wine glasses",
     "Komple bir yemek takımı ve şarap kadehleri ​​seti.",
     "Check",
     "Вкл"
@@ -3519,7 +3519,7 @@ const MASTER_HOME_ROWS = [
     "Критерий 3: Общение с хозяином",
     "Общение с хозяином",
     "Communication with the owner",
-    "Mülk sahibiyle iletişim",
+    "Ev sahibiyle iletişim",
     "5.0|100",
     "Вкл"
   ],
@@ -3629,7 +3629,7 @@ const MASTER_HOME_ROWS = [
     "Отзыв 4: Текст отзыва",
     "Идеально для семейного отдыха до 10 человек. Закрытая территория, 250 метров до центра Дальяна, тишина. Видео-гид от Алексея открыл нам секретные пляжи и отличные рыбные рестораны.",
     "Ideal for a family vacation of up to 10 people. Gated area, 250 meters from the center of Dalyan, quiet. Alexey's video guide revealed secret beaches and excellent seafood restaurants.",
-    "10 kişiye kadar olan aileler için ideal bir tatil yeri. Güvenlikli site içerisinde, Dalyan merkezine 250 metre mesafede, sakin bir konumda. Alexey'in video rehberi gizli plajları ve mükemmel deniz ürünleri restoranlarını ortaya çıkardı.",
+    "10 kişiye kadar aile tatili için ideal. Güvenlikli site içerisinde, Dalyan merkezine 250 metre mesafede, sakin bir konumda. Alexey'in video rehberi gizli plajları ve mükemmel deniz ürünleri restoranlarını ortaya çıkardı.",
     "",
     "Вкл"
   ],
@@ -3677,9 +3677,9 @@ const MASTER_HOME_ROWS = [
     "9. Хозяин",
     "host_card_title",
     "Заголовок карточки владельца",
-    "Хозяин: Алексей Знаменский",
-    "Owner: Alexey Znamensky",
-    "Sahibi: Alexey Znamensky",
+    "Хозяин: Aleksei Znamenskii",
+    "Owner: Aleksei Znamenskii",
+    "Sahibi: Aleksei Znamenskii",
     "",
     "Вкл"
   ],
@@ -3799,7 +3799,7 @@ const MASTER_HOME_ROWS = [
     "Заголовок секции ориентиров",
     "14 географических ориентиров Дальяна",
     "14 Geographical Landmarks of Dalyan",
-    "Dalyan'ın 14 Coğrafi Özelliği",
+    "Dalyan'ın 14 Coğrafi Yer İşareti",
     "MapPin",
     "Вкл"
   ],
@@ -5664,8 +5664,8 @@ const MASTER_SERVICES_ROWS = [
     "BBQ",
     "https://youtube.com/watch?v=bbq",
     "В стоимость входит премиальное маринованное фермерское мясо, отборные угли, розжиг, лаваш, соусы и работа гриль-мастера в течение 3 часов.",
-    "The price includes premium marinated farm-raised meat, select charcoal, kindling, lavash, sauces, and a 3-hour grill master.",
-    "Fiyata birinci sınıf marine edilmiş çiftlik eti, seçkin kömür, tutuşturma odunu, lavaş, soslar ve 3 saatlik ızgara ustası hizmeti dahildir."
+    "The price includes premium marinated farm-raised meat, select charcoal, fire starter, lavash, sauces, and a 3-hour grill master.",
+    "Fiyata birinci sınıf marine edilmiş çiftlik eti, seçkin mangal kömürü, ateş başlatıcı, lavaş, soslar ve 3 saatlik mangal ustası eğitimi dahildir."
   ],
   [
     "prod-5",
@@ -5704,7 +5704,7 @@ const MASTER_SERVICES_ROWS = [
     "Спорт",
     "https://youtube.com/watch?v=sup",
     "Доставка оборудования прямо к вилле на весь период проживания. В комплекте весла, страховочные лиши и спасательные жилеты.",
-    "Equipment delivered directly to your villa for the entire stay. Paddles, leashes, and life jackets are included.",
+    "Equipment delivered directly to your villa for the entire stay. Includes paddles, leashes, and life jackets.",
     "Konaklamanız boyunca kullanacağınız ekipmanlar doğrudan villanıza teslim edilir. Kürekler, tasmalar ve can yelekleri dahildir."
   ],
   [
@@ -5915,7 +5915,7 @@ const MASTER_LEGAL_ROWS = [
     "Tax status and invoices",
     "Vergi durumu ve faturalar",
     "Регистрация в налоговой инспекции Ortaca Vergi Dairesi, налоговый номер VKN: 9991120181. Выставление официальных электронных счетов e-Arşiv Fatura согласно закону VUK 213 Madde 230.",
-    "Registration with the Ortaca Vergi Dairesi tax office, tax identification number VKN: 9991120181. Issuance of official electronic invoices e-Arşiv Fatura in accordance with the law VUK 213 Madde 230.",
+    "Registration with the Ortaca Vergi Dairesi tax office, tax identification number VKN: 9991120181. Issuance of official electronic invoices e-Arşiv Fatura in accordance with VUK 213 Madde 230.",
     "Ortaca Vergi Dairesi'ne kayıtlı, vergi kimlik numarası VKN: 9991120181. VUK 213 Madde 230 uyarınca resmi elektronik fatura (e-Arşiv Fatura) düzenlenmesi."
   ],
   [
@@ -5931,7 +5931,7 @@ const MASTER_LEGAL_ROWS = [
     "checkin_protocol",
     "Протокол заселения и передачи ключей",
     "Check-in and key transfer protocol",
-    "Giriş yapma ve anahtar teslim protokolü",
+    "Giriş ve anahtar teslim protokolü",
     "Заселение через электронный смарт-замок [CHECKIN_METHOD]. Персональный пароль генерируется в день заезда. Возврат ключей: [KEY_HANDOVER].",
     "Check-in via electronic smart lock [CHECKIN_METHOD]. A personal password is generated on the day of check-in. Key return: [KEY_HANDOVER].",
     "Elektronik akıllı kilit ile giriş yapın [CHECKIN_METHOD]. Giriş gününde kişisel bir parola oluşturulur. Anahtar iadesi: [KEY_HANDOVER]."
@@ -5994,7 +5994,7 @@ const MASTER_CALENDAR_ROWS = [
     "Глобальные правила",
     "Все даты",
     "Настройки",
-    "{\"basePrice\":250,\"currency\":\"USD\",\"minNights\":3,\"maxNights\":30,\"bookingWindowMonths\":18,\"advanceNoticeDays\":2,\"bookingMode\":\"instant\",\"verificationMode\":\"progressive\",\"checkInTime\":\"16:00\",\"checkOutTime\":\"10:00\"}",
+    "{\"basePrice\":250,\"currency\":\"USD\",\"minNights\":3,\"maxNights\":30,\"bookingWindowMonths\":18,\"advanceNoticeDays\":2,\"bookingMode\":\"instant\",\"verificationMode\":\"progressive\",\"paymentMode\":\"all\",\"ibanBankName\":\"Ziraat Bankası\",\"ibanReceiver\":\"Aleksei Znamenskii\",\"ibanNumber\":\"TR000000000000000000000000\",\"ibanSwift\":\"TCZBTR2A\",\"ibanNote\":\"Укажите код бронирования в назначении платежа\",\"hostTelegram\":\"https://t.me/marmarisyachtingru\",\"hostEmail\":\"villaturaman@gmail.com\",\"checkInTime\":\"16:00\",\"checkOutTime\":\"10:00\"}",
     "Изменение тарифов",
     "admin",
     "20.09.2026 12:00"
@@ -6067,21 +6067,12 @@ const MASTER_CALENDAR_ROWS = [
 const MASTER_ACCOUNTS_ROWS = [
   [
     "2026-01-15",
-    "Aleksei Znamenskii",
-    "villaturaman@gmail.com",
+    "Алексей Знаменский",
+    "admin@villaturaman.com",
     "admin123",
     "Нет",
     "Нет",
-    "Нет [МАСТЕР_ДОСТУП • Роль: Владелец • Все права: Финансы, Периоды, Блокировки, Окно брони, Чаты • Главный аккаунт]"
-  ],
-  [
-    "2026-01-15",
-    "Aleksei Znamenskii",
-    "admin",
-    "admin123",
-    "Нет",
-    "Нет",
-    "Нет [МАСТЕР_ДОСТУП • Роль: Владелец • Логин: admin]"
+    "Нет [Владелец / Главный]"
   ],
   [
     "2026-05-01",
@@ -6124,44 +6115,54 @@ const MASTER_ORDERS_ROWS = [
 
 const MASTER_ACCESS_ROWS = [
   [
-    "Wi-Fi сеть",
-    "Гостевая сеть Wi-Fi 5GHz",
-    "Guest / villa2026",
-    "Гости",
-    "Бессрочно",
-    "Подключение на всей территории виллы и террасы",
-    "Активен",
-    "Роутер в гостиной"
+    "acc-wifi-guest",
+    "Wi-Fi гостевой",
+    "Вся вилла и придомовая территория",
+    "DalyanTuramanGuest2026",
+    "VillaTuraman_5G",
+    "Бессрочно / Активен",
+    "Подключитесь к сети VillaTuraman_5G и введите пароль DalyanTuramanGuest2026",
+    "Connect to the VillaTuraman_5G network and enter the password DalyanTuramanGuest2026"
   ],
   [
-    "Входная калитка",
-    "Кодовый замок калитки",
-    "4582#",
-    "Гости",
-    "Сезон 2026",
-    "Нажмите код и решетку для отпирания электрозамка",
-    "Активен",
-    "Код меняется раз в месяц"
+    "acc-wifi-host",
+    "Wi-Fi владельца",
+    "Кабинет и служебная сеть",
+    "TuramanSuperHostSecure99!",
+    "VillaTuraman_Admin",
+    "Бессрочно / Активен",
+    "Служебная сеть владельца виллы",
+    "Villa owner's service network"
   ],
   [
-    "Главная дверь",
-    "Электронный смарт-замок PIN",
-    "918234",
-    "Гости с подтвержденной бронью",
+    "acc-lock-front",
+    "Смарт-замок",
+    "Главная входная дверь",
+    "778899#",
+    "Мастер-ключ у хозяина",
     "На период проживания",
-    "Вводится на сенсорной панели входной двери виллы",
-    "Активен",
-    "Генерируется индивидуально"
+    "Введите 6-значный PIN-код на сенсорной панели и нажмите #",
+    "Enter your 6-digit PIN on the touchpad and press #"
   ],
   [
-    "Сейф для ключей",
-    "Механический мини-сейф KeyBox",
-    "2846",
-    "Экстренный / Поздний заезд",
-    "Резервный",
-    "Находится справа от входа за декоративным кашпо",
-    "Активен",
-    "Для экстренных случаев"
+    "acc-safe-keys",
+    "Механический сейф",
+    "Стена у входа справа от двери",
+    "2026",
+    "Ключ владельца",
+    "Бессрочно / Активен",
+    "Наберите код 2026 на дисковом замке и потяните рычаг вниз",
+    "Enter the code 2026 on the disc lock and pull the lever down"
+  ],
+  [
+    "acc-gate-remote",
+    "Ворота парковки",
+    "Въездная группа и парковка",
+    "Пульт / Код 4321",
+    "Ручной привод",
+    "Бессрочно / Активен",
+    "Используйте радиопульт или введите код 4321 на стойке шлагбаума",
+    "Use the radio remote control or enter the code 4321 at the barrier post"
   ]
 ];
 
@@ -6170,51 +6171,51 @@ const MASTER_GUIDE_ACCESS_ROWS = [
     "2026-05-26",
     "ivan.smirnov@example.com",
     "guide-1",
-    "Секретные маршруты реки Дальян",
+    "Видеогиды",
     "Оплачено",
     "Да",
     "100% [Просмотрен полностью]",
-    "Выдан автоматически после оплаты"
+    ""
   ],
   [
     "2026-05-26",
     "ivan.smirnov@example.com",
     "guide-2",
-    "Античный город Каунос и гробницы",
+    "Видеогиды",
     "Оплачено",
     "Да",
     "40% [В процессе изучения]",
-    "Спецпредложение для гостей"
+    ""
   ]
 ];
 
 const MASTER_TASKS_ROWS = [
   [
-    "TASK-001",
-    "21.09.2026 10:00",
-    "Бухгалтер",
-    "Расчет e-Arşiv Fatura для бронирования VT-2026-01 [Иван Смирнов]",
-    "Выполнена",
-    "https://drive.google.com/drive/folders/11xBSWA02NypliPFbziRSMfC9aAPclYF_",
-    "Aleksei Znamenskii"
-  ],
-  [
-    "TASK-002",
-    "21.09.2026 10:15",
-    "Юрист",
-    "Проверка данных гостя и договора краткосрочной аренды",
-    "Выполнена",
-    "https://drive.google.com/drive/folders/11xBSWA02NypliPFbziRSMfC9aAPclYF_",
-    "ИИ-Ассистент"
-  ],
-  [
-    "TASK-003",
-    "21.09.2026 10:30",
+    "task-1",
+    "2026-05-20 10:00",
+    "Рабочий Чат",
+    "Проверить готовность виллы к заезду семьи Ивановых",
+    "Завершено",
     "Секретарь",
-    "Организация трансфера гостя через партнера Ahmet +90 543 335 80 70",
+    "Вилла проверена клинингом"
+  ],
+  [
+    "task-2",
+    "2026-05-21 14:30",
+    "Telegram Бот",
+    "Заказать трансфер из аэропорта Даламан DLM",
     "В работе",
-    "https://drive.google.com/drive/folders/11xBSWA02NypliPFbziRSMfC9aAPclYF_",
-    "Секретарь-Помощник"
+    "Консьерж-Мастер",
+    "Водитель назначен"
+  ],
+  [
+    "task-3",
+    "2026-05-22 9:15",
+    "Рабочий Чат",
+    "Сформировать фактуру e-Arşiv Fatura GİB",
+    "Новая",
+    "Финансист-Бухгалтер",
+    "Ожидает выезда гостя"
   ]
 ];
 

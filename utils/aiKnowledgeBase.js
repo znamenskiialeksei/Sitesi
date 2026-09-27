@@ -1,3 +1,5 @@
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 01:48 | ПЛАН: 270920260148 Исправление кнопок ИИ и локализации инбокса.md | TAG: VILLA-HOST-AI-INBOX-I18N-270920260148]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 11:45 | ПЛАН: 270920261145 Модернизация чата спален и задач запускаторов.md | TAG: VILLA-CHAT-BEDROOMS-TASKS-270920261145]
 // ==============================================================================
 // ЕДИНАЯ БАЗА ЗНАНИЙ ИИ-АГЕНТА И ДИНАМИЧЕСКИЙ SSOT ИЗ GOOGLE ТАБЛИЦ
 // Файл: utils/aiKnowledgeBase.js
@@ -16,6 +18,8 @@
 // 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
+const fs = require('fs');
+const path = require('path');
 const { google } = require('googleapis');
 const { getLiveSheetMap, resolveRange } = require('./sheetsRegistry');
 const { globalKnowledgeGraph } = require('./aiKnowledgeGraph');
@@ -556,10 +560,27 @@ async function getAiKnowledgeBase(forceRefresh = false) {
       knowledgeGraphRows: knowledgeGraphRows.length > 1 ? knowledgeGraphRows.slice(1) : MASTER_KNOWLEDGE_GRAPH_ROWS
     });
 
-    const aiMode = (settingsMap['ai_mode'] || 'copilot').toLowerCase();
+    // Интеграция с локально сохраненными настройками кабинета хозяина [Active Persistence Guard]
+    let persistedAi = null;
+    try {
+      const tmpPath = path.join('/tmp', 'villa_ai_settings.json');
+      const backupPath = path.join(process.cwd(), 'utils', 'villa_ai_settings.json');
+      if (global._aiSettingsCache && Object.keys(global._aiSettingsCache).length > 0) {
+        persistedAi = global._aiSettingsCache;
+      } else if (fs.existsSync(tmpPath)) {
+        persistedAi = JSON.parse(fs.readFileSync(tmpPath, 'utf8'));
+      } else if (fs.existsSync(backupPath)) {
+        persistedAi = JSON.parse(fs.readFileSync(backupPath, 'utf8'));
+      }
+    } catch (e) {}
+
+    const aiMode = (persistedAi?.aiMode || settingsMap['ai_mode'] || 'copilot').toLowerCase();
     const aiEnabled = aiMode !== 'off';
-    const geminiModel = settingsMap['ai_model'] || process.env.GEMINI_MODEL || 'gemini-3.6-flash';
-    const systemPrompt = agentRoles['Консьерж-Мастер']?.prompt || '';
+    const geminiModel = persistedAi?.geminiModel || settingsMap['ai_model'] || process.env.GEMINI_MODEL || 'gemini-3.6-flash';
+    const systemPrompt = persistedAi?.systemPrompt || agentRoles['Консьерж-Мастер']?.prompt || '';
+    if (persistedAi?.minPriceUsd) {
+      minPriceUsd = parseInt(persistedAi.minPriceUsd, 10) || minPriceUsd;
+    }
 
     const knowledgeBase = {
       source: 'google_sheets_live',

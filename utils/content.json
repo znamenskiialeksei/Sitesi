@@ -17,7 +17,7 @@
       "desc": "Подзаголовок виллы под главным заголовком",
       "ru": "Премиальная вилла 240 м² в Дальяне. Приватный бассейн с соленой водой 36 м², уличное джакузи, 4 спальни, 10 спальных мест, 250 м до центра.",
       "en": "A premium 240 m² villa in Dalyan. A private 36 m² saltwater pool, an outdoor jacuzzi, 4 bedrooms, sleeps 10, and is 250 m from the center.",
-      "tr": "Dalyan'da 240 m²'lik birinci sınıf bir villa. 36 m²'lik özel tuzlu su havuzu, açık jakuzi, 4 yatak odası, 10 kişiye kadar konaklama kapasitesi ve merkeze 250 metre mesafede yer almaktadır.",
+      "tr": "Dalyan'da 240 m²'lik birinci sınıf bir villa. 36 m²'lik özel tuzlu su havuzu, açık hava jakuzisi, 4 yatak odası, 10 kişiye kadar konaklama kapasitesi ve merkeze 250 metre mesafede yer almaktadır.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -26,9 +26,9 @@
       "block": "1. Главный экран",
       "key": "hero_rating",
       "desc": "Числовой рейтинг виллы",
-      "ru": "8",
-      "en": "8",
-      "tr": "8",
+      "ru": "4.98",
+      "en": "4.98",
+      "tr": "4.98",
       "media": "Star",
       "status": "Вкл",
       "enabled": true
@@ -95,7 +95,7 @@
       "ru": "Главные фотографии фасада и бассейна",
       "en": "Main photos of the facade and the pool",
       "tr": "Cephe ve havuzun ana fotoğrafları",
-      "media": "https://drive.google.com/file/d/1NjSHRDa5eJpQTzO9268e8LMRzDVmYtX7/view?usp=sharing,https://drive.google.com/file/d/1IZMH6wtfLHZ6ibKHfmBhPGMFntZ_fXKU/view?usp=drive_link",
+      "media": "https://drive.google.com/file/d/1NjSHRDa5eJpQTzO9268e8LMRzDVmYtX7/view?usp=sharing",
       "status": "Вкл",
       "enabled": true
     },
@@ -128,7 +128,7 @@
       "ru": "Аватар владельца виллы",
       "en": "Avatar of the villa owner",
       "tr": "Villa sahibinin avatarı",
-      "media": "https://drive.google.com/file/d/1NjSHRDa5eJpQTzO9268e8LMRzDVmYtX7/view?usp=sharing,https://drive.google.com/file/d/1IZMH6wtfLHZ6ibKHfmBhPGMFntZ_fXKU/view?usp=drive_link",
+      "media": "https://drive.google.com/file/d/1QsfUGocAHY6BUsusgRUyTWDYhyV4X78P/view?usp=sharing",
       "status": "Вкл",
       "enabled": true
     },
@@ -346,8 +346,8 @@
       "key": "about_sec_3_text",
       "desc": "Модальное окно: Раздел 3 Текст",
       "ru": "Приватный бассейн с соленой водой: чаша 4×9 метров [площадь 36 кв. м], постоянная глубина 150 см. Без запаха хлора. Доступен с 1 мая по 1 ноября. Чистка в день заселения и каждые 7 дней. Подсветка бассейна: 20:00 - 01:00.\nУличное приватное джакузи: на 4 персоны, автоматический цикл [15 минут работы каждые 45 минут в период 10:00 - 17:00]. Подсветка джакузи: 20:00 - 01:00. Сезон: 1 мая - 1 ноября.\nОсвещение территории: автоматическое [20:00 - 01:00 и 04:00 - 06:00].\nПарковка: бесплатная закрытая частная парковка на территории на 2 авто.\nОткрытые зоны отдыха: огороженный сад, барбекю [BBQ], крыльцо с кофейными столиками, обеденный стол на 8 мест, шезлонги и летний душ.",
-      "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor seating areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
-      "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava oturma alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır.",
+      "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor recreation areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
+      "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava dinlenme alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -368,8 +368,8 @@
       "key": "about_sec_4_text",
       "desc": "Модальное окно: Раздел 4 Текст",
       "ru": "Закон Турции № 7464 о краткосрочной аренде: обязательный договор аренды виллы с описью имущества при заселении.\nРегистрация в системе учета населения KBS: обязательное предоставление паспортов всех проживающих. Размещение незарегистрированных лиц строго запрещено.\nБезопасность дома: внешнее видеонаблюдение по периметру, детекторы дыма во всех спальнях и гостиной, огнетушитель, аптечка первой помощи.\nДоступная среда: выделенная парковка для инвалидов, ровный освещенный вход без ступеней, дверь от 81 см, подъемник для бассейна и джакузи.\nПолитика отмены: менее 28 ночей - Негибкие, от 28 ночей - Строгие. Опция невозвратного тарифа со скидкой 10% за 60 дней.",
-      "en": "Turkish Short-Term Rental Law No. 7464: A mandatory villa rental agreement with an inventory of the property is required upon arrival.\nKBS Population Registration System: Passports of all residents are required. Unregistered guests are strictly prohibited.\nHome Security: External perimeter video surveillance, smoke detectors in all bedrooms and the living room, fire extinguisher, and first aid kit.\nAccessibility: Dedicated disabled parking, level, illuminated, step-free entrance, door height of at least 81 cm, pool and jacuzzi lift.\nCancellation Policy: Less than 28 nights - Inflexible, 28 nights or more - Strict. Non-refundable rate option with a 10% discount for 60 days.",
-      "tr": "Türk Kısa Süreli Kiralama Kanunu No. 7464: Varışta, mülkün envanterini içeren zorunlu bir villa kiralama sözleşmesi gereklidir.\nKBS Nüfus Kayıt Sistemi: Tüm sakinlerin pasaportları gereklidir. Kayıtlı olmayan misafirler kesinlikle yasaktır.\nEv Güvenliği: Dış çevre video gözetimi, tüm yatak odalarında ve oturma odasında duman dedektörleri, yangın söndürücü ve ilk yardım çantası.\nErişilebilirlik: Engelliler için özel park yeri, düz, aydınlatmalı, basamaksız giriş, en az 81 cm kapı yüksekliği, havuz ve jakuzi asansörü.\nİptal Politikası: 28 geceden az - Esnek değil, 28 gece veya daha fazla - Kesinlikle. 60 gün için %10 indirimli, iade edilmeyen fiyat seçeneği.",
+      "en": "Turkish Short-Term Rental Law No. 7464: A mandatory villa rental agreement with an inventory of the property is required upon arrival.\nKBS Population Registration System: Passports of all residents are required. Unregistered occupants are strictly prohibited.\nHome Security: External perimeter video surveillance, smoke detectors in all bedrooms and the living room, fire extinguisher, and first aid kit.\nAccessibility: Dedicated disabled parking, level, illuminated, step-free entrance, door height of at least 81 cm, pool and jacuzzi lift.\nCancellation Policy: Less than 28 nights - Inflexible, 28 nights or more - Strict. Non-refundable rate option with a 10% discount for 60 days.",
+      "tr": "Türk Kısa Süreli Kiralama Kanunu No. 7464: Varışta, mülkün envanterini içeren zorunlu bir villa kiralama sözleşmesi gereklidir.\nKBS Nüfus Kayıt Sistemi: Tüm sakinlerin pasaportları gereklidir. Kayıt dışı sakinlerin konaklaması kesinlikle yasaktır.\nEv Güvenliği: Dış çevre video gözetimi, tüm yatak odalarında ve oturma odasında duman dedektörleri, yangın söndürücü ve ilk yardım çantası.\nErişilebilirlik: Engelliler için özel park yeri, düz, aydınlatmalı, basamaksız giriş, en az 81 cm kapı yüksekliği, havuz ve jakuzi asansörü.\nİptal Politikası: 28 geceden az - Esnek değil, 28 gece veya daha fazla - Kesinlikle. 60 gün için %10 indirimli, iade edilmeyen fiyat seçeneği.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -458,7 +458,7 @@
       "ru": "Спальня 1 [1 этаж] • Queen + Single [3 места]",
       "en": "Bedroom 1 [1st floor] • Queen + Single [3 beds]",
       "tr": "Yatak Odası 1 [1. kat] • Çift kişilik + Tek kişilik [3 yatak]",
-      "media": "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600",
+      "media": "https://drive.google.com/file/d/1QsfUGocAHY6BUsusgRUyTWDYhyV4X78P/view?usp=sharing",
       "status": "Вкл",
       "enabled": true
     },
@@ -491,7 +491,7 @@
       "ru": "Спальня 2 [2 этаж] • King Bed [2 места]",
       "en": "Bedroom 2 [2nd floor] • King Bed [2 beds]",
       "tr": "Yatak Odası 2 [2. kat] • Çift Kişilik Yatak [2 yatak]",
-      "media": "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=600",
+      "media": "https://drive.google.com/file/d/1ZDpJ3vhVPizIGd2RzIJtfCQgcD3IWF_F/view?usp=sharing",
       "status": "Вкл",
       "enabled": true
     },
@@ -499,9 +499,9 @@
       "block": "5. Спальни",
       "key": "bedroom_2_desc",
       "desc": "Описание спальни 2",
-      "ru": "Второй этаж: 1 большая двуспальная кровать King Size, собственная ванная комната, кондиционер, балкон с видом на горы",
-      "en": "Second floor: 1 king size bed, private bathroom, air conditioning, balcony with mountain views",
-      "tr": "İkinci kat: 1 adet çift kişilik yatak, özel banyo, klima, dağ manzaralı balkon.",
+      "ru": "Второй этаж: King size: Большая королевская кровать шириной 180–200 см и длиной 200 см.+ 1 односпальная кровать, собственная ванная комната, кондиционер, балкон с видом на горы.  King size + Single [3 места]",
+      "en": "Second floor: King size: Large king-size bed 180–200 cm wide and 200 cm long + 1 single bed, private bathroom, air conditioning, balcony with mountain views. King size + Single [3 beds]",
+      "tr": "İkinci kat: Çift kişilik yatak: 180-200 cm genişliğinde ve 200 cm uzunluğunda büyük çift kişilik yatak + 1 tek kişilik yatak, özel banyo, klima, dağ manzaralı balkon. Çift kişilik yatak + Tek kişilik yatak [3 yatak]",
       "media": "BedDouble",
       "status": "Вкл",
       "enabled": true
@@ -524,7 +524,7 @@
       "ru": "Спальня 3 [2 этаж] • Queen Bed [2 места]",
       "en": "Bedroom 3 [2nd floor] • Queen Bed [2 beds]",
       "tr": "Yatak Odası 3 [2. kat] • Çift Kişilik Yatak [2 yatak]",
-      "media": "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=600",
+      "media": "https://drive.google.com/file/d/1f1-b3TuIPqUR8jTdC52qPOH7cwaUszOM/view?usp=sharing",
       "status": "Вкл",
       "enabled": true
     },
@@ -557,7 +557,7 @@
       "ru": "Спальня 4 [2 этаж] • Queen + Single [3 места]",
       "en": "Bedroom 4 [2nd floor] • Queen + Single [3 beds]",
       "tr": "Yatak Odası 4 [2. kat] • Çift kişilik + Tek kişilik [3 yatak]",
-      "media": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600",
+      "media": "https://drive.google.com/file/d/1WooX7-xPmWMgRC1S4fUTsg9-as_Pskuq/view?usp=sharing",
       "status": "Вкл",
       "enabled": true
     },
@@ -611,7 +611,7 @@
       "desc": "Основное удобство 1 на главной",
       "ru": "Приватный открытый бассейн 36 м²",
       "en": "Private outdoor pool 36 m²",
-      "tr": "Özel açık yüzme havuzu 36 m²",
+      "tr": "36 m²'lik özel açık yüzme havuzu",
       "media": "Waves",
       "status": "Вкл",
       "enabled": true
@@ -874,7 +874,7 @@
       "key": "amenity_cat3_item5",
       "desc": "Модальное окно: Категория 3 Пункт 5",
       "ru": "Полный комплект посуды и бокалов для вина",
-      "en": "A complete set of tableware and wine glasses",
+      "en": "A complete set of dishes and wine glasses",
       "tr": "Komple bir yemek takımı ve şarap kadehleri ​​seti.",
       "media": "Check",
       "status": "Вкл",
@@ -1127,7 +1127,7 @@
       "key": "review_3_text",
       "desc": "Отзыв 3: Текст отзыва",
       "ru": "Dalyan'da kaldığımız en konforlu villa. 4 banyolu 4 yatak odası ailemiz için mükemmeldi. Bahçe ve havuz bakımı harikaydı, teşekkürler Aleksei!",
-      "en": "The most comfortable villa we stayed in in Dalyan. Four bedrooms with four bathrooms were perfect for our family. The garden and pool maintenance was fantastic, thank you Aleksei!",
+      "en": "The most comfortable villa we stayed in Dalyan. Four bedrooms with four bathrooms were perfect for our family. The garden and pool maintenance was fantastic, thank you Aleksei!",
       "tr": "Dalyan'da kaldığımız en konforlu villa. 4 banyolu 4 yatak odası ailemiz için mükemmeldi. Bahçe ve havuz bakımı harikaydı, teşekkürler Aleksei!",
       "media": "",
       "status": "Вкл",
@@ -1150,7 +1150,7 @@
       "desc": "Отзыв 4: Текст отзыва",
       "ru": "Идеально для семейного отдыха до 10 человек. Закрытая территория, 250 метров до центра Дальяна, тишина. Видео-гид от Алексея открыл нам секретные пляжи и отличные рыбные рестораны.",
       "en": "Ideal for a family vacation of up to 10 people. Gated area, 250 meters from the center of Dalyan, quiet. Alexey's video guide revealed secret beaches and excellent seafood restaurants.",
-      "tr": "10 kişiye kadar olan aileler için ideal bir tatil yeri. Güvenlikli site içerisinde, Dalyan merkezine 250 metre mesafede, sakin bir konumda. Alexey'in video rehberi gizli plajları ve mükemmel deniz ürünleri restoranlarını ortaya çıkardı.",
+      "tr": "10 kişiye kadar aile tatili için ideal. Güvenlikli site içerisinde, Dalyan merkezine 250 metre mesafede, sakin bir konumda. Alexey'in video rehberi gizli plajları ve mükemmel deniz ürünleri restoranlarını ortaya çıkardı.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -2360,7 +2360,7 @@
       "desc": "Кнопка показа отзывов",
       "ru": "Показать все 48 отзывов и критерии оценок",
       "en": "Show all 48 reviews and rating criteria",
-      "tr": "Tüm 48 yorumu ve derecelendirme kriterlerini göster",
+      "tr": "Tüm 48 yorumu ve değerlendirme kriterlerini göster",
       "media": "Star",
       "status": "Вкл",
       "enabled": true
@@ -2492,7 +2492,7 @@
       "desc": "Подзаголовок виллы под главным заголовком",
       "ru": "Премиальная вилла 240 м² в Дальяне. Приватный бассейн с соленой водой 36 м², уличное джакузи, 4 спальни, 10 спальных мест, 250 м до центра.",
       "en": "A premium 240 m² villa in Dalyan. A private 36 m² saltwater pool, an outdoor jacuzzi, 4 bedrooms, sleeps 10, and is 250 m from the center.",
-      "tr": "Dalyan'da 240 m²'lik birinci sınıf bir villa. 36 m²'lik özel tuzlu su havuzu, açık jakuzi, 4 yatak odası, 10 kişiye kadar konaklama kapasitesi ve merkeze 250 metre mesafede yer almaktadır.",
+      "tr": "Dalyan'da 240 m²'lik birinci sınıf bir villa. 36 m²'lik özel tuzlu su havuzu, açık hava jakuzisi, 4 yatak odası, 10 kişiye kadar konaklama kapasitesi ve merkeze 250 metre mesafede yer almaktadır.",
       "media": "",
       "status": "Вкл",
       "enabled": true
@@ -2680,7 +2680,7 @@
           "en": "Queen + Single [3 places]",
           "tr": "Kraliçe + Tekli [3 kişilik yer]"
         },
-        "image": "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600",
+        "image": "https://drive.google.com/file/d/1QsfUGocAHY6BUsusgRUyTWDYhyV4X78P/view?usp=sharing",
         "iconName": "BedDouble"
       },
       {
@@ -2691,16 +2691,16 @@
           "tr": "Yatak Odası 2 [2. kat] • Çift Kişilik Yatak [2 yatak]"
         },
         "desc": {
-          "ru": "Второй этаж: 1 большая двуспальная кровать King Size, собственная ванная комната, кондиционер, балкон с видом на горы",
-          "en": "Second floor: 1 king size bed, private bathroom, air conditioning, balcony with mountain views",
-          "tr": "İkinci kat: 1 adet çift kişilik yatak, özel banyo, klima, dağ manzaralı balkon."
+          "ru": "Второй этаж: King size: Большая королевская кровать шириной 180–200 см и длиной 200 см.+ 1 односпальная кровать, собственная ванная комната, кондиционер, балкон с видом на горы.  King size + Single [3 места]",
+          "en": "Second floor: King size: Large king-size bed 180–200 cm wide and 200 cm long + 1 single bed, private bathroom, air conditioning, balcony with mountain views. King size + Single [3 beds]",
+          "tr": "İkinci kat: Çift kişilik yatak: 180-200 cm genişliğinde ve 200 cm uzunluğunda büyük çift kişilik yatak + 1 tek kişilik yatak, özel banyo, klima, dağ manzaralı balkon. Çift kişilik yatak + Tek kişilik yatak [3 yatak]"
         },
         "badge": {
           "ru": "King Bed [2 места]",
           "en": "King Bed [2 places]",
           "tr": "Çift kişilik büyük yatak [2 kişilik]"
         },
-        "image": "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=600",
+        "image": "https://drive.google.com/file/d/1ZDpJ3vhVPizIGd2RzIJtfCQgcD3IWF_F/view?usp=sharing",
         "iconName": "BedDouble"
       },
       {
@@ -2720,7 +2720,7 @@
           "en": "Queen Bed [2 places]",
           "tr": "Çift Kişilik Yatak [2 kişilik]"
         },
-        "image": "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=600",
+        "image": "https://drive.google.com/file/d/1f1-b3TuIPqUR8jTdC52qPOH7cwaUszOM/view?usp=sharing",
         "iconName": "Bed"
       },
       {
@@ -2740,7 +2740,7 @@
           "en": "Queen + Single [3 places]",
           "tr": "Kraliçe + Tekli [3 kişilik yer]"
         },
-        "image": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600",
+        "image": "https://drive.google.com/file/d/1WooX7-xPmWMgRC1S4fUTsg9-as_Pskuq/view?usp=sharing",
         "iconName": "Sofa"
       }
     ],
@@ -2750,7 +2750,7 @@
         "label": {
           "ru": "Приватный открытый бассейн 36 м²",
           "en": "Private outdoor pool 36 m²",
-          "tr": "Özel açık yüzme havuzu 36 m²"
+          "tr": "36 m²'lik özel açık yüzme havuzu"
         },
         "icon": "Waves"
       },
@@ -2922,7 +2922,7 @@
           },
           {
             "ru": "Полный комплект посуды и бокалов для вина",
-            "en": "A complete set of tableware and wine glasses",
+            "en": "A complete set of dishes and wine glasses",
             "tr": "Komple bir yemek takımı ve şarap kadehleri ​​seti."
           }
         ]
@@ -3092,7 +3092,7 @@
           "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120",
           "comment": {
             "ru": "Dalyan'da kaldığımız en konforlu villa. 4 banyolu 4 yatak odası ailemiz için mükemmeldi. Bahçe ve havuz bakımı harikaydı, teşekkürler Aleksei!",
-            "en": "The most comfortable villa we stayed in in Dalyan. Four bedrooms with four bathrooms were perfect for our family. The garden and pool maintenance was fantastic, thank you Aleksei!",
+            "en": "The most comfortable villa we stayed in Dalyan. Four bedrooms with four bathrooms were perfect for our family. The garden and pool maintenance was fantastic, thank you Aleksei!",
             "tr": "Dalyan'da kaldığımız en konforlu villa. 4 banyolu 4 yatak odası ailemiz için mükemmeldi. Bahçe ve havuz bakımı harikaydı, teşekkürler Aleksei!"
           }
         },
@@ -3106,7 +3106,7 @@
           "comment": {
             "ru": "Идеально для семейного отдыха до 10 человек. Закрытая территория, 250 метров до центра Дальяна, тишина. Видео-гид от Алексея открыл нам секретные пляжи и отличные рыбные рестораны.",
             "en": "Ideal for a family vacation of up to 10 people. Gated area, 250 meters from the center of Dalyan, quiet. Alexey's video guide revealed secret beaches and excellent seafood restaurants.",
-            "tr": "10 kişiye kadar olan aileler için ideal bir tatil yeri. Güvenlikli site içerisinde, Dalyan merkezine 250 metre mesafede, sakin bir konumda. Alexey'in video rehberi gizli plajları ve mükemmel deniz ürünleri restoranlarını ortaya çıkardı."
+            "tr": "10 kişiye kadar aile tatili için ideal. Güvenlikli site içerisinde, Dalyan merkezine 250 metre mesafede, sakin bir konumda. Alexey'in video rehberi gizli plajları ve mükemmel deniz ürünleri restoranlarını ortaya çıkardı."
           }
         }
       ]
@@ -3147,8 +3147,8 @@
         },
         "text": {
           "ru": "Приватный бассейн с соленой водой: чаша 4×9 метров [площадь 36 кв. м], постоянная глубина 150 см. Без запаха хлора. Доступен с 1 мая по 1 ноября. Чистка в день заселения и каждые 7 дней. Подсветка бассейна: 20:00 - 01:00.\nУличное приватное джакузи: на 4 персоны, автоматический цикл [15 минут работы каждые 45 минут в период 10:00 - 17:00]. Подсветка джакузи: 20:00 - 01:00. Сезон: 1 мая - 1 ноября.\nОсвещение территории: автоматическое [20:00 - 01:00 и 04:00 - 06:00].\nПарковка: бесплатная закрытая частная парковка на территории на 2 авто.\nОткрытые зоны отдыха: огороженный сад, барбекю [BBQ], крыльцо с кофейными столиками, обеденный стол на 8 мест, шезлонги и летний душ.",
-          "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor seating areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
-          "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava oturma alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır."
+          "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor recreation areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
+          "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava dinlenme alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır."
         }
       },
       {
@@ -3160,8 +3160,8 @@
         },
         "text": {
           "ru": "Закон Турции № 7464 о краткосрочной аренде: обязательный договор аренды виллы с описью имущества при заселении.\nРегистрация в системе учета населения KBS: обязательное предоставление паспортов всех проживающих. Размещение незарегистрированных лиц строго запрещено.\nБезопасность дома: внешнее видеонаблюдение по периметру, детекторы дыма во всех спальнях и гостиной, огнетушитель, аптечка первой помощи.\nДоступная среда: выделенная парковка для инвалидов, ровный освещенный вход без ступеней, дверь от 81 см, подъемник для бассейна и джакузи.\nПолитика отмены: менее 28 ночей - Негибкие, от 28 ночей - Строгие. Опция невозвратного тарифа со скидкой 10% за 60 дней.",
-          "en": "Turkish Short-Term Rental Law No. 7464: A mandatory villa rental agreement with an inventory of the property is required upon arrival.\nKBS Population Registration System: Passports of all residents are required. Unregistered guests are strictly prohibited.\nHome Security: External perimeter video surveillance, smoke detectors in all bedrooms and the living room, fire extinguisher, and first aid kit.\nAccessibility: Dedicated disabled parking, level, illuminated, step-free entrance, door height of at least 81 cm, pool and jacuzzi lift.\nCancellation Policy: Less than 28 nights - Inflexible, 28 nights or more - Strict. Non-refundable rate option with a 10% discount for 60 days.",
-          "tr": "Türk Kısa Süreli Kiralama Kanunu No. 7464: Varışta, mülkün envanterini içeren zorunlu bir villa kiralama sözleşmesi gereklidir.\nKBS Nüfus Kayıt Sistemi: Tüm sakinlerin pasaportları gereklidir. Kayıtlı olmayan misafirler kesinlikle yasaktır.\nEv Güvenliği: Dış çevre video gözetimi, tüm yatak odalarında ve oturma odasında duman dedektörleri, yangın söndürücü ve ilk yardım çantası.\nErişilebilirlik: Engelliler için özel park yeri, düz, aydınlatmalı, basamaksız giriş, en az 81 cm kapı yüksekliği, havuz ve jakuzi asansörü.\nİptal Politikası: 28 geceden az - Esnek değil, 28 gece veya daha fazla - Kesinlikle. 60 gün için %10 indirimli, iade edilmeyen fiyat seçeneği."
+          "en": "Turkish Short-Term Rental Law No. 7464: A mandatory villa rental agreement with an inventory of the property is required upon arrival.\nKBS Population Registration System: Passports of all residents are required. Unregistered occupants are strictly prohibited.\nHome Security: External perimeter video surveillance, smoke detectors in all bedrooms and the living room, fire extinguisher, and first aid kit.\nAccessibility: Dedicated disabled parking, level, illuminated, step-free entrance, door height of at least 81 cm, pool and jacuzzi lift.\nCancellation Policy: Less than 28 nights - Inflexible, 28 nights or more - Strict. Non-refundable rate option with a 10% discount for 60 days.",
+          "tr": "Türk Kısa Süreli Kiralama Kanunu No. 7464: Varışta, mülkün envanterini içeren zorunlu bir villa kiralama sözleşmesi gereklidir.\nKBS Nüfus Kayıt Sistemi: Tüm sakinlerin pasaportları gereklidir. Kayıt dışı sakinlerin konaklaması kesinlikle yasaktır.\nEv Güvenliği: Dış çevre video gözetimi, tüm yatak odalarında ve oturma odasında duman dedektörleri, yangın söndürücü ve ilk yardım çantası.\nErişilebilirlik: Engelliler için özel park yeri, düz, aydınlatmalı, basamaksız giriş, en az 81 cm kapı yüksekliği, havuz ve jakuzi asansörü.\nİptal Politikası: 28 geceden az - Esnek değil, 28 gece veya daha fazla - Kesinlikle. 60 gün için %10 indirimli, iade edilmeyen fiyat seçeneği."
         }
       },
       {
@@ -3988,7 +3988,7 @@
       "title": {
         "ru": "1. Концепция объекта, геолокация и расширенные географические ориентиры",
         "en": "1. Object concept, geolocation and extended geographic landmarks",
-        "tr": "1. Nesne kavramı, coğrafi konum ve genişletilmiş coğrafi işaretler"
+        "tr": "1. Nesne kavramı, coğrafi konum belirleme ve genişletilmiş coğrafi işaretler"
       },
       "text": {
         "ru": "Dalyan Turaman [частный бассейн, 10 спальных мест] - это цифровая веб-платформа прямого онлайн-бронирования двухэтажной виллы премиум-класса в экологическом заповедном курорте Дальян [район Ортаджа, провинция Мугла, Турция], расположенном между рекой Дальян и озером Кёйджегиз.\n\nОфициальный адрес и навигация:\n* Адрес виллы: Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla, Turkey.\n* Ссылка на геолокацию в Google Maps: https://maps.app.goo.gl/tPgCjCwz4pzq28pE9\n* Точные координаты GPS: 36.8336° N, 28.6439° E.\n\nПолный реестр ключевых географических ориентиров:\n* Пешеходный центр Дальяна: всего 250 метров [3 минуты пешком] до главной пешеходной улицы с магазинами, рынками, аптеками и сувенирными лавками.\n* Речная набережная реки Дальян: 400 метров для утренних пробежек, вечерних прогулок и наблюдения за речными лодками.\n* Гастрономия: популярный ресторан высокой кухни La Boheme Dalyan - 350 метров; традиционный рыбный ресторан Çiçek Restoran - 500 метров.\n* Ликийские скальные гробницы королей Кауноса [IV век до н.э.]: панорамный вид с набережной Дальяна [450 метров], вечерняя подсветка скал и 10 минут на лодке.\n* Античный город Каунос, древний акрополь и амфитеатр: 1.5 км [переправа на весельной лодке через реку Дальян и пеший маршрут].\n* Всемирно известный песчаный пляж Изтузу [İztuzu]: 11 км [около 15 минут на машине или 30-40 минут на живописном речном катере-такси через лабиринты камышей]. Заповедная зона обитания гигантских морских черепах Caretta-Caretta.\n* Термальные радоновые источники и омолаживающие грязи Султание [Sultaniye Kaplıcaları]: 4 км по воде на озере Кёйджегиз.\n* Озеро Кёйджегиз [Köyceğiz Gölü]: 5 км до выхода из русла реки в открытую озерную акваторию.\n* Смотровая площадка Радар [Radar Tepesi]: 8 км [панорамный обзор 360° на всю дельту реки, озеро и косу пляжа Изтузу с высоты 500 метров].\n* Международный аэропорт Даламан [DLM]: 30 км [25-30 минут на машине или индивидуальном трансфере].\n* Субботний фермерский рынок Дальяна: 600 метров [свежие фермерские сыры, оливки, гранатовый сок, инжир и фрукты].\n* Морские курорты: город Мармарис - 85 км, город Фетхие и бухта Олюдениз - 60 км.",
@@ -4146,7 +4146,7 @@
       "title": {
         "ru": "Протокол заселения и передачи ключей",
         "en": "Check-in and key transfer protocol",
-        "tr": "Giriş yapma ve anahtar teslim protokolü"
+        "tr": "Giriş ve anahtar teslim protokolü"
       },
       "text": {
         "ru": "Заселение через электронный смарт-замок [CHECKIN_METHOD]. Персональный пароль генерируется в день заезда. Возврат ключей: [KEY_HANDOVER].",
@@ -4189,7 +4189,7 @@
       "text": {
         "ru": "Здравствуйте, [FIRST_NAME]! Благодарю за интерес к Villa Turaman! Если вас смущает текущая стоимость или есть определенный бюджет, подскажите, какой ориентир по цене был бы для вас комфортным? С удовольствием обсудим возможные условия! С уважением, Алексей Знаменский.",
         "en": "Hello, [FIRST_NAME]! Thank you for your interest in Villa Turaman! If the current price is concerning or you have a specific budget, could you please advise what price range would be comfortable for you? We'd be happy to discuss possible terms! Sincerely, Alexey Znamensky.",
-        "tr": "Merhaba, [ADINIZ]! Villa Turaman'a gösterdiğiniz ilgi için teşekkür ederiz! Mevcut fiyat sizi endişelendiriyorsa veya belirli bir bütçeniz varsa, sizin için uygun olan fiyat aralığını lütfen belirtir misiniz? Olası koşulları görüşmekten memnuniyet duyarız! Saygılarımla, Alexey Znamensky."
+        "tr": "Merhaba, [ADINIZ]! Villa Turaman'a gösterdiğiniz ilgi için teşekkür ederiz! Mevcut fiyat sizi endişelendiriyorsa veya belirli bir bütçeniz varsa, sizin için uygun olan fiyat aralığını belirtebilir misiniz? Olası koşulları görüşmekten memnuniyet duyarız! Saygılarımla, Alexey Znamensky."
       }
     },
     "1.3_early_booking_expiry": {
@@ -4448,7 +4448,7 @@
       "name": {
         "ru": "Премиальный BBQ-вечер на углях в саду виллы",
         "en": "Premium BBQ evening on coals in the villa's garden",
-        "tr": "Villanın bahçesinde kömür ateşinde enfes bir barbekü akşamı."
+        "tr": "Villanın bahçesinde kömür ateşinde birinci sınıf barbekü akşamı."
       },
       "desc": {
         "ru": "Стейки рибай, каре ягненка на косточке и овощи гриль",
@@ -4625,7 +4625,7 @@
       "name": {
         "ru": "Секретные маршруты реки Дальян и черепаший пляж Изтузу",
         "en": "Secret Routes of the Dalyan River and Iztuzu Turtle Beach",
-        "tr": "Dalyan Nehri'nin Gizli Rotaları ve İztuzu Kaplumbağa Plajı"
+        "tr": "Dalyan Nehri ve İztuzu Kaplumbağa Plajı'nın Gizli Rotaları"
       },
       "desc": {
         "ru": "Эксклюзивный 40-минутный 4K видео-гид от Алексея Знаменского",
@@ -4924,7 +4924,7 @@
       },
       "type": "image",
       "media": [
-        "https://drive.google.com/file/d/1UDK3H8Kiv7VISu4JBlNf8_wDO_ESJ6Ng/view?usp=sharing"
+        "https://drive.google.com/file/d/1Cnee0dwwTSLl8VfklxXyDgxbp55S4pWJ/view?usp=sharing"
       ],
       "caption": {
         "ru": "Спальня 1 с видом на бассейн",
@@ -4946,7 +4946,7 @@
       },
       "type": "image",
       "media": [
-        "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=1600"
+        "https://drive.google.com/file/d/1ZDpJ3vhVPizIGd2RzIJtfCQgcD3IWF_F/view?usp=sharing"
       ],
       "caption": {
         "ru": "Спальня 2 Queen Bed с балконом",
@@ -4968,7 +4968,7 @@
       },
       "type": "image",
       "media": [
-        "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=1600"
+        "https://drive.google.com/file/d/1f1-b3TuIPqUR8jTdC52qPOH7cwaUszOM/view?usp=sharing"
       ],
       "caption": {
         "ru": "Спальня 3 с 2 кроватями",
@@ -4990,7 +4990,7 @@
       },
       "type": "image",
       "media": [
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1600"
+        "https://drive.google.com/file/d/1WooX7-xPmWMgRC1S4fUTsg9-as_Pskuq/view?usp=sharing"
       ],
       "caption": {
         "ru": "Спальня 4 в лаундж-зоне",
@@ -5023,9 +5023,9 @@
     {
       "id": "gal-10",
       "group": {
-        "ru": "Сад и Терраса",
-        "en": "Garden and Terrace",
-        "tr": "Bahçe ve Teras"
+        "ru": "Сад, Терраса и Барбекю ",
+        "en": "Garden, Terrace and Barbecue",
+        "tr": "Bahçe, Teras ve Barbekü"
       },
       "groupDesc": {
         "ru": "Приватный сад с обеденным столом и зоной барбекю",
@@ -5044,6 +5044,28 @@
     },
     {
       "id": "gal-11",
+      "group": {
+        "ru": "Сад, Терраса и Барбекю ",
+        "en": "Garden, Terrace and Barbecue",
+        "tr": "Bahçe, Teras ve Barbekü"
+      },
+      "groupDesc": {
+        "ru": "Приватный сад с обеденным столом и зоной барбекю",
+        "en": "Private garden with dining table and barbecue area",
+        "tr": "Yemek masası ve barbekü alanı bulunan özel bahçe."
+      },
+      "type": "image",
+      "media": [
+        "https://drive.google.com/file/d/1UDK3H8Kiv7VISu4JBlNf8_wDO_ESJ6Ng/view?usp=sharing"
+      ],
+      "caption": {
+        "ru": "Зона BBQ и обеденная пергола",
+        "en": "BBQ area and dining pergola",
+        "tr": "Barbekü alanı ve yemek pergolası"
+      }
+    },
+    {
+      "id": "gal-12",
       "group": {
         "ru": "Бассейн и спа",
         "en": "Pool and spa",
@@ -5065,7 +5087,7 @@
       }
     },
     {
-      "id": "gal-12",
+      "id": "gal-13",
       "group": {
         "ru": "Природа Дальяна",
         "en": "The nature of Dalyan",
@@ -5087,7 +5109,7 @@
       }
     },
     {
-      "id": "gal-13",
+      "id": "gal-14",
       "group": {
         "ru": "Достопримечательности",
         "en": "Attractions",
@@ -5109,7 +5131,7 @@
       }
     },
     {
-      "id": "gal-14",
+      "id": "gal-15",
       "group": {
         "ru": "Пляжи и заповедники",
         "en": "Beaches and nature reserves",

@@ -1284,7 +1284,7 @@ export const translations = {
     hostCabinet: "Yönetim Paneli",
 
     heroTitle: "Dalyan Turaman [özel havuz, 10 kişilik]",
-    heroSubtitle: "Dalyan'da 240 m²'lik birinci sınıf bir villa. 36 m²'lik özel tuzlu su havuzu, açık jakuzi, 4 yatak odası, 10 kişiye kadar konaklama kapasitesi ve merkeze 250 metre mesafede yer almaktadır.",
+    heroSubtitle: "Dalyan'da 240 m²'lik birinci sınıf bir villa. 36 m²'lik özel tuzlu su havuzu, açık hava jakuzisi, 4 yatak odası, 10 kişiye kadar konaklama kapasitesi ve merkeze 250 metre mesafede yer almaktadır.",
     locationText: "Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, Ortaca / Muğla",
     showAllPhotos: "Tüm fotoğrafları göster",
     entireVilla: "Villanın tamamı [240 m², özel havuz]",

@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 01:15 | ПЛАН: 270920260115 Оптимизация кабинета и виджета.md | TAG: VILLA-HOST-WIDGET-CLEAN-270920260115]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:26 | ПЛАН: 270920260126 Исправление синхронизации шаблонов.md | TAG: VILLA-SYNC-TEMPLATES-FIX-270920260126]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 01:26 | ПЛАН: 270920260126 Исправление синхронизации шаблонов.md | TAG: VILLA-SYNC-TEMPLATES-FIX-270920260126]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 11:45 | ПЛАН: 270920261145 Модернизация чата спален и задач запускаторов.md | TAG: VILLA-CHAT-BEDROOMS-TASKS-270920261145]
 // ==============================================================================
 // ВЫГРУЗКА И СИНХРОНИЗАЦИЯ КОНТЕНТА ИЗ GOOGLE SHEETS
 // Файл: scripts/sync-content.js
@@ -120,7 +120,7 @@ async function syncContent() {
       }
     };
 
-    console.log('Синхронизация контента (Главная, О вилле, Юридический блок, Шаблоны)...');
+    console.log('Синхронизация витринного контента [6 листов: HOME, ABOUT, LEGAL, TEMPLATES, SERVICES, GUIDES]...');
 
     // 1. Главная страница [Конструктор витрины 8 колонок A:H либо стандарт 5 колонок]
     const homeData = await safeGet(resolveRange(sheetMap, 'HOME', 'A:H'));
@@ -348,7 +348,8 @@ async function syncContent() {
 // Сохранение обновленного JSON файла только при успешном получении данных и валидном контенте
 if (fetchSuccessCount > 0 && Object.keys(content.home).length > 0 && Object.keys(content.about).length > 0) {
   fs.writeFileSync(contentFilePath, JSON.stringify(content, null, 2), 'utf8');
-  console.log(`✅ Контент успешно синхронизирован [${fetchSuccessCount} листов] и сохранен в utils/content.json`);
+  console.log(`✅ Витринный контент успешно синхронизирован [${fetchSuccessCount} листов витрины] и сохранен в utils/content.json`);
+  console.log('💡 Примечание: Для фиксации полного эталона всех 15 CRM листов таблицы в masterSeedContent.js используйте задачу: npm run save-master-seed');
 
   // Синхронизация аварийного страховочного словаря витрины translations.js
   try {

@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 01:15 | ПЛАН: 270920260115 Оптимизация кабинета и виджета.md | TAG: VILLA-HOST-WIDGET-CLEAN-270920260115]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:48 | ПЛАН: 270920260148 Исправление кнопок ИИ и локализации инбокса.md | TAG: VILLA-HOST-AI-INBOX-I18N-270920260148]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 01:48 | ПЛАН: 270920260148 Исправление кнопок ИИ и локализации инбокса.md | TAG: VILLA-HOST-AI-INBOX-I18N-270920260148]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 11:45 | ПЛАН: 270920261145 Модернизация чата спален и задач запускаторов.md | TAG: VILLA-CHAT-BEDROOMS-TASKS-270920261145]
 // ==============================================================================
 // ОСНОВНОЙ API СЕРВЕР GOOGLE SHEETS & CRM VILLA TURAMAN
 // Файл: pages/api/booking.js
@@ -178,6 +178,57 @@ const safeCacheDel = async (key) => {
   }
 };
 
+// Быстрый параллельный перевод текста в реальном времени для ru en tr
+const inFlightTranslate = async (text) => {
+  if (!text || typeof text !== 'string') return { ru: '', en: '', tr: '' };
+  const clean = text.trim();
+  if (!clean) return { ru: '', en: '', tr: '' };
+
+  const translateOne = async (targetLang) => {
+    try {
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(clean)}`;
+      const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+      if (!res.ok) return clean;
+      const data = await res.json();
+      if (Array.isArray(data) && Array.isArray(data[0])) {
+        return data[0].map((item) => item[0]).filter(Boolean).join('');
+      }
+      return clean;
+    } catch (e) {
+      return clean;
+    }
+  };
+
+  try {
+    const [ru, en, tr] = await Promise.all([
+      translateOne('ru'),
+      translateOne('en'),
+      translateOne('tr')
+    ]);
+    return { ru: ru || clean, en: en || clean, tr: tr || clean };
+  } catch (e) {
+    return { ru: clean, en: clean, tr: clean };
+  }
+};
+
+// Резервная отправка через Google Apps Script Webhook: Канал 2
+const relayToAppsScriptWebhook = async (action, payload) => {
+  const scriptUrl = process.env.GOOGLE_APPS_SCRIPT_URL || process.env.NEXT_PUBLIC_APPS_SCRIPT_URL;
+  if (!scriptUrl) return null;
+  try {
+    const res = await fetch(scriptUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, ...payload })
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (err) {
+    console.warn('[relayToAppsScriptWebhook Warning]:', err.message);
+    return null;
+  }
+};
+
 // Интеллектуальное сопоставление составных контактов [телефон | email]
 const isContactMatch = (storedContact, targetContact) => {
   if (!storedContact || !targetContact) return false;
@@ -236,13 +287,20 @@ const parseMessageRow = (r) => {
   if (!Array.isArray(r) || r.length === 0) {
     return { date: '', sender: '', original: '', ru: '', en: '', tr: '', file: '' };
   }
+  const cleanVal = (val, fallback) => {
+    if (!val) return fallback;
+    const str = val.toString().trim();
+    if (str.startsWith('#') || str.startsWith('=')) return fallback;
+    return str || fallback;
+  };
+  const orig = r[2] || '';
   return {
     date: r[0] || '',
     sender: r[1] || '',
-    original: r[2] || '',
-    ru: r[3] && !r[3].toString().startsWith('#') ? r[3] : r[2] || '',
-    en: r[4] && !r[4].toString().startsWith('#') ? r[4] : r[2] || '',
-    tr: r[5] && !r[5].toString().startsWith('#') ? r[5] : r[2] || '',
+    original: orig,
+    ru: cleanVal(r[3], orig),
+    en: cleanVal(r[4], orig),
+    tr: cleanVal(r[5], orig),
     file: r[6] || ''
   };
 };
@@ -1387,20 +1445,32 @@ export default async function handler(req, res) {
       const targetChatId = getChatSpreadsheetId();
       const chatSheetName = getChatSheetName(data.sender, data.contact);
       const safeContact = (data.contact || '').toString().trim().toLowerCase();
+      const clientName = (data.sender || 'Гость').toString().trim();
 
       // Гарантированное создание индивидуального листа диалога с шапкой и смарт-стилизацией
-      await ensureStyledChatSheet(sheets, targetChatId, chatSheetName);
+      if (sheets && targetChatId) {
+        try {
+          await ensureStyledChatSheet(sheets, targetChatId, chatSheetName);
+        } catch (cssErr) {
+          console.warn('[ensureStyledChatSheet Warning]:', cssErr.message);
+        }
+      }
 
       // Запись нового сообщения
       if (data.message || data.fileBase64 || data.fileName) {
         const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
         const msgText = data.message || '';
 
-        // Канонические формулы перевода со СТРОГОЙ ТОЧКОЙ С ЗАПЯТОЙ (;) для русской локали Google Таблиц
-        const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
-        const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
-        const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
+        // Мгновенный параллельный перевод сообщения гостя в реальном времени
+        const translations = await inFlightTranslate(msgText);
 
+        // Канонические формулы перевода со СТРОГОЙ ТОЧКОЙ С ЗАПЯТОЙ (;) для русской локали Google Таблиц
+        const fRU = translations.ru || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+        const fEN = translations.en || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+        const fTR = translations.tr || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
+
+        let sheetSaved = false;
+        // Канал 1: Прямой Google Sheets API v4
         if (sheets && targetChatId) {
           try {
             await ensureStyledChatSheet(sheets, targetChatId, chatSheetName);
@@ -1411,21 +1481,41 @@ export default async function handler(req, res) {
               insertDataOption: 'INSERT_ROWS',
               requestBody: { values: [[timestamp, data.sender || 'Гость', msgText, fRU, fEN, fTR, data.fileName || '']] }
             });
+            sheetSaved = true;
           } catch (e) {
-            console.warn('[Chat Append Error]:', e.message);
+            console.warn('[Chat Append Channel 1 Sheets API Warning]:', e.message);
           }
         }
 
-        // Сохраняем в кэш в памяти для непрерывности работы
+        // Канал 2: Резервная доставка через Google Apps Script Webhook (полные права владельца)
+        if (!sheetSaved) {
+          try {
+            await relayToAppsScriptWebhook('send_chat_message', {
+              spreadsheetId: targetChatId,
+              clientName,
+              clientContact: data.contact || '',
+              sender: data.sender || 'Гость',
+              message: msgText,
+              ru: translations.ru,
+              en: translations.en,
+              tr: translations.tr,
+              file: data.fileName || ''
+            });
+          } catch (relayErr) {
+            console.warn('[Chat Relay Channel 2 Apps Script Warning]:', relayErr.message);
+          }
+        }
+
+        // Канал 3: Сохраняем в кэш в памяти с мгновенными переводами для непрерывности работы
         const cacheKey = `chat_msgs_${safeContact}`;
         const existingCache = (await safeCacheGet(cacheKey)) || [];
         existingCache.push({
           date: timestamp,
           sender: data.sender || 'Гость',
           original: msgText,
-          ru: msgText,
-          en: msgText,
-          tr: msgText,
+          ru: translations.ru || msgText,
+          en: translations.en || msgText,
+          tr: translations.tr || msgText,
           file: data.fileName || ''
         });
         await safeCacheSet(cacheKey, existingCache, { ex: 86400 * 7 });
@@ -1503,6 +1593,14 @@ export default async function handler(req, res) {
                 const aiTimestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
                 const aiSender = 'ИИ-Консьерж [Gemini 3.6 Flash]';
 
+                // Мгновенный параллельный перевод ответа ИИ
+                const aiTranslations = await inFlightTranslate(aiReplyText);
+                const aiFRU = aiTranslations.ru || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+                const aiFEN = aiTranslations.en || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+                const aiFTR = aiTranslations.tr || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
+
+                let aiSaved = false;
+                // Канал 1: Прямой Google Sheets API
                 if (sheets && targetChatId) {
                   try {
                     await sheets.spreadsheets.values.append({
@@ -1510,20 +1608,41 @@ export default async function handler(req, res) {
                       range: `'${chatSheetName}'!A:G`,
                       valueInputOption: 'USER_ENTERED',
                       insertDataOption: 'INSERT_ROWS',
-                      requestBody: { values: [[aiTimestamp, aiSender, aiReplyText, fRU, fEN, fTR, '']] }
+                      requestBody: { values: [[aiTimestamp, aiSender, aiReplyText, aiFRU, aiFEN, aiFTR, '']] }
                     });
+                    aiSaved = true;
                   } catch (aiAppendErr) {
-                    console.warn('[AI Chat Append Error]:', aiAppendErr.message);
+                    console.warn('[AI Chat Append Channel 1 Sheets API Warning]:', aiAppendErr.message);
                   }
                 }
 
+                // Канал 2: Резервная доставка через Google Apps Script Webhook
+                if (!aiSaved) {
+                  try {
+                    await relayToAppsScriptWebhook('send_chat_message', {
+                      spreadsheetId: targetChatId,
+                      clientName,
+                      clientContact: data.contact || '',
+                      sender: aiSender,
+                      message: aiReplyText,
+                      ru: aiTranslations.ru,
+                      en: aiTranslations.en,
+                      tr: aiTranslations.tr,
+                      file: ''
+                    });
+                  } catch (aiRelayErr) {
+                    console.warn('[AI Relay Channel 2 Apps Script Warning]:', aiRelayErr.message);
+                  }
+                }
+
+                // Канал 3: Сохраняем ответ ИИ в кэш с переводами
                 existingCache.push({
                   date: aiTimestamp,
                   sender: aiSender,
                   original: aiReplyText,
-                  ru: aiReplyText,
-                  en: aiReplyText,
-                  tr: aiReplyText,
+                  ru: aiTranslations.ru || aiReplyText,
+                  en: aiTranslations.en || aiReplyText,
+                  tr: aiTranslations.tr || aiReplyText,
                   file: ''
                 });
                 await safeCacheSet(cacheKey, existingCache, { ex: 86400 * 7 });
@@ -1710,32 +1829,58 @@ export default async function handler(req, res) {
             });
           }
 
-          // Запись первого сообщения
-          const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
-          const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
-          const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
+          // Запись первого сообщения с параллельным переводом в реальном времени
+          const translations = await inFlightTranslate(msgText);
+          const fRU = translations.ru || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+          const fEN = translations.en || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+          const fTR = translations.tr || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
 
-          await sheets.spreadsheets.values.append({
-            spreadsheetId: targetChatId,
-            range: `'${chatSheetName}'!A:G`,
-            valueInputOption: 'USER_ENTERED',
-            insertDataOption: 'INSERT_ROWS',
-            requestBody: { values: [[timestamp, safeName, msgText, fRU, fEN, fTR, data.fileName || '']] }
-          });
-        } catch (sheetErr) {
-          console.warn('[contact_host sheet error]:', sheetErr.message);
+          let contactHostSaved = false;
+          try {
+            await sheets.spreadsheets.values.append({
+              spreadsheetId: targetChatId,
+              range: `'${chatSheetName}'!A:G`,
+              valueInputOption: 'USER_ENTERED',
+              insertDataOption: 'INSERT_ROWS',
+              requestBody: { values: [[timestamp, safeName, msgText, fRU, fEN, fTR, data.fileName || '']] }
+            });
+            contactHostSaved = true;
+          } catch (sheetErr) {
+            console.warn('[contact_host sheet error]:', sheetErr.message);
+          }
+
+          if (!contactHostSaved) {
+            try {
+              await relayToAppsScriptWebhook('send_chat_message', {
+                spreadsheetId: targetChatId,
+                clientName: safeName,
+                clientContact: safeContact,
+                sender: safeName,
+                message: msgText,
+                ru: translations.ru,
+                en: translations.en,
+                tr: translations.tr,
+                file: data.fileName || ''
+              });
+            } catch (relayErr) {
+              console.warn('[contact_host relay warning]:', relayErr.message);
+            }
+          }
+        } catch (outerSheetErr) {
+          console.warn('[contact_host outer warning]:', outerSheetErr.message);
         }
       }
 
-      // Кэширование сообщения в памяти
+      // Кэширование сообщения в памяти с переводами
+      const translations = await inFlightTranslate(msgText);
       const cacheKey = `chat_msgs_${safeContact}`;
       const msgItem = {
         date: timestamp,
         sender: safeName,
         original: msgText,
-        ru: msgText,
-        en: msgText,
-        tr: msgText,
+        ru: translations.ru || msgText,
+        en: translations.en || msgText,
+        tr: translations.tr || msgText,
         file: data.fileName || ''
       };
       await safeCacheSet(cacheKey, [msgItem], { ex: 86400 * 7 });
@@ -2294,6 +2439,14 @@ export default async function handler(req, res) {
         const clientContact = (sheetName.split('_').slice(2).join('_') || '').toLowerCase();
         const msg = (data.message || '').replace(/\[FIRST_NAME\]/g, clientName);
 
+        // Мгновенный параллельный перевод в реальном времени
+        const translations = await inFlightTranslate(msg);
+        const fRU = translations.ru || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+        const fEN = translations.en || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+        const fTR = translations.tr || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
+
+        let hostSaved = false;
+        // Канал 1: Прямой Google Sheets API
         if (sheets && targetChatId) {
           try {
             await ensureStyledChatSheet(sheets, targetChatId, sheetName);
@@ -2304,11 +2457,32 @@ export default async function handler(req, res) {
               insertDataOption: 'INSERT_ROWS',
               requestBody: { values: [[timestamp, data.sender || 'Владелец', msg, fRU, fEN, fTR, ""]] }
             });
+            hostSaved = true;
           } catch (sheetErr) {
             console.warn('[master_send_chats Sheet Warning]:', sheetErr.message);
           }
         }
 
+        // Канал 2: Резервная доставка через Google Apps Script Webhook
+        if (!hostSaved) {
+          try {
+            await relayToAppsScriptWebhook('send_chat_message', {
+              spreadsheetId: targetChatId,
+              clientName,
+              clientContact,
+              sender: data.sender || 'Владелец',
+              message: msg,
+              ru: translations.ru,
+              en: translations.en,
+              tr: translations.tr,
+              file: ''
+            });
+          } catch (relayErr) {
+            console.warn('[master_send_chats relay warning]:', relayErr.message);
+          }
+        }
+
+        // Канал 3: Кэш сообщений с переводами
         if (clientContact) {
           const cacheKey = `chat_msgs_${clientContact}`;
           const existingCache = (await safeCacheGet(cacheKey)) || [];
@@ -2316,9 +2490,9 @@ export default async function handler(req, res) {
             date: timestamp,
             sender: data.sender || 'Владелец',
             original: msg,
-            ru: msg,
-            en: msg,
-            tr: msg,
+            ru: translations.ru || msg,
+            en: translations.en || msg,
+            tr: translations.tr || msg,
             file: ''
           });
           await safeCacheSet(cacheKey, existingCache, { ex: 86400 * 7 });
@@ -2825,6 +2999,7 @@ export default async function handler(req, res) {
       };
       savePersistedAiSettings(aiSettingsObj);
 
+      let settingsSheetsSaved = false;
       // Обновление Google Sheets при наличии доступа
       if (sheets && spreadsheetId) {
         try {
@@ -2864,8 +3039,24 @@ export default async function handler(req, res) {
           if (newPrompt) await updateRow('СИСТЕМА', 'system_prompt', newPrompt, 'Глобальный системный промпт ИИ', 'ACTIVE');
           if (newMinPrice) await updateRow('СИСТЕМА', 'min_night_price', newMinPrice, 'Минимальный тариф ночь USD', 'ENFORCED');
           if (newModel) await updateRow('СИСТЕМА', 'ai_model', newModel, 'Модель Google Gemini', 'ACTIVE');
+          settingsSheetsSaved = true;
         } catch (sheetUpdateErr) {
           console.warn('[update_ai_settings Sheets Warning]:', sheetUpdateErr.message);
+        }
+      }
+
+      // Резервная отправка настроек через Google Apps Script Webhook: Канал 2
+      if (!settingsSheetsSaved) {
+        try {
+          await relayToAppsScriptWebhook('update_ai_settings', {
+            spreadsheetId,
+            aiMode: newMode,
+            geminiModel: newModel,
+            minPriceUsd: newMinPrice,
+            systemPrompt: newPrompt
+          });
+        } catch (relayErr) {
+          console.warn('[update_ai_settings Apps Script Relay Warning]:', relayErr.message);
         }
       }
 

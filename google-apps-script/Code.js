@@ -1,12 +1,12 @@
 /**
  * ============================================================================
  * [ПРЕДЫДУЩАЯ РЕДАКЦИЯ]
- * Редакция: 26.09.2026 19:05 | Метка: TAG: VILLA-SCRIPTS-ADAPT-260920261905
- * План: [260920261905 Адаптация задач запускаторов.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/260920261905%20Адаптация%20задач%20запускаторов.md)
- * ----------------------------------------------------------------------------
- * [АКТУАЛЬНАЯ РЕДАКЦИЯ]
  * Редакция: 26.09.2026 22:50 | Метка: TAG: VILLA-CODE-SYNC-260920262230
  * План: [260920261955 Адаптация скрипта таблицы Code.js.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/260920261955%20Адаптация%20скрипта%20таблицы%20Code.js.md)
+ * ----------------------------------------------------------------------------
+ * [АКТУАЛЬНАЯ РЕДАКЦИЯ]
+ * Редакция: 27.09.2026 11:45 | Метка: TAG: VILLA-CODE-DOPLEX-GATEWAY-270920261145
+ * План: [270920261145 Модернизация чата спален и задач запускаторов.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/270920261145%20Модернизация%20чата%20спален%20и%20задач%20запускаторов.md)
  * ============================================================================
  * МОДУЛЬ 0: ПАСПОРТ МОДУЛЯ И СИСТЕМНАЯ КОНФИГУРАЦИЯ
  * Название: Монолитный скрипт Google Apps Script экосистемы Villa Turaman CRM
@@ -3555,6 +3555,103 @@ function openDriveRootLink() {
   ui.showModalDialog(html, 'Архивариус Google Drive');
 }
 
+// ==============================================================================
+// МОДУЛЬ 12: ВЕБ-ШЛЮЗ КАНАЛА 2 ДЛЯ CRM ЧАТОВ И НАСТРОЕК [doPost & doGet]
+// Назначение: Автономный прием сообщений чатов и настроек от сайта без JWT
+// ==============================================================================
 
+/**
+ * Обработчик внешних HTTP POST запросов веб-приложения:
+ * Канал 2 связи сайта и Google Таблицы без ограничений токенов
+ */
+function doPost(e) {
+  try {
+    var rawText = (e && e.postData && e.postData.contents) || '{}';
+    var payload = JSON.parse(rawText);
+    var action = payload.action;
 
+    // 1. Отправка и фиксация сообщений гостя или хозяина в CRM чате
+    if (action === 'send_chat_message') {
+      var sheetName = payload.sheetName;
+      var sender = payload.sender || 'Гость';
+      var msgText = payload.message || payload.original || '';
+      var ru = payload.ru || msgText;
+      var en = payload.en || msgText;
+      var tr = payload.tr || msgText;
+      var file = payload.file || '';
+      var timestamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd.MM.yyyy, HH:mm:ss');
 
+      var targetSsId = payload.targetChatId || '1oiWwaT7KzbTdRS-pSCjHv-F84ymXlrmrkNE99IFD3rQ';
+      var chatSs;
+      try {
+        chatSs = SpreadsheetApp.openById(targetSsId);
+      } catch (openErr) {
+        chatSs = SpreadsheetApp.getActiveSpreadsheet();
+      }
+
+      var sheet = chatSs.getSheetByName(sheetName);
+      if (!sheet) {
+        sheet = chatSs.insertSheet(sheetName);
+        sheet.setFrozenRows(1);
+        var headers = ['Дата и Время', 'Отправитель', 'Оригинал', 'RU', 'EN', 'TR', 'Ссылка на вложение'];
+        var headerRange = sheet.getRange(1, 1, 1, headers.length);
+        headerRange.setValues([headers]);
+        headerRange.setBackground('#1f2937').setFontColor('#ffffff').setFontWeight('bold');
+      }
+
+      sheet.appendRow([timestamp, sender, msgText, ru, en, tr, file]);
+      return ContentService.createTextOutput(JSON.stringify({ success: true, timestamp: timestamp })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 2. Обновление системных настроек ИИ и базовых правил виллы
+    if (action === 'save_settings' || action === 'update_ai_settings') {
+      var ss = SpreadsheetApp.getActiveSpreadsheet();
+      var settingsSheet = findSheetByConfigKey(ss, 'SETTINGS') || ss.getSheetByName('⚙️ Системные настройки ИИ Агентов');
+      if (settingsSheet) {
+        var mode = payload.aiMode;
+        var minPrice = payload.minPriceUsd;
+        var model = payload.geminiModel;
+        var prompt = payload.systemPrompt;
+        var dataRange = settingsSheet.getDataRange();
+        var vals = dataRange.getValues();
+
+        var updateCell = function(paramKey, val) {
+          if (!val) return;
+          for (var i = 0; i < vals.length; i++) {
+            if (vals[i][1] === paramKey || vals[i][0] === paramKey) {
+              settingsSheet.getRange(i + 1, 3).setValue(String(val));
+              return;
+            }
+          }
+          settingsSheet.appendRow(['СИСТЕМА', paramKey, String(val), 'Параметр обновлен через шлюз', 'ACTIVE']);
+        };
+
+        if (mode) updateCell('ai_mode', mode);
+        if (minPrice) updateCell('min_night_price', minPrice);
+        if (model) updateCell('ai_model', model);
+        if (prompt) updateCell('system_prompt', prompt);
+      }
+      return ContentService.createTextOutput(JSON.stringify({ success: true, message: 'Настройки обновлены' })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 3. Пинг и проверка доступности
+    if (action === 'ping') {
+      return ContentService.createTextOutput(JSON.stringify({ success: true, status: 'online' })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Unknown action' })).setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: err.message })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * Обработчик внешних HTTP GET запросов веб-приложения
+ */
+function doGet(e) {
+  return ContentService.createTextOutput(JSON.stringify({
+    success: true,
+    service: 'Villa Turaman Apps Script Duplex Gateway',
+    timestamp: new Date().toISOString()
+  })).setMimeType(ContentService.MimeType.JSON);
+}
