@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 01:48 | ПЛАН: 270920260148 Исправление кнопок ИИ и локализации инбокса.md | TAG: VILLA-HOST-AI-INBOX-I18N-270920260148]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 11:45 | ПЛАН: 270920261145 Модернизация чата спален и задач запускаторов.md | TAG: VILLA-CHAT-BEDROOMS-TASKS-270920261145]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 11:45 | ПЛАН: 270920261145 Модернизация чата спален и задач запускаторов.md | TAG: VILLA-CHAT-BEDROOMS-TASKS-270920261145]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 12:00 | ПЛАН: 270920261200 Исправление ошибки сборки const minPriceUsd.md | TAG: VILLA-BUILD-LET-MINPRICE-270920261200]
 // ==============================================================================
 // ЕДИНАЯ БАЗА ЗНАНИЙ ИИ-АГЕНТА И ДИНАМИЧЕСКИЙ SSOT ИЗ GOOGLE ТАБЛИЦ
 // Файл: utils/aiKnowledgeBase.js
@@ -535,7 +535,7 @@ async function getAiKnowledgeBase(forceRefresh = false) {
         }))
       : (MASTER_TASKS_ROWS || []).map((r) => ({ id: r[0], timestamp: r[1], direction: r[2], taskText: r[3], status: r[4], resultUrl: r[5], assignee: r[6] }));
 
-    const minPriceUsd = parseInt(settingsMap['min_night_price'] || '180', 10);
+    let minPriceUsd = parseInt(settingsMap['min_night_price'] || '180', 10);
 
     // 11. Агрегация омни-календаря: CRM + 6 внешних OTA-платформ
     let unifiedCalendar = null;
