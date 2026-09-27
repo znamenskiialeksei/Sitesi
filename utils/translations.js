@@ -30,7 +30,7 @@ export const translations = {
     // --- ПУБЛИЧНАЯ ВИТРИНА AIRBNB ---
     heroTitle: "Dalyan Turaman [частный бассейн, 10 спальных мест]",
     heroSubtitle: "Премиальная вилла 240 м² в Дальяне. Приватный бассейн с соленой водой 36 м², уличное джакузи, 4 спальни, 10 спальных мест, 250 м до центра.",
-    locationText: "Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, Ortaca / Muğla",
+    locationText: "Dalyan, Rodoslu Yaşar Sünger Sk No: 28 / 2, 48600 Ortaca/Muğla https://maps.app.goo.gl/tPgCjCwz4pzq28pE9",
     showAllPhotos: "Показать все фото",
     entireVilla: "Вилла целиком [240 м², приватный бассейн]",
     guestsSummary: "10 гостей",
@@ -662,7 +662,7 @@ export const translations = {
 
     heroTitle: "Dalyan Turaman [private pool, sleeps 10]",
     heroSubtitle: "A premium 240 m² villa in Dalyan. A private 36 m² saltwater pool, an outdoor jacuzzi, 4 bedrooms, sleeps 10, and is 250 m from the center.",
-    locationText: "Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, Ortaca / Muğla",
+    locationText: "Dalyan, Rodoslu Yaşar Sünger Sk No: 28 / 2, 48600 Ortaca/Muğla https://maps.app.goo.gl/tPgCjCwz4pzq28pE9",
     showAllPhotos: "Show all photos",
     entireVilla: "Entire villa [240 sq. m, private pool]",
     guestsSummary: "10 guests",
@@ -1285,7 +1285,7 @@ export const translations = {
 
     heroTitle: "Dalyan Turaman [özel havuz, 10 kişilik]",
     heroSubtitle: "Dalyan'da 240 m²'lik birinci sınıf bir villa. 36 m²'lik özel tuzlu su havuzu, açık hava jakuzisi, 4 yatak odası, 10 kişiye kadar konaklama kapasitesi ve merkeze 250 metre mesafede yer almaktadır.",
-    locationText: "Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, Ortaca / Muğla",
+    locationText: "Dalyan, Rodoslu Yaşar Sünger Sk No: 28 / 2, 48600 Ortaca/Muğla https://maps.app.goo.gl/tPgCjCwz4pzq28pE9",
     showAllPhotos: "Tüm fotoğrafları göster",
     entireVilla: "Villanın tamamı [240 m², özel havuz]",
     guestsSummary: "10 misafir",
