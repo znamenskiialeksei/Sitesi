@@ -4,7 +4,7 @@
 // Назначение: Эталонный источник истины [SSOT] для всех 15 листов Google Таблиц.
 // Защищен от случайного затирания. Обеспечивает 100% самоисцеление при удалении листов.
 // Сгенерировано автоматически через scripts/save-master-seed.js
-// Дата фиксации: 2026-09-27T12:23:16.476Z
+// Дата фиксации: 2026-09-27T14:54:36.219Z
 // 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
@@ -46,8 +46,8 @@ const MASTER_ABOUT_SECTIONS = [
     },
     "text": {
       "ru": "Приватный бассейн с соленой водой: чаша 4×9 метров [площадь 36 кв. м], постоянная глубина 150 см. Без запаха хлора. Доступен с 1 мая по 1 ноября. Чистка в день заселения и каждые 7 дней. Подсветка бассейна: 20:00 - 01:00.\nУличное приватное джакузи: на 4 персоны, автоматический цикл [15 минут работы каждые 45 минут в период 10:00 - 17:00]. Подсветка джакузи: 20:00 - 01:00. Сезон: 1 мая - 1 ноября.\nОсвещение территории: автоматическое [20:00 - 01:00 и 04:00 - 06:00].\nПарковка: бесплатная закрытая частная парковка на территории на 2 авто.\nОткрытые зоны отдыха: огороженный сад, барбекю [BBQ], крыльцо с кофейными столиками, обеденный стол на 8 мест, шезлонги и летний душ.",
-      "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor recreation areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
-      "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava dinlenme alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır."
+      "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor seating areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
+      "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava oturma alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır."
     }
   },
   {
@@ -59,8 +59,8 @@ const MASTER_ABOUT_SECTIONS = [
     },
     "text": {
       "ru": "Закон Турции № 7464 о краткосрочной аренде: обязательный договор аренды виллы с описью имущества при заселении.\nРегистрация в системе учета населения KBS: обязательное предоставление паспортов всех проживающих. Размещение незарегистрированных лиц строго запрещено.\nБезопасность дома: внешнее видеонаблюдение по периметру, детекторы дыма во всех спальнях и гостиной, огнетушитель, аптечка первой помощи.\nДоступная среда: выделенная парковка для инвалидов, ровный освещенный вход без ступеней, дверь от 81 см, подъемник для бассейна и джакузи.\nПолитика отмены: менее 28 ночей - Негибкие, от 28 ночей - Строгие. Опция невозвратного тарифа со скидкой 10% за 60 дней.",
-      "en": "Turkish Short-Term Rental Law No. 7464: A mandatory villa rental agreement with an inventory of the property is required upon arrival.\nKBS Population Registration System: Passports of all residents are required. Unregistered occupants are strictly prohibited.\nHome Security: External perimeter video surveillance, smoke detectors in all bedrooms and the living room, fire extinguisher, and first aid kit.\nAccessibility: Dedicated disabled parking, level, illuminated, step-free entrance, door height of at least 81 cm, pool and jacuzzi lift.\nCancellation Policy: Less than 28 nights - Inflexible, 28 nights or more - Strict. Non-refundable rate option with a 10% discount for 60 days.",
-      "tr": "Türk Kısa Süreli Kiralama Kanunu No. 7464: Varışta, mülkün envanterini içeren zorunlu bir villa kiralama sözleşmesi gereklidir.\nKBS Nüfus Kayıt Sistemi: Tüm sakinlerin pasaportları gereklidir. Kayıt dışı sakinlerin konaklaması kesinlikle yasaktır.\nEv Güvenliği: Dış çevre video gözetimi, tüm yatak odalarında ve oturma odasında duman dedektörleri, yangın söndürücü ve ilk yardım çantası.\nErişilebilirlik: Engelliler için özel park yeri, düz, aydınlatmalı, basamaksız giriş, en az 81 cm kapı yüksekliği, havuz ve jakuzi asansörü.\nİptal Politikası: 28 geceden az - Esnek değil, 28 gece veya daha fazla - Kesinlikle. 60 gün için %10 indirimli, iade edilmeyen fiyat seçeneği."
+      "en": "Turkish Short-Term Rental Law No. 7464: A mandatory villa rental agreement with an inventory of the property is required upon arrival.\nKBS Population Registration System: Passports of all residents are required. Unregistered guests are strictly prohibited.\nHome Security: External perimeter video surveillance, smoke detectors in all bedrooms and the living room, fire extinguisher, and first aid kit.\nAccessibility: Dedicated disabled parking, level, illuminated, step-free entrance, door height of at least 81 cm, pool and jacuzzi lift.\nCancellation Policy: Less than 28 nights - Inflexible, 28 nights or more - Strict. Non-refundable rate option with a 10% discount for 60 days.",
+      "tr": "Türk Kısa Süreli Kiralama Kanunu No. 7464: Varışta, mülkün envanterini içeren zorunlu bir villa kiralama sözleşmesi gereklidir.\nKBS Nüfus Kayıt Sistemi: Tüm sakinlerin pasaportları gereklidir. Kayıtlı olmayan misafirler kesinlikle yasaktır.\nEv Güvenliği: Dış çevre video gözetimi, tüm yatak odalarında ve oturma odasında duman dedektörleri, yangın söndürücü ve ilk yardım çantası.\nErişilebilirlik: Engelliler için özel park yeri, düz, aydınlatmalı, basamaksız giriş, en az 81 cm kapı yüksekliği, havuz ve jakuzi asansörü.\nİptal Politikası: 28 geceden az - Esnek değil, 28 gece veya daha fazla - Kesinlikle. 60 gün için %10 indirimli, iade edilmeyen fiyat seçeneği."
     }
   },
   {
@@ -451,8 +451,8 @@ const MASTER_HOME_MAP = {
     "key": "about_sec_3_text",
     "desc": "Модальное окно: Раздел 3 Текст",
     "ru": "Приватный бассейн с соленой водой: чаша 4×9 метров [площадь 36 кв. м], постоянная глубина 150 см. Без запаха хлора. Доступен с 1 мая по 1 ноября. Чистка в день заселения и каждые 7 дней. Подсветка бассейна: 20:00 - 01:00.\nУличное приватное джакузи: на 4 персоны, автоматический цикл [15 минут работы каждые 45 минут в период 10:00 - 17:00]. Подсветка джакузи: 20:00 - 01:00. Сезон: 1 мая - 1 ноября.\nОсвещение территории: автоматическое [20:00 - 01:00 и 04:00 - 06:00].\nПарковка: бесплатная закрытая частная парковка на территории на 2 авто.\nОткрытые зоны отдыха: огороженный сад, барбекю [BBQ], крыльцо с кофейными столиками, обеденный стол на 8 мест, шезлонги и летний душ.",
-    "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor recreation areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
-    "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava dinlenme alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır.",
+    "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor seating areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
+    "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava oturma alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır.",
     "media": "",
     "status": "Вкл",
     "enabled": true
@@ -473,8 +473,8 @@ const MASTER_HOME_MAP = {
     "key": "about_sec_4_text",
     "desc": "Модальное окно: Раздел 4 Текст",
     "ru": "Закон Турции № 7464 о краткосрочной аренде: обязательный договор аренды виллы с описью имущества при заселении.\nРегистрация в системе учета населения KBS: обязательное предоставление паспортов всех проживающих. Размещение незарегистрированных лиц строго запрещено.\nБезопасность дома: внешнее видеонаблюдение по периметру, детекторы дыма во всех спальнях и гостиной, огнетушитель, аптечка первой помощи.\nДоступная среда: выделенная парковка для инвалидов, ровный освещенный вход без ступеней, дверь от 81 см, подъемник для бассейна и джакузи.\nПолитика отмены: менее 28 ночей - Негибкие, от 28 ночей - Строгие. Опция невозвратного тарифа со скидкой 10% за 60 дней.",
-    "en": "Turkish Short-Term Rental Law No. 7464: A mandatory villa rental agreement with an inventory of the property is required upon arrival.\nKBS Population Registration System: Passports of all residents are required. Unregistered occupants are strictly prohibited.\nHome Security: External perimeter video surveillance, smoke detectors in all bedrooms and the living room, fire extinguisher, and first aid kit.\nAccessibility: Dedicated disabled parking, level, illuminated, step-free entrance, door height of at least 81 cm, pool and jacuzzi lift.\nCancellation Policy: Less than 28 nights - Inflexible, 28 nights or more - Strict. Non-refundable rate option with a 10% discount for 60 days.",
-    "tr": "Türk Kısa Süreli Kiralama Kanunu No. 7464: Varışta, mülkün envanterini içeren zorunlu bir villa kiralama sözleşmesi gereklidir.\nKBS Nüfus Kayıt Sistemi: Tüm sakinlerin pasaportları gereklidir. Kayıt dışı sakinlerin konaklaması kesinlikle yasaktır.\nEv Güvenliği: Dış çevre video gözetimi, tüm yatak odalarında ve oturma odasında duman dedektörleri, yangın söndürücü ve ilk yardım çantası.\nErişilebilirlik: Engelliler için özel park yeri, düz, aydınlatmalı, basamaksız giriş, en az 81 cm kapı yüksekliği, havuz ve jakuzi asansörü.\nİptal Politikası: 28 geceden az - Esnek değil, 28 gece veya daha fazla - Kesinlikle. 60 gün için %10 indirimli, iade edilmeyen fiyat seçeneği.",
+    "en": "Turkish Short-Term Rental Law No. 7464: A mandatory villa rental agreement with an inventory of the property is required upon arrival.\nKBS Population Registration System: Passports of all residents are required. Unregistered guests are strictly prohibited.\nHome Security: External perimeter video surveillance, smoke detectors in all bedrooms and the living room, fire extinguisher, and first aid kit.\nAccessibility: Dedicated disabled parking, level, illuminated, step-free entrance, door height of at least 81 cm, pool and jacuzzi lift.\nCancellation Policy: Less than 28 nights - Inflexible, 28 nights or more - Strict. Non-refundable rate option with a 10% discount for 60 days.",
+    "tr": "Türk Kısa Süreli Kiralama Kanunu No. 7464: Varışta, mülkün envanterini içeren zorunlu bir villa kiralama sözleşmesi gereklidir.\nKBS Nüfus Kayıt Sistemi: Tüm sakinlerin pasaportları gereklidir. Kayıtlı olmayan misafirler kesinlikle yasaktır.\nEv Güvenliği: Dış çevre video gözetimi, tüm yatak odalarında ve oturma odasında duman dedektörleri, yangın söndürücü ve ilk yardım çantası.\nErişilebilirlik: Engelliler için özel park yeri, düz, aydınlatmalı, basamaksız giriş, en az 81 cm kapı yüksekliği, havuz ve jakuzi asansörü.\nİptal Politikası: 28 geceden az - Esnek değil, 28 gece veya daha fazla - Kesinlikle. 60 gün için %10 indirimli, iade edilmeyen fiyat seçeneği.",
     "media": "",
     "status": "Вкл",
     "enabled": true
@@ -559,10 +559,10 @@ const MASTER_HOME_MAP = {
   "bedroom_1": {
     "block": "5. Спальни",
     "key": "bedroom_1",
-    "desc": "Спальня 1 [1 этаж] • Queen + Single [3 места]",
-    "ru": "Спальня 1 [1 этаж] • Queen + Single [3 места]",
-    "en": "Bedroom 1 [1st floor] • Queen + Single [3 beds]",
-    "tr": "Yatak Odası 1 [1. kat] • Çift kişilik + Tek kişilik [3 yatak]",
+    "desc": "Спальня 1 [1 этаж] • Queen Size + Single [3 места]",
+    "ru": "Спальня 1 [1 этаж] • Queen Size + Single [3 места]",
+    "en": "Bedroom 1 [1st floor] • Queen Size + Single [3 beds]",
+    "tr": "Yatak Odası 1 [1. kat] • Çift Kişilik Yatak + Tek Kişilik Yatak [3 yatak]",
     "media": "https://drive.google.com/file/d/1yhpcuVrVTSR0jRgLta5t8qPLZeO9wZOL/view?usp=sharing",
     "status": "Вкл",
     "enabled": true
@@ -571,9 +571,9 @@ const MASTER_HOME_MAP = {
     "block": "5. Спальни",
     "key": "bedroom_1_desc",
     "desc": "Описание спальни 1",
-    "ru": "Первый этаж: 1 двуспальная кровать Queen + 1 односпальная кровать, персональная ванная с душевой кабиной, кондиционер",
-    "en": "First floor: 1 queen bed + 1 single bed, private bathroom with shower, air conditioning",
-    "tr": "Birinci kat: 1 adet çift kişilik yatak + 1 adet tek kişilik yatak, duşlu özel banyo, klima.",
+    "ru": "Первый этаж: 1 двуспальная кровать Queen + 1 односпальная кровать, персональная ванная с душевой кабиной, кондиционер, гардероб",
+    "en": "First floor: 1 queen bed + 1 single bed, private bathroom with shower, air conditioning, wardrobe",
+    "tr": "Birinci kat: 1 adet çift kişilik yatak + 1 adet tek kişilik yatak, duşlu özel banyo, klima, gardırop.",
     "media": "BedDouble",
     "status": "Вкл",
     "enabled": true
@@ -582,9 +582,9 @@ const MASTER_HOME_MAP = {
     "block": "5. Спальни",
     "key": "bedroom_1_badge",
     "desc": "Бейдж кровати спальни 1",
-    "ru": "Queen + Single [3 места]",
-    "en": "Queen + Single [3 places]",
-    "tr": "Kraliçe + Tekli [3 kişilik yer]",
+    "ru": "Queen Size + Single [3 места]",
+    "en": "Queen Size + Single [3 places]",
+    "tr": "Çift Kişilik + Tek Kişilik [3 kişilik]",
     "media": "",
     "status": "Вкл",
     "enabled": true
@@ -592,10 +592,10 @@ const MASTER_HOME_MAP = {
   "bedroom_2": {
     "block": "5. Спальни",
     "key": "bedroom_2",
-    "desc": "Спальня 2 [2 этаж] • King Bed [2 места]",
+    "desc": "Спальня 2 [2 этаж] • King size + Single [3 места]",
     "ru": "Спальня 2 [2 этаж] • King size + Single [3 места]",
     "en": "Bedroom 2 [2nd floor] • King size + Single [3 beds]",
-    "tr": "Yatak Odası 2 [2. kat] • Çift kişilik + Tek kişilik [3 yatak]",
+    "tr": "Yatak Odası 2 [2. kat] • Çift kişilik yatak + Tek kişilik yatak [3 yatak]",
     "media": "https://drive.google.com/file/d/1ZDpJ3vhVPizIGd2RzIJtfCQgcD3IWF_F/view?usp=sharing",
     "status": "Вкл",
     "enabled": true
@@ -604,9 +604,9 @@ const MASTER_HOME_MAP = {
     "block": "5. Спальни",
     "key": "bedroom_2_desc",
     "desc": "Описание спальни 2",
-    "ru": "Второй этаж: King size: Большая королевская кровать шириной 180–200 см и длиной 200 см.+ 1 односпальная кровать, собственная ванная комната, кондиционер, балкон с видом на горы.  King size + Single [3 места]",
-    "en": "Second floor: King size: Large king-size bed 180–200 cm wide and 200 cm long + 1 single bed, private bathroom, air conditioning, balcony with mountain views. King size + Single [3 beds]",
-    "tr": "İkinci kat: Çift kişilik yatak: 180-200 cm genişliğinde ve 200 cm uzunluğunda büyük çift kişilik yatak + 1 tek kişilik yatak, özel banyo, klima, dağ manzaralı balkon. Çift kişilik yatak + Tek kişilik yatak [3 yatak]",
+    "ru": "Второй этаж: King Size: Большая королевская кровать шириной 180–200 см и длиной 200 см.+ 1 односпальная кровать, собственная ванная комната, кондиционер, гардероб, балкон с видом на горы.  King size + Single [3 места]",
+    "en": "Second floor: King Size: Large king-size bed 180–200 cm wide and 200 cm long + 1 single bed, private bathroom, air conditioning, wardrobe, balcony with mountain views. King size + Single [3 beds]",
+    "tr": "İkinci kat: King Size: 180-200 cm genişliğinde ve 200 cm uzunluğunda büyük king size yatak + 1 tek kişilik yatak, özel banyo, klima, gardırop, dağ manzaralı balkon. King Size + Tek Kişilik [3 yatak]",
     "media": "BedDouble",
     "status": "Вкл",
     "enabled": true
@@ -615,9 +615,9 @@ const MASTER_HOME_MAP = {
     "block": "5. Спальни",
     "key": "bedroom_2_badge",
     "desc": "Бейдж кровати спальни 2",
-    "ru": "King size + Single [3 места]",
-    "en": "King size + Single [3 places]",
-    "tr": "Çift kişilik yatak + Tek kişilik yatak [3 kişilik]",
+    "ru": "King Size + Single [3 места]",
+    "en": "King Size + Single [3 places]",
+    "tr": "Çift Kişilik + Tek Kişilik [3 kişilik]",
     "media": "",
     "status": "Вкл",
     "enabled": true
@@ -625,7 +625,7 @@ const MASTER_HOME_MAP = {
   "bedroom_3": {
     "block": "5. Спальни",
     "key": "bedroom_3",
-    "desc": "Спальня 3 [2 этаж] • Queen Bed [2 места]",
+    "desc": "Спальня 3 [2 этаж] • Queen Size [2 места]",
     "ru": "Спальня 3 [2 этаж] • Queen Bed [2 места]",
     "en": "Bedroom 3 [2nd floor] • Queen Bed [2 beds]",
     "tr": "Yatak Odası 3 [2. kat] • Çift Kişilik Yatak [2 yatak]",
@@ -648,9 +648,9 @@ const MASTER_HOME_MAP = {
     "block": "5. Спальни",
     "key": "bedroom_3_badge",
     "desc": "Бейдж кроватей спальни 3",
-    "ru": "Queen Bed [2 места]",
-    "en": "Queen Bed [2 places]",
-    "tr": "Çift Kişilik Yatak [2 kişilik]",
+    "ru": "Queen Size [2 места]",
+    "en": "Queen Size [2 places]",
+    "tr": "Kraliçe Boyutu [2 kişilik]",
     "media": "",
     "status": "Вкл",
     "enabled": true
@@ -658,7 +658,7 @@ const MASTER_HOME_MAP = {
   "bedroom_4": {
     "block": "5. Спальни",
     "key": "bedroom_4",
-    "desc": "Спальня 4 [2 этаж] • Queen + Single [3 места]",
+    "desc": "Спальня 4 [2 этаж] • Queen Size [2 места]",
     "ru": "Спальня 4 [2 этаж] • Queen + Single [3 места]",
     "en": "Bedroom 4 [2nd floor] • Queen + Single [3 beds]",
     "tr": "Yatak Odası 4 [2. kat] • Çift kişilik + Tek kişilik [3 yatak]",
@@ -670,9 +670,9 @@ const MASTER_HOME_MAP = {
     "block": "5. Спальни",
     "key": "bedroom_4_desc",
     "desc": "Описание спальни 4",
-    "ru": "Второй этаж: 1 двуспальная кровать Queen + 1 дополнительная односпальная кровать, собственная ванная комната, кондиционер",
-    "en": "Second floor: 1 queen bed + 1 extra single bed, private bathroom, air conditioning",
-    "tr": "İkinci kat: 1 adet çift kişilik yatak + 1 adet ilave tek kişilik yatak, özel banyo, klima.",
+    "ru": "Второй этаж: 1 двуспальная кровать Queen Size, собственная ванная комната, кондиционер, гардероб",
+    "en": "Second floor: 1 queen size bed, private bathroom, air conditioning, wardrobe",
+    "tr": "İkinci kat: 1 adet çift kişilik yatak, özel banyo, klima, gardırop.",
     "media": "Sofa",
     "status": "Вкл",
     "enabled": true
@@ -680,10 +680,10 @@ const MASTER_HOME_MAP = {
   "bedroom_4_badge": {
     "block": "5. Спальни",
     "key": "bedroom_4_badge",
-    "desc": "Бейдж дивана спальни 4",
-    "ru": "Queen + Single [3 места]",
-    "en": "Queen + Single [3 places]",
-    "tr": "Kraliçe + Tekli [3 kişilik yer]",
+    "desc": "Бейдж кроватей спальни 4",
+    "ru": "Queen Size [2 места]",
+    "en": "Queen Size [2 places]",
+    "tr": "Kraliçe Boyutu [2 kişilik]",
     "media": "",
     "status": "Вкл",
     "enabled": true
@@ -716,7 +716,7 @@ const MASTER_HOME_MAP = {
     "desc": "Основное удобство 1 на главной",
     "ru": "Приватный открытый бассейн 36 м²",
     "en": "Private outdoor pool 36 m²",
-    "tr": "36 m²'lik özel açık yüzme havuzu",
+    "tr": "Özel açık yüzme havuzu 36 m²",
     "media": "Waves",
     "status": "Вкл",
     "enabled": true
@@ -979,7 +979,7 @@ const MASTER_HOME_MAP = {
     "key": "amenity_cat3_item5",
     "desc": "Модальное окно: Категория 3 Пункт 5",
     "ru": "Полный комплект посуды и бокалов для вина",
-    "en": "A complete set of dishes and wine glasses",
+    "en": "A complete set of tableware and wine glasses",
     "tr": "Komple bir yemek takımı ve şarap kadehleri ​​seti.",
     "media": "Check",
     "status": "Вкл",
@@ -1013,7 +1013,7 @@ const MASTER_HOME_MAP = {
     "desc": "Модальное окно: Категория 4 Пункт 2",
     "ru": "Сплит-системы кондиционирования во всех спальнях",
     "en": "Split-system air conditioning in all bedrooms",
-    "tr": "Tüm yatak odalarında split sistem klima mevcuttur.",
+    "tr": "Tüm yatak odalarında split sistem klima bulunmaktadır.",
     "media": "Check",
     "status": "Вкл",
     "enabled": true
@@ -1287,7 +1287,7 @@ const MASTER_HOME_MAP = {
     "key": "location_badge",
     "desc": "Текст плашки GPS и расстояния до аэропорта",
     "ru": "GPS: 36.8336° N, 28.6439° E • 250м до центра • 11 км до пляжа Изтузу • 30 км до DLM",
-    "en": "GPS: 36.8336° N, 28.6439° E • 250 m to the center • 11 km to Iztuzu beach • 30 km to DLM",
+    "en": "GPS: 36.8336° N, 28.6439° E • 250m to the center • 11 km to Iztuzu beach • 30 km to DLM",
     "tr": "GPS: 36.8336° K, 28.6439° D • Merkeze 250 m • İztuzu plajına 11 km • DLM'ye 30 km",
     "media": "Navigation",
     "status": "Вкл",
@@ -1442,7 +1442,7 @@ const MASTER_HOME_MAP = {
     "desc": "Заголовок секции ориентиров",
     "ru": "14 географических ориентиров Дальяна",
     "en": "14 Geographical Landmarks of Dalyan",
-    "tr": "Dalyan'ın 14 Coğrafi Yer İşareti",
+    "tr": "Dalyan'ın 14 Coğrafi Özelliği",
     "media": "MapPin",
     "status": "Вкл",
     "enabled": true
@@ -1640,7 +1640,7 @@ const MASTER_HOME_MAP = {
     "desc": "Ориентир 14: Морской курортный город Мармарис",
     "ru": "Крупный морской порт и курортный город Мармарис: марины для суперяхт, набережная и шоппинг",
     "en": "The major seaport and resort town of Marmaris: superyacht marinas, a promenade, and shopping",
-    "tr": "Marmaris, önemli bir liman kenti ve tatil beldesidir: süper yat marinaları, sahil şeridi ve alışveriş merkezleri bulunmaktadır.",
+    "tr": "Marmaris, önemli bir liman kenti ve tatil beldesidir: süper yat limanları, sahil şeridi ve alışveriş merkezleri bulunmaktadır.",
     "media": "85 км|1 час 15 мин на авто|city|Эгейская Ривьера|Car",
     "status": "Вкл",
     "enabled": true
@@ -2143,7 +2143,7 @@ const MASTER_HOME_MAP = {
   "legal_cancellation_item3": {
     "block": "12. Безопасность",
     "key": "legal_cancellation_item3",
-    "desc": "Пункт 2: Менее 60 дней невозвратный тариф",
+    "desc": "Пункт 3: Менее 60 дней невозвратный тариф",
     "ru": "Стоимость проживания сохраняется в полном объеме (невозвратный тариф) при отмене менее чем за 60 суток до заезда.",
     "en": "The cost of accommodation is retained in full (non-refundable rate) if cancelled less than 60 days before arrival.",
     "tr": "Varıştan 60 günden daha kısa süre önce iptal edilmesi durumunda konaklama ücretinin tamamı (iade edilmez) tahsil edilir.",
@@ -2152,9 +2152,31 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "legal_cancellation_item4": {
-    "block": "12. Безопасность",
+    "block": "13. Форс - мажор",
     "key": "legal_cancellation_item4",
-    "desc": "Пункт 3: Инвойс e-Arşiv Fatura",
+    "desc": "Пункт 1: Форс мажор",
+    "ru": "Мы гарантируем полный 100% возврат средств при наступлении документально подтвержденных обстоятельств непреодолимой силы государственного масштаба (стихийные бедствия, закрытие границ, официальный запрет на въезд/выезд). Личные обстоятельства (изменение планов, рядовая болезнь, задержка рейсов) обрабатываются согласно стандартным правилам возврата.",
+    "en": "We guarantee a full 100% refund in the event of documented force majeure circumstances of national significance (natural disasters, border closures, official entry/exit bans). Personal circumstances (change of plans, ordinary illness, flight delays) are processed according to our standard refund policies.",
+    "tr": "Ulusal öneme sahip belgelenmiş mücbir sebep hallerinde (doğal afetler, sınır kapatmaları, resmi giriş/çıkış yasakları) %100 tam para iadesi garantisi veriyoruz. Kişisel durumlar (plan değişikliği, olağan hastalık, uçuş gecikmeleri) standart iade politikalarımıza göre işleme alınır.",
+    "media": "",
+    "status": "Вкл",
+    "enabled": true
+  },
+  "legal_cancellation_item5": {
+    "block": "13. Инвойс e-Arşiv Fatura",
+    "key": "legal_cancellation_item5",
+    "desc": "Пункт 1: Инвойс e-Arşiv Fatura",
+    "ru": "Ваши данные защищены и используются исключительно для регистрации гостей в системе KBS согласно законам Турции.",
+    "en": "Your data is protected and used solely for the purpose of registering guests in the KBS system in accordance with Turkish law.",
+    "tr": "Verileriniz korunmaktadır ve Türk kanunlarına uygun olarak yalnızca KBS sistemine misafir kaydı amacıyla kullanılmaktadır.",
+    "media": "FileText",
+    "status": "Вкл",
+    "enabled": true
+  },
+  "legal_cancellation_item6": {
+    "block": "13. Инвойс e-Arşiv Fatura",
+    "key": "legal_cancellation_item6",
+    "desc": "Пункт 2: Инвойс e-Arşiv Fatura",
     "ru": "Да, это безопасно и технически необходимо для работы вашей архитектуры.",
     "en": "Yes, it is safe and technically necessary for your architecture to work.",
     "tr": "Evet, güvenli ve mimarinizin çalışması için teknik olarak gerekli.",
@@ -2163,7 +2185,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "brandName": {
-    "block": "13. Словарь интерфейса",
+    "block": "14. Словарь интерфейса",
     "key": "brandName",
     "desc": "Название бренда в шапке",
     "ru": "Villa Turaman",
@@ -2174,7 +2196,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "login": {
-    "block": "13. Словарь интерфейса",
+    "block": "14. Словарь интерфейса",
     "key": "login",
     "desc": "Кнопка входа в аккаунт",
     "ru": "Войти",
@@ -2185,7 +2207,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "register": {
-    "block": "13. Словарь интерфейса",
+    "block": "14. Словарь интерфейса",
     "key": "register",
     "desc": "Кнопка регистрации",
     "ru": "Регистрация",
@@ -2196,7 +2218,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "logout": {
-    "block": "13. Словарь интерфейса",
+    "block": "14. Словарь интерфейса",
     "key": "logout",
     "desc": "Кнопка выхода из системы",
     "ru": "Выйти",
@@ -2207,7 +2229,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "guestCabinet": {
-    "block": "13. Словарь интерфейса",
+    "block": "14. Словарь интерфейса",
     "key": "guestCabinet",
     "desc": "Кнопка кабинета гостя",
     "ru": "Мои поездки",
@@ -2218,7 +2240,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "hostCabinet": {
-    "block": "13. Словарь интерфейса",
+    "block": "14. Словарь интерфейса",
     "key": "hostCabinet",
     "desc": "Кнопка панели суперхозяина",
     "ru": "Панель управления",
@@ -2229,7 +2251,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "navAbout": {
-    "block": "13. Словарь интерфейса",
+    "block": "14. Словарь интерфейса",
     "key": "navAbout",
     "desc": "Пункт меню О вилле",
     "ru": "О вилле",
@@ -2240,7 +2262,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "navAmenities": {
-    "block": "13. Словарь интерфейса",
+    "block": "14. Словарь интерфейса",
     "key": "navAmenities",
     "desc": "Пункт меню Удобства",
     "ru": "Удобства",
@@ -2251,7 +2273,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "navReviews": {
-    "block": "13. Словарь интерфейса",
+    "block": "14. Словарь интерфейса",
     "key": "navReviews",
     "desc": "Пункт меню Отзывы",
     "ru": "Отзывы",
@@ -2262,7 +2284,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "navLocation": {
-    "block": "13. Словарь интерфейса",
+    "block": "14. Словарь интерфейса",
     "key": "navLocation",
     "desc": "Пункт меню Расположение",
     "ru": "Расположение",
@@ -2273,7 +2295,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "navCatalog": {
-    "block": "13. Словарь интерфейса",
+    "block": "14. Словарь интерфейса",
     "key": "navCatalog",
     "desc": "Пункт меню Услуги и гиды",
     "ru": "Услуги и гиды",
@@ -2284,7 +2306,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "bookNow": {
-    "block": "14. Словарь интерфейса",
+    "block": "15. Словарь интерфейса",
     "key": "bookNow",
     "desc": "Главная кнопка бронирования",
     "ru": "Забронировать",
@@ -2295,7 +2317,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "checkIn": {
-    "block": "14. Словарь интерфейса",
+    "block": "15. Словарь интерфейса",
     "key": "checkIn",
     "desc": "Поле даты заезда",
     "ru": "Заезд",
@@ -2306,7 +2328,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "checkOut": {
-    "block": "14. Словарь интерфейса",
+    "block": "15. Словарь интерфейса",
     "key": "checkOut",
     "desc": "Поле даты выезда",
     "ru": "Выезд",
@@ -2317,7 +2339,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "guests": {
-    "block": "14. Словарь интерфейса",
+    "block": "15. Словарь интерфейса",
     "key": "guests",
     "desc": "Выбор количества гостей",
     "ru": "Гости",
@@ -2328,7 +2350,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "perNight": {
-    "block": "14. Словарь интерфейса",
+    "block": "15. Словарь интерфейса",
     "key": "perNight",
     "desc": "Подпись тарифа за сутки",
     "ru": "за ночь",
@@ -2339,7 +2361,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "nights": {
-    "block": "14. Словарь интерфейса",
+    "block": "15. Словарь интерфейса",
     "key": "nights",
     "desc": "Подпись количества ночей",
     "ru": "ночей",
@@ -2350,7 +2372,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "totalPrice": {
-    "block": "14. Словарь интерфейса",
+    "block": "15. Словарь интерфейса",
     "key": "totalPrice",
     "desc": "Итоговая стоимость проживания",
     "ru": "Итого к оплате",
@@ -2361,7 +2383,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "cleaningFee": {
-    "block": "14. Словарь интерфейса",
+    "block": "15. Словарь интерфейса",
     "key": "cleaningFee",
     "desc": "Строка сервисного сбора",
     "ru": "Сервисный сбор и финальная уборка",
@@ -2372,7 +2394,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "depositText": {
-    "block": "14. Словарь интерфейса",
+    "block": "15. Словарь интерфейса",
     "key": "depositText",
     "desc": "Размер гарантийного залога",
     "ru": "Возвратный депозит за сохранность имущества",
@@ -2383,7 +2405,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "confirmBooking": {
-    "block": "14. Словарь интерфейса",
+    "block": "15. Словарь интерфейса",
     "key": "confirmBooking",
     "desc": "Кнопка подтверждения заявки",
     "ru": "Подтвердить бронирование",
@@ -2394,7 +2416,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "selectDates": {
-    "block": "14. Словарь интерфейса",
+    "block": "15. Словарь интерфейса",
     "key": "selectDates",
     "desc": "Подсказка выбора дат",
     "ru": "Выберите даты поездки",
@@ -2405,7 +2427,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "close": {
-    "block": "15. Словарь интерфейса",
+    "block": "16. Словарь интерфейса",
     "key": "close",
     "desc": "Кнопка закрытия модального окна",
     "ru": "Закрыть",
@@ -2416,7 +2438,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "back": {
-    "block": "15. Словарь интерфейса",
+    "block": "16. Словарь интерфейса",
     "key": "back",
     "desc": "Кнопка возврата назад",
     "ru": "Назад",
@@ -2427,7 +2449,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "save": {
-    "block": "15. Словарь интерфейса",
+    "block": "16. Словарь интерфейса",
     "key": "save",
     "desc": "Кнопка сохранения данных",
     "ru": "Сохранить изменения",
@@ -2438,7 +2460,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "showAllPhotos": {
-    "block": "15. Словарь интерфейса",
+    "block": "16. Словарь интерфейса",
     "key": "showAllPhotos",
     "desc": "Кнопка открытия галереи фото",
     "ru": "Показать все фото",
@@ -2449,7 +2471,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "showAllAmenities": {
-    "block": "15. Словарь интерфейса",
+    "block": "16. Словарь интерфейса",
     "key": "showAllAmenities",
     "desc": "Кнопка открытия всех удобств",
     "ru": "Показать все удобства",
@@ -2460,7 +2482,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "showAllLandmarksBtn": {
-    "block": "15. Словарь интерфейса",
+    "block": "16. Словарь интерфейса",
     "key": "showAllLandmarksBtn",
     "desc": "Кнопка показа всех ориентиров",
     "ru": "Показать все 14 ориентиров и карту расстояний",
@@ -2471,7 +2493,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "showAllReviewsBtn": {
-    "block": "15. Словарь интерфейса",
+    "block": "16. Словарь интерфейса",
     "key": "showAllReviewsBtn",
     "desc": "Кнопка показа отзывов",
     "ru": "Показать все 48 отзывов и критерии оценок",
@@ -2482,7 +2504,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "landmarksCategoryTitle": {
-    "block": "15. Словарь интерфейса",
+    "block": "16. Словарь интерфейса",
     "key": "landmarksCategoryTitle",
     "desc": "Надзаголовок ориентиров",
     "ru": "Географические ориентиры Дальяна",
@@ -2493,7 +2515,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "reviewsCategoryTitle": {
-    "block": "15. Словарь интерфейса",
+    "block": "16. Словарь интерфейса",
     "key": "reviewsCategoryTitle",
     "desc": "Надзаголовок отзывов",
     "ru": "Рейтинг гостей и отзывы",
@@ -2504,18 +2526,18 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "reviewsRatingTitle": {
-    "block": "15. Словарь интерфейса",
+    "block": "16. Словарь интерфейса",
     "key": "reviewsRatingTitle",
     "desc": "Шаблон рейтинга отзывов",
     "ru": "Рейтинг гостей на основе",
     "en": "Guest rating based on",
-    "tr": "Misafir değerlendirmesi şu kriterlere dayanmaktadır:",
+    "tr": "Konuk değerlendirmesi şu kriterlere dayanmaktadır:",
     "media": "Star",
     "status": "Вкл",
     "enabled": true
   },
   "legalRegulationHeader": {
-    "block": "15. Словарь интерфейса",
+    "block": "16. Словарь интерфейса",
     "key": "legalRegulationHeader",
     "desc": "Надзаголовок безопасности",
     "ru": "Юридический регламент и комфорт",
@@ -2526,7 +2548,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "chatWithHost": {
-    "block": "16. Словарь интерфейса",
+    "block": "17. Словарь интерфейса",
     "key": "chatWithHost",
     "desc": "Кнопка вызова прямого чата с хозяином",
     "ru": "Чат с суперхозяином",
@@ -2537,7 +2559,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "onlineStatus": {
-    "block": "16. Словарь интерфейса",
+    "block": "17. Словарь интерфейса",
     "key": "onlineStatus",
     "desc": "Индикатор статуса онлайн",
     "ru": "В сети : отвечает мгновенно",
@@ -2548,7 +2570,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "typing": {
-    "block": "16. Словарь интерфейса",
+    "block": "17. Словарь интерфейса",
     "key": "typing",
     "desc": "Индикатор набора текста",
     "ru": "Алексей печатает ответ...",
@@ -2559,7 +2581,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "send": {
-    "block": "16. Словарь интерфейса",
+    "block": "17. Словарь интерфейса",
     "key": "send",
     "desc": "Кнопка отправки сообщения в чат",
     "ru": "Отправить",
@@ -2570,7 +2592,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "messagePlaceholder": {
-    "block": "16. Словарь интерфейса",
+    "block": "17. Словарь интерфейса",
     "key": "messagePlaceholder",
     "desc": "Плейсхолдер поля ввода в чате",
     "ru": "Напишите ваш вопрос или пожелание...",
@@ -2581,7 +2603,7 @@ const MASTER_HOME_MAP = {
     "enabled": true
   },
   "bookingSuccess": {
-    "block": "16. Словарь интерфейса",
+    "block": "17. Словарь интерфейса",
     "key": "bookingSuccess",
     "desc": "Уведомление об успешной оплате",
     "ru": "Оплата успешно подтверждена! Бронирование внесено в календарь.",
@@ -2909,8 +2931,8 @@ const MASTER_HOME_ROWS = [
     "about_sec_3_text",
     "Модальное окно: Раздел 3 Текст",
     "Приватный бассейн с соленой водой: чаша 4×9 метров [площадь 36 кв. м], постоянная глубина 150 см. Без запаха хлора. Доступен с 1 мая по 1 ноября. Чистка в день заселения и каждые 7 дней. Подсветка бассейна: 20:00 - 01:00.\nУличное приватное джакузи: на 4 персоны, автоматический цикл [15 минут работы каждые 45 минут в период 10:00 - 17:00]. Подсветка джакузи: 20:00 - 01:00. Сезон: 1 мая - 1 ноября.\nОсвещение территории: автоматическое [20:00 - 01:00 и 04:00 - 06:00].\nПарковка: бесплатная закрытая частная парковка на территории на 2 авто.\nОткрытые зоны отдыха: огороженный сад, барбекю [BBQ], крыльцо с кофейными столиками, обеденный стол на 8 мест, шезлонги и летний душ.",
-    "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor recreation areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
-    "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava dinlenme alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır.",
+    "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor seating areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
+    "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava oturma alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır.",
     "",
     "Вкл"
   ],
@@ -2929,8 +2951,8 @@ const MASTER_HOME_ROWS = [
     "about_sec_4_text",
     "Модальное окно: Раздел 4 Текст",
     "Закон Турции № 7464 о краткосрочной аренде: обязательный договор аренды виллы с описью имущества при заселении.\nРегистрация в системе учета населения KBS: обязательное предоставление паспортов всех проживающих. Размещение незарегистрированных лиц строго запрещено.\nБезопасность дома: внешнее видеонаблюдение по периметру, детекторы дыма во всех спальнях и гостиной, огнетушитель, аптечка первой помощи.\nДоступная среда: выделенная парковка для инвалидов, ровный освещенный вход без ступеней, дверь от 81 см, подъемник для бассейна и джакузи.\nПолитика отмены: менее 28 ночей - Негибкие, от 28 ночей - Строгие. Опция невозвратного тарифа со скидкой 10% за 60 дней.",
-    "Turkish Short-Term Rental Law No. 7464: A mandatory villa rental agreement with an inventory of the property is required upon arrival.\nKBS Population Registration System: Passports of all residents are required. Unregistered occupants are strictly prohibited.\nHome Security: External perimeter video surveillance, smoke detectors in all bedrooms and the living room, fire extinguisher, and first aid kit.\nAccessibility: Dedicated disabled parking, level, illuminated, step-free entrance, door height of at least 81 cm, pool and jacuzzi lift.\nCancellation Policy: Less than 28 nights - Inflexible, 28 nights or more - Strict. Non-refundable rate option with a 10% discount for 60 days.",
-    "Türk Kısa Süreli Kiralama Kanunu No. 7464: Varışta, mülkün envanterini içeren zorunlu bir villa kiralama sözleşmesi gereklidir.\nKBS Nüfus Kayıt Sistemi: Tüm sakinlerin pasaportları gereklidir. Kayıt dışı sakinlerin konaklaması kesinlikle yasaktır.\nEv Güvenliği: Dış çevre video gözetimi, tüm yatak odalarında ve oturma odasında duman dedektörleri, yangın söndürücü ve ilk yardım çantası.\nErişilebilirlik: Engelliler için özel park yeri, düz, aydınlatmalı, basamaksız giriş, en az 81 cm kapı yüksekliği, havuz ve jakuzi asansörü.\nİptal Politikası: 28 geceden az - Esnek değil, 28 gece veya daha fazla - Kesinlikle. 60 gün için %10 indirimli, iade edilmeyen fiyat seçeneği.",
+    "Turkish Short-Term Rental Law No. 7464: A mandatory villa rental agreement with an inventory of the property is required upon arrival.\nKBS Population Registration System: Passports of all residents are required. Unregistered guests are strictly prohibited.\nHome Security: External perimeter video surveillance, smoke detectors in all bedrooms and the living room, fire extinguisher, and first aid kit.\nAccessibility: Dedicated disabled parking, level, illuminated, step-free entrance, door height of at least 81 cm, pool and jacuzzi lift.\nCancellation Policy: Less than 28 nights - Inflexible, 28 nights or more - Strict. Non-refundable rate option with a 10% discount for 60 days.",
+    "Türk Kısa Süreli Kiralama Kanunu No. 7464: Varışta, mülkün envanterini içeren zorunlu bir villa kiralama sözleşmesi gereklidir.\nKBS Nüfus Kayıt Sistemi: Tüm sakinlerin pasaportları gereklidir. Kayıtlı olmayan misafirler kesinlikle yasaktır.\nEv Güvenliği: Dış çevre video gözetimi, tüm yatak odalarında ve oturma odasında duman dedektörleri, yangın söndürücü ve ilk yardım çantası.\nErişilebilirlik: Engelliler için özel park yeri, düz, aydınlatmalı, basamaksız giriş, en az 81 cm kapı yüksekliği, havuz ve jakuzi asansörü.\nİptal Politikası: 28 geceden az - Esnek değil, 28 gece veya daha fazla - Kesinlikle. 60 gün için %10 indirimli, iade edilmeyen fiyat seçeneği.",
     "",
     "Вкл"
   ],
@@ -3007,10 +3029,10 @@ const MASTER_HOME_ROWS = [
   [
     "5. Спальни",
     "bedroom_1",
-    "Спальня 1 [1 этаж] • Queen + Single [3 места]",
-    "Спальня 1 [1 этаж] • Queen + Single [3 места]",
-    "Bedroom 1 [1st floor] • Queen + Single [3 beds]",
-    "Yatak Odası 1 [1. kat] • Çift kişilik + Tek kişilik [3 yatak]",
+    "Спальня 1 [1 этаж] • Queen Size + Single [3 места]",
+    "Спальня 1 [1 этаж] • Queen Size + Single [3 места]",
+    "Bedroom 1 [1st floor] • Queen Size + Single [3 beds]",
+    "Yatak Odası 1 [1. kat] • Çift Kişilik Yatak + Tek Kişilik Yatak [3 yatak]",
     "https://drive.google.com/file/d/1yhpcuVrVTSR0jRgLta5t8qPLZeO9wZOL/view?usp=sharing",
     "Вкл"
   ],
@@ -3018,9 +3040,9 @@ const MASTER_HOME_ROWS = [
     "5. Спальни",
     "bedroom_1_desc",
     "Описание спальни 1",
-    "Первый этаж: 1 двуспальная кровать Queen + 1 односпальная кровать, персональная ванная с душевой кабиной, кондиционер",
-    "First floor: 1 queen bed + 1 single bed, private bathroom with shower, air conditioning",
-    "Birinci kat: 1 adet çift kişilik yatak + 1 adet tek kişilik yatak, duşlu özel banyo, klima.",
+    "Первый этаж: 1 двуспальная кровать Queen + 1 односпальная кровать, персональная ванная с душевой кабиной, кондиционер, гардероб",
+    "First floor: 1 queen bed + 1 single bed, private bathroom with shower, air conditioning, wardrobe",
+    "Birinci kat: 1 adet çift kişilik yatak + 1 adet tek kişilik yatak, duşlu özel banyo, klima, gardırop.",
     "BedDouble",
     "Вкл"
   ],
@@ -3028,19 +3050,19 @@ const MASTER_HOME_ROWS = [
     "5. Спальни",
     "bedroom_1_badge",
     "Бейдж кровати спальни 1",
-    "Queen + Single [3 места]",
-    "Queen + Single [3 places]",
-    "Kraliçe + Tekli [3 kişilik yer]",
+    "Queen Size + Single [3 места]",
+    "Queen Size + Single [3 places]",
+    "Çift Kişilik + Tek Kişilik [3 kişilik]",
     "",
     "Вкл"
   ],
   [
     "5. Спальни",
     "bedroom_2",
-    "Спальня 2 [2 этаж] • King Bed [2 места]",
+    "Спальня 2 [2 этаж] • King size + Single [3 места]",
     "Спальня 2 [2 этаж] • King size + Single [3 места]",
     "Bedroom 2 [2nd floor] • King size + Single [3 beds]",
-    "Yatak Odası 2 [2. kat] • Çift kişilik + Tek kişilik [3 yatak]",
+    "Yatak Odası 2 [2. kat] • Çift kişilik yatak + Tek kişilik yatak [3 yatak]",
     "https://drive.google.com/file/d/1ZDpJ3vhVPizIGd2RzIJtfCQgcD3IWF_F/view?usp=sharing",
     "Вкл"
   ],
@@ -3048,9 +3070,9 @@ const MASTER_HOME_ROWS = [
     "5. Спальни",
     "bedroom_2_desc",
     "Описание спальни 2",
-    "Второй этаж: King size: Большая королевская кровать шириной 180–200 см и длиной 200 см.+ 1 односпальная кровать, собственная ванная комната, кондиционер, балкон с видом на горы.  King size + Single [3 места]",
-    "Second floor: King size: Large king-size bed 180–200 cm wide and 200 cm long + 1 single bed, private bathroom, air conditioning, balcony with mountain views. King size + Single [3 beds]",
-    "İkinci kat: Çift kişilik yatak: 180-200 cm genişliğinde ve 200 cm uzunluğunda büyük çift kişilik yatak + 1 tek kişilik yatak, özel banyo, klima, dağ manzaralı balkon. Çift kişilik yatak + Tek kişilik yatak [3 yatak]",
+    "Второй этаж: King Size: Большая королевская кровать шириной 180–200 см и длиной 200 см.+ 1 односпальная кровать, собственная ванная комната, кондиционер, гардероб, балкон с видом на горы.  King size + Single [3 места]",
+    "Second floor: King Size: Large king-size bed 180–200 cm wide and 200 cm long + 1 single bed, private bathroom, air conditioning, wardrobe, balcony with mountain views. King size + Single [3 beds]",
+    "İkinci kat: King Size: 180-200 cm genişliğinde ve 200 cm uzunluğunda büyük king size yatak + 1 tek kişilik yatak, özel banyo, klima, gardırop, dağ manzaralı balkon. King Size + Tek Kişilik [3 yatak]",
     "BedDouble",
     "Вкл"
   ],
@@ -3058,16 +3080,16 @@ const MASTER_HOME_ROWS = [
     "5. Спальни",
     "bedroom_2_badge",
     "Бейдж кровати спальни 2",
-    "King size + Single [3 места]",
-    "King size + Single [3 places]",
-    "Çift kişilik yatak + Tek kişilik yatak [3 kişilik]",
+    "King Size + Single [3 места]",
+    "King Size + Single [3 places]",
+    "Çift Kişilik + Tek Kişilik [3 kişilik]",
     "",
     "Вкл"
   ],
   [
     "5. Спальни",
     "bedroom_3",
-    "Спальня 3 [2 этаж] • Queen Bed [2 места]",
+    "Спальня 3 [2 этаж] • Queen Size [2 места]",
     "Спальня 3 [2 этаж] • Queen Bed [2 места]",
     "Bedroom 3 [2nd floor] • Queen Bed [2 beds]",
     "Yatak Odası 3 [2. kat] • Çift Kişilik Yatak [2 yatak]",
@@ -3088,16 +3110,16 @@ const MASTER_HOME_ROWS = [
     "5. Спальни",
     "bedroom_3_badge",
     "Бейдж кроватей спальни 3",
-    "Queen Bed [2 места]",
-    "Queen Bed [2 places]",
-    "Çift Kişilik Yatak [2 kişilik]",
+    "Queen Size [2 места]",
+    "Queen Size [2 places]",
+    "Kraliçe Boyutu [2 kişilik]",
     "",
     "Вкл"
   ],
   [
     "5. Спальни",
     "bedroom_4",
-    "Спальня 4 [2 этаж] • Queen + Single [3 места]",
+    "Спальня 4 [2 этаж] • Queen Size [2 места]",
     "Спальня 4 [2 этаж] • Queen + Single [3 места]",
     "Bedroom 4 [2nd floor] • Queen + Single [3 beds]",
     "Yatak Odası 4 [2. kat] • Çift kişilik + Tek kişilik [3 yatak]",
@@ -3108,19 +3130,19 @@ const MASTER_HOME_ROWS = [
     "5. Спальни",
     "bedroom_4_desc",
     "Описание спальни 4",
-    "Второй этаж: 1 двуспальная кровать Queen + 1 дополнительная односпальная кровать, собственная ванная комната, кондиционер",
-    "Second floor: 1 queen bed + 1 extra single bed, private bathroom, air conditioning",
-    "İkinci kat: 1 adet çift kişilik yatak + 1 adet ilave tek kişilik yatak, özel banyo, klima.",
+    "Второй этаж: 1 двуспальная кровать Queen Size, собственная ванная комната, кондиционер, гардероб",
+    "Second floor: 1 queen size bed, private bathroom, air conditioning, wardrobe",
+    "İkinci kat: 1 adet çift kişilik yatak, özel banyo, klima, gardırop.",
     "Sofa",
     "Вкл"
   ],
   [
     "5. Спальни",
     "bedroom_4_badge",
-    "Бейдж дивана спальни 4",
-    "Queen + Single [3 места]",
-    "Queen + Single [3 places]",
-    "Kraliçe + Tekli [3 kişilik yer]",
+    "Бейдж кроватей спальни 4",
+    "Queen Size [2 места]",
+    "Queen Size [2 places]",
+    "Kraliçe Boyutu [2 kişilik]",
     "",
     "Вкл"
   ],
@@ -3150,7 +3172,7 @@ const MASTER_HOME_ROWS = [
     "Основное удобство 1 на главной",
     "Приватный открытый бассейн 36 м²",
     "Private outdoor pool 36 m²",
-    "36 m²'lik özel açık yüzme havuzu",
+    "Özel açık yüzme havuzu 36 m²",
     "Waves",
     "Вкл"
   ],
@@ -3389,7 +3411,7 @@ const MASTER_HOME_ROWS = [
     "amenity_cat3_item5",
     "Модальное окно: Категория 3 Пункт 5",
     "Полный комплект посуды и бокалов для вина",
-    "A complete set of dishes and wine glasses",
+    "A complete set of tableware and wine glasses",
     "Komple bir yemek takımı ve şarap kadehleri ​​seti.",
     "Check",
     "Вкл"
@@ -3420,7 +3442,7 @@ const MASTER_HOME_ROWS = [
     "Модальное окно: Категория 4 Пункт 2",
     "Сплит-системы кондиционирования во всех спальнях",
     "Split-system air conditioning in all bedrooms",
-    "Tüm yatak odalarında split sistem klima mevcuttur.",
+    "Tüm yatak odalarında split sistem klima bulunmaktadır.",
     "Check",
     "Вкл"
   ],
@@ -3669,7 +3691,7 @@ const MASTER_HOME_ROWS = [
     "location_badge",
     "Текст плашки GPS и расстояния до аэропорта",
     "GPS: 36.8336° N, 28.6439° E • 250м до центра • 11 км до пляжа Изтузу • 30 км до DLM",
-    "GPS: 36.8336° N, 28.6439° E • 250 m to the center • 11 km to Iztuzu beach • 30 km to DLM",
+    "GPS: 36.8336° N, 28.6439° E • 250m to the center • 11 km to Iztuzu beach • 30 km to DLM",
     "GPS: 36.8336° K, 28.6439° D • Merkeze 250 m • İztuzu plajına 11 km • DLM'ye 30 km",
     "Navigation",
     "Вкл"
@@ -3810,7 +3832,7 @@ const MASTER_HOME_ROWS = [
     "Заголовок секции ориентиров",
     "14 географических ориентиров Дальяна",
     "14 Geographical Landmarks of Dalyan",
-    "Dalyan'ın 14 Coğrafi Yer İşareti",
+    "Dalyan'ın 14 Coğrafi Özelliği",
     "MapPin",
     "Вкл"
   ],
@@ -3990,7 +4012,7 @@ const MASTER_HOME_ROWS = [
     "Ориентир 14: Морской курортный город Мармарис",
     "Крупный морской порт и курортный город Мармарис: марины для суперяхт, набережная и шоппинг",
     "The major seaport and resort town of Marmaris: superyacht marinas, a promenade, and shopping",
-    "Marmaris, önemli bir liman kenti ve tatil beldesidir: süper yat marinaları, sahil şeridi ve alışveriş merkezleri bulunmaktadır.",
+    "Marmaris, önemli bir liman kenti ve tatil beldesidir: süper yat limanları, sahil şeridi ve alışveriş merkezleri bulunmaktadır.",
     "85 км|1 час 15 мин на авто|city|Эгейская Ривьера|Car",
     "Вкл"
   ],
@@ -4447,7 +4469,7 @@ const MASTER_HOME_ROWS = [
   [
     "12. Безопасность",
     "legal_cancellation_item3",
-    "Пункт 2: Менее 60 дней невозвратный тариф",
+    "Пункт 3: Менее 60 дней невозвратный тариф",
     "Стоимость проживания сохраняется в полном объеме (невозвратный тариф) при отмене менее чем за 60 суток до заезда.",
     "The cost of accommodation is retained in full (non-refundable rate) if cancelled less than 60 days before arrival.",
     "Varıştan 60 günden daha kısa süre önce iptal edilmesi durumunda konaklama ücretinin tamamı (iade edilmez) tahsil edilir.",
@@ -4455,9 +4477,29 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "12. Безопасность",
+    "13. Форс - мажор",
     "legal_cancellation_item4",
-    "Пункт 3: Инвойс e-Arşiv Fatura",
+    "Пункт 1: Форс мажор",
+    "Мы гарантируем полный 100% возврат средств при наступлении документально подтвержденных обстоятельств непреодолимой силы государственного масштаба (стихийные бедствия, закрытие границ, официальный запрет на въезд/выезд). Личные обстоятельства (изменение планов, рядовая болезнь, задержка рейсов) обрабатываются согласно стандартным правилам возврата.",
+    "We guarantee a full 100% refund in the event of documented force majeure circumstances of national significance (natural disasters, border closures, official entry/exit bans). Personal circumstances (change of plans, ordinary illness, flight delays) are processed according to our standard refund policies.",
+    "Ulusal öneme sahip belgelenmiş mücbir sebep hallerinde (doğal afetler, sınır kapatmaları, resmi giriş/çıkış yasakları) %100 tam para iadesi garantisi veriyoruz. Kişisel durumlar (plan değişikliği, olağan hastalık, uçuş gecikmeleri) standart iade politikalarımıza göre işleme alınır.",
+    "",
+    "Вкл"
+  ],
+  [
+    "13. Инвойс e-Arşiv Fatura",
+    "legal_cancellation_item5",
+    "Пункт 1: Инвойс e-Arşiv Fatura",
+    "Ваши данные защищены и используются исключительно для регистрации гостей в системе KBS согласно законам Турции.",
+    "Your data is protected and used solely for the purpose of registering guests in the KBS system in accordance with Turkish law.",
+    "Verileriniz korunmaktadır ve Türk kanunlarına uygun olarak yalnızca KBS sistemine misafir kaydı amacıyla kullanılmaktadır.",
+    "FileText",
+    "Вкл"
+  ],
+  [
+    "13. Инвойс e-Arşiv Fatura",
+    "legal_cancellation_item6",
+    "Пункт 2: Инвойс e-Arşiv Fatura",
     "Да, это безопасно и технически необходимо для работы вашей архитектуры.",
     "Yes, it is safe and technically necessary for your architecture to work.",
     "Evet, güvenli ve mimarinizin çalışması için teknik olarak gerekli.",
@@ -4465,7 +4507,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "13. Словарь интерфейса",
+    "14. Словарь интерфейса",
     "brandName",
     "Название бренда в шапке",
     "Villa Turaman",
@@ -4475,7 +4517,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "13. Словарь интерфейса",
+    "14. Словарь интерфейса",
     "login",
     "Кнопка входа в аккаунт",
     "Войти",
@@ -4485,7 +4527,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "13. Словарь интерфейса",
+    "14. Словарь интерфейса",
     "register",
     "Кнопка регистрации",
     "Регистрация",
@@ -4495,7 +4537,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "13. Словарь интерфейса",
+    "14. Словарь интерфейса",
     "logout",
     "Кнопка выхода из системы",
     "Выйти",
@@ -4505,7 +4547,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "13. Словарь интерфейса",
+    "14. Словарь интерфейса",
     "guestCabinet",
     "Кнопка кабинета гостя",
     "Мои поездки",
@@ -4515,7 +4557,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "13. Словарь интерфейса",
+    "14. Словарь интерфейса",
     "hostCabinet",
     "Кнопка панели суперхозяина",
     "Панель управления",
@@ -4525,7 +4567,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "13. Словарь интерфейса",
+    "14. Словарь интерфейса",
     "navAbout",
     "Пункт меню О вилле",
     "О вилле",
@@ -4535,7 +4577,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "13. Словарь интерфейса",
+    "14. Словарь интерфейса",
     "navAmenities",
     "Пункт меню Удобства",
     "Удобства",
@@ -4545,7 +4587,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "13. Словарь интерфейса",
+    "14. Словарь интерфейса",
     "navReviews",
     "Пункт меню Отзывы",
     "Отзывы",
@@ -4555,7 +4597,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "13. Словарь интерфейса",
+    "14. Словарь интерфейса",
     "navLocation",
     "Пункт меню Расположение",
     "Расположение",
@@ -4565,7 +4607,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "13. Словарь интерфейса",
+    "14. Словарь интерфейса",
     "navCatalog",
     "Пункт меню Услуги и гиды",
     "Услуги и гиды",
@@ -4575,7 +4617,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "14. Словарь интерфейса",
+    "15. Словарь интерфейса",
     "bookNow",
     "Главная кнопка бронирования",
     "Забронировать",
@@ -4585,7 +4627,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "14. Словарь интерфейса",
+    "15. Словарь интерфейса",
     "checkIn",
     "Поле даты заезда",
     "Заезд",
@@ -4595,7 +4637,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "14. Словарь интерфейса",
+    "15. Словарь интерфейса",
     "checkOut",
     "Поле даты выезда",
     "Выезд",
@@ -4605,7 +4647,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "14. Словарь интерфейса",
+    "15. Словарь интерфейса",
     "guests",
     "Выбор количества гостей",
     "Гости",
@@ -4615,7 +4657,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "14. Словарь интерфейса",
+    "15. Словарь интерфейса",
     "perNight",
     "Подпись тарифа за сутки",
     "за ночь",
@@ -4625,7 +4667,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "14. Словарь интерфейса",
+    "15. Словарь интерфейса",
     "nights",
     "Подпись количества ночей",
     "ночей",
@@ -4635,7 +4677,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "14. Словарь интерфейса",
+    "15. Словарь интерфейса",
     "totalPrice",
     "Итоговая стоимость проживания",
     "Итого к оплате",
@@ -4645,7 +4687,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "14. Словарь интерфейса",
+    "15. Словарь интерфейса",
     "cleaningFee",
     "Строка сервисного сбора",
     "Сервисный сбор и финальная уборка",
@@ -4655,7 +4697,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "14. Словарь интерфейса",
+    "15. Словарь интерфейса",
     "depositText",
     "Размер гарантийного залога",
     "Возвратный депозит за сохранность имущества",
@@ -4665,7 +4707,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "14. Словарь интерфейса",
+    "15. Словарь интерфейса",
     "confirmBooking",
     "Кнопка подтверждения заявки",
     "Подтвердить бронирование",
@@ -4675,7 +4717,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "14. Словарь интерфейса",
+    "15. Словарь интерфейса",
     "selectDates",
     "Подсказка выбора дат",
     "Выберите даты поездки",
@@ -4685,7 +4727,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "15. Словарь интерфейса",
+    "16. Словарь интерфейса",
     "close",
     "Кнопка закрытия модального окна",
     "Закрыть",
@@ -4695,7 +4737,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "15. Словарь интерфейса",
+    "16. Словарь интерфейса",
     "back",
     "Кнопка возврата назад",
     "Назад",
@@ -4705,7 +4747,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "15. Словарь интерфейса",
+    "16. Словарь интерфейса",
     "save",
     "Кнопка сохранения данных",
     "Сохранить изменения",
@@ -4715,7 +4757,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "15. Словарь интерфейса",
+    "16. Словарь интерфейса",
     "showAllPhotos",
     "Кнопка открытия галереи фото",
     "Показать все фото",
@@ -4725,7 +4767,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "15. Словарь интерфейса",
+    "16. Словарь интерфейса",
     "showAllAmenities",
     "Кнопка открытия всех удобств",
     "Показать все удобства",
@@ -4735,7 +4777,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "15. Словарь интерфейса",
+    "16. Словарь интерфейса",
     "showAllLandmarksBtn",
     "Кнопка показа всех ориентиров",
     "Показать все 14 ориентиров и карту расстояний",
@@ -4745,7 +4787,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "15. Словарь интерфейса",
+    "16. Словарь интерфейса",
     "showAllReviewsBtn",
     "Кнопка показа отзывов",
     "Показать все 48 отзывов и критерии оценок",
@@ -4755,7 +4797,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "15. Словарь интерфейса",
+    "16. Словарь интерфейса",
     "landmarksCategoryTitle",
     "Надзаголовок ориентиров",
     "Географические ориентиры Дальяна",
@@ -4765,7 +4807,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "15. Словарь интерфейса",
+    "16. Словарь интерфейса",
     "reviewsCategoryTitle",
     "Надзаголовок отзывов",
     "Рейтинг гостей и отзывы",
@@ -4775,17 +4817,17 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "15. Словарь интерфейса",
+    "16. Словарь интерфейса",
     "reviewsRatingTitle",
     "Шаблон рейтинга отзывов",
     "Рейтинг гостей на основе",
     "Guest rating based on",
-    "Misafir değerlendirmesi şu kriterlere dayanmaktadır:",
+    "Konuk değerlendirmesi şu kriterlere dayanmaktadır:",
     "Star",
     "Вкл"
   ],
   [
-    "15. Словарь интерфейса",
+    "16. Словарь интерфейса",
     "legalRegulationHeader",
     "Надзаголовок безопасности",
     "Юридический регламент и комфорт",
@@ -4795,7 +4837,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "16. Словарь интерфейса",
+    "17. Словарь интерфейса",
     "chatWithHost",
     "Кнопка вызова прямого чата с хозяином",
     "Чат с суперхозяином",
@@ -4805,7 +4847,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "16. Словарь интерфейса",
+    "17. Словарь интерфейса",
     "onlineStatus",
     "Индикатор статуса онлайн",
     "В сети : отвечает мгновенно",
@@ -4815,7 +4857,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "16. Словарь интерфейса",
+    "17. Словарь интерфейса",
     "typing",
     "Индикатор набора текста",
     "Алексей печатает ответ...",
@@ -4825,7 +4867,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "16. Словарь интерфейса",
+    "17. Словарь интерфейса",
     "send",
     "Кнопка отправки сообщения в чат",
     "Отправить",
@@ -4835,7 +4877,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "16. Словарь интерфейса",
+    "17. Словарь интерфейса",
     "messagePlaceholder",
     "Плейсхолдер поля ввода в чате",
     "Напишите ваш вопрос или пожелание...",
@@ -4845,7 +4887,7 @@ const MASTER_HOME_ROWS = [
     "Вкл"
   ],
   [
-    "16. Словарь интерфейса",
+    "17. Словарь интерфейса",
     "bookingSuccess",
     "Уведомление об успешной оплате",
     "Оплата успешно подтверждена! Бронирование внесено в календарь.",
@@ -5412,16 +5454,16 @@ const MASTER_GALLERY_ROWS = [
   [
     "gal-01",
     "Фасад, Бассейн, Сад, Терраса и Барбекю",
-    "Приватный бассейн с соленой водой 36 кв.м и шезлонги",
+    "Приватный бассейн с соленой водой 36 кв.м, джакузи, летний душ, зона отдыха, зонты и шезлонги",
     "Facade, Pool, Garden, Terrace and Barbecue",
-    "A private 36 sq.m. saltwater pool with sun loungers",
+    "A private saltwater pool (36 sq.m.), jacuzzi, outdoor shower, relaxation area, umbrellas, and sun loungers",
     "Cephe, Havuz, Bahçe, Teras ve Barbekü",
-    "Güneşlenme şezlonglarıyla donatılmış, 36 metrekarelik özel tuzlu su havuzu.",
+    "Özel tuzlu su havuzu (36 m²), jakuzi, açık duş, dinlenme alanı, şemsiyeler ve şezlonglar.",
     "Фото",
     "https://drive.google.com/file/d/1NjSHRDa5eJpQTzO9268e8LMRzDVmYtX7/view?usp=sharing",
-    "Бассейн 36м² и зона отдыха",
-    "36m² swimming pool and relaxation area",
-    "36 m² yüzme havuzu ve dinlenme alanı"
+    "Приватный бассейн с соленой водой 36 кв.м, джакузи, летний душ, зона отдыха,3 зонта и 8 шезлонгов",
+    "A private saltwater pool (36 sq.m.), jacuzzi, outdoor shower, relaxation area, 3 umbrellas, and 8 sun loungers",
+    "Özel tuzlu su havuzu (36 m²), jakuzi, açık duş, dinlenme alanı, 3 şemsiye ve 8 şezlong."
   ],
   [
     "gal-02",
@@ -5454,30 +5496,30 @@ const MASTER_GALLERY_ROWS = [
   [
     "gal-04",
     "Фасад, Бассейн, Сад, Терраса и Барбекю",
-    "Приватный сад с обеденным столом и зоной барбекю",
+    "Терасса и обеденный стол",
     "Facade, Pool, Garden, Terrace and Barbecue",
-    "Private garden with dining table and barbecue area",
+    "Terrace and dining table",
     "Cephe, Havuz, Bahçe, Teras ve Barbekü",
-    "Yemek masası ve barbekü alanı bulunan özel bahçe.",
+    "Teras ve yemek masası",
     "Фото",
-    "https://images.unsplash.com/photo-1544025162-d76694265947?w=1600",
-    "Зона BBQ и обеденная пергола",
-    "BBQ area and dining pergola",
-    "Barbekü alanı ve yemek pergolası"
+    "https://drive.google.com/file/d/1bizfXbrbf9h0vHsPngUtGmCLE_zS23Dh/view?usp=sharing",
+    "Терасса, обеденный зона и 3 кофейных столика",
+    "Terrace, dining area and 3 coffee tables",
+    "Teras, yemek alanı ve 3 sehpa."
   ],
   [
     "gal-05",
     "Фасад, Бассейн, Сад, Терраса и Барбекю",
-    "Приватный сад с обеденным столом и зоной барбекю",
+    "Терасса и обеденный стол",
     "Facade, Pool, Garden, Terrace and Barbecue",
-    "Private garden with dining table and barbecue area",
+    "Terrace and dining table",
     "Cephe, Havuz, Bahçe, Teras ve Barbekü",
-    "Yemek masası ve barbekü alanı bulunan özel bahçe.",
+    "Teras ve yemek masası",
     "Фото",
-    "https://drive.google.com/file/d/1UDK3H8Kiv7VISu4JBlNf8_wDO_ESJ6Ng/view?usp=sharing",
-    "Зона BBQ и обеденная пергола",
-    "BBQ area and dining pergola",
-    "Barbekü alanı ve yemek pergolası"
+    "https://drive.google.com/file/d/1oGocds4fOAhyX5Brrj-INhwKBXtnM2v_/view?usp=sharing",
+    "Терасса, обеденный зона и 3 кофейных столика",
+    "Terrace, dining area and 3 coffee tables",
+    "Teras, yemek alanı ve 3 sehpa."
   ],
   [
     "gal-06",
@@ -5488,27 +5530,41 @@ const MASTER_GALLERY_ROWS = [
     "Cephe, Havuz, Bahçe, Teras ve Barbekü",
     "Yemek masası ve barbekü alanı bulunan özel bahçe.",
     "Фото",
-    "https://drive.google.com/file/d/1BL4lWdBW8dlPzic12elIrNUj0djVAHno/view?usp=sharing",
-    "Зона BBQ и обеденная пергола",
-    "BBQ area and dining pergola",
-    "Barbekü alanı ve yemek pergolası"
+    "https://images.unsplash.com/photo-1544025162-d76694265947?w=1600",
+    "BBQ",
+    "BBQ",
+    "Barbekü"
   ],
   [
     "gal-07",
     "Фасад, Бассейн, Сад, Терраса и Барбекю",
-    "Уличное джакузи с автоматическим гидромассажем",
+    "Приватный сад с обеденным столом и зоной барбекю",
     "Facade, Pool, Garden, Terrace and Barbecue",
-    "Outdoor jacuzzi with automatic hydromassage",
+    "Private garden with dining table and barbecue area",
     "Cephe, Havuz, Bahçe, Teras ve Barbekü",
-    "Otomatik hidromasajlı açık hava jakuzisi",
+    "Yemek masası ve barbekü alanı bulunan özel bahçe.",
     "Фото",
-    "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=1600",
-    "Джакузи и летний душ",
-    "Jacuzzi and outdoor shower",
-    "Jakuzi ve açık hava duşu"
+    "https://drive.google.com/file/d/1UDK3H8Kiv7VISu4JBlNf8_wDO_ESJ6Ng/view?usp=sharing",
+    "Зона BBQ",
+    "BBQ area",
+    "Barbekü alanı"
   ],
   [
     "gal-08",
+    "Фасад, Бассейн, Сад, Терраса и Барбекю",
+    "Приватный сад с обеденным столом и зоной барбекю",
+    "Facade, Pool, Garden, Terrace and Barbecue",
+    "Private garden with dining table and barbecue area",
+    "Cephe, Havuz, Bahçe, Teras ve Barbekü",
+    "Yemek masası ve barbekü alanı bulunan özel bahçe.",
+    "Фото",
+    "https://drive.google.com/file/d/1BL4lWdBW8dlPzic12elIrNUj0djVAHno/view?usp=sharing",
+    "Зона BBQ и обеденная бесседка",
+    "BBQ area and dining gazebo",
+    "Barbekü alanı ve yemek çardak"
+  ],
+  [
+    "gal-09",
     "Интерьер, Гостиная, Кухня и Столовая",
     "Просторная гостиная со Smart TV 55\" и кондиционером. Полноценная кухня со всеми принадлежностями. Кофемашинка.",
     "Interior, Living Room, Kitchen and Dining Room",
@@ -5522,7 +5578,7 @@ const MASTER_GALLERY_ROWS = [
     "Villanın aydınlık oturma odası"
   ],
   [
-    "gal-09",
+    "gal-10",
     "Интерьер, Гостиная, Кухня и Столовая",
     "Просторная гостиная со Smart TV 55\" и кондиционером. Полноценная кухня с индукционной панелью и кофемашиной",
     "Interior, Living Room, Kitchen and Dining Room",
@@ -5536,7 +5592,7 @@ const MASTER_GALLERY_ROWS = [
     "Tüm ev aletleriyle donatılmış mutfak"
   ],
   [
-    "gal-10",
+    "gal-11",
     "Интерьер, Гостиная, Кухня и Столовая",
     "Видео обзор гостинная кухня",
     "Interior, Living Room, Kitchen and Dining Room",
@@ -5550,68 +5606,68 @@ const MASTER_GALLERY_ROWS = [
     "Salon mutfağının video incelemesi"
   ],
   [
-    "gal-11",
-    "Спальни виллы",
-    "Мастер-спальня 1 на первом этаже с кроватью King Size",
-    "Bedrooms of the villa",
-    "Master bedroom 1 on the first floor with a king-size bed",
-    "Villanın yatak odaları",
-    "Birinci kattaki ana yatak odası 1'de çift kişilik büyük bir yatak bulunmaktadır.",
+    "gal-12",
+    "Спальни виллы с санузлами",
+    "Первый этаж: 1 двуспальная кровать Queen + 1 односпальная кровать, персональная ванная с душевой кабиной, кондиционер",
+    "Villa bedrooms with bathrooms",
+    "First floor: 1 queen bed + 1 single bed, private bathroom with shower, air conditioning",
+    "Banyolu villa yatak odaları",
+    "Birinci kat: 1 adet çift kişilik yatak + 1 adet tek kişilik yatak, duşlu özel banyo, klima.",
     "Фото",
     "https://drive.google.com/file/d/1Cnee0dwwTSLl8VfklxXyDgxbp55S4pWJ/view?usp=sharing",
-    "Спальня 1 с видом на бассейн",
-    "Bedroom 1 with pool view",
-    "Havuz manzaralı 1 numaralı yatak odası"
-  ],
-  [
-    "gal-12",
-    "Спальни виллы",
-    "Мастер-спальня 2 на втором этаже с балконом с видом на горы",
-    "Bedrooms of the villa",
-    "Master bedroom 2 on the second floor with a balcony overlooking the mountains",
-    "Villanın yatak odaları",
-    "İkinci kattaki ikinci ana yatak odası, dağ manzaralı bir balkona sahiptir.",
-    "Фото",
-    "https://drive.google.com/file/d/1ZDpJ3vhVPizIGd2RzIJtfCQgcD3IWF_F/view?usp=sharing",
-    "Спальня 2 Queen Bed с балконом",
-    "Bedroom 2 Queen Bed with Balcony",
-    "Balkonlu 2 Numaralı Yatak Odası (Çift Kişilik Yatak)"
+    "Первый этаж: 1 двуспальная кровать Queen Size + 1 односпальная кровать, персональная ванная с душевой кабиной, кондиционер. Queen Size + Single [3 места]",
+    "First floor: 1 queen size double bed + 1 single bed, private bathroom with shower, air conditioning. Queen Size + Single [3 beds]",
+    "Birinci kat: 1 adet çift kişilik yatak + 1 adet tek kişilik yatak, duşlu özel banyo, klima. Çift kişilik + Tek kişilik [3 yatak]"
   ],
   [
     "gal-13",
-    "Спальни виллы",
-    "Спальня 3 с двумя раздельными комфортными кроватями",
-    "Bedrooms of the villa",
-    "Bedroom 3 with two comfortable twin beds",
-    "Villanın yatak odaları",
-    "3 numaralı yatak odasında iki adet konforlu tek kişilik yatak bulunmaktadır.",
+    "Спальни виллы с санузлами",
+    "Второй этаж: King size: Большая королевская кровать шириной 180–200 см и длиной 200 см.+ 1 односпальная кровать, собственная ванная комната, кондиционер, балкон с видом на горы.  King size + Single [3 места]",
+    "Villa bedrooms with bathrooms",
+    "Second floor: King size: Large king-size bed 180–200 cm wide and 200 cm long + 1 single bed, private bathroom, air conditioning, balcony with mountain views. King size + Single [3 beds]",
+    "Banyolu villa yatak odaları",
+    "İkinci kat: Çift kişilik yatak: 180-200 cm genişliğinde ve 200 cm uzunluğunda büyük çift kişilik yatak + 1 tek kişilik yatak, özel banyo, klima, dağ manzaralı balkon. Çift kişilik yatak + Tek kişilik yatak [3 yatak]",
     "Фото",
-    "https://drive.google.com/file/d/1f1-b3TuIPqUR8jTdC52qPOH7cwaUszOM/view?usp=sharing",
-    "Спальня 3 с 2 кроватями",
-    "Bedroom 3 with 2 beds",
-    "2 yataklı 3 numaralı yatak odası"
+    "https://drive.google.com/file/d/1ZDpJ3vhVPizIGd2RzIJtfCQgcD3IWF_F/view?usp=sharing",
+    "Второй этаж: King size: Большая королевская кровать шириной 180–200 см и длиной 200 см.+ 1 односпальная кровать, собственная ванная комната, кондиционер, балкон с видом на горы.  King size + Single [3 места]",
+    "Second floor: King size: Large king-size bed 180–200 cm wide and 200 cm long + 1 single bed, private bathroom, air conditioning, balcony with mountain views. King size + Single [3 beds]",
+    "İkinci kat: Çift kişilik yatak: 180-200 cm genişliğinde ve 200 cm uzunluğunda büyük çift kişilik yatak + 1 tek kişilik yatak, özel banyo, klima, dağ manzaralı balkon. Çift kişilik yatak + Tek kişilik yatak [3 yatak]"
   ],
   [
     "gal-14",
-    "Спальни виллы",
-    "Спальня 4 с ортопедическим диваном-кроватью в лаундж-зоне",
-    "Bedrooms of the villa",
-    "Bedroom 4 with an orthopedic sofa bed in the lounge area",
-    "Villanın yatak odaları",
-    "Oturma alanında ortopedik çekyat bulunan 4 numaralı yatak odası.",
+    "Спальни виллы с санузлами",
+    "Второй этаж: 1 двуспальная кровать Queen Size, собственная ванная комната, кондиционер, гардероб. Queen Size [2 места]",
+    "Villa bedrooms with bathrooms",
+    "Second floor: 1 queen size bed, private bathroom, air conditioning, wardrobe. Queen Size [2 beds]",
+    "Banyolu villa yatak odaları",
+    "İkinci kat: 1 adet çift kişilik yatak, özel banyo, klima, gardırop. Çift kişilik yatak [2 yatak]",
     "Фото",
-    "https://drive.google.com/file/d/1WooX7-xPmWMgRC1S4fUTsg9-as_Pskuq/view?usp=sharing",
-    "Спальня 4 в лаундж-зоне",
-    "Bedroom 4 in the lounge area",
-    "Salon bölümündeki 4 numaralı yatak odası"
+    "https://drive.google.com/file/d/1f1-b3TuIPqUR8jTdC52qPOH7cwaUszOM/view?usp=sharing",
+    "Второй этаж: 1 двуспальная кровать Queen Size, собственная ванная комната, кондиционер, гардероб. Queen Size [2 места]",
+    "Second floor: 1 queen size bed, private bathroom, air conditioning, wardrobe. Queen Size [2 beds]",
+    "İkinci kat: 1 adet çift kişilik yatak, özel banyo, klima, gardırop. Çift kişilik yatak [2 yatak]"
   ],
   [
     "gal-15",
-    "Санузлы",
+    "Спальни виллы с санузлами",
+    "Второй этаж: 1 двуспальная кровать Queen Size, собственная ванная комната, кондиционер, гардероб. Queen Size [2 места]",
+    "Villa bedrooms with bathrooms",
+    "Second floor: 1 queen size bed, private bathroom, air conditioning, wardrobe. Queen Size [2 beds]",
+    "Banyolu villa yatak odaları",
+    "İkinci kat: 1 adet çift kişilik yatak, özel banyo, klima, gardırop. Çift kişilik yatak [2 yatak]",
+    "Фото",
+    "https://drive.google.com/file/d/1WooX7-xPmWMgRC1S4fUTsg9-as_Pskuq/view?usp=sharing",
+    "Второй этаж: 1 двуспальная кровать Queen Size, собственная ванная комната, кондиционер, гардероб. Queen Size [2 места]",
+    "Second floor: 1 queen size bed, private bathroom, air conditioning, wardrobe. Queen Size [2 beds]",
+    "İkinci kat: 1 adet çift kişilik yatak, özel banyo, klima, gardırop. Çift kişilik yatak [2 yatak]"
+  ],
+  [
+    "gal-16",
+    "Спальни виллы с санузлами",
     "4 индивидуальные ванные комнаты с тропическим душем",
-    "Bathrooms",
+    "Villa bedrooms with bathrooms",
     "4 private bathrooms with rain showers",
-    "Banyolar",
+    "Banyolu villa yatak odaları",
     "Yağmur duşlu 4 özel banyo",
     "Фото",
     "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=1600",
@@ -5620,7 +5676,7 @@ const MASTER_GALLERY_ROWS = [
     "Özel banyo"
   ],
   [
-    "gal-16",
+    "gal-17",
     "Природа Дальяна. Достопримечательности. Пляжи и заповедники.",
     "Набережная реки Дальян в 5 минутах пешком от виллы",
     "Dalyan's nature. Attractions. Beaches and nature reserves.",
@@ -5634,7 +5690,7 @@ const MASTER_GALLERY_ROWS = [
     "Manzarasıyla büyüleyici Dalyan Nehri"
   ],
   [
-    "gal-17",
+    "gal-18",
     "Природа Дальяна. Достопримечательности. Пляжи и заповедники.",
     "Ликийские скальные гробницы IV века до н.э. с подсветкой",
     "Dalyan's nature. Attractions. Beaches and nature reserves.",
@@ -5648,7 +5704,7 @@ const MASTER_GALLERY_ROWS = [
     "Likya kaya mezarları"
   ],
   [
-    "gal-18",
+    "gal-19",
     "Природа Дальяна. Достопримечательности. Пляжи и заповедники.",
     "Песчаный черепаший пляж Изтузу и озеро Кёйджегиз",
     "Dalyan's nature. Attractions. Beaches and nature reserves.",
@@ -5669,15 +5725,15 @@ const MASTER_SERVICES_ROWS = [
     "VIP-трансфер из аэропорта Даламан [DLM]",
     "Комфортабельный Mercedes Vito с кондиционером и напитками",
     "VIP Transfer from Dalaman Airport [DLM]",
-    "A comfortable Mercedes Vito with air conditioning and drinks",
+    "Comfortable Mercedes Vito with air conditioning and drinks",
     "Dalaman Havalimanından VIP Transfer [DLM]",
-    "Klimalı ve içecek servisi bulunan konforlu bir Mercedes Vito.",
+    "Klimalı ve içecek servisi bulunan konforlu Mercedes Vito.",
     "90",
     "83",
     "8325",
     "3420",
     "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1200",
-    "",
+    "да",
     "Трансфер",
     "https://youtube.com/watch?v=transfer",
     "Встреча в зоне прилета с именной табличкой. Время в пути до виллы 25 минут. В салоне бесплатный Wi-Fi и прохладительные напитки.",
@@ -5697,7 +5753,7 @@ const MASTER_SERVICES_ROWS = [
     "37000",
     "15200",
     "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200",
-    "",
+    "нет",
     "Круиз",
     "https://youtube.com/watch?v=cruise",
     "Эксклюзивный дневной маршрут: Ликийские гробницы, ловля голубых крабов, купание на пляже Изтузу и обед от капитана со свежей рыбой.",
@@ -5717,7 +5773,7 @@ const MASTER_SERVICES_ROWS = [
     "12000",
     "4300",
     "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200",
-    "",
+    "нет",
     "Шеф",
     "https://youtube.com/watch?v=chef",
     "Шеф-повар лично закупает фермерские продукты на рынке Дальяна, готовит ужин на вашей кухне, сервирует стол и наводит идеальный порядок.",
@@ -5730,14 +5786,14 @@ const MASTER_SERVICES_ROWS = [
     "Стейки рибай, каре ягненка на косточке и овощи гриль",
     "Premium BBQ evening on coals in the villa's garden",
     "Ribeye steaks, lamb chops and grilled vegetables",
-    "Villanın bahçesinde kömür ateşinde birinci sınıf barbekü akşamı.",
+    "Villanın bahçesinde kömür ateşinde enfes bir barbekü akşamı.",
     "Antrikot biftek, kuzu pirzola ve ızgara sebzeler",
     "175",
     "160",
     "16000",
     "5800",
     "https://images.unsplash.com/photo-1544025162-d76694265947?w=1200",
-    "",
+    "нет",
     "BBQ",
     "https://youtube.com/watch?v=bbq",
     "В стоимость входит премиальное маринованное фермерское мясо, отборные угли, розжиг, лаваш, соусы и работа гриль-мастера в течение 3 часов.",
@@ -5757,7 +5813,7 @@ const MASTER_SERVICES_ROWS = [
     "7000",
     "2500",
     "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200",
-    "",
+    "нет",
     "СПА",
     "https://youtube.com/watch?v=spa",
     "Трансфер на моторной лодке прямо от причала виллы. Входные билеты в термальные комплексы и радоновые бассейны включены.",
@@ -5777,7 +5833,7 @@ const MASTER_SERVICES_ROWS = [
     "8000",
     "2900",
     "https://images.unsplash.com/photo-1517404215738-15263e9f9178?w=1200",
-    "",
+    "да",
     "Спорт",
     "https://youtube.com/watch?v=sup",
     "Доставка оборудования прямо к вилле на весь период проживания. В комплекте весла, страховочные лиши и спасательные жилеты.",
@@ -5797,7 +5853,7 @@ const MASTER_SERVICES_ROWS = [
     "4000",
     "1500",
     "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=1200",
-    "",
+    "да",
     "Транспорт",
     "https://youtube.com/watch?v=bike",
     "Идеальный способ исследовать гранатовые сады и улочки Дальяна. В комплекте шлемы, замки и держатели для смартфонов с навигатором.",
@@ -5817,7 +5873,7 @@ const MASTER_SERVICES_ROWS = [
     "9250",
     "3800",
     "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1200",
-    "",
+    "да",
     "Сервис",
     "https://youtube.com/watch?v=cleaning",
     "Полная уборка всех 4 спален, кухни и санузлов, мытье полов эко-средствами, замена постельных комплектов сатин премиум и банных полотенец.",
@@ -5871,9 +5927,9 @@ const MASTER_GUIDES_ROWS = [
     "guide-3",
     "Гастрономический гид: топ-10 ресторанов и гранатовые сады",
     "Где попробовать настоящую турецкую кухню, свежую рыбу и мезе",
-    "Food Guide: Top 10 Restaurants and Pomegranate Gardens",
+    "Gastronomic Guide: Top 10 Restaurants and Pomegranate Orchards",
     "Where to try authentic Turkish cuisine, fresh fish, and meze",
-    "Yemek Rehberi: En İyi 10 Restoran ve Nar Bahçesi",
+    "Gastronomi Rehberi: En İyi 10 Restoran ve Nar Bahçesi",
     "Gerçek Türk mutfağını, taze balığı ve mezeleri nerede deneyebilirsiniz?",
     "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200",
     "Гастрономия",
@@ -5992,7 +6048,7 @@ const MASTER_LEGAL_ROWS = [
     "Tax status and invoices",
     "Vergi durumu ve faturalar",
     "Регистрация в налоговой инспекции Ortaca Vergi Dairesi, налоговый номер VKN: 9991120181. Выставление официальных электронных счетов e-Arşiv Fatura согласно закону VUK 213 Madde 230.",
-    "Registration with the Ortaca Vergi Dairesi tax office, tax identification number VKN: 9991120181. Issuance of official electronic invoices e-Arşiv Fatura in accordance with VUK 213 Madde 230.",
+    "Registration with the Ortaca Vergi Dairesi tax office, tax identification number VKN: 9991120181. Issuance of official electronic invoices e-Arşiv Fatura in accordance with the law VUK 213 Madde 230.",
     "Ortaca Vergi Dairesi'ne kayıtlı, vergi kimlik numarası VKN: 9991120181. VUK 213 Madde 230 uyarınca resmi elektronik fatura (e-Arşiv Fatura) düzenlenmesi."
   ],
   [
