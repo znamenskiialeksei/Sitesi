@@ -1,8 +1,11 @@
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 15:45 | ПЛАН: СТУПЕНЬ_01_Базовый_эталон_старта | TAG: VILLA-CATALOG-BASE-260920261545]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 18:50 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-CATALOG-STATUS-FILTER-270920261850]
 // ==============================================================================
-// КАТАЛОГ УСЛУГ И АВТОРСКИХ ПУТЕВОДИТЕЛЕЙ (EXPERIENCES & GUIDES)
+// КАТАЛОГ УСЛУГ И АВТОРСКИХ ПУТЕВОДИТЕЛЕЙ: EXPERIENCES & GUIDES
 // Файл: components/CatalogSection.js
 // Назначение: Дополнительные сервисы виллы, трансферы, яхты и видео-гиды,
-// динамически загружаемые из Google Sheets с каруселями и поддержкой презентаций.
+// динамически загружаемые из Google Sheets с поддержкой фильтрации статусов Вкл/Выкл.
+// 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
 import React, { useState } from 'react';
@@ -194,8 +197,29 @@ export default function CatalogSection({
     }
   ];
 
-  const effectiveProducts = products && products.length > 0 ? products : defaultProducts;
-  const effectiveCourses = courses && courses.length > 0 ? courses : defaultCourses;
+  // Проверка активности элемента по флагам доступности и статусам
+  const isItemActive = (it) => {
+    if (!it) return false;
+    if (it.enabled === false) return false;
+    if (it.status === 'Выкл' || it.status === 'выкл' || it.status === 'Off') return false;
+    if (it.available === false || it.available === 'Нет' || it.available === 'нет') return false;
+    return true;
+  };
+
+  const rawProducts = (products && products.length > 0) ? products : defaultProducts;
+  const rawCourses = (courses && courses.length > 0) ? courses : defaultCourses;
+
+  const effectiveProducts = rawProducts.filter(isItemActive);
+  const effectiveCourses = rawCourses.filter(isItemActive);
+
+  // Если оба каталога полностью выключены или пусты
+  if (effectiveProducts.length === 0 && effectiveCourses.length === 0) {
+    return null;
+  }
+
+  const hasServices = effectiveProducts.length > 0;
+  const hasGuides = effectiveCourses.length > 0;
+  const currentTab = (!hasServices && hasGuides) ? 'guides' : (!hasGuides && hasServices) ? 'services' : activeTab;
 
   return (
     <section id="catalog" className="py-12 border-t border-white/10">
@@ -210,34 +234,36 @@ export default function CatalogSection({
           </p>
         </div>
 
-        {/* Табы переключения категорий */}
-        <div className="flex items-center gap-1.5 bg-slate-800 p-1 rounded-2xl border border-white/10">
-          <button
-            onClick={() => setActiveTab('services')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === 'services'
-              ? 'bg-rose-600 text-white shadow-lg'
-              : 'text-slate-400 hover:text-white'
-              }`}
-          >
-            <Car className="w-4 h-4" />
-            <span>{t('tabServices') || 'Консьерж-сервис'} ({effectiveProducts.length})</span>
-          </button>
+        {/* Табы переключения категорий [отображаются, если доступны обе категории] */}
+        {hasServices && hasGuides && (
+          <div className="flex items-center gap-1.5 bg-slate-800 p-1 rounded-2xl border border-white/10">
+            <button
+              onClick={() => setActiveTab('services')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${currentTab === 'services'
+                ? 'bg-rose-600 text-white shadow-lg'
+                : 'text-slate-400 hover:text-white'
+                }`}
+            >
+              <Car className="w-4 h-4" />
+              <span>{t('tabServices') || 'Консьерж-сервис'} [{effectiveProducts.length}]</span>
+            </button>
 
-          <button
-            onClick={() => setActiveTab('guides')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === 'guides'
-              ? 'bg-rose-600 text-white shadow-lg'
-              : 'text-slate-400 hover:text-white'
-              }`}
-          >
-            <Compass className="w-4 h-4" />
-            <span>{t('tabEducation') || 'Видео-путеводители'} ({effectiveCourses.length})</span>
-          </button>
-        </div>
+            <button
+              onClick={() => setActiveTab('guides')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${currentTab === 'guides'
+                ? 'bg-rose-600 text-white shadow-lg'
+                : 'text-slate-400 hover:text-white'
+                }`}
+            >
+              <Compass className="w-4 h-4" />
+              <span>{t('tabEducation') || 'Видео-путеводители'} [{effectiveCourses.length}]</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Список услуг консьерж-сервиса */}
-      {activeTab === 'services' && (
+      {currentTab === 'services' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in">
           {effectiveProducts.map((p) => {
             const name = getLocalized(p, 'name');
@@ -305,7 +331,7 @@ export default function CatalogSection({
       )}
 
       {/* Список авторских видео-путеводителей */}
-      {activeTab === 'guides' && (
+      {currentTab === 'guides' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in">
           {effectiveCourses.map((c) => {
             const name = getLocalized(c, 'name');

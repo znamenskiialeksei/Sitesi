@@ -1,3 +1,5 @@
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 15:45 | ПЛАН: СТУПЕНЬ_01_Базовый_эталон_старта | TAG: VILLA-LEGAL-BASE-260920261545]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 18:50 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-DYNAMIC-LEGAL-ITEMS-270920261850]
 // ==============================================================================
 // БЕЗОПАСНОСТЬ, ЗАКОН № 7464 И ДОСТУПНАЯ СРЕДА: LAW, SAFETY & ACCESSIBILITY
 // Файл: components/LawSafetyAccessibility.js
@@ -39,33 +41,34 @@ export default function LawSafetyAccessibility({ homeData = null }) {
   const law7464Title = getLoc(safety.law7464Title, 'Официальный договор и учет KBS');
   const law7464Desc = getLoc(safety.law7464Desc, 'Вилла осуществляет деятельность в строгом соответствии с Законом № 7464 о краткосрочной туристической аренде в Турции.');
   const law7464Badge = getLoc(safety.law7464Badge, 'Закон Турции № 7464');
-  const law7464Item1 = getLoc(safety.law7464Item1, 'Обязательный договор краткосрочного найма с описью имущества при заезде');
-  const law7464Item2 = getLoc(safety.law7464Item2, 'Регистрация паспортов всех проживающих гостей в полицейской системе KBS [Kimlik Bildirme Sistemi]');
-  const law7464Item3 = getLoc(safety.law7464Item3, 'Размещение лиц, не внесенных в государственную систему KBS, строго запрещено');
 
   // Блок 2: Безопасность
   const securityTitle = getLoc(safety.securityTitle, 'Безопасность дома и территории');
   const securityDesc = getLoc(safety.securityDesc, 'Оснащение дома сертифицированными системами предупреждения и постоянного мониторинга.');
   const securityBadge = getLoc(safety.securityBadge, 'Стандарты безопасности');
-  const securityItem1 = getLoc(safety.securityItem1, 'Наружные камеры видеонаблюдения установлены строго по периметру забора и у калитки [без съемки бассейна]');
-  const securityItem2 = getLoc(safety.securityItem2, 'Сертифицированные автономные датчики дыма и угарного газа на обоих этажах виллы');
-  const securityItem3 = getLoc(safety.securityItem3, 'Огнетушители на 1 и 2 этажах, аптечка первой медицинской помощи');
 
   // Блок 3: Доступная среда
   const accessibleTitle = getLoc(safety.accessibleTitle, 'Инклюзивность и доступная среда');
   const accessibleDesc = getLoc(safety.accessibleDesc, 'Создание безбарьерных условий для комфортного отдыха всех категорий гостей.');
   const accessibleBadge = getLoc(safety.accessibleBadge, 'Безбарьерная среда');
-  const accessibleItem1 = getLoc(safety.accessibleItem1, 'Безбарьерный доступ: спальня №1 на 1 этаже оборудована широкими дверными проемами без порогов');
-  const accessibleItem2 = getLoc(safety.accessibleItem2, 'Санузел первого этажа спроектирован с возможностью комфортного использования гостями с ограниченной мобильностью');
-  const accessibleItem3 = getLoc(safety.accessibleItem3, 'Возможность установки мобильного подъемника для спуска в бассейн по предварительному запросу');
 
   // Блок 4: Отмена
   const cancellationTitle = getLoc(safety.cancellationTitle, 'Политика отмены и возврата');
   const cancellationDesc = getLoc(safety.cancellationDesc, 'Прозрачные финансовые условия бронирования без скрытых комиссий.');
   const cancellationBadge = getLoc(safety.cancellationBadge, 'Возврат 100%');
-  const cancellationItem1 = getLoc(safety.cancellationItem1, 'Полный 100% возврат предоплаты при отмене более чем за 14 суток до даты заезда');
-  const cancellationItem2 = getLoc(safety.cancellationItem2, 'При отмене менее чем за 14 суток удерживается стоимость первых суток');
-  const cancellationItem3 = getLoc(safety.cancellationItem3, 'Официальное оформление e-Arşiv Fatura на имя гостя согласно VUK 213 Madde 230');
+
+  // Разрешение динамических списков с гарантированным сохранением фоллбэков
+  const resolveList = (itemsArray, fallbackItems) => {
+    if (Array.isArray(itemsArray) && itemsArray.length > 0) {
+      return itemsArray.map((it) => getLoc(it, typeof it === 'string' ? it : ''));
+    }
+    return fallbackItems.map((it) => getLoc(it, '')).filter(Boolean);
+  };
+
+  const law7464List = resolveList(safety.law7464Items, [safety.law7464Item1, safety.law7464Item2, safety.law7464Item3]);
+  const securityList = resolveList(safety.securityItems, [safety.securityItem1, safety.securityItem2, safety.securityItem3]);
+  const accessibleList = resolveList(safety.accessibleItems, [safety.accessibleItem1, safety.accessibleItem2, safety.accessibleItem3]);
+  const cancellationList = resolveList(safety.cancellationItems, [safety.cancellationItem1, safety.cancellationItem2, safety.cancellationItem3]);
 
   return (
     <div className="py-8 border-t border-white/10">
@@ -106,18 +109,16 @@ export default function LawSafetyAccessibility({ homeData = null }) {
             </p>
 
             <ul className="space-y-2 text-xs text-slate-300">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span>{law7464Item1}</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span>{law7464Item2}</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                <span>{law7464Item3}</span>
-              </li>
+              {law7464List.map((text, idx) => (
+                <li key={idx} className="flex items-start gap-2">
+                  {idx === law7464List.length - 1 ? (
+                    <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  ) : (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  )}
+                  <span>{text}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -142,18 +143,18 @@ export default function LawSafetyAccessibility({ homeData = null }) {
             </p>
 
             <ul className="space-y-2 text-xs text-slate-300">
-              <li className="flex items-start gap-2">
-                <Eye className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span>{securityItem1}</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Flame className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span>{securityItem2}</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span>{securityItem3}</span>
-              </li>
+              {securityList.map((text, idx) => (
+                <li key={idx} className="flex items-start gap-2">
+                  {idx === 0 ? (
+                    <Eye className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  ) : idx === 1 ? (
+                    <Flame className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  ) : (
+                    <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  )}
+                  <span>{text}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -178,18 +179,18 @@ export default function LawSafetyAccessibility({ homeData = null }) {
             </p>
 
             <ul className="space-y-2 text-xs text-slate-300">
-              <li className="flex items-start gap-2">
-                <DoorOpen className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                <span>{accessibleItem1}</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                <span>{accessibleItem2}</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Accessibility className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                <span>{accessibleItem3}</span>
-              </li>
+              {accessibleList.map((text, idx) => (
+                <li key={idx} className="flex items-start gap-2">
+                  {idx === 0 ? (
+                    <DoorOpen className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  ) : idx === 1 ? (
+                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  ) : (
+                    <Accessibility className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  )}
+                  <span>{text}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -214,18 +215,20 @@ export default function LawSafetyAccessibility({ homeData = null }) {
             </p>
 
             <ul className="space-y-2 text-xs text-slate-300">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                <span>{cancellationItem1}</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                <span>{cancellationItem2}</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <FileText className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span>{cancellationItem3}</span>
-              </li>
+              {cancellationList.map((text, idx) => (
+                <li key={idx} className="flex items-start gap-2">
+                  {idx === 0 ? (
+                    <CheckCircle2 className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                  ) : idx === 1 ? (
+                    <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                  ) : idx === 2 ? (
+                    <FileText className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  ) : (
+                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  )}
+                  <span>{text}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

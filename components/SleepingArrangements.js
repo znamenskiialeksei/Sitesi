@@ -1,23 +1,20 @@
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 11:45 | ПЛАН: 270920261145 Модернизация чата спален и задач запускаторов.md | TAG: VILLA-BEDROOMS-MODAL-270920261145]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 18:50 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-BEDROOMS-NO-SOFA-CLEAN-270920261850]
 // ==============================================================================
 // СПАЛЬНЫЕ МЕСТА ВИЛЛЫ В СТИЛЕ AIRBNB: SLEEPING ARRANGEMENTS
 // Файл: components/SleepingArrangements.js
 // Назначение: Наглядные карточки спален с универсальной поддержкой медиа Google Drive,
-// ликвидацией дублирования текста и интерактивным Вторым слоем [паспорт спальни].
-//
-// РЕВИЗИЯ 1 : 27.09.2026 11:45 - Ликвидация дублирования заголовка и бейджа,
-// универсальная поддержка медиа Google Drive через прямой шлюз lh3,
-// увеличение карточек и интерактивный модальный паспорт спальни.
-// РЕВИЗИЯ 2 : 27.09.2026 11:45 - Второй слой с детальными удобствами комнат.
+// ликвидацией дублирования текста, исключение диванов и интерактивный паспорт комнат.
+// 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
 import React, { useState } from 'react';
-import { Bed, BedDouble, Sofa, Bath, Wind, Eye, X, CheckCircle2, Info } from 'lucide-react';
+import { Bed, BedDouble, Bath, Wind, Eye, X, CheckCircle2, Info } from 'lucide-react';
 import { useLanguage } from '../utils/language';
 
 const ICON_BED_MAP = {
   BedDouble,
-  Bed,
-  Sofa
+  Bed
 };
 
 // Универсальный конвертер ссылок медиа [Google Drive, Unsplash, CDN]
@@ -38,16 +35,43 @@ export function toDirectMediaUrl(url) {
   return trimmed;
 }
 
-// Очистка дублирования заголовка спальни и бейджа
-function cleanBedroomTitle(rawTitle, badge) {
-  if (!rawTitle) return '';
-  let clean = rawTitle;
-  if (badge && clean.includes(badge)) {
-    const escaped = badge.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    clean = clean.replace(new RegExp(`[•\\-—|]?\\s*${escaped}.*$`, 'i'), '').trim();
+// Очистка зеркального дублирования текста половины строки
+function cleanDeduplicatedString(str) {
+  if (!str || typeof str !== 'string') return '';
+  let clean = str.trim();
+  const len = clean.length;
+  if (len > 4 && len % 2 === 0) {
+    const half = len / 2;
+    if (clean.slice(0, half) === clean.slice(half)) {
+      clean = clean.slice(0, half).trim();
+    }
   }
+  return clean;
+}
+
+// Очистка дублирования заголовка спальни и бейджа
+function cleanBedroomTitle(rawTitle, rawBadge) {
+  if (!rawTitle) return '';
+  let clean = cleanDeduplicatedString(rawTitle);
+  const cleanBadge = cleanDeduplicatedString(rawBadge);
+
+  if (cleanBadge) {
+    const escaped = cleanBadge.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    clean = clean.replace(new RegExp(`(?:[•\\-—|]\\s*)?${escaped}(?:\\s*${escaped})?$`, 'i'), '').trim();
+  }
+  clean = clean.replace(/(\[[^\]]+\])\s*\1$/i, '$1').trim();
   clean = clean.replace(/[•\\-—|]\s*$/, '').trim();
   return clean || rawTitle;
+}
+
+// Очистка дублирования бейджа спальни
+function cleanBedroomBadge(rawBadge) {
+  if (!rawBadge) return '';
+  let clean = cleanDeduplicatedString(rawBadge);
+  clean = clean.replace(/(\[[^\]]+\])\s*\1$/i, '$1').trim();
+  const match = clean.match(/^(.+?)\s*\1$/i);
+  if (match) clean = match[1].trim();
+  return clean || rawBadge;
 }
 
 export default function SleepingArrangements({ homeData = null, customBedrooms = null }) {
@@ -141,9 +165,10 @@ export default function SleepingArrangements({ homeData = null, customBedrooms =
             : (b.icon || BedDouble);
 
           const rawTitle = typeof b.title === 'object' ? (b.title[lang] || b.title.ru || '') : (b.title || `Спальня ${idx + 1}`);
-          const itemDesc = typeof b.desc === 'object' ? (b.desc[lang] || b.desc.ru || '') : (b.desc || '');
-          const itemBadge = typeof b.badge === 'object' ? (b.badge[lang] || b.badge.ru || '') : (b.badge || `Спальня ${idx + 1}`);
+          const rawBadge = typeof b.badge === 'object' ? (b.badge[lang] || b.badge.ru || '') : (b.badge || `Спальня ${idx + 1}`);
+          const itemBadge = cleanBedroomBadge(rawBadge);
           const itemTitle = cleanBedroomTitle(rawTitle, itemBadge);
+          const itemDesc = typeof b.desc === 'object' ? (b.desc[lang] || b.desc.ru || '') : (b.desc || '');
 
           const rawImageUrl = b.image || defaultBedrooms[idx % defaultBedrooms.length]?.image || '';
           const directImageUrl = toDirectMediaUrl(rawImageUrl);
@@ -183,24 +208,26 @@ export default function SleepingArrangements({ homeData = null, customBedrooms =
                 <span className="absolute top-3 right-3 bg-slate-950/85 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-semibold text-rose-300 border border-rose-500/30 shadow-md">
                   {itemBadge}
                 </span>
-                <span className="absolute bottom-3 left-3 flex items-center gap-1.5 text-[11px] font-medium text-slate-300 bg-black/60 backdrop-blur-sm px-2.5 py-0.5 rounded-md">
-                  <IconComp className="w-3.5 h-3.5 text-rose-400" />
-                  {itemTitle}
-                </span>
               </div>
 
               <div className="p-4 flex-1 flex flex-col justify-between">
-                <p className="text-xs text-slate-300 leading-relaxed line-clamp-3 mb-4">
-                  {itemDesc}
-                </p>
+                <div>
+                  <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
+                    <IconComp className="w-4 h-4 text-rose-400 shrink-0" />
+                    <span>{itemTitle}</span>
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed line-clamp-3 mb-4">
+                    {itemDesc}
+                  </p>
+                </div>
 
                 <div className="pt-3 border-t border-white/10 flex items-center justify-between text-xs text-rose-400 group-hover:text-rose-300 transition-colors font-medium">
                   <span className="flex items-center gap-1">
                     <Info className="w-3.5 h-3.5" />
-                    Подробнее о спальне
+                    {t('bedroomDetailsBtn') || 'Подробнее о спальне'}
                   </span>
                   <span className="text-[11px] text-slate-500 group-hover:text-slate-400">
-                    Второй слой →
+                    {t('bedroomSecondLayer') || 'Второй слой →'}
                   </span>
                 </div>
               </div>
@@ -256,7 +283,7 @@ export default function SleepingArrangements({ homeData = null, customBedrooms =
             <div className="p-6 sm:p-8 max-h-[60vh] overflow-y-auto space-y-6">
               <div>
                 <h4 className="text-xs uppercase tracking-wider text-rose-400 font-semibold mb-2">
-                  Описание комнаты
+                  {t('bedroomDescTitle') || 'Описание комнаты'}
                 </h4>
                 <p className="text-sm text-slate-300 leading-relaxed">
                   {selectedBedroom.desc}
@@ -266,7 +293,7 @@ export default function SleepingArrangements({ homeData = null, customBedrooms =
               {selectedBedroom.amenities && (
                 <div>
                   <h4 className="text-xs uppercase tracking-wider text-rose-400 font-semibold mb-3">
-                    Удобства и комплектация спальни
+                    {t('bedroomAmenitiesTitle') || 'Удобства и комплектация спальни'}
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {selectedBedroom.amenities.map((amenity, aIdx) => (
@@ -284,13 +311,13 @@ export default function SleepingArrangements({ homeData = null, customBedrooms =
 
               <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
                 <span className="flex items-center gap-1.5">
-                  <Bath className="w-4 h-4 text-rose-400" /> Собственный санузел
+                  <Bath className="w-4 h-4 text-rose-400" /> {t('ensuiteBathroom') || 'Собственный санузел'}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <Wind className="w-4 h-4 text-cyan-400" /> Кондиционер
+                  <Wind className="w-4 h-4 text-cyan-400" /> {t('airConditioning') || 'Кондиционер'}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <Eye className="w-4 h-4 text-amber-400" /> Вид на горы и сад
+                  <Eye className="w-4 h-4 text-amber-400" /> {t('mountainGardenView') || 'Вид на горы и сад'}
                 </span>
               </div>
             </div>

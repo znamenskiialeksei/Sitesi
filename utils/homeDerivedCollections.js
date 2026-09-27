@@ -1,3 +1,5 @@
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 15:45 | ПЛАН: СТУПЕНЬ_01_Базовый_эталон_старта | TAG: VILLA-COLLECTIONS-BASE-260920261545]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 18:50 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-DYNAMIC-SAFETY-SECTIONS-270920261850]
 // ==============================================================================
 // МОДУЛЬ ПОСТРОЕНИЯ ПРОИЗВОДНЫХ КОЛЛЕКЦИЙ ВИТРИНЫ
 // Файл: utils/homeDerivedCollections.js
@@ -120,10 +122,18 @@ function buildHomeDerivedCollections(home, forceRebuild = false) {
     };
   }
 
-  // 5. Описание виллы и правила [About & Rules]
+  // 5. Описание виллы и правила [About & Rules] без искусственных числовых лимитов
   if (forceRebuild || !home.aboutSections || home.aboutSections.length === 0) {
+    const aboutSectionIndices = new Set();
+    Object.keys(home).forEach((k) => {
+      const match = k.match(/^about_sec_(\d+)_(title|text)$/);
+      if (match) {
+        aboutSectionIndices.add(parseInt(match[1], 10));
+      }
+    });
+    const sortedSecs = Array.from(aboutSectionIndices).sort((a, b) => a - b);
     const aboutSectionsList = [];
-    for (let s = 1; s <= 10; s++) {
+    sortedSecs.forEach((s) => {
       const titleItem = home[`about_sec_${s}_title`];
       const textItem = home[`about_sec_${s}_text`];
       if (titleItem && titleItem.enabled !== false) {
@@ -133,7 +143,7 @@ function buildHomeDerivedCollections(home, forceRebuild = false) {
           text: { ru: textItem?.ru || '', en: textItem?.en || '', tr: textItem?.tr || '' }
         });
       }
-    }
+    });
     home.aboutSections = aboutSectionsList;
   }
 
@@ -215,32 +225,66 @@ function buildHomeDerivedCollections(home, forceRebuild = false) {
     };
   }
 
-  // 8. Безопасность, Закон № 7464 и доступная среда [Safety, Law 7464 & Accessibility]
+  // 8. Безопасность, Закон № 7464 и доступная среда [Safety, Law 7464 & Accessibility] без искусственных ограничений
   if (forceRebuild || !home.safetyData) {
+    const extractItems = (prefix) => {
+      const list = [];
+      const keys = Object.keys(home)
+        .filter((k) => k.startsWith(prefix))
+        .sort((a, b) => {
+          const numA = parseInt(a.replace(prefix, ''), 10) || 0;
+          const numB = parseInt(b.replace(prefix, ''), 10) || 0;
+          return numA - numB;
+        });
+      keys.forEach((k) => {
+        const item = home[k];
+        if (item && item.enabled !== false) {
+          list.push({
+            key: k,
+            ru: item.ru || '',
+            en: item.en || '',
+            tr: item.tr || '',
+            desc: item.desc || '',
+            icon: item.media || ''
+          });
+        }
+      });
+      return list;
+    };
+
+    const law7464ItemsList = extractItems('legal_law7464_item');
+    const securityItemsList = extractItems('legal_security_item');
+    const accessibleItemsList = extractItems('legal_accessible_item');
+    const cancellationItemsList = extractItems('legal_cancellation_item');
+
     home.safetyData = {
       title: home.legal_safety_title || { ru: 'Безопасность, Закон № 7464 и Доступная среда', en: 'Safety, Law No. 7464 & Accessible Environment', tr: 'Güvenlik, 7464 Sayılı Kanun ve Engelsiz Erişim' },
       subtitle: home.legal_safety_subtitle || { ru: 'Полное соответствие законодательству Турции о краткосрочной аренде, защита гостей и безбарьерный доступ', en: 'Full compliance with Turkish short-term rental laws, guest protection and barrier-free access', tr: 'Türkiye kısa dönem kiralama mevzuatına tam uyum, misafir güvenliği ve engelsiz erişim' },
       law7464Title: home.legal_law7464_title || { ru: 'Официальный договор и учет KBS', en: 'Official Contract & KBS Police Registration', tr: 'Resmi Sözleşme ve KBS Polis Kaydı' },
       law7464Desc: home.legal_law7464_desc || { ru: 'Вилла осуществляет деятельность в строгом соответствии с Законом № 7464 о краткосрочной туристической аренде в Турции.', en: 'Villa operates in strict accordance with Turkish Law No. 7464 on Short-Term Tourist Rentals.', tr: 'Villa, Türkiye\'deki 7464 Sayılı Konutların Turizm Amaçlı Kiralanması Kanunu\'na tam uygun olarak işletilmektedir.' },
       law7464Badge: home.legal_law7464_badge || { ru: 'Закон Турции № 7464', en: 'Turkish Law No. 7464', tr: 'Türkiye Kanunu No. 7464' },
+      law7464Items: law7464ItemsList,
       law7464Item1: home.legal_law7464_item1 || { ru: 'Обязательный договор краткосрочного найма с описью имущества при заезде', en: 'Mandatory short-term rental agreement with property inventory upon check-in', tr: 'Girişte demirbaş listesi içeren zorunlu kısa dönem kira sözleşmesi' },
       law7464Item2: home.legal_law7464_item2 || { ru: 'Регистрация паспортов всех проживающих гостей в полицейской системе KBS [Kimlik Bildirme Sistemi]', en: 'Registration of all residing guests in the Turkish Gendarmerie KBS police system', tr: 'Tüm konaklayan misafirlerin jandarma KBS [Kimlik Bildirme Sistemi] sistemine kaydedilmesi' },
       law7464Item3: home.legal_law7464_item3 || { ru: 'Размещение лиц, не внесенных в государственную систему KBS, строго запрещено', en: 'Accommodation of third parties not registered in the official KBS system is strictly prohibited', tr: 'Resmi KBS sistemine kaydedilmemiş kişilerin konaklaması kesinlikle yasaktır' },
       securityTitle: home.legal_security_title || { ru: 'Безопасность дома и территории', en: 'Home & Territory Safety Standards', tr: 'Ev ve Mülk Güvenlik Standartları' },
       securityDesc: home.legal_security_desc || { ru: 'Оснащение дома сертифицированными системами предупреждения и постоянного мониторинга.', en: 'Equipping the villa with certified emergency warning systems and 24/7 perimeter monitoring.', tr: 'Villanın sertifikalı uyarı sistemleri ve 24/7 çevre izleme ile donatılması.' },
       securityBadge: home.legal_security_badge || { ru: 'Стандарты безопасности', en: 'Safety Standards', tr: 'Güvenlik Standartları' },
+      securityItems: securityItemsList,
       securityItem1: home.legal_security_item1 || { ru: 'Наружные камеры видеонаблюдения установлены строго по периметру забора и у калитки [без съемки бассейна и террасы]', en: 'External perimeter CCTV security cameras strictly at fence and gate [no cameras in pool or patio]', tr: 'Dış çevre güvenlik kameraları sadece çit ve bahçe kapısında [havuz ve verandada kamera yoktur]' },
       securityItem2: home.legal_security_item2 || { ru: 'Сертифицированные автономные датчики дыма и угарного газа на обоих этажах виллы', en: 'Certified autonomous smoke and carbon monoxide detectors on both villa floors', tr: 'Villanın her iki katında sertifikalı duman ve karbonmonoksit dedektörleri' },
       securityItem3: home.legal_security_item3 || { ru: 'Огнетушители на 1 и 2 этажах, укомплектованная медицинская аптечка первой помощи', en: 'Fire extinguishers on 1st and 2nd floors, fully equipped emergency first aid kit', tr: '1. ve 2. katlarda yangın söndürücüler, tam donanımlı ilk yardım tıbbi çantası' },
       accessibleTitle: home.legal_accessible_title || { ru: 'Инклюзивность и доступная среда', en: 'Inclusivity & Accessible Environment', tr: 'Kapsayıcılık ve Engelsiz Erişim' },
       accessibleDesc: home.legal_accessible_desc || { ru: 'Создание безбарьерных условий для комфортного отдыха гостей с ограниченной мобильностью.', en: 'Creating barrier-free environment for guests with reduced mobility and senior family members.', tr: 'Hareket kısıtlılığı olan misafirler ve yaşlılar için engelsiz yaşam koşulları oluşturma.' },
       accessibleBadge: home.legal_accessible_badge || { ru: 'Безбарьерная среда', en: 'Barrier-free Access', tr: 'Engelsiz Yaşam' },
+      accessibleItems: accessibleItemsList,
       accessibleItem1: home.legal_accessible_item1 || { ru: 'Безбарьерный доступ: спальня №1 на 1 этаже оборудована широкими дверными проемами без порогов', en: 'Barrier-free access: Bedroom 1 on ground floor has wide doorways and zero-threshold transitions', tr: 'Engelsiz erişim: Giriş katındaki 1. yatak odası eşiksiz geçişler ve geniş kapılarla donatılmıştır' },
       accessibleItem2: home.legal_accessible_item2 || { ru: 'Санузел первого этажа спроектирован с возможностью комфортного использования гостями с ограниченной мобильностью', en: 'Ground floor bathroom designed for comfortable independent access by guests with limited mobility', tr: 'Giriş katındaki banyo, hareket kısıtlılığı olan misafirlerin konforlu kullanımı için tasarlanmıştır' },
       accessibleItem3: home.legal_accessible_item3 || { ru: 'Возможность установки мобильного подъемника для спуска в бассейн по предварительному запросу', en: 'Option to install a specialized mobile pool lift for water descent upon advance request', tr: 'Önceden talep edilmesi durumunda havuza iniş için özel mobil asansör kurulum imkanı' },
       cancellationTitle: home.legal_cancellation_title || { ru: 'Политика отмены и возврата', en: 'Cancellation & Refund Policy', tr: 'İptal ve İade Politikası' },
       cancellationDesc: home.legal_cancellation_desc || { ru: 'Прозрачные финансовые условия бронирования без скрытых штрафов.', en: 'Transparent booking financial conditions without hidden cancellation fees.', tr: 'Gizli ceza olmaksızın şeffaf rezervasyon ve mali koşullar.' },
       cancellationBadge: home.legal_cancellation_badge || { ru: 'Возврат 100%', en: '100% Refund', tr: '%100 İade' },
+      cancellationItems: cancellationItemsList,
       cancellationItem1: home.legal_cancellation_item1 || { ru: 'Полный 100% возврат предоплаты при отмене более чем за 14 суток до даты заезда', en: 'Full 100% refund of advance payment if canceled more than 14 days prior to check-in date', tr: 'Giriş tarihinden 14 gün öncesine kadar yapılan iptallerde %100 kesintisiz ön ödeme iadesi' },
       cancellationItem2: home.legal_cancellation_item2 || { ru: 'При отмене менее чем за 14 суток до заезда удерживается стоимость проживания за первые сутки', en: 'For cancellations less than 14 days before arrival, the cost of the first night is retained', tr: 'Girişe 14 günden daha az süre kala yapılan iptallerde ilk gecelik konaklama ücreti tahsil edilir' },
       cancellationItem3: home.legal_cancellation_item3 || { ru: 'Официальное оформление e-Arşiv Fatura на имя гостя согласно VUK 213 Madde 230', en: 'Official issuance of e-Arşiv Fatura tax invoice in guest\'s name under VUK 213 Article 230', tr: 'VUK 213 Madde 230 uyarınca misafir adına resmi e-Arşiv Fatura düzenlenmesi' }

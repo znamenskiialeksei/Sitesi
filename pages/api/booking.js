@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 01:48 | ПЛАН: 270920260148 Исправление кнопок ИИ и локализации инбокса.md | TAG: VILLA-HOST-AI-INBOX-I18N-270920260148]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 11:45 | ПЛАН: 270920261145 Модернизация чата спален и задач запускаторов.md | TAG: VILLA-CHAT-BEDROOMS-TASKS-270920261145]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 11:45 | ПЛАН: 270920261145 Модернизация чата спален и задач запускаторов.md | TAG: VILLA-CHAT-BEDROOMS-TASKS-270920261145]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 18:20 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-COMPREHENSIVE-7-TASKS-270920261820]
 // ==============================================================================
 // ОСНОВНОЙ API СЕРВЕР GOOGLE SHEETS & CRM VILLA TURAMAN
 // Файл: pages/api/booking.js
@@ -985,6 +985,24 @@ export default async function handler(req, res) {
           }
         });
       }
+
+      // Лист аккаунтов ACCOUNTS: обязательная фиксация системных строк 2 и 3 [владелец и служба консьержа]
+      const accountsDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'ACCOUNTS', 'A:A') });
+      if ((accountsDb.data.values || []).length <= 1) {
+        await sheets.spreadsheets.values.append({
+          spreadsheetId,
+          range: resolveRange(sheetMap, 'ACCOUNTS', 'A:G'),
+          valueInputOption: 'USER_ENTERED',
+          insertDataOption: 'INSERT_ROWS',
+          requestBody: {
+            values: [
+              ['2026-01-15', 'Алексей Знаменский', 'villaturaman@gmail.com', 'admin123', 'Нет', 'Нет', 'Нет [Владелец / Главный]'],
+              ['2026-05-01', 'Служба консьержа', 'manager@villaturaman.com', 'manager2026', 'Нет', 'Нет', 'Нет [Управляющий персоналом]']
+            ]
+          }
+        });
+      }
+
       await safeCacheSet('system_sheets_initialized_v2', true, { ex: 86400 * 30 });
     } catch (e) {
       if (e?.code === 429 || e?.message?.includes('Quota exceeded')) {

@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 19:40 | ПЛАН: 260920261905 Адаптация задач запускаторов.md | TAG: VILLA-HOME-PREV-260920261940]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 26.09.2026 23:45 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-HOME-PERSIST-260920262345]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:45 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-HOME-PERSIST-260920262345]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 18:50 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-HOME-STATUS-SERVICES-270920261850]
 // ==============================================================================
 // ГЛАВНАЯ СТРАНИЦА ВИЛЛЫ VILLA TURAMAN В СТИЛЕ AIRBNB
 // Файл: pages/index.js
@@ -946,14 +946,16 @@ export default function HomeListing({ publicData, contentData }) {
             </div>
 
             {/* Дополнительные услуги и видео-путеводители из Google Sheets */}
-            <CatalogSection
-              products={currentPublicData.products}
-              courses={currentPublicData.courses}
-              onSelectPresentation={(item, type) => {
-                setSelectedPresentation(item);
-                setSelectedPresentationType(type);
-              }}
-            />
+            {homeData?.services_status !== 'Выкл' && (
+              <CatalogSection
+                products={currentPublicData.products}
+                courses={currentPublicData.courses}
+                onSelectPresentation={(item, type) => {
+                  setSelectedPresentation(item);
+                  setSelectedPresentationType(type);
+                }}
+              />
+            )}
 
             {/* Полноценная категоризированная галерея виллы из Google Sheets */}
             <GallerySection

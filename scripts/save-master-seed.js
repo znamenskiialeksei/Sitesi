@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:45 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-SEED-SCRIPT-ALL15-260920262345]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 00:25 | ПЛАН: 270920260015 Синхронизация translations.md | TAG: VILLA-SEED-SCRIPT-TRANSLATIONS-270920260025]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 00:25 | ПЛАН: 270920260015 Синхронизация translations.md | TAG: VILLA-SEED-SCRIPT-TRANSLATIONS-270920260025]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 18:50 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-DYNAMIC-SEED-ALL-KEYS-270920261850]
 // ==============================================================================
 // СЦЕНАРИЙ АВТОМАТИЧЕСКОЙ ФИКСАЦИИ ЭТАЛОНА SINGLE SOURCE OF TRUTH
 // Файл: scripts/save-master-seed.js
@@ -167,9 +167,18 @@ async function saveMasterSeed() {
     };
   });
 
-  // Извлечение разделов описания [ABOUT] из Блока 4 листа HOME
+  // Извлечение разделов описания [ABOUT] из Блока 4 листа HOME без искусственных числовых ограничений
+  const aboutSectionIndices = new Set();
+  Object.keys(masterHomeMap).forEach((k) => {
+    const match = k.match(/^about_sec_(\d+)_(title|text)$/);
+    if (match) {
+      aboutSectionIndices.add(parseInt(match[1], 10));
+    }
+  });
+
+  const sortedSectionIndices = Array.from(aboutSectionIndices).sort((a, b) => a - b);
   const masterAboutSections = [];
-  for (let s = 1; s <= 7; s++) {
+  sortedSectionIndices.forEach((s) => {
     const titleItem = masterHomeMap[`about_sec_${s}_title`];
     const textItem = masterHomeMap[`about_sec_${s}_text`];
     if (titleItem || textItem) {
@@ -187,7 +196,7 @@ async function saveMasterSeed() {
         }
       });
     }
-  }
+  });
 
   const finalAboutSections = masterAboutSections.length > 0
     ? masterAboutSections

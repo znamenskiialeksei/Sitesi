@@ -1,8 +1,14 @@
-// ==============================================================================
-// ПЕРСОНАЛЬНЫЙ ЧАТ ГОСТЯ С ХОЗЯИНОМ (GUEST CHAT)
-// Файл: components/GuestCabinet/GuestChat.js
-// Назначение: Защищенный диалог с владельцем виллы, вложения, перевод RU/EN/TR
-// ==============================================================================
+/**
+ * ПАСПОРТ МОДУЛЯ:
+ * Имя файла: components/GuestCabinet/GuestChat.js
+ * Назначение: Защищенный чат гостя с хозяином виллы, мультиязычные плашки и статусы
+ *
+ * ХРОНОЛОГИЯ ИЗМЕНЕНИЙ:
+ * 1. Ревизия: 260920261646
+ *    - Описание: Создание интерфейса чата гостя с интеграцией вложений и таймеров предложений
+ * 2. Ревизия: 270920261820
+ *    - Описание: Полная локализация шапки чата RU/EN/TR [чат с хозяином, владелец, онлайн, телеграм, почта, авто-перевод]
+ */
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Paperclip, X, MessageCircle, User, Shield, FileText, Sparkles, Clock, CreditCard, Gift, Calendar, Mail } from 'lucide-react';
@@ -97,7 +103,7 @@ export default function GuestChat({
         <div className="space-y-2">
           <div className="text-base sm:text-lg font-black text-white flex items-center gap-2 tracking-wide">
             <MessageCircle className="w-5 h-5 text-rose-500" />
-            <span>Чат с хозяином</span>
+            <span>{t('chatWithHostHeader') || 'Чат с хозяином'}</span>
           </div>
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-rose-500 to-amber-500 flex items-center justify-center text-white font-black text-sm shadow-md shrink-0">
@@ -109,11 +115,11 @@ export default function GuestChat({
                 <Shield className="w-3.5 h-3.5 text-amber-400" />
               </h3>
               <div className="text-xs text-slate-300 font-medium leading-none mt-0.5">
-                Владелец Villa Turaman
+                {t('ownerVillaTuraman') || 'Владелец Villa Turaman'}
               </div>
               <div className="text-[11px] text-emerald-400 flex items-center gap-1 font-bold mt-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                <span>[Онлайн]</span>
+                <span>{t('onlineBadge') || '[Онлайн]'}</span>
               </div>
             </div>
           </div>
@@ -128,7 +134,7 @@ export default function GuestChat({
             title="Открыть диалог с хозяином в Telegram"
           >
             <Send className="w-3.5 h-3.5 text-sky-400" />
-            <span>Телеграм хозяина</span>
+            <span>{t('hostTelegramBtn') || 'Телеграм хозяина'}</span>
           </a>
           <a
             href="mailto:villaturaman@gmail.com"
@@ -136,11 +142,11 @@ export default function GuestChat({
             title="Написать письмо владельцу"
           >
             <Mail className="w-3.5 h-3.5 text-rose-400" />
-            <span>Почта хозяина</span>
+            <span>{t('hostEmailBtn') || 'Почта хозяина'}</span>
           </a>
           <span className="text-[11px] text-slate-300 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-white/10 font-bold tracking-wider uppercase flex items-center gap-1">
             <Sparkles className="w-3 h-3 text-amber-400" />
-            <span>Авто-перевод: {lang.toUpperCase()}</span>
+            <span>{t('autoTranslatePrefix') || 'Авто-перевод'}: {lang.toUpperCase()}</span>
           </span>
         </div>
       </div>
@@ -205,7 +211,7 @@ export default function GuestChat({
         {!messages || messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-slate-500 text-xs">
             <MessageCircle className="w-10 h-10 mb-2 opacity-30" />
-            <p>Диалог пуст. Напишите сообщение хозяину виллы!</p>
+            <p>{t('emptyChatPrompt') || 'Диалог пуст. Напишите сообщение хозяину виллы!'}</p>
           </div>
         ) : (
           messages.filter(Boolean).map((m, idx) => {
@@ -284,14 +290,14 @@ export default function GuestChat({
                         className="px-2.5 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/30 text-sky-200 text-[11px] font-bold transition-all flex items-center gap-1.5 shadow-sm"
                       >
                         <Send className="w-3 h-3 text-sky-300" />
-                        <span>Телеграм хозяина</span>
+                        <span>{t('hostTelegramBtn') || 'Телеграм хозяина'}</span>
                       </a>
                       <a
                         href="mailto:villaturaman@gmail.com"
                         className="px-2.5 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/30 text-rose-200 text-[11px] font-bold transition-all flex items-center gap-1.5 shadow-sm"
                       >
                         <Mail className="w-3 h-3 text-rose-300" />
-                        <span>Почта хозяина</span>
+                        <span>{t('hostEmailBtn') || 'Почта хозяина'}</span>
                       </a>
                     </div>
                   )}

@@ -2,9 +2,8 @@
 // БИБЛИОТЕКА ЛОКАЛИЗАЦИИ И МУЛЬТИЯЗЫЧНОСТИ VILLA TURAMAN [AIRBNB PLATFORM]
 // Файл: utils/translations.js
 // Поддерживаемые языки: Русский [RU], Английский [EN], Турецкий [TR]
-// 
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 01:15 | ПЛАН: 270920260115 Оптимизация кабинета и виджета.md | TAG: VILLA-HOST-WIDGET-CLEAN-270920260115]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:48 | ПЛАН: 270920260148 Исправление кнопок ИИ и локализации инбокса.md | TAG: VILLA-HOST-AI-INBOX-I18N-270920260148]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 01:48 | ПЛАН: 270920260148 Исправление кнопок ИИ и локализации инбокса.md | TAG: VILLA-HOST-AI-INBOX-I18N-270920260148]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 18:20 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-COMPREHENSIVE-7-TASKS-270920261820]
 // ==============================================================================
 
 export const translations = {
@@ -639,7 +638,25 @@ export const translations = {
 
     // Таймеры обратного отсчета
     untilPaymentCloses: "До закрытия:",
-    paymentTimeExpired: "Время оплаты истекло"
+    paymentTimeExpired: "Время оплаты истекло",
+
+    // Спальные места и паспорт спальни
+    bedroomDetailsBtn: "Подробнее о спальне",
+    bedroomSecondLayer: "Второй слой →",
+    bedroomDescTitle: "Описание комнаты",
+    bedroomAmenitiesTitle: "Удобства и комплектация спальни",
+    ensuiteBathroom: "Собственный санузел",
+    airConditioning: "Кондиционер",
+    mountainGardenView: "Вид на горы и сад",
+
+    // Шапка чата гостя
+    chatWithHostHeader: "Чат с хозяином",
+    ownerVillaTuraman: "Владелец Villa Turaman",
+    onlineBadge: "[Онлайн]",
+    hostTelegramBtn: "Телеграм хозяина",
+    hostEmailBtn: "Почта хозяина",
+    autoTranslatePrefix: "Авто-перевод",
+    emptyChatPrompt: "Диалог пуст. Напишите сообщение хозяину виллы!"
   },
 
   en: {
@@ -1262,7 +1279,25 @@ export const translations = {
 
     // Countdown timers
     untilPaymentCloses: "Payment closes in:",
-    paymentTimeExpired: "Payment window expired"
+    paymentTimeExpired: "Payment window expired",
+
+    // Sleeping arrangements and room passport
+    bedroomDetailsBtn: "Bedroom details",
+    bedroomSecondLayer: "Room passport →",
+    bedroomDescTitle: "Room description",
+    bedroomAmenitiesTitle: "Bedroom amenities & features",
+    ensuiteBathroom: "En-suite bathroom",
+    airConditioning: "Air conditioning",
+    mountainGardenView: "Mountain & garden view",
+
+    // Guest chat header
+    chatWithHostHeader: "Chat with Host",
+    ownerVillaTuraman: "Villa Turaman Owner",
+    onlineBadge: "[Online]",
+    hostTelegramBtn: "Host Telegram",
+    hostEmailBtn: "Host Email",
+    autoTranslatePrefix: "Auto-translate",
+    emptyChatPrompt: "Conversation is empty. Send a message to the villa host!"
   },
 
   tr: {
@@ -1885,7 +1920,25 @@ export const translations = {
 
     // Geri sayım sayaçları
     untilPaymentCloses: "Kapanışa kalan:",
-    paymentTimeExpired: "Ödeme süresi doldu"
+    paymentTimeExpired: "Ödeme süresi doldu",
+
+    // Konaklama yerleri ve oda pasaportu
+    bedroomDetailsBtn: "Oda detayları",
+    bedroomSecondLayer: "Oda pasaportu →",
+    bedroomDescTitle: "Oda açıklaması",
+    bedroomAmenitiesTitle: "Oda olanakları ve donanımı",
+    ensuiteBathroom: "Özel banyo",
+    airConditioning: "Klima",
+    mountainGardenView: "Dağ ve bahçe manzarası",
+
+    // Misafir sohbet başlığı
+    chatWithHostHeader: "Ev Sahibi ile Sohbet",
+    ownerVillaTuraman: "Villa Turaman Sahibi",
+    onlineBadge: "[Çevrimiçi]",
+    hostTelegramBtn: "Ev Sahibi Telegram",
+    hostEmailBtn: "Ev Sahibi E-posta",
+    autoTranslatePrefix: "Otomatik Çeviri",
+    emptyChatPrompt: "Sohbet boş. Villa sahibine bir mesaj gönderin!"
   }
 };
 
