@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 18:50 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-DYNAMIC-SEED-ALL-KEYS-270920261850]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 28.09.2026 22:50 | ПЛАН: 280920261940 ПЛАН 13 колонок ACCOUNTS и восстановление.md | TAG: VILLA-SEED-SCRIPT-DELETED-ROWS-SYNC-280920262250]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 28.09.2026 22:50 | ПЛАН: 280920261940 ПЛАН 13 колонок ACCOUNTS и восстановление.md | TAG: VILLA-SEED-SCRIPT-DELETED-ROWS-SYNC-280920262250]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 28.09.2026 23:25 | ПЛАН: 280920262322 ПЛАН Восстановление шапок ACCOUNTS.md | TAG: VILLA-RESTORE-ROW2-HEADERS-STAMP-280920262325]
 // ==============================================================================
 // СЦЕНАРИЙ АВТОМАТИЧЕСКОЙ ФИКСАЦИИ ЭТАЛОНА SINGLE SOURCE OF TRUTH
 // Файл: scripts/save-master-seed.js
@@ -322,9 +322,24 @@ async function saveMasterSeed() {
   const accountsFetch = await safeFetchRows('ACCOUNTS', 'A:M');
   const masterAccountsRows = accountsFetch.ok
     ? accountsFetch.rows.map((r, idx) => {
-        const row = [];
+        let row = [];
         for (let i = 0; i < 13; i++) {
           row.push((r[i] || '').toString().trim());
+        }
+        // Защита от сдвига: если в колонке 3 [C] email вместо телефона
+        if (row[2].includes('@') && !row[3].includes('@')) {
+          const emailVal = row[2];
+          const passVal = row[3];
+          const blockSite = row[4] || 'Нет';
+          const blockAcc = row[5] || 'Нет';
+          const blockChat = row[6] || 'Нет';
+          const verifStat = row[7] || 'Верифицирован';
+          const verifDate = row[8] || '15.01.2026, 12:00:00';
+          const reVerif = row[9] || 'Нет';
+          const accStat = row[10] || 'Активен';
+          const uidVal = row[12] || ('VT-GUEST-' + (1000 + idx));
+          const phoneVal = row[1].includes('Знаменский') ? '+90 543 335 80 70' : '+90 532 000 00 01';
+          row = [row[0], row[1], phoneVal, emailVal, passVal, blockSite, blockAcc, blockChat, verifStat, verifDate, reVerif, accStat, uidVal];
         }
         // Защита: гарантируем наличие неизменяемого UID в Колонке M
         if (!row[12]) {

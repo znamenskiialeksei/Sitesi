@@ -1687,8 +1687,8 @@ function initSingleSheetByKey_(sheet, key) {
     sheet.getRange("E:E").setNumberFormat("@");
     sheet.getRange("M:M").setNumberFormat("@");
     var aRows = [
-    ["2026-01-15","Алексей Знаменский","villaturaman@gmail.com","admin123","Нет","Нет","Нет [Владелец / Главный]","Верифицирован","15.01.2026, 12:00:00","Нет","Активен","","VT-GUEST-1000"],
-    ["2026-05-01","Служба консьержа","manager@villaturaman.com","manager2026","Нет","Нет","Нет [Управляющий персоналом]","Верифицирован","01.05.2026, 10:00:00","Нет","Активен","","VT-GUEST-1001"]
+    ["2026-01-15","Алексей Знаменский","+90 543 335 80 70","villaturaman@gmail.com","admin123","Нет","Нет","Нет","Верифицирован","15.01.2026, 12:00:00","Нет","Активен","VT-GUEST-1000"],
+    ["2026-05-01","Служба консьержа","+90 532 000 00 01","manager@villaturaman.com","manager2026","Нет","Нет","Нет","Верифицирован","01.05.2026, 10:00:00","Нет","Активен","VT-GUEST-1001"]
   ];
     if (aRows.length > 0) {
       sheet.getRange(2, 1, aRows.length, aHeaders.length).setValues(aRows);
@@ -3231,48 +3231,110 @@ function restoreSheetsFromCloudApiInteractive() {
 
       var rows = (rawSheets && rawSheets[sKey] && rawSheets[sKey].length > 0) ? rawSheets[sKey] : null;
 
-      if (rows && rows.length > 0) {
-        // Нормализация матрицы к прямоугольному виду
-        var maxCols = 0;
-        for (var r = 0; r < rows.length; r++) {
-          if (rows[r].length > maxCols) maxCols = rows[r].length;
-        }
-        var rectRows = rows.map(function(row) {
-          var copy = row.slice();
-          while (copy.length < maxCols) copy.push('');
-          return copy;
-        });
-        sheet.clearContents();
-        sheet.getRange(1, 1, rectRows.length, maxCols).setValues(rectRows);
+      // 1. Очистка листа и гарантированное создание темно-синей шапки на строке 1
+      sheet.clearContents();
+      styleSheetHeader_(sheet, cfg.headers, 1, cfg.minWidths);
 
-        // Восстановление формул автоперевода с точкой с запятой
-        if (sKey === 'HOME') {
-          sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-        } else if (sKey === 'SERVICES') {
-          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-          sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-          sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-        } else if (sKey === 'GUIDES') {
-          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-          sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-          sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-        } else if (sKey === 'LEGAL') {
-          sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-          sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-        } else if (sKey === 'TEMPLATES') {
-          sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-          sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+      // 2. Установка Plain Text формата @ для защищенных колонок
+      if (sKey === 'ACCOUNTS') {
+        sheet.getRange("C:C").setNumberFormat("@");
+        sheet.getRange("E:E").setNumberFormat("@");
+        sheet.getRange("M:M").setNumberFormat("@");
+      } else if (sKey === 'ACCESS') {
+        sheet.getRange("D:D").setNumberFormat("@");
+        sheet.getRange("E:E").setNumberFormat("@");
+      } else if (sKey === 'BOOKINGS') {
+        sheet.getRange("C:C").setNumberFormat("@");
+      } else if (sKey === 'GUIDE_ACCESS') {
+        sheet.getRange("B:B").setNumberFormat("@");
+      }
+
+      if (rows && rows.length > 0) {
+        var dataRows = rows.slice();
+        // Защита от дублирования: если первая строка содержит заголовок, отсекаем ее
+        if (dataRows.length > 0 && cfg.headers && cfg.headers.length > 0) {
+          var firstCell = String(dataRows[0][0] || '').trim().toLowerCase();
+          var headerFirstCell = String(cfg.headers[0] || '').trim().toLowerCase();
+          if (firstCell === headerFirstCell || firstCell.indexOf('блок') !== -1 || (sKey === 'ACCOUNTS' && firstCell.indexOf('дата') !== -1)) {
+            dataRows = dataRows.slice(1);
+          }
+        }
+
+        // Санитарное выравнивание 13 колонок ACCOUNTS при обнаружении сдвига
+        if (sKey === 'ACCOUNTS') {
+          dataRows = dataRows.map(function(r, idx) {
+            var row = r.slice();
+            while (row.length < 13) row.push('');
+            if (String(row[2] || '').indexOf('@') !== -1 && String(row[3] || '').indexOf('@') === -1) {
+              var emailVal = row[2];
+              var passVal = row[3];
+              var blockSite = row[4] || 'Нет';
+              var blockAcc = row[5] || 'Нет';
+              var blockChat = row[6] || 'Нет';
+              var verifStat = row[7] || 'Верифицирован';
+              var verifDate = row[8] || '15.01.2026, 12:00:00';
+              var reVerif = row[9] || 'Нет';
+              var accStat = row[10] || 'Активен';
+              var uidVal = row[12] || ('VT-GUEST-' + (1000 + idx));
+              var phoneVal = (String(row[1] || '').indexOf('Знаменский') !== -1) ? '+90 543 335 80 70' : '+90 532 000 00 01';
+              row = [row[0], row[1], phoneVal, emailVal, passVal, blockSite, blockAcc, blockChat, verifStat, verifDate, reVerif, accStat, uidVal];
+            }
+            if (!row[12]) {
+              row[12] = 'VT-GUEST-' + (1000 + idx);
+            }
+            return row;
+          });
+        }
+
+        if (dataRows.length > 0) {
+          var maxCols = cfg.headers.length;
+          for (var r = 0; r < dataRows.length; r++) {
+            if (dataRows[r].length > maxCols) maxCols = dataRows[r].length;
+          }
+          var rectRows = dataRows.map(function(row) {
+            var copy = row.slice();
+            while (copy.length < maxCols) copy.push('');
+            return copy;
+          });
+          // ЗАПИСЬ СТРОГО СО СТРОКИ 2 : сохраняет шапку в строке 1
+          sheet.getRange(2, 1, rectRows.length, maxCols).setValues(rectRows);
+
+          // Восстановление формул автоперевода с точкой с запятой
+          if (sKey === 'HOME') {
+            sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          } else if (sKey === 'SERVICES') {
+            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          } else if (sKey === 'GUIDES') {
+            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          } else if (sKey === 'GALLERY') {
+            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("K2").setFormula('=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("L2").setFormula('=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          } else if (sKey === 'LEGAL') {
+            sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          } else if (sKey === 'TEMPLATES') {
+            sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          }
         }
         restoredCount++;
       } else {
@@ -3550,24 +3612,55 @@ function restoreFromDriveSnapshotFileId_(fileId) {
   var restored = 0;
   for (var i = 0; i < sheetMapping.length; i++) {
     var item = sheetMapping[i];
+    var cfg = VILLA_SHEETS_CONFIG[item.key];
+    var targetSheetName = cfg.name || cfg.canonicalName || item.key;
+    var sheet = findSheetByConfigKey(ss, item.key);
+    if (!sheet) {
+      sheet = ss.insertSheet(targetSheetName);
+    }
+
+    // 1. Очистка и установка шапки
+    sheet.clearContents();
+    styleSheetHeader_(sheet, cfg.headers, 1, cfg.minWidths);
+
+    // 2. Форматы Plain Text @
+    if (item.key === 'ACCOUNTS') {
+      sheet.getRange("C:C").setNumberFormat("@");
+      sheet.getRange("E:E").setNumberFormat("@");
+      sheet.getRange("M:M").setNumberFormat("@");
+    } else if (item.key === 'ACCESS') {
+      sheet.getRange("D:D").setNumberFormat("@");
+      sheet.getRange("E:E").setNumberFormat("@");
+    } else if (item.key === 'BOOKINGS') {
+      sheet.getRange("C:C").setNumberFormat("@");
+    } else if (item.key === 'GUIDE_ACCESS') {
+      sheet.getRange("B:B").setNumberFormat("@");
+    }
+
     if (item.rows && item.rows.length > 0) {
-      var cfg = VILLA_SHEETS_CONFIG[item.key];
-      var targetSheetName = cfg.name || cfg.canonicalName || item.key;
-      var sheet = findSheetByConfigKey(ss, item.key);
-      if (!sheet) {
-        sheet = ss.insertSheet(targetSheetName);
+      var dataRows = item.rows.slice();
+      // Отсечение заголовка, если он присутствует в массиве строк слепка
+      if (dataRows.length > 0 && cfg.headers && cfg.headers.length > 0) {
+        var firstCell = String(dataRows[0][0] || '').trim().toLowerCase();
+        var headerFirstCell = String(cfg.headers[0] || '').trim().toLowerCase();
+        if (firstCell === headerFirstCell || firstCell.indexOf('блок') !== -1 || (item.key === 'ACCOUNTS' && firstCell.indexOf('дата') !== -1)) {
+          dataRows = dataRows.slice(1);
+        }
       }
-      var maxCols = 0;
-      for (var r = 0; r < item.rows.length; r++) {
-        if (item.rows[r].length > maxCols) maxCols = item.rows[r].length;
+
+      if (dataRows.length > 0) {
+        var maxCols = cfg.headers.length;
+        for (var r = 0; r < dataRows.length; r++) {
+          if (dataRows[r].length > maxCols) maxCols = dataRows[r].length;
+        }
+        var rectRows = dataRows.map(function(row) {
+          var copy = row.slice();
+          while (copy.length < maxCols) copy.push('');
+          return copy;
+        });
+        // ЗАПИСЬ СО СТРОКИ 2
+        sheet.getRange(2, 1, rectRows.length, maxCols).setValues(rectRows);
       }
-      var rectRows = item.rows.map(function(row) {
-        var copy = row.slice();
-        while (copy.length < maxCols) copy.push('');
-        return copy;
-      });
-      sheet.clearContents();
-      sheet.getRange(1, 1, rectRows.length, maxCols).setValues(rectRows);
       restored++;
     }
   }
