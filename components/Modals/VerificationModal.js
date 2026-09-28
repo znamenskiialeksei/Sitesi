@@ -1,5 +1,11 @@
-// components/Modals/VerificationModal.js - Модальное окно подтверждения Email или Телефона гостя
-// [КЛАСТЕР: AUTH_VERIFICATION] [SSOT: GEMINI.md]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 19.09.2026 22:16 | ПЛАН: 221219092026 План Двухэтапной Верификации.md | TAG: VILLA-VERIFY-OTP-19092026]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 28.09.2026 10:30 | ПЛАН: 280920261030 Комплексный синхронный план всех вопросов.md | TAG: VILLA-ALL-ISSUES-SYNC-280920261030]
+// ==============================================================================
+// МОДАЛЬНЫЙ OTP-МАСТЕР ПОДТВЕРЖДЕНИЯ [VERIFICATION MODAL]
+// Файл: components/Modals/VerificationModal.js
+// Назначение: Модальное окно подтверждения Email или Телефона гостя, слой z-[2000]
+// 100% Zero-Brackets & Zero-Emdash Стандарт.
+// ==============================================================================
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Mail, Phone, ShieldCheck, X, CheckCircle2, AlertCircle, RefreshCw, ArrowRight, Edit3 } from 'lucide-react';

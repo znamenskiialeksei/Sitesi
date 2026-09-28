@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 18:20 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-COMPREHENSIVE-7-TASKS-270920261820]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 28.09.2026 08:00 | ПЛАН: 280920260800 Восстановление финальной редакции кода.md | TAG: VILLA-BOOKING-FINAL-SYNC-280920260800]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 28.09.2026 08:00 | ПЛАН: 280920260800 Восстановление финальной редакции кода.md | TAG: VILLA-BOOKING-FINAL-SYNC-280920260800]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 28.09.2026 10:30 | ПЛАН: 280920261030 Комплексный синхронный план всех вопросов.md | TAG: VILLA-ALL-ISSUES-SYNC-280920261030]
 // ==============================================================================
 // ОСНОВНОЙ API СЕРВЕР GOOGLE SHEETS & CRM VILLA TURAMAN
 // Файл: pages/api/booking.js
@@ -1882,7 +1882,16 @@ export default async function handler(req, res) {
       const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
       const msgText = data.message || '';
 
-      // 1. Авто-регистрация гостя в листе ACCOUNTS (если еще не зарегистрирован)
+      let contactHostSaved = false;
+      let contactRelaySaved = false;
+
+      // 1. Однократный параллельный перевод сообщения гостя в реальном времени
+      const translations = await inFlightTranslate(msgText);
+      const fRU = translations.ru || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+      const fEN = translations.en || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+      const fTR = translations.tr || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
+
+      // 2. Авто-регистрация гостя в листе ACCOUNTS (если еще не зарегистрирован)
       if (sheets && spreadsheetId && safeContact) {
         try {
           const existingData = await sheets.spreadsheets.values.get({
@@ -1921,86 +1930,46 @@ export default async function handler(req, res) {
         hasChat: true
       };
 
-      // 2. Гарантированное создание индивидуального листа диалога
+      // 3. Гарантированное создание индивидуального листа диалога с темной шапкой и запись
       const chatSheetName = getChatSheetName(safeName, safeContact);
       if (sheets && targetChatId) {
         try {
-          const meta = await sheets.spreadsheets.get({ spreadsheetId: targetChatId });
-          const exists = (meta.data.sheets || []).some((s) => s.properties.title === chatSheetName);
-          if (!exists) {
-            await sheets.spreadsheets.batchUpdate({
-              spreadsheetId: targetChatId,
-              requestBody: {
-                requests: [
-                  {
-                    addSheet: {
-                      properties: {
-                        title: chatSheetName,
-                        gridProperties: { frozenRowCount: 1 }
-                      }
-                    }
-                  }
-                ]
-              }
-            });
-            await sheets.spreadsheets.values.update({
-              spreadsheetId: targetChatId,
-              range: `'${chatSheetName}'!A1:G1`,
-              valueInputOption: 'USER_ENTERED',
-              requestBody: {
-                values: [GOOGLE_CONFIG.chatHeaders]
-              }
-            });
-          }
+          await ensureStyledChatSheet(sheets, targetChatId, chatSheetName);
+          await sheets.spreadsheets.values.append({
+            spreadsheetId: targetChatId,
+            range: `'${chatSheetName}'!A:G`,
+            valueInputOption: 'USER_ENTERED',
+            insertDataOption: 'INSERT_ROWS',
+            requestBody: { values: [[timestamp, safeName, msgText, fRU, fEN, fTR, data.fileName || '']] }
+          });
+          contactHostSaved = true;
+        } catch (sheetErr) {
+          console.warn('[contact_host sheet error]:', sheetErr.message);
+        }
 
-          // Запись первого сообщения с параллельным переводом в реальном времени
-          const translations = await inFlightTranslate(msgText);
-          const fRU = translations.ru || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
-          const fEN = translations.en || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
-          const fTR = translations.tr || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
-
-          let contactHostSaved = false;
-          let contactRelaySaved = false;
+        if (!contactHostSaved) {
           try {
-            await sheets.spreadsheets.values.append({
+            const relayRes = await relayToAppsScriptWebhook('send_chat_message', {
               spreadsheetId: targetChatId,
-              range: `'${chatSheetName}'!A:G`,
-              valueInputOption: 'USER_ENTERED',
-              insertDataOption: 'INSERT_ROWS',
-              requestBody: { values: [[timestamp, safeName, msgText, fRU, fEN, fTR, data.fileName || '']] }
+              clientName: safeName,
+              clientContact: safeContact,
+              sender: safeName,
+              message: msgText,
+              ru: translations.ru,
+              en: translations.en,
+              tr: translations.tr,
+              file: data.fileName || ''
             });
-            contactHostSaved = true;
-          } catch (sheetErr) {
-            console.warn('[contact_host sheet error]:', sheetErr.message);
-          }
-
-          if (!contactHostSaved) {
-            try {
-              const relayRes = await relayToAppsScriptWebhook('send_chat_message', {
-                spreadsheetId: targetChatId,
-                clientName: safeName,
-                clientContact: safeContact,
-                sender: safeName,
-                message: msgText,
-                ru: translations.ru,
-                en: translations.en,
-                tr: translations.tr,
-                file: data.fileName || ''
-              });
-              if (relayRes?.success) {
-                contactRelaySaved = true;
-              }
-            } catch (relayErr) {
-              console.warn('[contact_host relay warning]:', relayErr.message);
+            if (relayRes?.success) {
+              contactRelaySaved = true;
             }
+          } catch (relayErr) {
+            console.warn('[contact_host relay warning]:', relayErr.message);
           }
-        } catch (outerSheetErr) {
-          console.warn('[contact_host outer warning]:', outerSheetErr.message);
         }
       }
 
-      // Кэширование сообщения в памяти с переводами
-      const translations = await inFlightTranslate(msgText);
+      // 4. Кэширование сообщения в памяти с переводами
       const cacheKey = `chat_msgs_${safeContact}`;
       const msgItem = {
         date: timestamp,
@@ -2013,7 +1982,7 @@ export default async function handler(req, res) {
       };
       await safeCacheSet(cacheKey, [msgItem], { ex: 86400 * 7 });
 
-      // 3. Мгновенное Telegram-уведомление хозяину
+      // 5. Мгновенное Telegram-уведомление хозяину
       if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
         const fileNote = data.fileName ? `\n📎 Вложение: ${data.fileName}` : '';
         const tgMsg = `💬 НОВОЕ СООБЩЕНИЕ ХОЗЯИНУ: Прямое обращение\n👤 Гость: ${safeName}\n📞 Контакт: ${safeContact}\n📝 Текст: ${msgText}${fileNote}`;

@@ -1,3 +1,5 @@
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 28.09.2026 10:10 | ПЛАН: 280920261010 Прямая регистрация AuthModal.md | TAG: VILLA-DIRECT-AUTH-280920261010]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 28.09.2026 10:30 | ПЛАН: 280920261030 Комплексный синхронный план всех вопросов.md | TAG: VILLA-ALL-ISSUES-SYNC-280920261030]
 // ==============================================================================
 // МОДАЛЬНОЕ ОКНО АВТОРИЗАЦИИ И РЕГИСТРАЦИИ [AUTH MODAL]
 // Файл: components/Modals/AuthModal.js
@@ -63,7 +65,7 @@ export default function AuthModal() {
             setAuthModalOpen(false);
           }
         } else {
-          toast.error(t(res.error || 'error_invalid_login'));
+          toast.error(res.error || t('error_invalid_login') || 'Неверный логин или пароль');
         }
       } else {
         // Проверка полей регистрации
