@@ -127,6 +127,9 @@ export default function BookingWidget({
     }
   }, [currentUser]);
 
+  // Режим верификации контактов из настроек
+  const verificationMode = dynamicRules.verificationMode || 'progressive';
+
   // Расчет статуса подтверждения контактов гостя (Email OTP)
   const isEmailVerified = Boolean(
     (currentUser?.emailVerified || currentUser?.isVerified) &&
