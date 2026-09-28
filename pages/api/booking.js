@@ -991,13 +991,13 @@ export default async function handler(req, res) {
       if ((accountsDb.data.values || []).length <= 1) {
         await sheets.spreadsheets.values.append({
           spreadsheetId,
-          range: resolveRange(sheetMap, 'ACCOUNTS', 'A:G'),
+          range: resolveRange(sheetMap, 'ACCOUNTS', 'A:M'),
           valueInputOption: 'USER_ENTERED',
           insertDataOption: 'INSERT_ROWS',
           requestBody: {
             values: [
-              ['2026-01-15', 'Алексей Знаменский', 'villaturaman@gmail.com', 'admin123', 'Нет', 'Нет', 'Нет [Владелец / Главный]'],
-              ['2026-05-01', 'Служба консьержа', 'manager@villaturaman.com', 'manager2026', 'Нет', 'Нет', 'Нет [Управляющий персоналом]']
+              ['15.01.2026, 12:00:00', 'Алексей Знаменский', '+90 543 335 80 70', 'villaturaman@gmail.com', 'admin123', 'Нет', 'Нет', 'Нет', 'Верифицирован', '15.01.2026, 12:00:00', 'Нет', 'Активен', 'VT-GUEST-1000'],
+              ['01.05.2026, 10:00:00', 'Служба консьержа', '+90 532 000 00 01', 'manager@villaturaman.com', 'manager2026', 'Нет', 'Нет', 'Нет', 'Верифицирован', '01.05.2026, 10:00:00', 'Нет', 'Активен', 'VT-GUEST-1001']
             ]
           }
         });
@@ -1021,7 +1021,7 @@ export default async function handler(req, res) {
       }
 
       const productsSheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'SERVICES', 'A:R') });
-      const coursesSheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'GUIDES', 'A:R') });
+      const coursesSheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'GUIDES', 'A:S') });
       const gallerySheet = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'GALLERY', 'A:L') });
 
       const cleanField = (val) => {
@@ -1029,6 +1029,15 @@ export default async function handler(req, res) {
         const trimmed = val.trim();
         if (trimmed.startsWith('#') || trimmed.toUpperCase() === 'ERROR') return '';
         return trimmed;
+      };
+
+      const parseAvail = (val, defaultVal = true) => {
+        if (val === undefined || val === null || val === '') return defaultVal;
+        if (typeof val === 'boolean') return val;
+        const s = String(val).trim().toLowerCase();
+        if (s === 'выкл' || s === 'нет' || s === 'false' || s === 'off' || s === '0' || s === '-') return false;
+        if (s === 'вкл' || s === 'да' || s === 'true' || s === 'on' || s === '1' || s === '+' || s === 'active') return true;
+        return defaultVal;
       };
 
       const productsRows = productsSheet.data.values || [];
@@ -1045,11 +1054,13 @@ export default async function handler(req, res) {
         const rubVal = isServicesUsdHeader ? cleanField(r[9]) : cleanField(r[8]);
         const tryVal = isServicesUsdHeader ? cleanField(r[10]) : cleanField(r[9]);
         const imagesCol = isServicesUsdHeader ? (r[11] || '') : (r[10] || '');
+        const availCol = isServicesUsdHeader ? (r[12] || '') : (r[11] || '');
         const typeCol = isServicesUsdHeader ? (r[13] || '') : (r[12] || '');
         const videosCol = isServicesUsdHeader ? (r[14] || '') : (r[13] || '');
         const ruDetailed = cleanField(isServicesUsdHeader ? r[15] : r[14]);
         const enDetailed = cleanField(isServicesUsdHeader ? r[16] : r[15]);
         const trDetailed = cleanField(isServicesUsdHeader ? r[17] : r[16]);
+        const isEnabled = parseAvail(availCol, true);
 
         return {
           id: r[0],
@@ -1063,7 +1074,10 @@ export default async function handler(req, res) {
             ru: typeCol === 'Пакет' ? 'Пакет услуг' : 'Услуга',
             en: typeCol === 'Пакет' ? 'Service Package' : 'Service',
             tr: typeCol === 'Пакет' ? 'Hizmet Paketi' : 'Hizmet'
-          }
+          },
+          status: isEnabled ? 'Вкл' : 'Выкл',
+          available: isEnabled,
+          enabled: isEnabled
         };
       }).filter((p) => p.id && (p.name?.ru || p.name?.en || p.name?.tr));
 
@@ -1087,6 +1101,8 @@ export default async function handler(req, res) {
         const ruDetailed = cleanField(isGuidesUsdHeader ? r[15] : r[14]);
         const enDetailed = cleanField(isGuidesUsdHeader ? r[16] : r[15]);
         const trDetailed = cleanField(isGuidesUsdHeader ? r[17] : r[16]);
+        const availCol = r[18] !== undefined && r[18] !== '' ? r[18] : (r[19] !== undefined ? r[19] : '');
+        const isEnabled = parseAvail(availCol, true);
 
         return {
           id: r[0],
@@ -1098,7 +1114,10 @@ export default async function handler(req, res) {
           price: { usd: usdVal, eur: eurVal, rub: rubVal, try: tryVal },
           videos: videosCol.split(',').map((s) => s.trim()).filter(Boolean),
           detailedDesc: { ru: ruDetailed, en: enDetailed, tr: trDetailed },
-          level: 'Для гостей'
+          level: 'Для гостей',
+          status: isEnabled ? 'Вкл' : 'Выкл',
+          available: isEnabled,
+          enabled: isEnabled
         };
       }).filter((c) => c.id && (c.name?.ru || c.name?.en || c.name?.tr));
 
@@ -1427,6 +1446,113 @@ export default async function handler(req, res) {
     }
   }
 
+  // --- API: Получение актуального профиля гостя по UID или контакту ---
+  if (action === 'get_guest_profile') {
+    try {
+      const targetUid = (data.uid || req.query.uid || '').toString().trim();
+      const targetContact = (data.contact || req.query.contact || '').toString().trim();
+
+      if (!targetUid && !targetContact) {
+        return res.status(400).json({ success: false, error: 'Укажите UID или контакт гостя.' });
+      }
+
+      let matchedRow = null;
+      let matchedIndex = 0;
+
+      if (sheets && spreadsheetId) {
+        try {
+          const accSheet = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: resolveRange(sheetMap, 'ACCOUNTS', 'A:M')
+          });
+          const rows = accSheet.data.values || [];
+          for (let i = 1; i < rows.length; i++) {
+            const r = rows[i];
+            const uidInRow = (r[12] || '').toString().trim();
+            const phoneInRow = (r[2] || '').toString().trim();
+            const emailInRow = (r[3] || '').toString().trim().toLowerCase();
+
+            if (targetUid && uidInRow === targetUid) {
+              matchedRow = r;
+              matchedIndex = i;
+              break;
+            }
+            if (targetContact) {
+              const cleanC = targetContact.toLowerCase();
+              if (emailInRow && cleanC === emailInRow) { matchedRow = r; matchedIndex = i; break; }
+              const p1 = phoneInRow.replace(/\D/g, '');
+              const p2 = targetContact.replace(/\D/g, '');
+              if (p1 && p2 && p1.length >= 7 && (p1.includes(p2) || p2.includes(p1))) { matchedRow = r; matchedIndex = i; break; }
+            }
+          }
+        } catch (sErr) {
+          console.warn('[get_guest_profile sheets warning]:', sErr.message);
+        }
+      }
+
+      // Резервный поиск в masterSeedContent
+      if (!matchedRow) {
+        try {
+          const seed = require('../utils/masterSeedContent');
+          const seedRows = seed.MASTER_ACCOUNTS_ROWS || [];
+          for (let i = 0; i < seedRows.length; i++) {
+            const r = seedRows[i];
+            const uidInRow = (r[12] || '').toString().trim();
+            const phoneInRow = (r[2] || '').toString().trim();
+            const emailInRow = (r[3] || '').toString().trim().toLowerCase();
+            if (targetUid && uidInRow === targetUid) { matchedRow = r; matchedIndex = i; break; }
+            if (targetContact) {
+              const cleanC = targetContact.toLowerCase();
+              if (emailInRow && cleanC === emailInRow) { matchedRow = r; matchedIndex = i; break; }
+              const p1 = phoneInRow.replace(/\D/g, '');
+              const p2 = targetContact.replace(/\D/g, '');
+              if (p1 && p2 && p1.length >= 7 && (p1.includes(p2) || p2.includes(p1))) { matchedRow = r; matchedIndex = i; break; }
+            }
+          }
+        } catch (seedErr) {}
+      }
+
+      if (!matchedRow) {
+        return res.status(404).json({ success: false, error: 'Гость не найден' });
+      }
+
+      const guestName = (matchedRow[1] || 'Гость').toString().trim();
+      const guestPhone = (matchedRow[2] || '').toString().trim();
+      const guestEmail = (matchedRow[3] || '').toString().trim();
+      const blockSite = (matchedRow[5] || '').toString().trim() === 'Да';
+      const blockAccount = (matchedRow[6] || '').toString().trim() === 'Да';
+      const blockChat = (matchedRow[7] || '').toString().trim() === 'Да';
+      const verificationStatus = (matchedRow[8] || '').toString().trim();
+      const repeatRequired = (matchedRow[10] || '').toString().trim() === 'Да';
+      const accountStatus = (matchedRow[11] || 'Активен').toString().trim();
+      const guestUid = (matchedRow[12] || '').toString().trim() || ('VT-GUEST-' + (1000 + matchedIndex));
+
+      const isFullyVerified = (verificationStatus === 'Полная' || verificationStatus === 'Email' || verificationStatus === 'Телефон' || verificationStatus === 'Верифицирован') && !repeatRequired;
+
+      return res.status(200).json({
+        success: true,
+        user: {
+          uid: guestUid,
+          name: guestName,
+          contact: guestEmail || guestPhone || targetContact,
+          email: guestEmail,
+          phone: guestPhone,
+          emailVerified: isFullyVerified && (verificationStatus === 'Email' || verificationStatus === 'Полная' || verificationStatus === 'Верифицирован'),
+          phoneVerified: isFullyVerified && (verificationStatus === 'Телефон' || verificationStatus === 'Полная' || verificationStatus === 'Верифицирован'),
+          isVerified: isFullyVerified,
+          requiresOtp: repeatRequired,
+          isHost: false,
+          blockSite,
+          blockAccount,
+          blockChat,
+          hasChat: !blockChat
+        }
+      });
+    } catch (e) {
+      return res.status(500).json({ success: false, error: e.message });
+    }
+  }
+
   // --- API: Регистрация нового гостя с обязательной OTP-верификацией ---
   if (action === 'register') {
     try {
@@ -1479,6 +1605,8 @@ export default async function handler(req, res) {
         });
       }
 
+      let newUid = 'VT-GUEST-1000';
+
       if (sheets && spreadsheetId) {
         // Проверка: зарегистрирован ли уже пользователь с таким логином
         try {
@@ -1516,7 +1644,7 @@ export default async function handler(req, res) {
           });
           nextUidNum = 1000 + (accRowsMeta.data.values || []).length;
         } catch (uErr) {}
-        const newUid = `VT-GUEST-${nextUidNum}`;
+        newUid = `VT-GUEST-${nextUidNum}`;
         const vStatus = targetEmail && targetPhone ? 'Полная' : (targetEmail ? 'Email' : 'Телефон');
 
         await sheets.spreadsheets.values.append({

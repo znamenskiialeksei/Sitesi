@@ -1317,6 +1317,7 @@ function ensureAllSystemSheets() {
   }
 }
 
+// === AUTO-GENERATED TIER-3 FALLBACK: START ===
 /**
  * Инициализация шапки, смарт-форматирования и эталонных строк для конкретного листа
  */
@@ -1902,6 +1903,7 @@ function initSingleSheetByKey_(sheet, key) {
     sheet.getRange(2, 1, gaRows.length, gaHeaders.length).setValues(gaRows);
   }
 }
+// === AUTO-GENERATED TIER-3 FALLBACK: END ===
 
 // ==============================================================================
 // УПРАВЛЕНИЕ СВОЙСТВАМИ СКРИПТА
@@ -3675,6 +3677,7 @@ function commitMasterSeedToGitHubInteractive() {
 
   try {
     SpreadsheetApp.getActive().toast("Сбор данных и генерация masterSeedContent.js...", "🐙 GitHub Commit", 4);
+    var payload = collectAllSheetsPayload_();
     var rawSheets = {
       HOME: payload.homeRows,
       GALLERY: payload.galleryRows,
@@ -3703,7 +3706,8 @@ function commitMasterSeedToGitHubInteractive() {
 
     for (var b = 0; b < branches.length; b++) {
       var branch = branches[b];
-      var fileUrl = 'https://api.github.com/repos/' + repo + '/contents/utils/masterSeedContent.js?ref=' + branch;
+      var filePath = (branch === 'main') ? 'villa-turaman-airbnb-platform/utils/masterSeedContent.js' : 'utils/masterSeedContent.js';
+      var fileUrl = 'https://api.github.com/repos/' + repo + '/contents/' + filePath + '?ref=' + branch;
 
       var sha = null;
       try {
@@ -3723,7 +3727,7 @@ function commitMasterSeedToGitHubInteractive() {
         }
       } catch (getErr) {}
 
-      var putUrl = 'https://api.github.com/repos/' + repo + '/contents/utils/masterSeedContent.js';
+      var putUrl = 'https://api.github.com/repos/' + repo + '/contents/' + filePath;
       var putBody = {
         message: commitMessage,
         content: encodedContent,

@@ -408,33 +408,46 @@ async function saveMasterSeed() {
       aboutObj[sec.id] = { title: sec.title, text: sec.text };
     });
 
-    const productsArr = masterServicesRows.map((r) => ({
-      id: r[0],
-      title: { ru: r[1] || '', en: r[3] || '', tr: r[5] || '' },
-      desc: { ru: r[2] || '', en: r[4] || '', tr: r[6] || '' },
-      priceEUR: r[7] || '0',
-      priceRUB: r[8] || '0',
-      priceTRY: r[9] || '0',
-      image: r[10] || '',
-      available: (r[11] || 'Да').toLowerCase() !== 'нет',
-      type: r[12] || 'service',
-      video: r[13] || '',
-      details: { ru: r[14] || '', en: r[15] || '', tr: r[16] || '' }
-    }));
+    const productsArr = masterServicesRows.map((r) => {
+      const isAvail = (r[12] || 'Да').toString().trim().toLowerCase() !== 'нет' && (r[12] || 'Да').toString().trim().toLowerCase() !== 'выкл';
+      return {
+        id: r[0],
+        title: { ru: r[1] || '', en: r[3] || '', tr: r[5] || '' },
+        desc: { ru: r[2] || '', en: r[4] || '', tr: r[6] || '' },
+        priceUSD: r[7] || '0',
+        priceEUR: r[8] || '0',
+        priceRUB: r[9] || '0',
+        priceTRY: r[10] || '0',
+        image: r[11] || '',
+        available: isAvail,
+        status: isAvail ? 'Вкл' : 'Выкл',
+        enabled: isAvail,
+        type: r[13] || 'service',
+        video: r[14] || '',
+        details: { ru: r[15] || '', en: r[16] || '', tr: r[17] || '' }
+      };
+    });
 
-    const coursesArr = masterGuidesRows.map((r) => ({
-      id: r[0],
-      title: { ru: r[1] || '', en: r[3] || '', tr: r[5] || '' },
-      desc: { ru: r[2] || '', en: r[4] || '', tr: r[6] || '' },
-      image: r[7] || '',
-      category: r[8] || 'guide',
-      videoUrl: r[9] || '',
-      priceEUR: r[10] || '0',
-      priceRUB: r[11] || '0',
-      priceTRY: r[12] || '0',
-      video: r[13] || '',
-      details: { ru: r[14] || '', en: r[15] || '', tr: r[16] || '' }
-    }));
+    const coursesArr = masterGuidesRows.map((r) => {
+      const isAvail = (r[18] || 'Да').toString().trim().toLowerCase() !== 'нет' && (r[18] || 'Да').toString().trim().toLowerCase() !== 'выкл';
+      return {
+        id: r[0],
+        title: { ru: r[1] || '', en: r[3] || '', tr: r[5] || '' },
+        desc: { ru: r[2] || '', en: r[4] || '', tr: r[6] || '' },
+        image: r[7] || '',
+        category: r[8] || 'guide',
+        videoUrl: r[9] || '',
+        priceUSD: r[10] || '0',
+        priceEUR: r[11] || '0',
+        priceRUB: r[12] || '0',
+        priceTRY: r[13] || '0',
+        video: r[14] || '',
+        details: { ru: r[15] || '', en: r[16] || '', tr: r[17] || '' },
+        available: isAvail,
+        status: isAvail ? 'Вкл' : 'Выкл',
+        enabled: isAvail
+      };
+    });
 
     const galleryArr = masterGalleryRows.map((r) => ({
       id: r[0],
@@ -569,6 +582,13 @@ module.exports = {
   const targetPath = path.join(__dirname, '..', 'utils', 'masterSeedContent.js');
   fs.writeFileSync(targetPath, fileContent, 'utf8');
 
+  // Автоматическое обновление встроенного резерва initSingleSheetByKey_ в Code.js (Тир 3)
+  try {
+    updateCodeJsFallback(MASTER_RAW_SHEETS);
+  } catch (codeJsErr) {
+    console.warn('[save-master-seed] Предупреждение при обновлении Code.js:', codeJsErr.message);
+  }
+
   // Автоматическая синхронизация страховочного словаря витрины в utils/translations.js
   try {
     const { syncTranslationsWithMaster } = require('../utils/syncTranslationsWithMaster');
@@ -601,6 +621,188 @@ module.exports = {
     settingsCount: masterSettingsRows.length,
     all15SheetsSaved: true
   };
+}
+
+/**
+ * Автоматическое обновление встроенного резерва initSingleSheetByKey_ в Code.js (Тир 3)
+ */
+function updateCodeJsFallback(rawSheets) {
+  const codeJsPath = path.join(__dirname, '..', 'google-apps-script', 'Code.js');
+  if (!fs.existsSync(codeJsPath)) {
+    console.warn('[save-master-seed] Code.js не найден по пути:', codeJsPath);
+    return;
+  }
+  let code = fs.readFileSync(codeJsPath, 'utf8');
+  const startMarker = '// === AUTO-GENERATED TIER-3 FALLBACK: START ===';
+  const endMarker = '// === AUTO-GENERATED TIER-3 FALLBACK: END ===';
+  const startIdx = code.indexOf(startMarker);
+  const endIdx = code.indexOf(endMarker);
+  if (startIdx === -1 || endIdx === -1) {
+    console.warn('[save-master-seed] Маркеры AUTO-GENERATED TIER-3 FALLBACK не найдены в Code.js');
+    return;
+  }
+
+  const generatedFunction = `${startMarker}
+/**
+ * Инициализация шапки, смарт-форматирования и эталонных строк для конкретного листа
+ */
+function initSingleSheetByKey_(sheet, key) {
+  if (!sheet || !key) return;
+
+  if (key === 'HOME') {
+    var homeHeaders = ['Блок / Раздел', 'Ключ [ID]', 'Место размещения / Описание [RU]', 'RU', 'EN', 'TR', 'Медиа / Иконка / Ссылка', 'Статус [Вкл/Выкл]'];
+    styleSheetHeader_(sheet, homeHeaders, 1);
+    var homeRows = ${JSON.stringify(rawSheets.HOME || [], null, 2)};
+    var colsA_D = homeRows.map(function(r) { return [r[0], r[1], r[2], r[3]]; });
+    var colsG_H = homeRows.map(function(r) { return [r[6] || '', r[7] || 'Вкл']; });
+    sheet.getRange(2, 1, colsA_D.length, 4).setValues(colsA_D);
+    sheet.getRange(2, 7, colsG_H.length, 2).setValues(colsG_H);
+    sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+  } else if (key === 'GALLERY') {
+    var galHeaders = ['ID', 'Группа [RU]', 'Описание [RU]', 'Группа [EN]', 'Описание [EN]', 'Группа [TR]', 'Описание [TR]', 'Тип', 'Медиа ссылки', 'Подпись [RU]', 'Подпись [EN]', 'Подпись [TR]'];
+    styleSheetHeader_(sheet, galHeaders, 1);
+    var galRows = ${JSON.stringify(rawSheets.GALLERY || [], null, 2)};
+    var colsA_C = galRows.map(function(r) { return [r[0], r[1], r[2]]; });
+    var colsH_J = galRows.map(function(r) { return [r[7], r[8], r[9]]; });
+    sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
+    sheet.getRange(2, 8, colsH_J.length, 3).setValues(colsH_J);
+    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("K2").setFormula('=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("L2").setFormula('=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+  } else if (key === 'SERVICES') {
+    var srvHeaders = ['ID', 'Название услуги [RU]', 'Описание [RU]', 'Название услуги [EN]', 'Описание [EN]', 'Название услуги [TR]', 'Описание [TR]', 'Цена [USD]', 'Цена [EUR]', 'Цена [RUB]', 'Цена [TRY]', 'Изображения', 'Наличие', 'Тип', 'Видео презентации', 'Подробное описание [RU]', 'Подробное описание [EN]', 'Подробное описание [TR]'];
+    styleSheetHeader_(sheet, srvHeaders, 1);
+    var srvRows = ${JSON.stringify(rawSheets.SERVICES || [], null, 2)};
+    var colsA_C = srvRows.map(function(r) { return [r[0], r[1], r[2]]; });
+    var colsH_P = srvRows.map(function(r) { return [r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]]; });
+    sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
+    sheet.getRange(2, 8, colsH_P.length, 9).setValues(colsH_P);
+    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+  } else if (key === 'GUIDES') {
+    var gHeaders = ['ID', 'Название путеводителя [RU]', 'Описание [RU]', 'Название путеводителя [EN]', 'Описание [EN]', 'Название путеводителя [TR]', 'Описание [TR]', 'Изображения', 'Категория', 'Ссылка на видео', 'Цена [USD]', 'Цена [EUR]', 'Цена [RUB]', 'Цена [TRY]', 'Видео презентации', 'Подробное описание [RU]', 'Подробное описание [EN]', 'Подробное описание [TR]', 'Наличие'];
+    styleSheetHeader_(sheet, gHeaders, 1);
+    var gRows = ${JSON.stringify(rawSheets.GUIDES || [], null, 2)};
+    var colsA_C = gRows.map(function(r) { return [r[0], r[1], r[2]]; });
+    var colsH_P = gRows.map(function(r) { return [r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]]; });
+    sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
+    sheet.getRange(2, 8, colsH_P.length, 9).setValues(colsH_P);
+    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange(2, 19, gRows.length, 1).setValues(gRows.map(function(r) { return [r[18] || 'Да']; }));
+  } else if (key === 'LEGAL') {
+    var lHeaders = ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'];
+    styleSheetHeader_(sheet, lHeaders, 1);
+    var lRows = ${JSON.stringify(rawSheets.LEGAL || [], null, 2)};
+    var colsA_B = lRows.map(function(r) { return [r[0], r[1]]; });
+    var colE = lRows.map(function(r) { return [r[4]]; });
+    sheet.getRange(2, 1, colsA_B.length, 2).setValues(colsA_B);
+    sheet.getRange(2, 5, colE.length, 1).setValues(colE);
+    sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+  } else if (key === 'BOOKINGS') {
+    var bHeaders = ['Дата заявки', 'Имя клиента', 'Контакт [Tel/TG]', 'Старт', 'Завершение', 'Ночей', 'Взрослых', 'Детей', 'Всего гостей', 'Итоговая стоимость', 'Статус оплаты'];
+    styleSheetHeader_(sheet, bHeaders, 1);
+    sheet.getRange("C:C").setNumberFormat("@");
+    var bRows = ${JSON.stringify(rawSheets.BOOKINGS || [], null, 2)};
+    if (bRows.length > 0) {
+      sheet.getRange(2, 1, bRows.length, bHeaders.length).setValues(bRows);
+    }
+  } else if (key === 'CALENDAR') {
+    var cHeaders = ['Дата старта', 'Дата завершения', 'Тип [Блокировка/Цена/Мин. дней/Заметка/Настройки]', 'Значение', 'Заметка', 'Автор изменения', 'Время фиксации'];
+    styleSheetHeader_(sheet, cHeaders, 1);
+    var cRows = ${JSON.stringify(rawSheets.CALENDAR || [], null, 2)};
+    if (cRows.length > 0) {
+      sheet.getRange(2, 1, cRows.length, cHeaders.length).setValues(cRows);
+    }
+  } else if (key === 'ACCOUNTS') {
+    var aHeaders = ['Дата регистрации', 'Имя гостя', 'Номер телефона', 'Email адрес', 'Пароль', 'Блокировка: Сайт', 'Блокировка: Аккаунт', 'Блокировка: Чат', 'Статус верификации', 'Дата верификации', 'Требуется повторная верификация', 'Статус аккаунта', 'ID Гостя [UID]'];
+    styleSheetHeader_(sheet, aHeaders, 1);
+    sheet.getRange("C:C").setNumberFormat("@");
+    sheet.getRange("E:E").setNumberFormat("@");
+    sheet.getRange("M:M").setNumberFormat("@");
+    var aRows = ${JSON.stringify(rawSheets.ACCOUNTS || [], null, 2)};
+    if (aRows.length > 0) {
+      sheet.getRange(2, 1, aRows.length, aHeaders.length).setValues(aRows);
+    }
+  } else if (key === 'ORDERS') {
+    var oHeaders = ['Дата заказа', 'Контакт', 'Тип [Гид/Услуга/Аренда]', 'Сумма', 'Статус оплаты', 'Детали'];
+    styleSheetHeader_(sheet, oHeaders, 1);
+    var oRows = ${JSON.stringify(rawSheets.ORDERS || [], null, 2)};
+    if (oRows.length > 0) {
+      sheet.getRange(2, 1, oRows.length, oHeaders.length).setValues(oRows);
+    }
+  } else if (key === 'ACCESS') {
+    var accHeaders = ['ID', 'Тип доступа [Замок/Wi-Fi/Сейф/Ворота]', 'Локация / Название', 'Код доступа / PIN / Пароль', 'Резервный пароль / Мастер-код', 'Срок действия / Статус', 'Инструкция для гостя [RU]', 'Инструкция [EN]', 'Инструкция [TR]', 'Заметка'];
+    styleSheetHeader_(sheet, accHeaders, 1);
+    sheet.getRange("D:D").setNumberFormat("@");
+    sheet.getRange("E:E").setNumberFormat("@");
+    var accRows = ${JSON.stringify(rawSheets.ACCESS || [], null, 2)};
+    if (accRows.length > 0) {
+      sheet.getRange(2, 1, accRows.length, accHeaders.length).setValues(accRows);
+    }
+  } else if (key === 'TEMPLATES') {
+    var tHeaders = ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'];
+    styleSheetHeader_(sheet, tHeaders, 1);
+    var tRows = ${JSON.stringify(rawSheets.TEMPLATES || [], null, 2)};
+    var colsA_B = tRows.map(function(r) { return [r[0], r[1]]; });
+    var colE = tRows.map(function(r) { return [r[4]]; });
+    sheet.getRange(2, 1, colsA_B.length, 2).setValues(colsA_B);
+    sheet.getRange(2, 5, colE.length, 1).setValues(colE);
+    sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+  } else if (key === 'SETTINGS') {
+    var sHeaders = ['Категория', 'Параметр / Роль / Лист', 'Значение / Статус доступа', 'Промпт / Описание / Инструкция', 'Заметка'];
+    styleSheetHeader_(sheet, sHeaders, 1);
+    var sRows = ${JSON.stringify(rawSheets.SETTINGS || [], null, 2)};
+    if (sRows.length > 0) {
+      sheet.getRange(2, 1, sRows.length, sHeaders.length).setValues(sRows);
+    }
+  } else if (key === 'TASKS') {
+    var taskHeaders = ['ID Задачи', 'Дата и Время', 'Канал / Источник', 'Текст Задачи / Поручения', 'Статус Исполнения', 'Ответственный Модуль', 'Результат / Заметка'];
+    styleSheetHeader_(sheet, taskHeaders, 1);
+    var taskRows = ${JSON.stringify(rawSheets.TASKS || [], null, 2)};
+    if (taskRows.length > 0) {
+      sheet.getRange(2, 1, taskRows.length, taskHeaders.length).setValues(taskRows);
+    }
+  } else if (key === 'KNOWLEDGE_GRAPH') {
+    var kgHeaders = ['ID Узла', 'Тип Сущности', 'Уровень Секретности', 'Разрешенные Стадии Гостя', 'Связанный Лист CRM', 'Описание Сущности / Правило Доступа', 'Статус Узла'];
+    styleSheetHeader_(sheet, kgHeaders, 1);
+    var kgRows = ${JSON.stringify(rawSheets.KNOWLEDGE_GRAPH || [], null, 2)};
+    if (kgRows.length > 0) {
+      sheet.getRange(2, 1, kgRows.length, kgHeaders.length).setValues(kgRows);
+    }
+  } else if (key === 'GUIDE_ACCESS') {
+    var gaHeaders = ['Дата выдачи', 'Гость [Имя и Контакт]', 'ID Путеводителя', 'Название путеводителя', 'Категория', 'Статус оплаты', 'Токен доступа', 'Срок действия', 'Статус доступа [Активен/Отозван]'];
+    styleSheetHeader_(sheet, gaHeaders, 1);
+    sheet.getRange("B:B").setNumberFormat("@");
+    var gaRows = ${JSON.stringify(rawSheets.GUIDE_ACCESS || [], null, 2)};
+    if (gaRows.length > 0) {
+      sheet.getRange(2, 1, gaRows.length, gaHeaders.length).setValues(gaRows);
+    }
+  }
+}
+${endMarker}`;
+
+  const updatedCode = code.substring(0, startIdx) + generatedFunction + code.substring(endIdx + endMarker.length);
+  fs.writeFileSync(codeJsPath, updatedCode, 'utf8');
+  console.log('[save-master-seed] Встроенный резерв initSingleSheetByKey_ в Code.js успешно обновлен.');
 }
 
 // Запуск напрямую из CLI / Node.js

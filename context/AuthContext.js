@@ -41,6 +41,27 @@ export const AuthProvider = ({ children }) => {
         } else if (user) {
           setCurrentUser(user);
           setActiveRoleMode('traveler');
+
+          // Фоновая актуализация профиля гостя из Google Таблицы по неизменяемому UID
+          if (user.uid) {
+            axios.get(`/api/booking?action=get_guest_profile&uid=${encodeURIComponent(user.uid)}`)
+              .then((res) => {
+                if (res.data && res.data.success && res.data.user) {
+                  const remoteUser = res.data.user;
+                  if (remoteUser.blockAccount || remoteUser.blockSite) {
+                    localStorage.removeItem('villa_user');
+                    setCurrentUser(null);
+                    return;
+                  }
+                  const mergedUser = { ...user, ...remoteUser };
+                  localStorage.setItem('villa_user', JSON.stringify(mergedUser));
+                  setCurrentUser(mergedUser);
+                }
+              })
+              .catch((e) => {
+                console.warn('[AuthContext guest sync notice]:', e.message);
+              });
+          }
         }
       }
     } catch (err) {
