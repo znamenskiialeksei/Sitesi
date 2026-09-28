@@ -492,6 +492,24 @@ async function saveMasterSeed() {
 
   // 9. Генерация валидного CommonJS кода для masterSeedContent.js
   console.log('[save-master-seed] Форматирование исходного кода masterSeedContent.js...');
+  const rawSheetsMap = {
+    HOME: masterHomeRows,
+    SETTINGS: masterSettingsRows,
+    LEGAL: masterLegalRows,
+    TEMPLATES: masterTemplatesRows,
+    SERVICES: masterServicesRows,
+    GUIDES: masterGuidesRows,
+    GALLERY: masterGalleryRows,
+    CALENDAR: masterCalendarRows,
+    BOOKINGS: masterBookingsRows,
+    ACCOUNTS: masterAccountsRows,
+    ORDERS: masterOrdersRows,
+    ACCESS: masterAccessRows,
+    TASKS: masterTasksRows,
+    KNOWLEDGE_GRAPH: masterKnowledgeGraphRows,
+    GUIDE_ACCESS: masterGuideAccessRows
+  };
+
   const fileContent = `// ==============================================================================
 // НЕПРИКОСНОВЕННЫЙ МАСТЕР-ЭТАЛОН БАЗЫ ДАННЫХ И КОНТЕНТА VILLA TURAMAN
 // Файл: utils/masterSeedContent.js
@@ -584,7 +602,7 @@ module.exports = {
 
   // Автоматическое обновление встроенного резерва initSingleSheetByKey_ в Code.js (Тир 3)
   try {
-    updateCodeJsFallback(MASTER_RAW_SHEETS);
+    updateCodeJsFallback(rawSheetsMap);
   } catch (codeJsErr) {
     console.warn('[save-master-seed] Предупреждение при обновлении Code.js:', codeJsErr.message);
   }
@@ -642,6 +660,11 @@ function updateCodeJsFallback(rawSheets) {
     return;
   }
 
+  const formatRows = (rows) => {
+    if (!rows || rows.length === 0) return '[]';
+    return '[\n    ' + rows.map((r) => JSON.stringify(r)).join(',\n    ') + '\n  ]';
+  };
+
   const generatedFunction = `${startMarker}
 /**
  * Инициализация шапки, смарт-форматирования и эталонных строк для конкретного листа
@@ -652,7 +675,7 @@ function initSingleSheetByKey_(sheet, key) {
   if (key === 'HOME') {
     var homeHeaders = ['Блок / Раздел', 'Ключ [ID]', 'Место размещения / Описание [RU]', 'RU', 'EN', 'TR', 'Медиа / Иконка / Ссылка', 'Статус [Вкл/Выкл]'];
     styleSheetHeader_(sheet, homeHeaders, 1);
-    var homeRows = ${JSON.stringify(rawSheets.HOME || [], null, 2)};
+    var homeRows = ${formatRows(rawSheets.HOME || [])};
     var colsA_D = homeRows.map(function(r) { return [r[0], r[1], r[2], r[3]]; });
     var colsG_H = homeRows.map(function(r) { return [r[6] || '', r[7] || 'Вкл']; });
     sheet.getRange(2, 1, colsA_D.length, 4).setValues(colsA_D);
@@ -662,7 +685,7 @@ function initSingleSheetByKey_(sheet, key) {
   } else if (key === 'GALLERY') {
     var galHeaders = ['ID', 'Группа [RU]', 'Описание [RU]', 'Группа [EN]', 'Описание [EN]', 'Группа [TR]', 'Описание [TR]', 'Тип', 'Медиа ссылки', 'Подпись [RU]', 'Подпись [EN]', 'Подпись [TR]'];
     styleSheetHeader_(sheet, galHeaders, 1);
-    var galRows = ${JSON.stringify(rawSheets.GALLERY || [], null, 2)};
+    var galRows = ${formatRows(rawSheets.GALLERY || [])};
     var colsA_C = galRows.map(function(r) { return [r[0], r[1], r[2]]; });
     var colsH_J = galRows.map(function(r) { return [r[7], r[8], r[9]]; });
     sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
@@ -676,7 +699,7 @@ function initSingleSheetByKey_(sheet, key) {
   } else if (key === 'SERVICES') {
     var srvHeaders = ['ID', 'Название услуги [RU]', 'Описание [RU]', 'Название услуги [EN]', 'Описание [EN]', 'Название услуги [TR]', 'Описание [TR]', 'Цена [USD]', 'Цена [EUR]', 'Цена [RUB]', 'Цена [TRY]', 'Изображения', 'Наличие', 'Тип', 'Видео презентации', 'Подробное описание [RU]', 'Подробное описание [EN]', 'Подробное описание [TR]'];
     styleSheetHeader_(sheet, srvHeaders, 1);
-    var srvRows = ${JSON.stringify(rawSheets.SERVICES || [], null, 2)};
+    var srvRows = ${formatRows(rawSheets.SERVICES || [])};
     var colsA_C = srvRows.map(function(r) { return [r[0], r[1], r[2]]; });
     var colsH_P = srvRows.map(function(r) { return [r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]]; });
     sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
@@ -690,7 +713,7 @@ function initSingleSheetByKey_(sheet, key) {
   } else if (key === 'GUIDES') {
     var gHeaders = ['ID', 'Название путеводителя [RU]', 'Описание [RU]', 'Название путеводителя [EN]', 'Описание [EN]', 'Название путеводителя [TR]', 'Описание [TR]', 'Изображения', 'Категория', 'Ссылка на видео', 'Цена [USD]', 'Цена [EUR]', 'Цена [RUB]', 'Цена [TRY]', 'Видео презентации', 'Подробное описание [RU]', 'Подробное описание [EN]', 'Подробное описание [TR]', 'Наличие'];
     styleSheetHeader_(sheet, gHeaders, 1);
-    var gRows = ${JSON.stringify(rawSheets.GUIDES || [], null, 2)};
+    var gRows = ${formatRows(rawSheets.GUIDES || [])};
     var colsA_C = gRows.map(function(r) { return [r[0], r[1], r[2]]; });
     var colsH_P = gRows.map(function(r) { return [r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]]; });
     sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
@@ -705,7 +728,7 @@ function initSingleSheetByKey_(sheet, key) {
   } else if (key === 'LEGAL') {
     var lHeaders = ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'];
     styleSheetHeader_(sheet, lHeaders, 1);
-    var lRows = ${JSON.stringify(rawSheets.LEGAL || [], null, 2)};
+    var lRows = ${formatRows(rawSheets.LEGAL || [])};
     var colsA_B = lRows.map(function(r) { return [r[0], r[1]]; });
     var colE = lRows.map(function(r) { return [r[4]]; });
     sheet.getRange(2, 1, colsA_B.length, 2).setValues(colsA_B);
@@ -718,14 +741,14 @@ function initSingleSheetByKey_(sheet, key) {
     var bHeaders = ['Дата заявки', 'Имя клиента', 'Контакт [Tel/TG]', 'Старт', 'Завершение', 'Ночей', 'Взрослых', 'Детей', 'Всего гостей', 'Итоговая стоимость', 'Статус оплаты'];
     styleSheetHeader_(sheet, bHeaders, 1);
     sheet.getRange("C:C").setNumberFormat("@");
-    var bRows = ${JSON.stringify(rawSheets.BOOKINGS || [], null, 2)};
+    var bRows = ${formatRows(rawSheets.BOOKINGS || [])};
     if (bRows.length > 0) {
       sheet.getRange(2, 1, bRows.length, bHeaders.length).setValues(bRows);
     }
   } else if (key === 'CALENDAR') {
     var cHeaders = ['Дата старта', 'Дата завершения', 'Тип [Блокировка/Цена/Мин. дней/Заметка/Настройки]', 'Значение', 'Заметка', 'Автор изменения', 'Время фиксации'];
     styleSheetHeader_(sheet, cHeaders, 1);
-    var cRows = ${JSON.stringify(rawSheets.CALENDAR || [], null, 2)};
+    var cRows = ${formatRows(rawSheets.CALENDAR || [])};
     if (cRows.length > 0) {
       sheet.getRange(2, 1, cRows.length, cHeaders.length).setValues(cRows);
     }
@@ -735,14 +758,14 @@ function initSingleSheetByKey_(sheet, key) {
     sheet.getRange("C:C").setNumberFormat("@");
     sheet.getRange("E:E").setNumberFormat("@");
     sheet.getRange("M:M").setNumberFormat("@");
-    var aRows = ${JSON.stringify(rawSheets.ACCOUNTS || [], null, 2)};
+    var aRows = ${formatRows(rawSheets.ACCOUNTS || [])};
     if (aRows.length > 0) {
       sheet.getRange(2, 1, aRows.length, aHeaders.length).setValues(aRows);
     }
   } else if (key === 'ORDERS') {
     var oHeaders = ['Дата заказа', 'Контакт', 'Тип [Гид/Услуга/Аренда]', 'Сумма', 'Статус оплаты', 'Детали'];
     styleSheetHeader_(sheet, oHeaders, 1);
-    var oRows = ${JSON.stringify(rawSheets.ORDERS || [], null, 2)};
+    var oRows = ${formatRows(rawSheets.ORDERS || [])};
     if (oRows.length > 0) {
       sheet.getRange(2, 1, oRows.length, oHeaders.length).setValues(oRows);
     }
@@ -751,14 +774,14 @@ function initSingleSheetByKey_(sheet, key) {
     styleSheetHeader_(sheet, accHeaders, 1);
     sheet.getRange("D:D").setNumberFormat("@");
     sheet.getRange("E:E").setNumberFormat("@");
-    var accRows = ${JSON.stringify(rawSheets.ACCESS || [], null, 2)};
+    var accRows = ${formatRows(rawSheets.ACCESS || [])};
     if (accRows.length > 0) {
       sheet.getRange(2, 1, accRows.length, accHeaders.length).setValues(accRows);
     }
   } else if (key === 'TEMPLATES') {
     var tHeaders = ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'];
     styleSheetHeader_(sheet, tHeaders, 1);
-    var tRows = ${JSON.stringify(rawSheets.TEMPLATES || [], null, 2)};
+    var tRows = ${formatRows(rawSheets.TEMPLATES || [])};
     var colsA_B = tRows.map(function(r) { return [r[0], r[1]]; });
     var colE = tRows.map(function(r) { return [r[4]]; });
     sheet.getRange(2, 1, colsA_B.length, 2).setValues(colsA_B);
@@ -770,21 +793,21 @@ function initSingleSheetByKey_(sheet, key) {
   } else if (key === 'SETTINGS') {
     var sHeaders = ['Категория', 'Параметр / Роль / Лист', 'Значение / Статус доступа', 'Промпт / Описание / Инструкция', 'Заметка'];
     styleSheetHeader_(sheet, sHeaders, 1);
-    var sRows = ${JSON.stringify(rawSheets.SETTINGS || [], null, 2)};
+    var sRows = ${formatRows(rawSheets.SETTINGS || [])};
     if (sRows.length > 0) {
       sheet.getRange(2, 1, sRows.length, sHeaders.length).setValues(sRows);
     }
   } else if (key === 'TASKS') {
     var taskHeaders = ['ID Задачи', 'Дата и Время', 'Канал / Источник', 'Текст Задачи / Поручения', 'Статус Исполнения', 'Ответственный Модуль', 'Результат / Заметка'];
     styleSheetHeader_(sheet, taskHeaders, 1);
-    var taskRows = ${JSON.stringify(rawSheets.TASKS || [], null, 2)};
+    var taskRows = ${formatRows(rawSheets.TASKS || [])};
     if (taskRows.length > 0) {
       sheet.getRange(2, 1, taskRows.length, taskHeaders.length).setValues(taskRows);
     }
   } else if (key === 'KNOWLEDGE_GRAPH') {
     var kgHeaders = ['ID Узла', 'Тип Сущности', 'Уровень Секретности', 'Разрешенные Стадии Гостя', 'Связанный Лист CRM', 'Описание Сущности / Правило Доступа', 'Статус Узла'];
     styleSheetHeader_(sheet, kgHeaders, 1);
-    var kgRows = ${JSON.stringify(rawSheets.KNOWLEDGE_GRAPH || [], null, 2)};
+    var kgRows = ${formatRows(rawSheets.KNOWLEDGE_GRAPH || [])};
     if (kgRows.length > 0) {
       sheet.getRange(2, 1, kgRows.length, kgHeaders.length).setValues(kgRows);
     }
@@ -792,7 +815,7 @@ function initSingleSheetByKey_(sheet, key) {
     var gaHeaders = ['Дата выдачи', 'Гость [Имя и Контакт]', 'ID Путеводителя', 'Название путеводителя', 'Категория', 'Статус оплаты', 'Токен доступа', 'Срок действия', 'Статус доступа [Активен/Отозван]'];
     styleSheetHeader_(sheet, gaHeaders, 1);
     sheet.getRange("B:B").setNumberFormat("@");
-    var gaRows = ${JSON.stringify(rawSheets.GUIDE_ACCESS || [], null, 2)};
+    var gaRows = ${formatRows(rawSheets.GUIDE_ACCESS || [])};
     if (gaRows.length > 0) {
       sheet.getRange(2, 1, gaRows.length, gaHeaders.length).setValues(gaRows);
     }
