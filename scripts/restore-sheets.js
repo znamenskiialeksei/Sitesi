@@ -1,9 +1,12 @@
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 28.09.2026 19:40 | ПЛАН: 280920261940 ПЛАН 13 колонок ACCOUNTS и восстановление.md | TAG: VILLA-RESTORE-13COLS-ACCOUNTS-280920261940]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 29.09.2026 00:05 | ПЛАН: 290920260005 ПЛАН Перекрестная валидация и диапазоны.md | TAG: VILLA-RESTORE-DYNAMIC-BOUNDING-RANGES-290920260005]
 // ==============================================================================
 // УНИВЕРСАЛЬНЫЙ СКРИПТ САМОИСЦЕЛЕНИЯ И ВОССТАНОВЛЕНИЯ GOOGLE SHEETS CRM
 // Файл: scripts/restore-sheets.js
-// Назначение: Автоматически проверяет наличие 11 канонических листов CRM в Google Таблице.
+// Назначение: Автоматически проверяет наличие 15 канонических листов CRM в Google Таблице.
 // Если лист был удален: воссоздает его, применяет каноническое смарт-форматирование,
 // наполняет эталонным контентом из masterSeedContent.js и внедряет формулы перевода со строгой ';'.
+// 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
 require('dotenv').config({ path: '.env.local' });
@@ -23,13 +26,44 @@ const {
   MASTER_ACCOUNTS_ROWS,
   MASTER_ORDERS_ROWS,
   MASTER_ACCESS_ROWS,
+  MASTER_GUIDE_ACCESS_ROWS,
   MASTER_TASKS_ROWS,
   MASTER_KNOWLEDGE_GRAPH_ROWS
 } = require('../utils/masterSeedContent');
 
+/**
+ * Преобразование индекса колонки (1-based: 1=A, 2=B, ..., 26=Z, 27=AA) в буквенную нотацию
+ */
+function getColumnLetter(colIndex) {
+  let temp, letter = '';
+  while (colIndex > 0) {
+    temp = (colIndex - 1) % 26;
+    letter = String.fromCharCode(temp + 65) + letter;
+    colIndex = Math.floor((colIndex - temp - 1) / 26);
+  }
+  return letter;
+}
+
+/**
+ * Динамический расчет точного диапазона A1 Notation на основе реальной матрицы данных (Мандат 1.11)
+ */
+function getBoundingRange(sheetTitle, startColIndex, startRowIndex, matrix) {
+  if (!matrix || matrix.length === 0) return null;
+  const numRows = matrix.length;
+  let maxCols = 0;
+  for (let r = 0; r < matrix.length; r++) {
+    if (matrix[r] && matrix[r].length > maxCols) maxCols = matrix[r].length;
+  }
+  if (maxCols === 0) return null;
+  const startColLetter = getColumnLetter(startColIndex);
+  const endColLetter = getColumnLetter(startColIndex + maxCols - 1);
+  const endRowIndex = startRowIndex + numRows - 1;
+  return `'${sheetTitle}'!${startColLetter}${startRowIndex}:${endColLetter}${endRowIndex}`;
+}
+
 async function restoreAllSheets() {
   console.log('================================================================================');
-  console.log('🚀 ЗАПУСК САМОИСЦЕЛЕНИЯ И ВОССТАНОВЛЕНИЯ 11 КАНОНИЧЕСКИХ ЛИСТОВ GOOGLE SHEETS');
+  console.log('🚀 ЗАПУСК САМОИСЦЕЛЕНИЯ И ВОССТАНОВЛЕНИЯ 15 КАНОНИЧЕСКИХ ЛИСТОВ GOOGLE SHEETS');
   console.log('================================================================================');
 
   const clientEmail = (process.env.GOOGLE_CLIENT_EMAIL || '').trim();
@@ -359,6 +393,14 @@ async function restoreAllSheets() {
             values: colsH_P
           });
 
+          if (MASTER_GUIDES_ROWS.some(r => r.length >= 18)) {
+            const colsS = MASTER_GUIDES_ROWS.map((r) => [r[18] || 'Вкл']);
+            dataAppendRequests.push({
+              range: `'${actualTitle}'!S2:S${colsS.length + 1}`,
+              values: colsS
+            });
+          }
+
           safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
           safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
@@ -386,37 +428,42 @@ async function restoreAllSheets() {
           safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
         }
 
-        if (config.key === 'BOOKINGS') {
+        if (config.key === 'BOOKINGS' && MASTER_BOOKINGS_ROWS && MASTER_BOOKINGS_ROWS.length > 0) {
+          const boundingRange = getBoundingRange(actualTitle, 1, 2, MASTER_BOOKINGS_ROWS);
           dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:K${MASTER_BOOKINGS_ROWS.length + 1}`,
+            range: boundingRange,
             values: MASTER_BOOKINGS_ROWS
           });
         }
 
-        if (config.key === 'CALENDAR') {
+        if (config.key === 'CALENDAR' && MASTER_CALENDAR_ROWS && MASTER_CALENDAR_ROWS.length > 0) {
+          const boundingRange = getBoundingRange(actualTitle, 1, 2, MASTER_CALENDAR_ROWS);
           dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:G${MASTER_CALENDAR_ROWS.length + 1}`,
+            range: boundingRange,
             values: MASTER_CALENDAR_ROWS
           });
         }
 
-        if (config.key === 'ACCOUNTS') {
+        if (config.key === 'ACCOUNTS' && MASTER_ACCOUNTS_ROWS && MASTER_ACCOUNTS_ROWS.length > 0) {
+          const boundingRange = getBoundingRange(actualTitle, 1, 2, MASTER_ACCOUNTS_ROWS);
           dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:G${MASTER_ACCOUNTS_ROWS.length + 1}`,
+            range: boundingRange,
             values: MASTER_ACCOUNTS_ROWS
           });
         }
 
-        if (config.key === 'ORDERS') {
+        if (config.key === 'ORDERS' && MASTER_ORDERS_ROWS && MASTER_ORDERS_ROWS.length > 0) {
+          const boundingRange = getBoundingRange(actualTitle, 1, 2, MASTER_ORDERS_ROWS);
           dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:F${MASTER_ORDERS_ROWS.length + 1}`,
+            range: boundingRange,
             values: MASTER_ORDERS_ROWS
           });
         }
 
-        if (config.key === 'ACCESS') {
+        if (config.key === 'ACCESS' && MASTER_ACCESS_ROWS && MASTER_ACCESS_ROWS.length > 0) {
+          const boundingRange = getBoundingRange(actualTitle, 1, 2, MASTER_ACCESS_ROWS);
           dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:G${MASTER_ACCESS_ROWS.length + 1}`,
+            range: boundingRange,
             values: MASTER_ACCESS_ROWS
           });
         }
@@ -440,24 +487,35 @@ async function restoreAllSheets() {
           safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
         }
 
-        if (config.key === 'SETTINGS') {
+        if (config.key === 'SETTINGS' && MASTER_SETTINGS_ROWS && MASTER_SETTINGS_ROWS.length > 0) {
+          const boundingRange = getBoundingRange(actualTitle, 1, 2, MASTER_SETTINGS_ROWS);
           dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:E${MASTER_SETTINGS_ROWS.length + 1}`,
+            range: boundingRange,
             values: MASTER_SETTINGS_ROWS
           });
         }
 
         if (config.key === 'TASKS' && MASTER_TASKS_ROWS && MASTER_TASKS_ROWS.length > 0) {
+          const boundingRange = getBoundingRange(actualTitle, 1, 2, MASTER_TASKS_ROWS);
           dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:G${MASTER_TASKS_ROWS.length + 1}`,
+            range: boundingRange,
             values: MASTER_TASKS_ROWS
           });
         }
 
         if (config.key === 'KNOWLEDGE_GRAPH' && MASTER_KNOWLEDGE_GRAPH_ROWS && MASTER_KNOWLEDGE_GRAPH_ROWS.length > 0) {
+          const boundingRange = getBoundingRange(actualTitle, 1, 2, MASTER_KNOWLEDGE_GRAPH_ROWS);
           dataAppendRequests.push({
-            range: `'${actualTitle}'!A2:G${MASTER_KNOWLEDGE_GRAPH_ROWS.length + 1}`,
+            range: boundingRange,
             values: MASTER_KNOWLEDGE_GRAPH_ROWS
+          });
+        }
+
+        if (config.key === 'GUIDE_ACCESS' && MASTER_GUIDE_ACCESS_ROWS && MASTER_GUIDE_ACCESS_ROWS.length > 0) {
+          const boundingRange = getBoundingRange(actualTitle, 1, 2, MASTER_GUIDE_ACCESS_ROWS);
+          dataAppendRequests.push({
+            range: boundingRange,
+            values: MASTER_GUIDE_ACCESS_ROWS
           });
         }
       }
@@ -488,7 +546,7 @@ async function restoreAllSheets() {
     }
 
     console.log('================================================================================');
-    console.log('✅ САМОИСЦЕЛЕНИЕ ЗАВЕРШЕНО: ВСЕ 11 ЛИСТОВ ВОССТАНОВЛЕНЫ И СИНХРОНИЗИРОВАНЫ');
+    console.log('✅ САМОИСЦЕЛЕНИЕ ЗАВЕРШЕНО: ВСЕ 15 ЛИСТОВ ВОССТАНОВЛЕНЫ И СИНХРОНИЗИРОВАНЫ');
     console.log('================================================================================');
   } catch (error) {
     console.error('❌ Ошибка при восстановлении Google Sheets:', error.message);
