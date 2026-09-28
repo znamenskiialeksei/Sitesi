@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 00:25 | ПЛАН: 270920260015 Синхронизация translations.md | TAG: VILLA-SEED-SCRIPT-TRANSLATIONS-270920260025]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 18:50 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-DYNAMIC-SEED-ALL-KEYS-270920261850]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 18:50 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-DYNAMIC-SEED-ALL-KEYS-270920261850]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 28.09.2026 22:50 | ПЛАН: 280920261940 ПЛАН 13 колонок ACCOUNTS и восстановление.md | TAG: VILLA-SEED-SCRIPT-DELETED-ROWS-SYNC-280920262250]
 // ==============================================================================
 // СЦЕНАРИЙ АВТОМАТИЧЕСКОЙ ФИКСАЦИИ ЭТАЛОНА SINGLE SOURCE OF TRUTH
 // Файл: scripts/save-master-seed.js
@@ -82,6 +82,9 @@ async function saveMasterSeed() {
     console.warn('[save-master-seed] Не удалось загрузить существующий masterSeedContent:', e.message);
   }
 
+  // Вспомогательная функция проверки строки на непустоту
+  const isRowNotEmpty = (r) => Array.isArray(r) && r.some((c) => c !== undefined && c !== null && String(c).trim() !== '');
+
   // Вспомогательная функция безопасного чтения диапазона
   const safeFetchRows = async (key, rangeSuffix) => {
     const sheetName = sheetMap?.[key] || SHEETS_REGISTRY?.[key]?.defaultName || key;
@@ -98,28 +101,29 @@ async function saveMasterSeed() {
           checkCellClean(row[c], sheetName, rowNum, c + 1);
         }
       }
-      return values;
+      const dataRows = values.slice(1).filter(isRowNotEmpty);
+      return { ok: true, header: values[0] || [], rows: dataRows, total: values.length };
     } catch (err) {
       console.warn(`[save-master-seed] Ошибка чтения листа ${sheetName}:`, err.message);
-      return [];
+      return { ok: false, header: [], rows: [], error: err.message };
     }
   };
 
   // 1. Выгрузка листа HOME [Главная витрина: 8 колонок A:H]
   const homeSheetName = sheetMap?.HOME || SHEETS_REGISTRY?.HOME?.defaultName || '🏠 Главная витрина';
-  const rawHomeRows = await safeFetchRows('HOME', 'A:H');
+  const homeFetch = await safeFetchRows('HOME', 'A:H');
 
-  if (rawHomeRows.length <= 1) {
+  if (!homeFetch.ok || homeFetch.rows.length === 0) {
     throw new Error(`Лист "${homeSheetName}" пуст или содержит только шапку. Невозможно сформировать эталон.`);
   }
 
-  const headerRow = rawHomeRows[0] || [];
+  const headerRow = homeFetch.header || [];
   const isConstructorFormat = headerRow.length >= 7 || String(headerRow[0] || '').toLowerCase().includes('блок');
 
   const masterHomeRows = [];
   const masterHomeMap = {};
 
-  rawHomeRows.slice(1).forEach((r) => {
+  homeFetch.rows.forEach((r) => {
     let block = '', key = '', desc = '', ru = '', en = '', tr = '', media = '', status = 'Вкл';
     if (isConstructorFormat) {
       block = r[0] ? String(r[0]).trim() : '';
@@ -203,9 +207,9 @@ async function saveMasterSeed() {
     : (existingSeed.MASTER_ABOUT_SECTIONS || []);
 
   // 2. Выгрузка листа SETTINGS [Системные настройки ИИ Агентов]
-  const rawSettings = await safeFetchRows('SETTINGS', 'A:E');
-  const masterSettingsRows = rawSettings.length > 1
-    ? rawSettings.slice(1).map((r) => [
+  const settingsFetch = await safeFetchRows('SETTINGS', 'A:E');
+  const masterSettingsRows = settingsFetch.ok
+    ? settingsFetch.rows.map((r) => [
         (r[0] || '').toString().trim(),
         (r[1] || '').toString().trim(),
         (r[2] || '').toString().trim(),
@@ -215,9 +219,9 @@ async function saveMasterSeed() {
     : (existingSeed.MASTER_SETTINGS_ROWS || []);
 
   // 3. Выгрузка листа LEGAL [Юридические документы]
-  const rawLegal = await safeFetchRows('LEGAL', 'A:G');
-  const masterLegalRows = rawLegal.length > 1
-    ? rawLegal.slice(1).map((r) => [
+  const legalFetch = await safeFetchRows('LEGAL', 'A:G');
+  const masterLegalRows = legalFetch.ok
+    ? legalFetch.rows.map((r) => [
         (r[0] || '').toString().trim(),
         (r[1] || '').toString().trim(),
         (r[2] || '').toString().trim(),
@@ -229,9 +233,9 @@ async function saveMasterSeed() {
     : (existingSeed.MASTER_LEGAL_ROWS || []);
 
   // 4. Выгрузка листа TEMPLATES [Шаблоны сообщений]
-  const rawTemplates = await safeFetchRows('TEMPLATES', 'A:G');
-  const masterTemplatesRows = rawTemplates.length > 1
-    ? rawTemplates.slice(1).map((r) => [
+  const templatesFetch = await safeFetchRows('TEMPLATES', 'A:G');
+  const masterTemplatesRows = templatesFetch.ok
+    ? templatesFetch.rows.map((r) => [
         (r[0] || '').toString().trim(),
         (r[1] || '').toString().trim(),
         (r[2] || '').toString().trim(),
@@ -243,9 +247,9 @@ async function saveMasterSeed() {
     : (existingSeed.MASTER_TEMPLATES_ROWS || []);
 
   // 5. Выгрузка листа SERVICES [Дополнительные услуги]
-  const rawServices = await safeFetchRows('SERVICES', 'A:R');
-  const masterServicesRows = rawServices.length > 1
-    ? rawServices.slice(1).map((r) => {
+  const servicesFetch = await safeFetchRows('SERVICES', 'A:R');
+  const masterServicesRows = servicesFetch.ok
+    ? servicesFetch.rows.map((r) => {
         const row = [];
         for (let i = 0; i < 18; i++) {
           row.push((r[i] || '').toString().trim());
@@ -255,9 +259,9 @@ async function saveMasterSeed() {
     : (existingSeed.MASTER_SERVICES_ROWS || []);
 
   // 6. Выгрузка листа GUIDES [Видео-путеводители]
-  const rawGuides = await safeFetchRows('GUIDES', 'A:S');
-  const masterGuidesRows = rawGuides.length > 1
-    ? rawGuides.slice(1).map((r) => {
+  const guidesFetch = await safeFetchRows('GUIDES', 'A:S');
+  const masterGuidesRows = guidesFetch.ok
+    ? guidesFetch.rows.map((r) => {
         const row = [];
         for (let i = 0; i < 19; i++) {
           row.push((r[i] || '').toString().trim());
@@ -267,9 +271,9 @@ async function saveMasterSeed() {
     : (existingSeed.MASTER_GUIDES_ROWS || []);
 
   // 7. Выгрузка листа GALLERY [Фото и Видео Галерея]
-  const rawGallery = await safeFetchRows('GALLERY', 'A:L');
-  const masterGalleryRows = rawGallery.length > 1
-    ? rawGallery.slice(1).map((r) => {
+  const galleryFetch = await safeFetchRows('GALLERY', 'A:L');
+  const masterGalleryRows = galleryFetch.ok
+    ? galleryFetch.rows.map((r) => {
         const row = [];
         for (let i = 0; i < 12; i++) {
           row.push((r[i] || '').toString().trim());
@@ -279,9 +283,9 @@ async function saveMasterSeed() {
     : (existingSeed.MASTER_GALLERY_ROWS || []);
 
   // 7.1 Выгрузка листа KNOWLEDGE_GRAPH [Граф Знаний и Безопасность]
-  const rawKnowledgeGraph = await safeFetchRows('KNOWLEDGE_GRAPH', 'A:G');
-  const masterKnowledgeGraphRows = rawKnowledgeGraph.length > 1
-    ? rawKnowledgeGraph.slice(1).map((r) => {
+  const kgFetch = await safeFetchRows('KNOWLEDGE_GRAPH', 'A:G');
+  const masterKnowledgeGraphRows = kgFetch.ok
+    ? kgFetch.rows.map((r) => {
         const row = [];
         for (let i = 0; i < 7; i++) {
           row.push((r[i] || '').toString().trim());
@@ -291,9 +295,9 @@ async function saveMasterSeed() {
     : (existingSeed.MASTER_KNOWLEDGE_GRAPH_ROWS || []);
 
   // 8. Выгрузка листа ACCESS [🔑 Управление доступом - Лист 4]
-  const rawAccess = await safeFetchRows('ACCESS', 'A:J');
-  const masterAccessRows = rawAccess.length > 1
-    ? rawAccess.slice(1).map((r) => {
+  const accessFetch = await safeFetchRows('ACCESS', 'A:J');
+  const masterAccessRows = accessFetch.ok
+    ? accessFetch.rows.map((r) => {
         const row = [];
         for (let i = 0; i < 8; i++) {
           row.push((r[i] || '').toString().trim());
@@ -303,9 +307,9 @@ async function saveMasterSeed() {
     : (existingSeed.MASTER_ACCESS_ROWS || []);
 
   // 9. Выгрузка листа TASKS [📋 Задачи и Поручения Секретаря - Лист 7]
-  const rawTasks = await safeFetchRows('TASKS', 'A:G');
-  const masterTasksRows = rawTasks.length > 1
-    ? rawTasks.slice(1).map((r) => {
+  const tasksFetch = await safeFetchRows('TASKS', 'A:G');
+  const masterTasksRows = tasksFetch.ok
+    ? tasksFetch.rows.map((r) => {
         const row = [];
         for (let i = 0; i < 7; i++) {
           row.push((r[i] || '').toString().trim());
@@ -315,9 +319,9 @@ async function saveMasterSeed() {
     : (existingSeed.MASTER_TASKS_ROWS || []);
 
   // 10. Выгрузка листа ACCOUNTS [👤 Гостевые аккаунты - Лист 9: 13 колонок с UID]
-  const rawAccounts = await safeFetchRows('ACCOUNTS', 'A:M');
-  const masterAccountsRows = rawAccounts.length > 1
-    ? rawAccounts.slice(1).map((r, idx) => {
+  const accountsFetch = await safeFetchRows('ACCOUNTS', 'A:M');
+  const masterAccountsRows = accountsFetch.ok
+    ? accountsFetch.rows.map((r, idx) => {
         const row = [];
         for (let i = 0; i < 13; i++) {
           row.push((r[i] || '').toString().trim());
@@ -331,9 +335,9 @@ async function saveMasterSeed() {
     : (existingSeed.MASTER_ACCOUNTS_ROWS || []);
 
   // 11. Выгрузка листа BOOKINGS [📋 Заявки и Бронирования - Лист 12]
-  const rawBookings = await safeFetchRows('BOOKINGS', 'A:L');
-  const masterBookingsRows = rawBookings.length > 1
-    ? rawBookings.slice(1).map((r) => {
+  const bookingsFetch = await safeFetchRows('BOOKINGS', 'A:L');
+  const masterBookingsRows = bookingsFetch.ok
+    ? bookingsFetch.rows.map((r) => {
         const row = [];
         for (let i = 0; i < 11; i++) {
           row.push((r[i] || '').toString().trim());
@@ -343,9 +347,9 @@ async function saveMasterSeed() {
     : (existingSeed.MASTER_BOOKINGS_ROWS || []);
 
   // 12. Выгрузка листа CALENDAR [📅 Календарь и Тарифы - Лист 13]
-  const rawCalendar = await safeFetchRows('CALENDAR', 'A:I');
-  const masterCalendarRows = rawCalendar.length > 1
-    ? rawCalendar.slice(1).map((r) => {
+  const calendarFetch = await safeFetchRows('CALENDAR', 'A:I');
+  const masterCalendarRows = calendarFetch.ok
+    ? calendarFetch.rows.map((r) => {
         const row = [];
         for (let i = 0; i < 7; i++) {
           row.push((r[i] || '').toString().trim());
@@ -355,9 +359,9 @@ async function saveMasterSeed() {
     : (existingSeed.MASTER_CALENDAR_ROWS || []);
 
   // 13. Выгрузка листа ORDERS [🛍️ Заказы услуг и гидов - Лист 14]
-  const rawOrders = await safeFetchRows('ORDERS', 'A:G');
-  const masterOrdersRows = rawOrders.length > 1
-    ? rawOrders.slice(1).map((r) => {
+  const ordersFetch = await safeFetchRows('ORDERS', 'A:G');
+  const masterOrdersRows = ordersFetch.ok
+    ? ordersFetch.rows.map((r) => {
         const row = [];
         for (let i = 0; i < 6; i++) {
           row.push((r[i] || '').toString().trim());
@@ -367,9 +371,9 @@ async function saveMasterSeed() {
     : (existingSeed.MASTER_ORDERS_ROWS || []);
 
   // 14. Выгрузка листа GUIDE_ACCESS [🎟️ Доступы к путеводителям - Лист 15]
-  const rawGuideAccess = await safeFetchRows('GUIDE_ACCESS', 'A:I');
-  const masterGuideAccessRows = rawGuideAccess.length > 1
-    ? rawGuideAccess.slice(1).map((r) => {
+  const guideAccessFetch = await safeFetchRows('GUIDE_ACCESS', 'A:I');
+  const masterGuideAccessRows = guideAccessFetch.ok
+    ? guideAccessFetch.rows.map((r) => {
         const row = [];
         for (let i = 0; i < 8; i++) {
           row.push((r[i] || '').toString().trim());
