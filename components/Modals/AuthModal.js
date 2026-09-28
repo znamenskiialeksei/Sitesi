@@ -108,8 +108,8 @@ export default function AuthModal() {
     setIsVerifyOpen(false);
     setLoading(true);
     try {
-      const primaryContact = email.trim() || phone.trim();
-      const res = await register(name, primaryContact, password);
+      const verifiedContact = (verifiedPayload?.channel === 'email' ? (verifiedPayload.email || email.trim()) : (verifiedPayload?.phone || phone.trim())) || email.trim() || phone.trim();
+      const res = await register(name, verifiedContact, password);
       if (res.success) {
         toast.success(`Добро пожаловать, ${name}! Аккаунт успешно создан и верифицирован.`);
         setAuthModalOpen(false);
@@ -279,6 +279,7 @@ export default function AuthModal() {
       <VerificationModal
         isOpen={isVerifyOpen}
         onClose={() => setIsVerifyOpen(false)}
+        targetChannel={email.trim() ? 'email' : 'phone'}
         mode={verificationMode}
         guestData={{ name: name.trim(), email: email.trim(), phone: phone.trim() }}
         onSuccess={handleVerifySuccess}

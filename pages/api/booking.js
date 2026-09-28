@@ -1308,11 +1308,23 @@ export default async function handler(req, res) {
           );
 
           if (userRow) {
+            const userContact = (userRow[2] || '').trim();
+            const isEmailContact = userContact.includes('@');
+            if (isEmailContact) {
+              await safeCacheSet(`verified_email_${userContact.toLowerCase()}`, true, { ex: 86400 * 30 });
+            } else {
+              const cleanDigits = userContact.replace(/\D/g, '');
+              if (cleanDigits) await safeCacheSet(`verified_phone_${cleanDigits}`, true, { ex: 86400 * 30 });
+            }
             return res.status(200).json({
               success: true,
               user: {
                 name: (userRow[1] || 'Гость').trim(),
-                contact: userRow[2].trim(),
+                contact: userContact,
+                email: isEmailContact ? userContact : '',
+                phone: !isEmailContact ? userContact : '',
+                emailVerified: isEmailContact,
+                phoneVerified: !isEmailContact,
                 isHost: false,
                 blockChat: false,
                 hasChat: true
@@ -1339,7 +1351,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // --- API: Регистрация нового гостя ---
+  // --- API: Регистрация нового гостя с обязательной OTP-верификацией ---
   if (action === 'register') {
     try {
       await ensureSystemSheets();
@@ -1347,7 +1359,41 @@ export default async function handler(req, res) {
       const safeName = (data.name || 'Гость').toString().trim();
       const safePassword = (data.password || '123456').toString().trim();
 
+      if (!safeContact) {
+        return res.status(400).json({ success: false, error: 'Укажите контакт для регистрации.' });
+      }
+
+      // Строгая серверная проверка подтверждения проверочным кодом [OTP]
+      const isEmailContact = safeContact.includes('@');
+      const cleanTarget = isEmailContact ? safeContact : safeContact.replace(/\D/g, '');
+      const channel = isEmailContact ? 'email' : 'phone';
+      const isVerified = await safeCacheGet(`verified_${channel}_${cleanTarget}`);
+
+      if (!isVerified) {
+        return res.status(400).json({
+          success: false,
+          error: `Контакт ${safeContact} не подтвержден проверочным кодом. Пожалуйста, подтвердите код.`
+        });
+      }
+
       if (sheets && spreadsheetId) {
+        // Проверка: зарегистрирован ли уже пользователь с таким логином
+        try {
+          const accDb = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: resolveRange(sheetMap, 'ACCOUNTS', 'C:C')
+          });
+          const existingLogins = (accDb.data.values || [])
+            .flat()
+            .map((v) => (v || '').toString().trim().toLowerCase());
+          if (existingLogins.includes(safeContact)) {
+            return res.status(400).json({
+              success: false,
+              error: 'Пользователь с таким контактом уже зарегистрирован. Пожалуйста, выполните вход.'
+            });
+          }
+        } catch (checkErr) { }
+
         const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
         await sheets.spreadsheets.values.append({
           spreadsheetId,
@@ -1360,7 +1406,16 @@ export default async function handler(req, res) {
 
       return res.status(200).json({
         success: true,
-        user: { name: safeName, contact: safeContact, isHost: false, hasChat: true }
+        user: {
+          name: safeName,
+          contact: safeContact,
+          email: isEmailContact ? safeContact : '',
+          phone: !isEmailContact ? safeContact : '',
+          emailVerified: isEmailContact,
+          phoneVerified: !isEmailContact,
+          isHost: false,
+          hasChat: true
+        }
       });
     } catch (e) {
       return res.status(500).json({ success: false, error: e.message });
@@ -2577,22 +2632,24 @@ export default async function handler(req, res) {
         return res.status(400).json({ success: false, error: 'Укажите действующий номер телефона для бронирования.' });
       }
 
-      // Серверная проверка верификации Email через сессию или кэш проверок
-      const isEmailVerified = Boolean(data.emailVerified) || Boolean(await safeCacheGet(`verified_email_${safeEmail.toLowerCase()}`));
+      // Строгая серверная проверка верификации Email через кэш проверок [OTP]
+      const isEmailVerified = Boolean(await safeCacheGet(`verified_email_${safeEmail.toLowerCase()}`));
       if (!isEmailVerified) {
         return res.status(400).json({
           success: false,
-          error: 'Адрес электронной почты не подтвержден. Пожалуйста, подтвердите email кодом из письма.'
+          error: 'Адрес электронной почты не подтвержден проверочным кодом. Пожалуйста, подтвердите email кодом из письма.'
         });
       }
+
+      const isPhoneVerified = Boolean(await safeCacheGet(`verified_phone_${safePhone.replace(/\D/g, '')}`));
 
       let userObj = {
         name: guestName,
         contact: effectiveContact,
         email: safeEmail,
         phone: safePhone,
-        emailVerified: !!data.emailVerified,
-        phoneVerified: !!data.phoneVerified,
+        emailVerified: true,
+        phoneVerified: isPhoneVerified,
         isHost: false,
         blockChat: false,
         hasChat: true
@@ -2759,12 +2816,12 @@ export default async function handler(req, res) {
         return res.status(400).json({ success: false, error: 'Укажите действующий номер телефона для бронирования.' });
       }
 
-      // Серверная проверка верификации Email через сессию или кэш проверок
-      const isEmailVerified = Boolean(data.emailVerified) || Boolean(await safeCacheGet(`verified_email_${safeEmail.toLowerCase()}`));
+      // Строгая серверная проверка верификации Email через кэш проверок [OTP]
+      const isEmailVerified = Boolean(await safeCacheGet(`verified_email_${safeEmail.toLowerCase()}`));
       if (!isEmailVerified) {
         return res.status(400).json({
           success: false,
-          error: 'Адрес электронной почты не подтвержден. Пожалуйста, подтвердите email кодом из письма.'
+          error: 'Адрес электронной почты не подтвержден проверочным кодом. Пожалуйста, подтвердите email кодом из письма.'
         });
       }
 
