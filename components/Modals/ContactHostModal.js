@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 28.09.2026 10:30 | ПЛАН: 280920261030 Комплексный синхронный план всех вопросов.md | TAG: VILLA-ALL-ISSUES-SYNC-280920261030]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 28.09.2026 14:15 | ПЛАН: 280920261415 ПЛАН Комплексная модернизация экосистемы.md | TAG: VILLA-FULL-ECOSYSTEM-UPGRADE-280920261415]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 28.09.2026 14:15 | ПЛАН: 280920261415 ПЛАН Комплексная модернизация экосистемы.md | TAG: VILLA-FULL-ECOSYSTEM-UPGRADE-280920261415]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 29.09.2026 02:25 | ПЛАН: 290920260225 ПЛАН 13 колонок ACCOUNTS и подтверждение по email.md | TAG: VILLA-13COLS-ACCOUNTS-EMAIL-OTP-290920260225]
 // ==============================================================================
 // МОДАЛЬНОЕ ОКНО ПРЯМОГО ОБРАЩЕНИЯ К ХОЗЯИНУ [CONTACT HOST MODAL]
 // Файл: components/Modals/ContactHostModal.js
@@ -24,7 +24,8 @@ export default function ContactHostModal() {
   const toast = useToast();
 
   const [name, setName] = useState('');
-  const [contact, setContact] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -34,7 +35,14 @@ export default function ContactHostModal() {
   useEffect(() => {
     if (currentUser) {
       if (currentUser.name) setName(currentUser.name);
-      if (currentUser.contact) setContact(currentUser.contact);
+      if (currentUser.email) setEmail(currentUser.email);
+      if (currentUser.phone) setPhone(currentUser.phone);
+      if (!currentUser.email && currentUser.contact && currentUser.contact.includes('@')) {
+        setEmail(currentUser.contact.trim());
+      }
+      if (!currentUser.phone && currentUser.contact && !currentUser.contact.includes('@')) {
+        setPhone(currentUser.contact.trim());
+      }
     }
   }, [currentUser, contactModalOpen]);
 
@@ -64,9 +72,10 @@ export default function ContactHostModal() {
     setMessage((prev) => (prev ? `${prev}\n${text}` : text));
   };
 
-  const sendContactMessage = async (verifiedContact, verifiedName) => {
+  const sendContactMessage = async (verifiedEmail, verifiedName, verifiedPhone) => {
     const finalName = verifiedName || currentUser?.name || name.trim();
-    const finalContact = verifiedContact || currentUser?.contact || contact.trim();
+    const finalEmail = (verifiedEmail || currentUser?.email || email.trim()).toLowerCase();
+    const finalPhone = verifiedPhone || currentUser?.phone || phone.trim();
     const finalMessage = message.trim();
 
     setLoading(true);
@@ -75,7 +84,9 @@ export default function ContactHostModal() {
       const res = await axios.post('/api/booking', {
         action: 'contact_host',
         name: finalName,
-        contact: finalContact,
+        email: finalEmail,
+        phone: finalPhone,
+        contact: finalEmail || finalPhone,
         sender: finalName,
         message: finalMessage,
         fileName: file?.name || null,
@@ -112,7 +123,8 @@ export default function ContactHostModal() {
     e.preventDefault();
 
     const finalName = currentUser?.name || name.trim();
-    const finalContact = currentUser?.contact || contact.trim();
+    const finalEmail = (currentUser?.email || email.trim()).toLowerCase();
+    const finalPhone = currentUser?.phone || phone.trim();
     const finalMessage = message.trim();
 
     if (!finalName) {
@@ -120,8 +132,8 @@ export default function ContactHostModal() {
       return;
     }
 
-    if (!finalContact) {
-      toast.warn(t('contactPhonePlaceholder') || 'Пожалуйста, укажите контакт для связи.');
+    if (!finalEmail || !/\S+@\S+\.\S+/.test(finalEmail)) {
+      toast.warn(t('guestEmailPlaceholder') || 'Пожалуйста, укажите действующий адрес электронной почты.');
       return;
     }
 
@@ -130,24 +142,25 @@ export default function ContactHostModal() {
       return;
     }
 
-    // Проверка верификации: если гость уже подтвержден, отправляем сразу
-    const isContactVerified = currentUser?.isVerified || (typeof window !== 'undefined' && sessionStorage.getItem('verified_contact_' + finalContact.toLowerCase()));
-    if (isContactVerified) {
-      await sendContactMessage(finalContact, finalName);
+    // Проверка верификации: если email гостя уже подтвержден, отправляем сразу
+    const isEmailVerified = currentUser?.emailVerified || currentUser?.isVerified || (typeof window !== 'undefined' && sessionStorage.getItem('verified_email_' + finalEmail));
+    if (isEmailVerified) {
+      await sendContactMessage(finalEmail, finalName, finalPhone);
     } else {
-      // Иначе открываем обязательный модальный шаг подтверждения кодом
+      // Иначе открываем обязательный модальный шаг подтверждения кодом через Email
       setIsVerifyOpen(true);
     }
   };
 
-  const handleVerificationSuccess = () => {
+  const handleVerificationSuccess = (result) => {
     setIsVerifyOpen(false);
-    const finalContact = currentUser?.contact || contact.trim();
+    const finalEmail = (result?.email || currentUser?.email || email.trim()).toLowerCase();
     const finalName = currentUser?.name || name.trim();
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem('verified_contact_' + finalContact.toLowerCase(), 'true');
+    const finalPhone = result?.phone || currentUser?.phone || phone.trim();
+    if (typeof window !== 'undefined' && finalEmail) {
+      sessionStorage.setItem('verified_email_' + finalEmail, 'true');
     }
-    sendContactMessage(finalContact, finalName);
+    sendContactMessage(finalEmail, finalName, finalPhone);
   };
 
   return (
@@ -240,18 +253,36 @@ export default function ContactHostModal() {
             </div>
           )}
 
-          {/* Контакт гостя */}
+          {/* Почта гостя (Email - обязательно для подтверждения) */}
           {!currentUser && (
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                {t('contactPhoneLabel')}
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center justify-between">
+                <span>{t('guestEmailLabel') || 'Электронная почта [Email]'} <span className="text-rose-400">*</span></span>
+                <span className="text-[10px] text-slate-400">Код подтверждения</span>
               </label>
               <input
-                type="text"
+                type="email"
                 required
-                value={contact}
-                onChange={(e) => setContact(e.target.value)}
-                placeholder={t('contactPhonePlaceholder')}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="name@example.com"
+                className="w-full bg-slate-800/80 border border-white/10 rounded-2xl px-4 py-3 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-rose-500 transition-colors"
+              />
+            </div>
+          )}
+
+          {/* Телефон гостя (Справочно для хозяина, опционально) */}
+          {!currentUser && (
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center justify-between">
+                <span>{t('guestPhoneLabel') || 'Номер телефона'}</span>
+                <span className="text-[10px] text-slate-500">Справочно</span>
+              </label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+90 5XX XXX XX XX"
                 className="w-full bg-slate-800/80 border border-white/10 rounded-2xl px-4 py-3 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-rose-500 transition-colors"
               />
             </div>
@@ -310,15 +341,15 @@ export default function ContactHostModal() {
 
       </div>
 
-      {/* Обязательное модальное окно верификации кода */}
+      {/* Обязательное модальное окно верификации кода Email */}
       <VerificationModal
         isOpen={isVerifyOpen}
         onClose={() => setIsVerifyOpen(false)}
-        targetChannel={contact.trim().includes('@') ? 'email' : 'phone'}
+        targetChannel="email"
         guestData={{
           name: name.trim() || 'Гость',
-          email: contact.trim().includes('@') ? contact.trim() : '',
-          phone: !contact.trim().includes('@') ? contact.trim() : ''
+          email: email.trim().toLowerCase(),
+          phone: phone.trim()
         }}
         onSuccess={handleVerificationSuccess}
       />

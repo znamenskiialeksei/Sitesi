@@ -1,12 +1,12 @@
 /**
  * ============================================================================
  * [ПРЕДЫДУЩАЯ РЕДАКЦИЯ]
- * Редакция: 29.09.2026 00:05 | Метка: TAG: VILLA-CROSS-VALIDATION-HEADERS-PARITY-290920260005
- * План: [290920260005 ПЛАН Перекрестная валидация и диапазоны.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/290920260005%20ПЛАН%20Перекрестная%20валидация%20и%20диапазоны.md)
- * ----------------------------------------------------------------------------
- * [АКТУАЛЬНАЯ РЕДАКЦИЯ]
  * Редакция: 29.09.2026 00:30 | Метка: TAG: VILLA-SAFE-VALIDATION-SPILL-CORRIDOR-290920260030
  * План: [290920260031 ПЛАН Безопасная валидация и формулы spill.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/290920260031%20ПЛАН%20Безопасная%20валидация%20и%20формулы%20spill.md)
+ * ----------------------------------------------------------------------------
+ * [АКТУАЛЬНАЯ РЕДАКЦИЯ]
+ * Редакция: 29.09.2026 00:45 | Метка: TAG: VILLA-SHEET-CLEAR-VALIDATIONS-FIX-290920260045
+ * План: [290920260046 ПЛАН Устранение ошибки clearDataValidations.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/290920260046%20ПЛАН%20Устранение%20ошибки%20clearDataValidations.md)
  * ============================================================================
  * МОДУЛЬ 0: ПАСПОРТ МОДУЛЯ И СИСТЕМНАЯ КОНФИГУРАЦИЯ
  * Название: Монолитный скрипт Google Apps Script экосистемы Villa Turaman CRM
@@ -1429,7 +1429,13 @@ function ensureAllSystemSheets() {
  */
 function initSingleSheetByKey_(sheet, key) {
   if (!sheet || !key) return;
-  sheet.clearDataValidations();
+  try {
+    sheet.clear({ validationsOnly: true });
+  } catch (vErr) {
+    try {
+      sheet.getDataRange().clearDataValidations();
+    } catch (vErr2) {}
+  }
 
   if (key === 'HOME') {
     var homeHeaders = ['Блок / Раздел', 'Ключ [ID]', 'Место размещения / Описание [RU]', 'RU', 'EN', 'TR', 'Медиа / Иконка / Ссылка', 'Статус [Вкл/Выкл]'];
@@ -3340,7 +3346,13 @@ function restoreSheetsFromCloudApiInteractive() {
 
       // 1. Очистка листа и гарантированное создание темно-синей шапки на строке 1
       sheet.clearContents();
-      sheet.clearDataValidations();
+      try {
+        sheet.clear({ validationsOnly: true });
+      } catch (vErr) {
+        try {
+          sheet.getDataRange().clearDataValidations();
+        } catch (vErr2) {}
+      }
       var headers = (cfg && Array.isArray(cfg.headers) && cfg.headers.length > 0) ? cfg.headers : null;
       if (headers) {
         styleSheetHeader_(sheet, headers, 1, cfg.minWidths);
@@ -3751,7 +3763,13 @@ function restoreFromDriveSnapshotFileId_(fileId) {
 
     // 1. Очистка и установка шапки
     sheet.clearContents();
-    sheet.clearDataValidations();
+    try {
+      sheet.clear({ validationsOnly: true });
+    } catch (vErr) {
+      try {
+        sheet.getDataRange().clearDataValidations();
+      } catch (vErr2) {}
+    }
     var headers = (cfg && Array.isArray(cfg.headers) && cfg.headers.length > 0) ? cfg.headers : null;
     if (headers) {
       styleSheetHeader_(sheet, headers, 1, cfg.minWidths);

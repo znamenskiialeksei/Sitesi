@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 28.09.2026 14:15 | ПЛАН: 280920261415 ПЛАН Комплексная модернизация экосистемы.md | TAG: VILLA-FULL-ECOSYSTEM-UPGRADE-280920261415]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 28.09.2026 19:40 | ПЛАН: 280920261940 ПЛАН 13 колонок ACCOUNTS и восстановление.md | TAG: VILLA-13COLS-ACCOUNTS-AUTH-280920261940]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 28.09.2026 19:40 | ПЛАН: 280920261940 ПЛАН 13 колонок ACCOUNTS и восстановление.md | TAG: VILLA-13COLS-ACCOUNTS-AUTH-280920261940]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 29.09.2026 02:25 | ПЛАН: 290920260225 ПЛАН 13 колонок ACCOUNTS и подтверждение по email.md | TAG: VILLA-13COLS-ACCOUNTS-EMAIL-OTP-290920260225]
 // ==============================================================================
 // ОСНОВНОЙ API СЕРВЕР GOOGLE SHEETS & CRM VILLA TURAMAN
 // Файл: pages/api/booking.js
@@ -235,14 +235,39 @@ const isContactMatch = (storedContact, targetContact) => {
   const s1 = storedContact.toLowerCase().trim();
   const s2 = targetContact.toLowerCase().trim();
   if (s1 === s2) return true;
-  if (s1.includes(s2) || s2.includes(s1)) return true;
-  if (s2.includes('@') && s1.includes(s2)) return true;
+  if (s1.includes('@') && s2.includes('@')) {
+    return s1 === s2;
+  }
+  if (s1.includes('|')) {
+    const parts = s1.split('|').map((p) => p.trim());
+    if (parts.some((p) => p === s2)) return true;
+  }
+  if (s2.includes('|')) {
+    const parts = s2.split('|').map((p) => p.trim());
+    if (parts.some((p) => p === s1)) return true;
+  }
+  const digits1 = s1.replace(/\D/g, '');
   const digits2 = s2.replace(/\D/g, '');
-  if (digits2.length >= 7) {
-    const digits1 = s1.replace(/\D/g, '');
-    if (digits1.includes(digits2) || digits2.includes(digits1)) return true;
+  if (digits1.length >= 10 && digits2.length >= 10) {
+    if (digits1.slice(-10) === digits2.slice(-10)) return true;
   }
   return false;
+};
+
+// Надежное разделение контакта на телефон и email
+const splitContactParts = (rawContact) => {
+  if (!rawContact) return { email: '', phone: '' };
+  const str = String(rawContact).trim();
+  if (str.includes('|')) {
+    const parts = str.split('|').map((p) => p.trim());
+    const emailPart = parts.find((p) => p.includes('@')) || '';
+    const phonePart = parts.find((p) => !p.includes('@')) || '';
+    return { email: emailPart.toLowerCase(), phone: phonePart };
+  }
+  if (str.includes('@')) {
+    return { email: str.toLowerCase(), phone: '' };
+  }
+  return { email: '', phone: str };
 };
 
 // Конфигурация названий листов и заголовков таблицы Google
@@ -519,6 +544,130 @@ const ensureStyledChatSheet = async (sheets, targetChatId, sheetTitle) => {
   }
 };
 
+// Автоматическое самоисцеление листа ACCOUNTS: исправление сдвинутых колонок и авто-генерация UID
+const sanitizeAndHealAccountsSheet = async (sheets, spreadsheetId, sheetMap) => {
+  if (!sheets || !spreadsheetId) return;
+  try {
+    const range = resolveRange(sheetMap, 'ACCOUNTS', 'A2:M100');
+    const res = await sheets.spreadsheets.values.get({ spreadsheetId, range });
+    const rows = res.data.values || [];
+    if (rows.length === 0) return;
+
+    const updates = [];
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      if (!row || row.length === 0 || !row[0]) continue;
+      const rowIndex = i + 2;
+
+      let regDate = (row[0] || '').toString().trim();
+      let name = (row[1] || '').toString().trim();
+      let col2 = (row[2] || '').toString().trim(); // expected Phone
+      let col3 = (row[3] || '').toString().trim(); // expected Email
+      let col4 = (row[4] || '').toString().trim(); // expected Password
+      let col5 = (row[5] || '').toString().trim(); // expected Block Site
+      let col6 = (row[6] || '').toString().trim(); // expected Block Account
+      let col7 = (row[7] || '').toString().trim(); // expected Block Chat
+      let col8 = (row[8] || '').toString().trim(); // expected Verification Status
+      let col9 = (row[9] || '').toString().trim(); // expected Verification Date
+      let col10 = (row[10] || '').toString().trim(); // expected Re-verify
+      let col11 = (row[11] || '').toString().trim(); // expected Account Status
+      let col12 = (row[12] || '').toString().trim(); // expected UID
+
+      let needsHeal = false;
+      let phone = col2;
+      let email = col3;
+      let pass = col4;
+      let bSite = col5;
+      let bAcc = col6;
+      let bChat = col7;
+      let vStat = col8;
+      let vDate = col9;
+      let reVer = col10;
+      let accStat = col11;
+      let uid = col12;
+
+      // Признак 1: В колонке C находится email (содержит @)
+      if (col2.includes('@')) {
+        needsHeal = true;
+        if (col2.includes('|')) {
+          const parts = col2.split('|').map((p) => p.trim());
+          email = parts.find((p) => p.includes('@')) || '';
+          phone = parts.find((p) => !p.includes('@')) || '';
+        } else {
+          email = col2;
+          phone = '';
+        }
+        // В сдвинутой строке пароль попал в col3, а статусы сдвинуты на 1 позицию влево
+        pass = col3 || '123456';
+        bSite = col4 || 'Нет';
+        bAcc = col5 || 'Нет';
+        bChat = col6 || 'Нет';
+        vStat = col7 || 'Верифицирован';
+        vDate = col8 || regDate;
+        reVer = col9 || 'Нет';
+        accStat = col10 || 'Активен';
+      } else if (col2.includes('|')) {
+        needsHeal = true;
+        const parts = col2.split('|').map((p) => p.trim());
+        email = parts.find((p) => p.includes('@')) || col3 || '';
+        phone = parts.find((p) => !p.includes('@')) || '';
+        pass = col4 || '123456';
+      }
+
+      // Признак 2: Отсутствует или некорректен UID (Колонка M)
+      if (!uid || !uid.startsWith('VT-GUEST-')) {
+        needsHeal = true;
+        uid = `VT-GUEST-${1000 + i}`;
+      }
+
+      // Нормализация базовых значений
+      if (!pass) pass = '123456';
+      if (!bSite) bSite = 'Нет';
+      if (!bAcc) bAcc = 'Нет';
+      if (!bChat) bChat = 'Нет';
+      if (!vStat) vStat = email ? 'Email' : 'Верифицирован';
+      if (!vDate) vDate = regDate || new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
+      if (!reVer) reVer = 'Нет';
+      if (!accStat) accStat = 'Активен';
+
+      if (needsHeal) {
+        updates.push({
+          range: resolveRange(sheetMap, 'ACCOUNTS', `A${rowIndex}:M${rowIndex}`),
+          values: [[
+            regDate,
+            name,
+            phone ? (phone.startsWith('+') ? `'${phone}` : phone) : '',
+            email || '',
+            `'${pass}`,
+            bSite,
+            bAcc,
+            bChat,
+            vStat,
+            vDate,
+            reVer,
+            accStat,
+            `'${uid}`
+          ]]
+        });
+      }
+    }
+
+    if (updates.length > 0) {
+      await sheets.spreadsheets.values.batchUpdate({
+        spreadsheetId,
+        requestBody: {
+          valueInputOption: 'USER_ENTERED',
+          data: updates
+        }
+      });
+      console.log(`[sanitizeAndHealAccountsSheet]: Успешно исцелено ${updates.length} строк в ACCOUNTS`);
+    }
+  } catch (err) {
+    console.warn('[sanitizeAndHealAccountsSheet Warning]:', err.message);
+  }
+};
+
 export default async function handler(req, res) {
   if (req.method !== 'POST' && req.method !== 'GET') {
     return res.status(405).json({ message: 'Method Not Allowed' });
@@ -685,6 +834,18 @@ export default async function handler(req, res) {
 
   // Динамический резолвер листов: находит актуальные имена по sheetId и алиасам
   const sheetMap = await getLiveSheetMap(sheets, spreadsheetId);
+
+  // Регулярная самодиагностика и исцеление колонок ACCOUNTS (защита от сдвигов и авто-генерация UID)
+  if (sheets && spreadsheetId) {
+    try {
+      const healedKey = 'accounts_sheet_healed_guard';
+      const lastHealed = await safeCacheGet(healedKey);
+      if (!lastHealed) {
+        await sanitizeAndHealAccountsSheet(sheets, spreadsheetId, sheetMap);
+        await safeCacheSet(healedKey, true, { ex: 1800 });
+      }
+    } catch (hErr) {}
+  }
 
   const getChatSpreadsheetId = () => chatsSpreadsheetId || spreadsheetId;
 
@@ -1002,6 +1163,9 @@ export default async function handler(req, res) {
           }
         });
       }
+
+      // Гарантированное исцеление структуры ACCOUNTS
+      await sanitizeAndHealAccountsSheet(sheets, spreadsheetId, sheetMap);
 
       await safeCacheSet('system_sheets_initialized_v2', true, { ex: 86400 * 30 });
     } catch (e) {
@@ -1567,15 +1731,10 @@ export default async function handler(req, res) {
       let targetEmail = rawEmail;
       let targetPhone = rawPhone;
 
-      if (!targetEmail && rawContact.includes('@')) {
-        const parts = rawContact.split('|').map((p) => p.trim());
-        const emailPart = parts.find((p) => p.includes('@'));
-        if (emailPart) targetEmail = emailPart.toLowerCase();
-      }
-      if (!targetPhone && rawContact) {
-        const parts = rawContact.split('|').map((p) => p.trim());
-        const phonePart = parts.find((p) => !p.includes('@'));
-        if (phonePart) targetPhone = phonePart;
+      if (!targetEmail || !targetPhone) {
+        const parts = splitContactParts(rawContact);
+        if (!targetEmail) targetEmail = parts.email;
+        if (!targetPhone) targetPhone = parts.phone;
       }
 
       const finalContact = targetPhone && targetEmail
@@ -1589,12 +1748,12 @@ export default async function handler(req, res) {
       // Строгая серверная проверка подтверждения проверочным кодом [OTP]
       let isVerified = false;
       if (targetEmail) {
-        isVerified = await safeCacheGet(`verified_email_${targetEmail}`);
+        isVerified = Boolean(await safeCacheGet(`verified_email_${targetEmail.toLowerCase()}`));
       }
       if (!isVerified && targetPhone) {
         const cleanPhone = targetPhone.replace(/\D/g, '');
         if (cleanPhone) {
-          isVerified = await safeCacheGet(`verified_phone_${cleanPhone}`);
+          isVerified = Boolean(await safeCacheGet(`verified_phone_${cleanPhone}`));
         }
       }
 
@@ -1612,21 +1771,32 @@ export default async function handler(req, res) {
         try {
           const accDb = await sheets.spreadsheets.values.get({
             spreadsheetId,
-            range: resolveRange(sheetMap, 'ACCOUNTS', 'C:C')
+            range: resolveRange(sheetMap, 'ACCOUNTS', 'C2:D100')
           });
-          const existingLogins = (accDb.data.values || [])
-            .flat()
-            .map((v) => (v || '').toString().trim().toLowerCase());
-          const alreadyExists = existingLogins.some((l) => {
-            if (!l) return false;
-            if (targetEmail && l.includes(targetEmail)) return true;
-            if (targetPhone) {
-              const d1 = l.replace(/\D/g, '');
-              const d2 = targetPhone.replace(/\D/g, '');
-              if (d1 && d2 && d1.length >= 7 && d2.length >= 7 && (d1.includes(d2) || d2.includes(d1))) return true;
+          const existingRows = accDb.data.values || [];
+          const targetEmailLower = (targetEmail || '').toLowerCase().trim();
+          const cleanTargetPhoneDigits = (targetPhone || '').replace(/\D/g, '');
+
+          const alreadyExists = existingRows.some((r) => {
+            const rowPhone = (r[0] || '').toString().trim();
+            const rowEmail = (r[1] || '').toString().trim().toLowerCase();
+
+            // Точное совпадение Email (без нечеткого includes)
+            if (targetEmailLower && rowEmail && rowEmail === targetEmailLower) {
+              return true;
             }
-            return isContactMatch(l, finalContact);
+
+            // Точное совпадение Телефона: только если оба имеют >= 10 цифр и совпадают последние 10 цифр
+            if (cleanTargetPhoneDigits && cleanTargetPhoneDigits.length >= 10) {
+              const cleanRowDigits = rowPhone.replace(/\D/g, '');
+              if (cleanRowDigits.length >= 10 && cleanRowDigits.slice(-10) === cleanTargetPhoneDigits.slice(-10)) {
+                return true;
+              }
+            }
+
+            return false;
           });
+
           if (alreadyExists) {
             return res.status(400).json({
               success: false,
@@ -1640,12 +1810,21 @@ export default async function handler(req, res) {
         try {
           const accRowsMeta = await sheets.spreadsheets.values.get({
             spreadsheetId,
-            range: resolveRange(sheetMap, 'ACCOUNTS', 'A:A')
+            range: resolveRange(sheetMap, 'ACCOUNTS', 'M:M')
           });
-          nextUidNum = 1000 + (accRowsMeta.data.values || []).length;
+          const existingUids = (accRowsMeta.data.values || []).flat();
+          const maxExisting = existingUids.reduce((max, u) => {
+            const m = String(u).match(/VT-GUEST-(\d+)/);
+            if (m) {
+              const n = parseInt(m[1], 10);
+              return n > max ? n : max;
+            }
+            return max;
+          }, 999);
+          nextUidNum = maxExisting + 1;
         } catch (uErr) {}
         newUid = `VT-GUEST-${nextUidNum}`;
-        const vStatus = targetEmail && targetPhone ? 'Полная' : (targetEmail ? 'Email' : 'Телефон');
+        const vStatus = targetEmail ? 'Email' : 'Верифицирован';
 
         await sheets.spreadsheets.values.append({
           spreadsheetId,
@@ -1656,7 +1835,7 @@ export default async function handler(req, res) {
             values: [[
               timestamp,
               safeName,
-              targetPhone ? `'${targetPhone}` : '',
+              targetPhone ? (targetPhone.startsWith('+') ? `'${targetPhone}` : targetPhone) : '',
               targetEmail || '',
               `'${safePassword}`,
               'Нет',
@@ -1807,18 +1986,38 @@ export default async function handler(req, res) {
         const isHost = data.sender === 'Владелец' || data.sender === 'Алексей Знаменский' || data.sender === 'Admin' || data.sender === 'Owner';
         if (!isHost && safeContact) {
           let isVerifiedGuest = false;
-          if (safeContact.includes('@')) {
-            isVerifiedGuest = await safeCacheGet(`verified_email_${safeContact}`);
-          } else {
-            const cleanPhone = safeContact.replace(/\D/g, '');
-            if (cleanPhone) isVerifiedGuest = await safeCacheGet(`verified_phone_${cleanPhone}`);
+          const { email: cEmail, phone: cPhone } = splitContactParts(safeContact);
+          if (cEmail) {
+            isVerifiedGuest = Boolean(await safeCacheGet(`verified_email_${cEmail}`));
+          } else if (cPhone) {
+            const cleanPhone = cPhone.replace(/\D/g, '');
+            if (cleanPhone) isVerifiedGuest = Boolean(await safeCacheGet(`verified_phone_${cleanPhone}`));
           }
           if (!isVerifiedGuest && sheets && spreadsheetId) {
             try {
-              const accDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'ACCOUNTS', 'A:K') });
-              const row = (accDb.data.values || []).find((r) => isContactMatch(r[2], safeContact));
-              if (row && (row[7] === 'Верифицирован' || row[7] === 'Да') && row[9] !== 'Да') {
-                isVerifiedGuest = true;
+              const accDb = await sheets.spreadsheets.values.get({ spreadsheetId, range: resolveRange(sheetMap, 'ACCOUNTS', 'A2:M100') });
+              const row = (accDb.data.values || []).find((r) => {
+                const rPhone = (r[2] || '').toString().trim();
+                const rEmail = (r[3] || '').toString().trim().toLowerCase();
+                const rUid = (r[12] || '').toString().trim();
+                if (cEmail && rEmail === cEmail) return true;
+                if (cPhone && rPhone && rPhone.replace(/\D/g, '') === cPhone.replace(/\D/g, '')) return true;
+                if (rUid && rUid === safeContact) return true;
+                return isContactMatch(r[2], safeContact) || isContactMatch(r[3], safeContact);
+              });
+              if (row) {
+                const blockChat = (row[7] || '').trim() === 'Да';
+                if (blockChat) {
+                  return res.status(403).json({
+                    success: false,
+                    error: 'Чат заблокирован администратором виллы.'
+                  });
+                }
+                const vStat = (row[8] || '').trim();
+                const reVer = (row[10] || '').trim() === 'Да';
+                if ((vStat === 'Верифицирован' || vStat === 'Email' || vStat === 'Телефон' || vStat === 'Полная' || vStat === 'Да') && !reVer) {
+                  isVerifiedGuest = true;
+                }
               }
             } catch (accErr) {}
           }
@@ -2137,17 +2336,23 @@ export default async function handler(req, res) {
     try {
       await ensureSystemSheets();
       const targetChatId = getChatSpreadsheetId();
-      const safeContact = (data.contact || '').toString().trim().toLowerCase();
+      const rawEmail = (data.email || '').toString().trim().toLowerCase();
+      const rawPhone = (data.phone || '').toString().trim();
+      const rawContact = (data.contact || '').toString().trim();
+      const { email: splitEmail, phone: splitPhone } = splitContactParts(rawContact);
+      const safeEmail = rawEmail || splitEmail;
+      const safePhone = rawPhone || splitPhone;
+      const safeContact = safeEmail || safePhone || rawContact;
       const safeName = (data.name || data.sender || 'Гость').toString().trim();
       const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
       const msgText = data.message || '';
 
-      // Серверная проверка обязательной верификации контакта перед отправкой хозяину
+      // Серверная проверка обязательной верификации контакта перед отправкой хозяину (Email)
       let isVerifiedContact = false;
-      if (safeContact.includes('@')) {
-        isVerifiedContact = Boolean(await safeCacheGet(`verified_email_${safeContact}`));
-      } else {
-        const cleanDigits = safeContact.replace(/\D/g, '');
+      if (safeEmail) {
+        isVerifiedContact = Boolean(await safeCacheGet(`verified_email_${safeEmail.toLowerCase()}`));
+      } else if (safePhone) {
+        const cleanDigits = safePhone.replace(/\D/g, '');
         if (cleanDigits) isVerifiedContact = Boolean(await safeCacheGet(`verified_phone_${cleanDigits}`));
       }
       if (!isVerifiedContact && !data.isVerified) {
@@ -2166,24 +2371,57 @@ export default async function handler(req, res) {
       const fEN = translations.en || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
       const fTR = translations.tr || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
 
-      // 2. Авто-регистрация гостя в листе ACCOUNTS (если еще не зарегистрирован)
-      if (sheets && spreadsheetId && safeContact) {
+      // 2. Авто-регистрация гостя в листе ACCOUNTS по каноническому 13-колоночному стандарту
+      let assignedUid = 'VT-GUEST-1000';
+      if (sheets && spreadsheetId && (safeEmail || safePhone)) {
         try {
-          const existingData = await sheets.spreadsheets.values.get({
+          const accDb = await sheets.spreadsheets.values.get({
             spreadsheetId,
-            range: resolveRange(sheetMap, 'ACCOUNTS', 'C:C')
+            range: resolveRange(sheetMap, 'ACCOUNTS', 'A2:M100')
           });
-          const logins = existingData.data.values
-            ? existingData.data.values.flat().map((v) => (v || '').toString().trim().toLowerCase())
-            : [];
-          if (!logins.includes(safeContact)) {
+          const rows = accDb.data.values || [];
+          const existing = rows.find(r => {
+            const rPhone = (r[2] || '').toString().trim();
+            const rEmail = (r[3] || '').toString().trim().toLowerCase();
+            if (safeEmail && rEmail === safeEmail.toLowerCase()) return true;
+            if (safePhone && rPhone && safePhone.replace(/\D/g, '').length >= 10 && rPhone.replace(/\D/g, '').slice(-10) === safePhone.replace(/\D/g, '').slice(-10)) return true;
+            return false;
+          });
+
+          if (existing) {
+            assignedUid = existing[12] || `VT-GUEST-${1000 + rows.indexOf(existing)}`;
+          } else {
+            const maxExisting = rows.reduce((max, r) => {
+              const m = String(r[12] || '').match(/VT-GUEST-(\d+)/);
+              if (m) {
+                const n = parseInt(m[1], 10);
+                return n > max ? n : max;
+              }
+              return max;
+            }, 999);
+            assignedUid = `VT-GUEST-${maxExisting + 1}`;
+
             await sheets.spreadsheets.values.append({
               spreadsheetId,
-              range: resolveRange(sheetMap, 'ACCOUNTS', 'A:K'),
+              range: resolveRange(sheetMap, 'ACCOUNTS', 'A:M'),
               valueInputOption: 'USER_ENTERED',
               insertDataOption: 'INSERT_ROWS',
               requestBody: {
-                values: [[timestamp, safeName, safeContact, '123456', 'Нет', 'Нет', 'Нет', 'Верифицирован', timestamp, 'Нет', 'Активен']]
+                values: [[
+                  timestamp,
+                  safeName,
+                  safePhone ? (safePhone.startsWith('+') ? `'${safePhone}` : safePhone) : '',
+                  safeEmail || '',
+                  '123456',
+                  'Нет',
+                  'Нет',
+                  'Нет',
+                  safeEmail ? 'Email' : 'Верифицирован',
+                  timestamp,
+                  'Нет',
+                  'Активен',
+                  `'${assignedUid}`
+                ]]
               }
             });
           }
@@ -2192,14 +2430,14 @@ export default async function handler(req, res) {
         }
       }
 
-      const isEmailFormat = safeContact.includes('@');
       const userObj = {
+        uid: assignedUid,
         name: safeName,
-        contact: safeContact,
-        email: isEmailFormat ? safeContact : '',
-        phone: !isEmailFormat ? safeContact : '',
-        emailVerified: true,
-        phoneVerified: !isEmailFormat,
+        contact: safeEmail || safePhone || safeContact,
+        email: safeEmail,
+        phone: safePhone,
+        emailVerified: !!safeEmail,
+        phoneVerified: false,
         isVerified: true,
         isHost: false,
         blockChat: false,
@@ -2316,31 +2554,67 @@ export default async function handler(req, res) {
   if (action === 'auto_register_guest') {
     try {
       await ensureSystemSheets();
-      const safeEmail = (data.email || '').toString().trim();
-      const safePhone = (data.phone || '').toString().trim();
-      const safeContact = (data.contact || (safePhone && safeEmail ? `${safePhone} | ${safeEmail}` : (safePhone || safeEmail || ''))).toString().trim();
+      const rawEmail = (data.email || '').toString().trim().toLowerCase();
+      const rawPhone = (data.phone || '').toString().trim();
+      const rawContact = (data.contact || '').toString().trim();
+      const { email: splitEmail, phone: splitPhone } = splitContactParts(rawContact);
+      const safeEmail = rawEmail || splitEmail;
+      const safePhone = rawPhone || splitPhone;
+      const safeContact = safeEmail || safePhone || rawContact;
       const safeName = (data.name || 'Гость').toString().trim();
       const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
+      let assignedUid = 'VT-GUEST-1000';
 
-      if (sheets && spreadsheetId && safeContact) {
+      if (sheets && spreadsheetId && (safeEmail || safePhone)) {
         try {
-          const existingData = await sheets.spreadsheets.values.get({
+          const accDb = await sheets.spreadsheets.values.get({
             spreadsheetId,
-            range: resolveRange(sheetMap, 'ACCOUNTS', 'C:C')
+            range: resolveRange(sheetMap, 'ACCOUNTS', 'A2:M100')
           });
-          const logins = existingData.data.values
-            ? existingData.data.values.flat().map((v) => (v || '').toString().trim().toLowerCase())
-            : [];
-          const checkKey = safeEmail ? safeEmail.toLowerCase() : safeContact.toLowerCase();
-          if (!logins.includes(checkKey) && !logins.includes(safeContact.toLowerCase())) {
-            const isVer = (data.emailVerified || data.isVerified) ? 'Верифицирован' : 'Не верифицирован';
+          const rows = accDb.data.values || [];
+          const existing = rows.find(r => {
+            const rPhone = (r[2] || '').toString().trim();
+            const rEmail = (r[3] || '').toString().trim().toLowerCase();
+            if (safeEmail && rEmail === safeEmail.toLowerCase()) return true;
+            if (safePhone && rPhone && safePhone.replace(/\D/g, '').length >= 10 && rPhone.replace(/\D/g, '').slice(-10) === safePhone.replace(/\D/g, '').slice(-10)) return true;
+            return false;
+          });
+
+          if (existing) {
+            assignedUid = existing[12] || `VT-GUEST-${1000 + rows.indexOf(existing)}`;
+          } else {
+            const maxExisting = rows.reduce((max, r) => {
+              const m = String(r[12] || '').match(/VT-GUEST-(\d+)/);
+              if (m) {
+                const n = parseInt(m[1], 10);
+                return n > max ? n : max;
+              }
+              return max;
+            }, 999);
+            assignedUid = `VT-GUEST-${maxExisting + 1}`;
+            const isVer = (data.emailVerified || data.isVerified) ? 'Email' : 'Не верифицирован';
+
             await sheets.spreadsheets.values.append({
               spreadsheetId,
-              range: resolveRange(sheetMap, 'ACCOUNTS', 'A:K'),
+              range: resolveRange(sheetMap, 'ACCOUNTS', 'A:M'),
               valueInputOption: 'USER_ENTERED',
               insertDataOption: 'INSERT_ROWS',
               requestBody: {
-                values: [[timestamp, safeName, safeContact, '123456', 'Нет', 'Нет', 'Нет', isVer, timestamp, 'Нет', 'Активен']]
+                values: [[
+                  timestamp,
+                  safeName,
+                  safePhone ? (safePhone.startsWith('+') ? `'${safePhone}` : safePhone) : '',
+                  safeEmail || '',
+                  '123456',
+                  'Нет',
+                  'Нет',
+                  'Нет',
+                  isVer,
+                  timestamp,
+                  'Нет',
+                  'Активен',
+                  `'${assignedUid}`
+                ]]
               }
             });
           }
@@ -2352,8 +2626,9 @@ export default async function handler(req, res) {
       return res.status(200).json({
         success: true,
         user: {
+          uid: assignedUid,
           name: safeName,
-          contact: safeContact,
+          contact: safeEmail || safePhone || safeContact,
           email: safeEmail,
           phone: safePhone,
           emailVerified: !!data.emailVerified,
@@ -3148,26 +3423,57 @@ export default async function handler(req, res) {
         });
       }
 
-      // Авто-регистрация гостя в таблице аккаунтов при бронировании
-      if (sheets && spreadsheetId && effectiveContact) {
-        const safeContactKey = effectiveContact.toLowerCase();
+      // Авто-регистрация гостя в таблице аккаунтов при бронировании (канонические 13 колонок)
+      let bookingGuestUid = 'VT-GUEST-1000';
+      if (sheets && spreadsheetId && (safeEmail || safePhone || effectiveContact)) {
         try {
-          const existingData = await sheets.spreadsheets.values.get({
+          const accDb = await sheets.spreadsheets.values.get({
             spreadsheetId,
-            range: resolveRange(sheetMap, 'ACCOUNTS', 'C:C')
+            range: resolveRange(sheetMap, 'ACCOUNTS', 'A2:M100')
           });
-          const logins = existingData.data.values
-            ? existingData.data.values.flat().map((v) => (v || '').toString().trim().toLowerCase())
-            : [];
-          const checkKey = safeEmail ? safeEmail.toLowerCase() : safeContactKey;
-          if (!logins.includes(checkKey) && !logins.includes(safeContactKey)) {
+          const rows = accDb.data.values || [];
+          const existing = rows.find(r => {
+            const rPhone = (r[2] || '').toString().trim();
+            const rEmail = (r[3] || '').toString().trim().toLowerCase();
+            if (safeEmail && rEmail === safeEmail.toLowerCase()) return true;
+            if (safePhone && rPhone && safePhone.replace(/\D/g, '').length >= 10 && rPhone.replace(/\D/g, '').slice(-10) === safePhone.replace(/\D/g, '').slice(-10)) return true;
+            return false;
+          });
+
+          if (existing) {
+            bookingGuestUid = existing[12] || `VT-GUEST-${1000 + rows.indexOf(existing)}`;
+          } else {
+            const maxExisting = rows.reduce((max, r) => {
+              const m = String(r[12] || '').match(/VT-GUEST-(\d+)/);
+              if (m) {
+                const n = parseInt(m[1], 10);
+                return n > max ? n : max;
+              }
+              return max;
+            }, 999);
+            bookingGuestUid = `VT-GUEST-${maxExisting + 1}`;
+
             await sheets.spreadsheets.values.append({
               spreadsheetId,
-              range: resolveRange(sheetMap, 'ACCOUNTS', 'A:K'),
+              range: resolveRange(sheetMap, 'ACCOUNTS', 'A:M'),
               valueInputOption: 'USER_ENTERED',
               insertDataOption: 'INSERT_ROWS',
               requestBody: {
-                values: [[timestamp, guestName, effectiveContact, '123456', 'Нет', 'Нет', 'Нет', 'Верифицирован', timestamp, 'Нет', 'Активен']]
+                values: [[
+                  timestamp,
+                  guestName,
+                  safePhone ? (safePhone.startsWith('+') ? `'${safePhone}` : safePhone) : '',
+                  safeEmail || '',
+                  '123456',
+                  'Нет',
+                  'Нет',
+                  'Нет',
+                  safeEmail ? 'Email' : 'Верифицирован',
+                  timestamp,
+                  'Нет',
+                  'Активен',
+                  `'${bookingGuestUid}`
+                ]]
               }
             });
           }

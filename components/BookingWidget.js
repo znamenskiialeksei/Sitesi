@@ -3,8 +3,8 @@
 // Файл: components/BookingWidget.js
 // Назначение: Выбор дат, подсчет гостей, динамический расчет стоимости, 24ч HOLD
 // 
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:45 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-WIDGET-STABLE-260920262345]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:15 | ПЛАН: 270920260115 Оптимизация кабинета и виджета.md | TAG: VILLA-HOST-WIDGET-CLEAN-270920260115]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 01:15 | ПЛАН: 270920260115 Оптимизация кабинета и виджета.md | TAG: VILLA-HOST-WIDGET-CLEAN-270920260115]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 29.09.2026 02:25 | ПЛАН: 290920260225 ПЛАН 13 колонок ACCOUNTS и подтверждение по email.md | TAG: VILLA-13COLS-ACCOUNTS-EMAIL-OTP-290920260225]
 // ==============================================================================
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -103,28 +103,34 @@ export default function BookingWidget({
     }
   }, [dynamicRules.paymentMode]);
 
-  // Синхронизация полей гостя с профилем currentUser (включая неполные профили из быстрого чата)
+  // Синхронизация полей гостя с профилем currentUser (разделение телефона и email)
   useEffect(() => {
     if (currentUser) {
       if (currentUser.name && !guestName) setGuestName(currentUser.name);
       if (currentUser.email && !guestEmail) setGuestEmail(currentUser.email);
       if (currentUser.phone && !guestPhone) setGuestPhone(currentUser.phone);
-      if (!guestEmail && currentUser.contact && currentUser.contact.includes('@')) {
-        setGuestEmail(currentUser.contact);
-      }
-      if (!guestPhone && currentUser.contact && !currentUser.contact.includes('@')) {
-        setGuestPhone(currentUser.contact);
+
+      if (currentUser.contact && currentUser.contact.includes('|')) {
+        const parts = currentUser.contact.split('|').map((p) => p.trim());
+        const emailPart = parts.find((p) => p.includes('@'));
+        const phonePart = parts.find((p) => !p.includes('@'));
+        if (emailPart && !guestEmail) setGuestEmail(emailPart);
+        if (phonePart && !guestPhone) setGuestPhone(phonePart);
+      } else {
+        if (!guestEmail && currentUser.contact && currentUser.contact.includes('@')) {
+          setGuestEmail(currentUser.contact.trim());
+        }
+        if (!guestPhone && currentUser.contact && !currentUser.contact.includes('@')) {
+          setGuestPhone(currentUser.contact.trim());
+        }
       }
     }
   }, [currentUser]);
 
-  // Расчет статуса подтверждения контактов гостя
-  const verificationMode = dynamicRules.verificationMode || 'progressive';
+  // Расчет статуса подтверждения контактов гостя (Email OTP)
   const isEmailVerified = Boolean(
-    currentUser?.emailVerified &&
-    currentUser?.email &&
-    guestEmail &&
-    currentUser.email.trim().toLowerCase() === guestEmail.trim().toLowerCase()
+    (currentUser?.emailVerified || currentUser?.isVerified) &&
+    (!guestEmail || !currentUser?.email || currentUser.email.trim().toLowerCase() === guestEmail.trim().toLowerCase())
   );
   const isPhoneVerified = Boolean(
     currentUser?.phoneVerified &&
@@ -485,7 +491,7 @@ export default function BookingWidget({
       toast.warn(t('guestEmailPlaceholder') || 'Пожалуйста, укажите корректный адрес электронной почты');
       return;
     }
-    if (!finalPhone || finalPhone.replace(/\D/g, '').length < 6) {
+    if (finalPhone && finalPhone.replace(/\D/g, '').length < 6) {
       toast.warn(t('guestPhonePlaceholder') || 'Пожалуйста, укажите действующий номер телефона');
       return;
     }
