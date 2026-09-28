@@ -1,12 +1,12 @@
 /**
  * ============================================================================
  * [ПРЕДЫДУЩАЯ РЕДАКЦИЯ]
- * Редакция: 27.09.2026 20:45 | Метка: TAG: VILLA-CODE-CRM-SYNC-270920262045
- * План: [270920262045 ПЛАН Синхронизация Code.js и 3 каналов связи.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/270920262045%20ПЛАН%20Синхронизация%20Code.js%20и%203%20каналов%20связи.md)
- * ----------------------------------------------------------------------------
- * [АКТУАЛЬНАЯ РЕДАКЦИЯ]
  * Редакция: 28.09.2026 14:15 | Метка: TAG: VILLA-FULL-ECOSYSTEM-UPGRADE-280920261415
  * План: [280920261415 ПЛАН Комплексная модернизация экосистемы.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/280920261415%20ПЛАН%20Комплексная%20модернизация%20экосистемы.md)
+ * ----------------------------------------------------------------------------
+ * [АКТУАЛЬНАЯ РЕДАКЦИЯ]
+ * Редакция: 28.09.2026 19:40 | Метка: TAG: VILLA-ACCOUNTS-RESTORE-UPGRADE-280920261940
+ * План: [280920261940 ПЛАН 13 колонок ACCOUNTS и восстановление.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/280920261940%20ПЛАН%2013%20колонок%20ACCOUNTS%20и%20восстановление.md)
  * ============================================================================
  * МОДУЛЬ 0: ПАСПОРТ МОДУЛЯ И СИСТЕМНАЯ КОНФИГУРАЦИЯ
  * Название: Монолитный скрипт Google Apps Script экосистемы Villa Turaman CRM
@@ -57,8 +57,8 @@ var VILLA_SHEETS_CONFIG = {
   // 8. KNOWLEDGE_GRAPH: Граф Знаний и Безопасность [Лист 8]
   KNOWLEDGE_GRAPH: { name: "🧠 Граф Знаний и Безопасность", suggestedSheetId: 108, aliases: ["🧠 Граф Знаний и Безопасность", "Граф Знаний и Безопасность", "Граф Знаний", "KnowledgeGraph", "Безопасность", "Security"], cluster: "system", minWidths: [160, 200, 350, 200, 160, 100, 100] },
 
-  // 9. ACCOUNTS: Гостевые аккаунты [Лист 9]
-  ACCOUNTS: { name: "👤 Гостевые аккаунты", suggestedSheetId: 109, aliases: ["👤 Гостевые аккаунты", "Гостевые аккаунты", "Аккаунты гостей", "Гости"], cluster: "host", minWidths: [120, 180, 160, 180, 120, 120, 120, 160, 140, 180, 120] },
+  // 9. ACCOUNTS: Гостевые аккаунты [Лист 9: 13 колонок с отдельными телефоном, email и UID]
+  ACCOUNTS: { name: "👤 Гостевые аккаунты", suggestedSheetId: 109, aliases: ["👤 Гостевые аккаунты", "Гостевые аккаунты", "Аккаунты гостей", "Гости"], cluster: "host", minWidths: [120, 180, 160, 180, 120, 120, 120, 120, 160, 140, 180, 140, 160] },
 
   // 10. SERVICES: Дополнительные услуги [Лист 10]
   SERVICES: { name: "🛎️ Дополнительные услуги", suggestedSheetId: 110, aliases: ["🛎️ Дополнительные услуги", "Дополнительные услуги", "Услуги", "Сервисы", "Платные услуги"], cluster: "showcase", minWidths: [160, 180, 320, 120, 120, 120, 120, 140, 220, 100, 100, 100, 100, 100, 120, 200, 200, 200] },
@@ -445,11 +445,11 @@ function renameSheetsToRussianStandard() {
 }
 
 /**
- * Комплексное автоформатирование всех листов CRM: дизайн, шапки, пастель, минимальная ширина колонок
+ * Тихий исполнитель автоформатирования всех листов CRM: дизайн, шапки, пастель, валидация и ширины колонок
+ * Безопасен для вызова внутри модальных окон и фоновых задач без UI блокировок
  */
-function autoFormatAllSheetsInteractive() {
+function autoFormatAllSheetsSilent_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var ui = SpreadsheetApp.getUi();
   var formattedList = [];
 
   // 16 пастельных тонов для мягкого зонирования Листа 1 [HOME]
@@ -471,6 +471,11 @@ function autoFormatAllSheetsInteractive() {
     '#f3f4f6', // 15. Словарь отзывов : нейтральный лед
     '#fff1f2'  // 16. Словарь чата : нежная роза
   ];
+
+  var yesNoRule = SpreadsheetApp.newDataValidation().requireValueInList(['Да', 'Нет'], true).setAllowInvalid(false).build();
+  var onOffRule = SpreadsheetApp.newDataValidation().requireValueInList(['Вкл', 'Выкл'], true).setAllowInvalid(false).build();
+  var verifRule = SpreadsheetApp.newDataValidation().requireValueInList(['Верифицирован', 'Не верифицирован', 'Требует проверки'], true).setAllowInvalid(false).build();
+  var accStatusRule = SpreadsheetApp.newDataValidation().requireValueInList(['Активен', 'Заблокирован', 'Архив'], true).setAllowInvalid(false).build();
 
   var keys = Object.keys(VILLA_SHEETS_CONFIG);
   for (var k = 0; k < keys.length; k++) {
@@ -505,7 +510,7 @@ function autoFormatAllSheetsInteractive() {
       }
     }
 
-    // 3. Выравнивание данных в строках
+    // 3. Выравнивание данных в строках и правила валидации
     if (lastRow > 1) {
       var dataRange = sheet.getRange(2, 1, lastRow - 1, lastCol);
       dataRange.setVerticalAlignment('middle');
@@ -537,18 +542,67 @@ function autoFormatAllSheetsInteractive() {
           }
         }
       }
+
+      // Специальные валидации для Листа 9 [ACCOUNTS]: 13 колонок
+      if (key === 'ACCOUNTS') {
+        try {
+          sheet.getRange("C:C").setNumberFormat("@");
+          sheet.getRange("E:E").setNumberFormat("@");
+          if (lastCol >= 13) {
+            sheet.getRange("M:M").setNumberFormat("@");
+          }
+          var accRowsCount = Math.max(1, lastRow - 1);
+          sheet.getRange(2, 6, accRowsCount, 3).setDataValidation(yesNoRule); // F, G, H: Блокировки
+          sheet.getRange(2, 9, accRowsCount, 1).setDataValidation(verifRule); // I: Статус верификации
+          sheet.getRange(2, 11, accRowsCount, 1).setDataValidation(yesNoRule); // K: Повторная верификация
+          sheet.getRange(2, 12, accRowsCount, 1).setDataValidation(accStatusRule); // L: Статус аккаунта
+        } catch (accValErr) {
+          Logger.log("Ошибка валидации ACCOUNTS: " + accValErr.message);
+        }
+      }
+
+      // Специальные валидации для Листа 10 [SERVICES]: колонка 13 (M) Наличие
+      if (key === 'SERVICES') {
+        try {
+          var srvRowsCount = Math.max(1, lastRow - 1);
+          sheet.getRange(2, 13, srvRowsCount, 1).setDataValidation(onOffRule);
+        } catch (srvValErr) {
+          Logger.log("Ошибка валидации SERVICES: " + srvValErr.message);
+        }
+      }
+
+      // Специальные валидации для Листа 11 [GUIDES]: колонка 19 (S) Наличие
+      if (key === 'GUIDES') {
+        try {
+          var gRowsCount = Math.max(1, lastRow - 1);
+          sheet.getRange(2, 19, gRowsCount, 1).setDataValidation(onOffRule);
+        } catch (gValErr) {
+          Logger.log("Ошибка валидации GUIDES: " + gValErr.message);
+        }
+      }
     }
 
     formattedList.push(sheet.getName());
   }
 
+  return { success: true, formattedCount: formattedList.length, sheets: formattedList };
+}
+
+/**
+ * Комплексное интерактивное автоформатирование всех листов CRM: дизайн, шапки, пастель, минимальная ширина колонок
+ */
+function autoFormatAllSheetsInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var result = autoFormatAllSheetsSilent_();
+
   var report = "✨ АВТОФОРМАТИРОВАНИЕ ЛИСТОВ CRM ЗАВЕРШЕНО:\n\n" +
-    "Успешно обработано листов: " + formattedList.length + "\n\n" +
+    "Успешно обработано листов: " + result.formattedCount + "\n\n" +
     "Примененные стандарты:\n" +
     "1. Темная шапка #1e293b, белый жирный шрифт, высота 35px, закрепление строки 1\n" +
     "2. Защитные минимальные ширины колонок из реестра архитектуры\n" +
     "3. Мягкое пастельное зонирование 16 блоков витрины с контрастным шрифтом #0f172a\n" +
-    "4. Вертикальное центрирование и автоперенос строк WRAP";
+    "4. Вертикальное центрирование и автоперенос строк WRAP\n" +
+    "5. Защита ввода данных: выпадающие списки Да/Нет и Вкл/Выкл, Plain Text формат для телефонов, паролей и UID";
 
   ui.alert("Автоформатирование листов", report, ui.ButtonSet.OK);
 }
@@ -1660,12 +1714,19 @@ function initSingleSheetByKey_(sheet, key) {
     ];
     sheet.getRange(2, 1, cRows.length, cHeaders.length).setValues(cRows);
   } else if (key === 'ACCOUNTS') {
-    var aHeaders = ['Дата регистрации', 'Имя', 'Контакт [Логин]', 'Пароль', 'Блок: Сайт', 'Блок: Аккаунт', 'Блок: Чат', 'Статус верификации', 'Дата верификации', 'Требуется повторная верификация', 'Статус аккаунта'];
+    var aHeaders = ['Дата регистрации', 'Имя гостя', 'Номер телефона', 'Email адрес', 'Пароль', 'Блокировка: Сайт', 'Блокировка: Аккаунт', 'Блокировка: Чат', 'Статус верификации', 'Дата верификации', 'Требуется повторная верификация', 'Статус аккаунта', 'ID Гостя [UID]'];
     styleSheetHeader_(sheet, aHeaders, 1);
     sheet.getRange("C:C").setNumberFormat("@");
+    sheet.getRange("E:E").setNumberFormat("@");
+    sheet.getRange("M:M").setNumberFormat("@");
     var aRows = [
-      ['2026-01-15', 'Алексей Знаменский', 'villaturaman@gmail.com', 'admin123', 'Нет', 'Нет', 'Нет [Владелец / Главный]', 'Верифицирован', '15.01.2026, 12:00:00', 'Нет', 'Активен'],
-      ['2026-05-01', 'Служба консьержа', 'manager@villaturaman.com', 'manager2026', 'Нет', 'Нет', 'Нет [Управляющий персоналом]', 'Верифицирован', '01.05.2026, 10:00:00', 'Нет', 'Активен']
+      ['15.01.2026, 12:00:00', 'Алексей Знаменский', '+90 543 335 80 70', 'villaturaman@gmail.com', 'admin123', 'Нет', 'Нет', 'Нет', 'Верифицирован', '15.01.2026, 12:00:00', 'Нет', 'Активен', 'VT-GUEST-1000'],
+      ['01.05.2026, 10:00:00', 'Служба консьержа', '+90 532 000 00 01', 'manager@villaturaman.com', 'manager2026', 'Нет', 'Нет', 'Нет', 'Верифицирован', '01.05.2026, 10:00:00', 'Нет', 'Активен', 'VT-GUEST-1001'],
+      ['20.05.2026, 14:20:00', 'Иван Смирнов', '+7 999 111-22-33', 'ivan.smirnov@example.com', 'guest123', 'Нет', 'Нет', 'Нет', 'Верифицирован', '20.05.2026, 14:25:00', 'Нет', 'Активен', 'VT-GUEST-1002'],
+      ['01.06.2026, 11:15:00', 'Markus Webber', '+49 170 1234567', 'markus.webber@example.com', 'markus2026', 'Нет', 'Нет', 'Нет', 'Верифицирован', '01.06.2026, 11:20:00', 'Нет', 'Активен', 'VT-GUEST-1003'],
+      ['10.06.2026, 16:40:00', 'Ahmet Yılmaz', '+90 532 987 65 43', 'ahmet.yilmaz@example.com', 'ahmet2026', 'Нет', 'Нет', 'Нет', 'Верифицирован', '10.06.2026, 16:42:00', 'Нет', 'Активен', 'VT-GUEST-1004'],
+      ['28.09.2026, 15:05:41', 'ЗАО', '789654', 'zaomarmaris@gmail.com', '123456', 'Нет', 'Нет', 'Нет', 'Верифицирован', '28.09.2026, 15:05:41', 'Нет', 'Активен', 'VT-GUEST-1005'],
+      ['28.09.2026, 16:15:00', 'Гость', '+7 999 000-00-00', 'guest@villaturaman.com', 'guest2026', 'Нет', 'Нет', 'Нет', 'Верифицирован', '28.09.2026, 16:15:00', 'Нет', 'Активен', 'VT-GUEST-1006']
     ];
     sheet.getRange(2, 1, aRows.length, aHeaders.length).setValues(aRows);
   } else if (key === 'ORDERS') {
@@ -3152,38 +3213,130 @@ function restoreSheetsFromCloudApiInteractive() {
     var endpoint = siteUrl.replace(/\/+$/, '') + '/api/content?action=get_sheet_seed&sheet=ALL&secret=' + encodeURIComponent(secret);
     var response = UrlFetchApp.fetch(endpoint, { muteHttpExceptions: true });
     var code = response.getResponseCode();
-    if (code !== 200) {
-      ui.alert("Ошибка Cloud API", "Сервер вернул HTTP код " + code + ":\n" + response.getContentText(), ui.ButtonSet.OK);
-      return;
-    }
-    var resData = JSON.parse(response.getContentText());
-    if (!resData || !resData.data) {
-      ui.alert("Ошибка данных", "Сервер вернул пустой эталонный массив.", ui.ButtonSet.OK);
-      return;
+    var resData = null;
+    if (code === 200) {
+      try { resData = JSON.parse(response.getContentText()); } catch (parseErr) {}
     }
 
+    var rawSheets = (resData && resData.rawSheets) ? resData.rawSheets : null;
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var keys = Object.keys(VILLA_SHEETS_CONFIG);
     var restoredCount = 0;
+    var usedSource = 'Cloud API masterSeedContent.js';
+
+    // Если Cloud API недоступен, пробуем Тир 2: последний слепок Google Drive
+    if (!rawSheets) {
+      try {
+        var driveFolder = getOrCreateDriveSnapshotFolder_();
+        var dFiles = driveFolder.getFiles();
+        var latestFile = null;
+        var latestTime = 0;
+        while (dFiles.hasNext()) {
+          var df = dFiles.next();
+          if (df.getName().indexOf('.json') !== -1 && df.getDateCreated().getTime() > latestTime) {
+            latestTime = df.getDateCreated().getTime();
+            latestFile = df;
+          }
+        }
+        if (latestFile) {
+          var snap = JSON.parse(latestFile.getBlob().getDataAsString('utf8'));
+          if (snap && snap.payload) {
+            var p = snap.payload;
+            rawSheets = {
+              HOME: p.homeRows,
+              GALLERY: p.galleryRows,
+              LEGAL: p.legalRows,
+              ACCESS: p.accessRows,
+              TEMPLATES: p.templatesRows,
+              SETTINGS: p.settingsRows,
+              TASKS: p.tasksRows,
+              KNOWLEDGE_GRAPH: p.knowledgeGraphRows,
+              ACCOUNTS: p.accountsRows,
+              SERVICES: p.productsRows,
+              GUIDES: p.coursesRows,
+              BOOKINGS: p.bookingsRows,
+              CALENDAR: p.calendarRows,
+              ORDERS: p.ordersRows,
+              GUIDE_ACCESS: p.guideAccessRows
+            };
+            usedSource = 'Резервный слепок Google Drive [' + latestFile.getName() + ']';
+          }
+        }
+      } catch (driveErr) {
+        Logger.log("Тир 2 резерва Drive не удался: " + driveErr.message);
+      }
+    }
 
     for (var k = 0; k < keys.length; k++) {
       var sKey = keys[k];
+      var cfg = VILLA_SHEETS_CONFIG[sKey];
+      var targetSheetName = cfg.name || cfg.canonicalName || sKey;
       var sheet = findSheetByConfigKey(ss, sKey);
       if (!sheet) {
-        var cfg = VILLA_SHEETS_CONFIG[sKey];
-        sheet = ss.insertSheet(cfg.canonicalName);
+        sheet = ss.insertSheet(targetSheetName);
       }
-      initSingleSheetByKey_(sheet, sKey);
-      restoredCount++;
+
+      var rows = (rawSheets && rawSheets[sKey] && rawSheets[sKey].length > 0) ? rawSheets[sKey] : null;
+
+      if (rows && rows.length > 0) {
+        // Нормализация матрицы к прямоугольному виду
+        var maxCols = 0;
+        for (var r = 0; r < rows.length; r++) {
+          if (rows[r].length > maxCols) maxCols = rows[r].length;
+        }
+        var rectRows = rows.map(function(row) {
+          var copy = row.slice();
+          while (copy.length < maxCols) copy.push('');
+          return copy;
+        });
+        sheet.clearContents();
+        sheet.getRange(1, 1, rectRows.length, maxCols).setValues(rectRows);
+
+        // Восстановление формул автоперевода с точкой с запятой
+        if (sKey === 'HOME') {
+          sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        } else if (sKey === 'SERVICES') {
+          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        } else if (sKey === 'GUIDES') {
+          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        } else if (sKey === 'LEGAL') {
+          sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        } else if (sKey === 'TEMPLATES') {
+          sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        }
+        restoredCount++;
+      } else {
+        // Тир 3: встроенный резерв скрипта
+        initSingleSheetByKey_(sheet, sKey);
+        restoredCount++;
+        usedSource = 'Встроенный резерв initSingleSheetByKey_';
+      }
     }
 
     renameSheetsToRussianStandard();
     sortSheetsCanonically();
-    autoFormatAllSheetsInteractive();
+    autoFormatAllSheetsSilent_();
 
-    ui.alert("✅ Восстановление завершено", "Успешно актуализировано листов CRM: " + restoredCount + " из masterSeedContent.js через Cloud API.", ui.ButtonSet.OK);
+    ui.alert("✅ Восстановление завершено", "Успешно актуализировано листов CRM: " + restoredCount + ".\nИсточник данных: " + usedSource + ".", ui.ButtonSet.OK);
   } catch (err) {
-    ui.alert("Сбой восстановления", "Не удалось связаться с Cloud API: " + err.message, ui.ButtonSet.OK);
+    ui.alert("Сбой восстановления", "Ошибка при восстановлении листов: " + err.message, ui.ButtonSet.OK);
   }
 }
 
@@ -3281,9 +3434,9 @@ function createDriveSnapshotInteractive() {
     SpreadsheetApp.getActive().toast("Сбор данных и создание слепка в Google Drive...", "☁️ Слепок Drive", 4);
     var targetFolder = getOrCreateDriveSnapshotFolder_();
     var payload = collectAllSheetsPayload_();
-    var timestampStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMdd_HHmmss');
+    var timestampStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'ddMMyyyyHHmm');
     var humanDate = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd.MM.yyyy, HH:mm:ss');
-    var fileName = 'Слепок_Базы_' + timestampStr + '.json';
+    var fileName = timestampStr + '_Слепок_Базы_Данных_Villa_Turaman.json';
 
     var fileContent = JSON.stringify({
       version: 1,
@@ -3445,20 +3598,30 @@ function restoreFromDriveSnapshotFileId_(fileId) {
   for (var i = 0; i < sheetMapping.length; i++) {
     var item = sheetMapping[i];
     if (item.rows && item.rows.length > 0) {
+      var cfg = VILLA_SHEETS_CONFIG[item.key];
+      var targetSheetName = cfg.name || cfg.canonicalName || item.key;
       var sheet = findSheetByConfigKey(ss, item.key);
       if (!sheet) {
-        var cfg = VILLA_SHEETS_CONFIG[item.key];
-        sheet = ss.insertSheet(cfg.canonicalName);
+        sheet = ss.insertSheet(targetSheetName);
       }
+      var maxCols = 0;
+      for (var r = 0; r < item.rows.length; r++) {
+        if (item.rows[r].length > maxCols) maxCols = item.rows[r].length;
+      }
+      var rectRows = item.rows.map(function(row) {
+        var copy = row.slice();
+        while (copy.length < maxCols) copy.push('');
+        return copy;
+      });
       sheet.clearContents();
-      sheet.getRange(1, 1, item.rows.length, item.rows[0].length).setValues(item.rows);
+      sheet.getRange(1, 1, rectRows.length, maxCols).setValues(rectRows);
       restored++;
     }
   }
 
   renameSheetsToRussianStandard();
   sortSheetsCanonically();
-  autoFormatAllSheetsInteractive();
+  autoFormatAllSheetsSilent_();
 
   return "Успешно восстановлено листов: " + restored + " из слепка " + file.getName();
 }
@@ -3512,8 +3675,26 @@ function commitMasterSeedToGitHubInteractive() {
 
   try {
     SpreadsheetApp.getActive().toast("Сбор данных и генерация masterSeedContent.js...", "🐙 GitHub Commit", 4);
-    var payload = collectAllSheetsPayload_();
-    var codeContent = 'export const masterSeedContent = ' + JSON.stringify(payload, null, 2) + ';\nexport default masterSeedContent;\n';
+    var rawSheets = {
+      HOME: payload.homeRows,
+      GALLERY: payload.galleryRows,
+      LEGAL: payload.legalRows,
+      ACCESS: payload.accessRows,
+      TEMPLATES: payload.templatesRows,
+      SETTINGS: payload.settingsRows,
+      TASKS: payload.tasksRows,
+      KNOWLEDGE_GRAPH: payload.knowledgeGraphRows,
+      ACCOUNTS: payload.accountsRows,
+      SERVICES: payload.productsRows,
+      GUIDES: payload.coursesRows,
+      BOOKINGS: payload.bookingsRows,
+      CALENDAR: payload.calendarRows,
+      ORDERS: payload.ordersRows,
+      GUIDE_ACCESS: payload.guideAccessRows
+    };
+    var codeContent = 'export const MASTER_RAW_SHEETS = ' + JSON.stringify(rawSheets, null, 2) + ';\n\n' +
+      'export const masterSeedContent = ' + JSON.stringify(payload, null, 2) + ';\n\n' +
+      'export default masterSeedContent;\n';
     var encodedContent = Utilities.base64Encode(codeContent, Utilities.Charset.UTF_8);
     var commitMessage = 'feat: фиксация базы данных из Google Таблицы [' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd.MM.yyyy HH:mm:ss') + ']';
 

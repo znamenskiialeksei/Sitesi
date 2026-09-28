@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 00:25 | ПЛАН: 270920260015 Синхронизация translations.md | TAG: VILLA-LIVE-SYNC-ALIASES-270920260025]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:26 | ПЛАН: 270920260126 Исправление синхронизации шаблонов.md | TAG: VILLA-SYNC-TEMPLATES-FIX-270920260126]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 28.09.2026 14:15 | ПЛАН: 280920261415 ПЛАН Комплексная модернизация экосистемы.md | TAG: VILLA-FULL-ECOSYSTEM-UPGRADE-280920261415]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 28.09.2026 19:40 | ПЛАН: 280920261940 ПЛАН 13 колонок ACCOUNTS и восстановление.md | TAG: VILLA-GUIDES-RANGE-STATUS-280920261940]
 // ==============================================================================
 // УНИВЕРСАЛЬНЫЙ МОДУЛЬ СИНХРОНИЗАЦИИ ЖИВОГО КОНТЕНТА ИЗ GOOGLE SHEETS
 // Файл: utils/liveContentSync.js
@@ -208,7 +208,7 @@ export async function fetchLiveContentFromGoogleSheets() {
     safeGet('LEGAL', 'A:G'),
     safeGet('TEMPLATES', 'A:G'),
     safeGet('SERVICES', 'A:R'),
-    safeGet('GUIDES', 'A:R'),
+    safeGet('GUIDES', 'A:S'),
     safeGet('GALLERY', 'A:L')
   ]);
 
@@ -523,6 +523,7 @@ export function processRawRowsToContent({
   // 5. Каталог услуг [SERVICES]
   const parseStatusFlag = (val, defaultVal = true) => {
     if (val === undefined || val === null || val === '') return defaultVal;
+    if (typeof val === 'boolean') return val;
     const s = String(val).trim().toLowerCase();
     if (s === 'выкл' || s === 'нет' || s === 'false' || s === 'off' || s === '0' || s === '-') return false;
     if (s === 'вкл' || s === 'да' || s === 'true' || s === 'on' || s === '1' || s === '+' || s === 'active') return true;

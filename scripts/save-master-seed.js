@@ -255,11 +255,11 @@ async function saveMasterSeed() {
     : (existingSeed.MASTER_SERVICES_ROWS || []);
 
   // 6. Выгрузка листа GUIDES [Видео-путеводители]
-  const rawGuides = await safeFetchRows('GUIDES', 'A:R');
+  const rawGuides = await safeFetchRows('GUIDES', 'A:S');
   const masterGuidesRows = rawGuides.length > 1
     ? rawGuides.slice(1).map((r) => {
         const row = [];
-        for (let i = 0; i < 18; i++) {
+        for (let i = 0; i < 19; i++) {
           row.push((r[i] || '').toString().trim());
         }
         return row;
@@ -314,13 +314,17 @@ async function saveMasterSeed() {
       })
     : (existingSeed.MASTER_TASKS_ROWS || []);
 
-  // 10. Выгрузка листа ACCOUNTS [👤 Гостевые аккаунты - Лист 9]
-  const rawAccounts = await safeFetchRows('ACCOUNTS', 'A:G');
+  // 10. Выгрузка листа ACCOUNTS [👤 Гостевые аккаунты - Лист 9: 13 колонок с UID]
+  const rawAccounts = await safeFetchRows('ACCOUNTS', 'A:M');
   const masterAccountsRows = rawAccounts.length > 1
-    ? rawAccounts.slice(1).map((r) => {
+    ? rawAccounts.slice(1).map((r, idx) => {
         const row = [];
-        for (let i = 0; i < 7; i++) {
+        for (let i = 0; i < 13; i++) {
           row.push((r[i] || '').toString().trim());
+        }
+        // Защита: гарантируем наличие неизменяемого UID в Колонке M
+        if (!row[12]) {
+          row[12] = 'VT-GUEST-' + (1000 + idx);
         }
         return row;
       })
@@ -521,6 +525,24 @@ const MASTER_TASKS_ROWS = ${JSON.stringify(masterTasksRows, null, 2)};
 
 const MASTER_KNOWLEDGE_GRAPH_ROWS = ${JSON.stringify(masterKnowledgeGraphRows, null, 2)};
 
+const MASTER_RAW_SHEETS = {
+  HOME: MASTER_HOME_ROWS,
+  SETTINGS: MASTER_SETTINGS_ROWS,
+  LEGAL: MASTER_LEGAL_ROWS,
+  TEMPLATES: MASTER_TEMPLATES_ROWS,
+  SERVICES: MASTER_SERVICES_ROWS,
+  GUIDES: MASTER_GUIDES_ROWS,
+  GALLERY: MASTER_GALLERY_ROWS,
+  CALENDAR: MASTER_CALENDAR_ROWS,
+  BOOKINGS: MASTER_BOOKINGS_ROWS,
+  ACCOUNTS: MASTER_ACCOUNTS_ROWS,
+  ORDERS: MASTER_ORDERS_ROWS,
+  ACCESS: MASTER_ACCESS_ROWS,
+  TASKS: MASTER_TASKS_ROWS,
+  KNOWLEDGE_GRAPH: MASTER_KNOWLEDGE_GRAPH_ROWS,
+  GUIDE_ACCESS: MASTER_GUIDE_ACCESS_ROWS
+};
+
 module.exports = {
   MASTER_ABOUT_SECTIONS,
   MASTER_HOME_MAP,
@@ -539,6 +561,7 @@ module.exports = {
   MASTER_GUIDE_ACCESS_ROWS,
   MASTER_TASKS_ROWS,
   MASTER_KNOWLEDGE_GRAPH_ROWS,
+  MASTER_RAW_SHEETS,
   buildHomeDerivedCollections
 };
 `;

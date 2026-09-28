@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 20:45 | TAG: VILLA-CONTENT-API-270920262045]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 28.09.2026 14:15 | ПЛАН: 280920261415 ПЛАН Комплексная модернизация экосистемы.md | TAG: VILLA-FULL-ECOSYSTEM-UPGRADE-280920261415]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 28.09.2026 14:15 | ПЛАН: 280920261415 ПЛАН Комплексная модернизация экосистемы.md | TAG: VILLA-FULL-ECOSYSTEM-UPGRADE-280920261415]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 28.09.2026 19:40 | ПЛАН: 280920261940 ПЛАН 13 колонок ACCOUNTS и восстановление.md | TAG: VILLA-RAW-SHEETS-API-280920261940]
 // ==============================================================================
 // СЕРВЕРНЫЙ ЭНДПОИНТ ДИНАМИЧЕСКОГО КОНТЕНТА GOOGLE SHEETS
 // Файл: pages/api/content.js
@@ -12,6 +12,7 @@
 import fs from 'fs';
 import path from 'path';
 import { getOrFetchLiveContent, clearLiveContentCache, updateLiveContentFromPayload } from '../../utils/liveContentSync';
+import { MASTER_RAW_SHEETS } from '../../utils/masterSeedContent';
 
 /**
  * Сброс кэша в памяти сервера для обратной совместимости
@@ -47,6 +48,7 @@ export default async function handler(req, res) {
       return res.status(200).json({
         success: true,
         sheet: targetSheet,
+        rawSheets: MASTER_RAW_SHEETS,
         data: contentData,
         timestamp: new Date().toISOString()
       });

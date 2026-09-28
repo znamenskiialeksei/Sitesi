@@ -4,7 +4,7 @@
 // Назначение: Эталонный источник истины [SSOT] для всех 15 листов Google Таблиц.
 // Защищен от случайного затирания. Обеспечивает 100% самоисцеление при удалении листов.
 // Сгенерировано автоматически через scripts/save-master-seed.js
-// Дата фиксации: 2026-09-28T03:06:23.391Z
+// Дата фиксации: 2026-09-28T12:19:40.679Z
 // 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
@@ -46,8 +46,8 @@ const MASTER_ABOUT_SECTIONS = [
     },
     "text": {
       "ru": "Приватный бассейн с соленой водой: чаша 4×9 метров [площадь 36 кв. м], постоянная глубина 150 см. Без запаха хлора. Доступен с 1 мая по 1 ноября. Чистка в день заселения и каждые 7 дней. Подсветка бассейна: 20:00 - 01:00.\nУличное приватное джакузи: на 4 персоны, автоматический цикл [15 минут работы каждые 45 минут в период 10:00 - 17:00]. Подсветка джакузи: 20:00 - 01:00. Сезон: 1 мая - 1 ноября.\nОсвещение территории: автоматическое [20:00 - 01:00 и 04:00 - 06:00].\nПарковка: бесплатная закрытая частная парковка на территории на 2 авто.\nОткрытые зоны отдыха: огороженный сад, барбекю [BBQ], крыльцо с кофейными столиками, обеденный стол на 8 мест, шезлонги и летний душ.",
-      "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor seating areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
-      "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava oturma alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır."
+      "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor recreation areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
+      "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava dinlenme alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır."
     }
   },
   {
@@ -59,8 +59,8 @@ const MASTER_ABOUT_SECTIONS = [
     },
     "text": {
       "ru": "Закон Турции № 7464 о краткосрочной аренде: обязательный договор аренды виллы с описью имущества при заселении.\nРегистрация в системе учета населения KBS: обязательное предоставление паспортов всех проживающих. Размещение незарегистрированных лиц строго запрещено.\nБезопасность дома: внешнее видеонаблюдение по периметру, детекторы дыма во всех спальнях и гостиной, огнетушитель, аптечка первой помощи.\nДоступная среда: выделенная парковка для инвалидов, ровный освещенный вход без ступеней, дверь от 81 см, подъемник для бассейна и джакузи.\nПолитика отмены: менее 28 ночей - Негибкие, от 28 ночей - Строгие. Опция невозвратного тарифа со скидкой 10% за 60 дней.",
-      "en": "Turkish Short-Term Rental Law No. 7464: A mandatory villa rental agreement with an inventory of the property is required upon arrival.\nKBS Population Registration System: Passports of all residents are required. Unregistered guests are strictly prohibited.\nHome Security: External perimeter video surveillance, smoke detectors in all bedrooms and the living room, fire extinguisher, and first aid kit.\nAccessibility: Dedicated disabled parking, level, illuminated, step-free entrance, door height of at least 81 cm, pool and jacuzzi lift.\nCancellation Policy: Less than 28 nights - Inflexible, 28 nights or more - Strict. Non-refundable rate option with a 10% discount for 60 days.",
-      "tr": "Türk Kısa Süreli Kiralama Kanunu No. 7464: Varışta, mülkün envanterini içeren zorunlu bir villa kiralama sözleşmesi gereklidir.\nKBS Nüfus Kayıt Sistemi: Tüm sakinlerin pasaportları gereklidir. Kayıtlı olmayan misafirler kesinlikle yasaktır.\nEv Güvenliği: Dış çevre video gözetimi, tüm yatak odalarında ve oturma odasında duman dedektörleri, yangın söndürücü ve ilk yardım çantası.\nErişilebilirlik: Engelliler için özel park yeri, düz, aydınlatmalı, basamaksız giriş, en az 81 cm kapı yüksekliği, havuz ve jakuzi asansörü.\nİptal Politikası: 28 geceden az - Esnek değil, 28 gece veya daha fazla - Kesinlikle. 60 gün için %10 indirimli, iade edilmeyen fiyat seçeneği."
+      "en": "Turkish Short-Term Rental Law No. 7464: A mandatory villa rental agreement with an inventory of the property is required upon arrival.\nKBS Population Registration System: Passports of all residents are required. Unregistered occupants are strictly prohibited.\nHome Security: External perimeter video surveillance, smoke detectors in all bedrooms and the living room, fire extinguisher, and first aid kit.\nAccessibility: Dedicated disabled parking, level, illuminated, step-free entrance, door height of at least 81 cm, pool and jacuzzi lift.\nCancellation Policy: Less than 28 nights - Inflexible, 28 nights or more - Strict. Non-refundable rate option with a 10% discount for 60 days.",
+      "tr": "Türk Kısa Süreli Kiralama Kanunu No. 7464: Varışta, mülkün envanterini içeren zorunlu bir villa kiralama sözleşmesi gereklidir.\nKBS Nüfus Kayıt Sistemi: Tüm sakinlerin pasaportları gereklidir. Kayıt dışı sakinlerin konaklaması kesinlikle yasaktır.\nEv Güvenliği: Dış çevre video gözetimi, tüm yatak odalarında ve oturma odasında duman dedektörleri, yangın söndürücü ve ilk yardım çantası.\nErişilebilirlik: Engelliler için özel park yeri, düz, aydınlatmalı, basamaksız giriş, en az 81 cm kapı yüksekliği, havuz ve jakuzi asansörü.\nİptal Politikası: 28 geceden az - Esnek değil, 28 gece veya daha fazla - Kesinlikle. 60 gün için %10 indirimli, iade edilmeyen fiyat seçeneği."
     }
   },
   {
@@ -451,8 +451,8 @@ const MASTER_HOME_MAP = {
     "key": "about_sec_3_text",
     "desc": "Модальное окно: Раздел 3 Текст",
     "ru": "Приватный бассейн с соленой водой: чаша 4×9 метров [площадь 36 кв. м], постоянная глубина 150 см. Без запаха хлора. Доступен с 1 мая по 1 ноября. Чистка в день заселения и каждые 7 дней. Подсветка бассейна: 20:00 - 01:00.\nУличное приватное джакузи: на 4 персоны, автоматический цикл [15 минут работы каждые 45 минут в период 10:00 - 17:00]. Подсветка джакузи: 20:00 - 01:00. Сезон: 1 мая - 1 ноября.\nОсвещение территории: автоматическое [20:00 - 01:00 и 04:00 - 06:00].\nПарковка: бесплатная закрытая частная парковка на территории на 2 авто.\nОткрытые зоны отдыха: огороженный сад, барбекю [BBQ], крыльцо с кофейными столиками, обеденный стол на 8 мест, шезлонги и летний душ.",
-    "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor seating areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
-    "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava oturma alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır.",
+    "en": "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor recreation areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
+    "tr": "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava dinlenme alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır.",
     "media": "",
     "status": "Вкл",
     "enabled": true
@@ -473,8 +473,8 @@ const MASTER_HOME_MAP = {
     "key": "about_sec_4_text",
     "desc": "Модальное окно: Раздел 4 Текст",
     "ru": "Закон Турции № 7464 о краткосрочной аренде: обязательный договор аренды виллы с описью имущества при заселении.\nРегистрация в системе учета населения KBS: обязательное предоставление паспортов всех проживающих. Размещение незарегистрированных лиц строго запрещено.\nБезопасность дома: внешнее видеонаблюдение по периметру, детекторы дыма во всех спальнях и гостиной, огнетушитель, аптечка первой помощи.\nДоступная среда: выделенная парковка для инвалидов, ровный освещенный вход без ступеней, дверь от 81 см, подъемник для бассейна и джакузи.\nПолитика отмены: менее 28 ночей - Негибкие, от 28 ночей - Строгие. Опция невозвратного тарифа со скидкой 10% за 60 дней.",
-    "en": "Turkish Short-Term Rental Law No. 7464: A mandatory villa rental agreement with an inventory of the property is required upon arrival.\nKBS Population Registration System: Passports of all residents are required. Unregistered guests are strictly prohibited.\nHome Security: External perimeter video surveillance, smoke detectors in all bedrooms and the living room, fire extinguisher, and first aid kit.\nAccessibility: Dedicated disabled parking, level, illuminated, step-free entrance, door height of at least 81 cm, pool and jacuzzi lift.\nCancellation Policy: Less than 28 nights - Inflexible, 28 nights or more - Strict. Non-refundable rate option with a 10% discount for 60 days.",
-    "tr": "Türk Kısa Süreli Kiralama Kanunu No. 7464: Varışta, mülkün envanterini içeren zorunlu bir villa kiralama sözleşmesi gereklidir.\nKBS Nüfus Kayıt Sistemi: Tüm sakinlerin pasaportları gereklidir. Kayıtlı olmayan misafirler kesinlikle yasaktır.\nEv Güvenliği: Dış çevre video gözetimi, tüm yatak odalarında ve oturma odasında duman dedektörleri, yangın söndürücü ve ilk yardım çantası.\nErişilebilirlik: Engelliler için özel park yeri, düz, aydınlatmalı, basamaksız giriş, en az 81 cm kapı yüksekliği, havuz ve jakuzi asansörü.\nİptal Politikası: 28 geceden az - Esnek değil, 28 gece veya daha fazla - Kesinlikle. 60 gün için %10 indirimli, iade edilmeyen fiyat seçeneği.",
+    "en": "Turkish Short-Term Rental Law No. 7464: A mandatory villa rental agreement with an inventory of the property is required upon arrival.\nKBS Population Registration System: Passports of all residents are required. Unregistered occupants are strictly prohibited.\nHome Security: External perimeter video surveillance, smoke detectors in all bedrooms and the living room, fire extinguisher, and first aid kit.\nAccessibility: Dedicated disabled parking, level, illuminated, step-free entrance, door height of at least 81 cm, pool and jacuzzi lift.\nCancellation Policy: Less than 28 nights - Inflexible, 28 nights or more - Strict. Non-refundable rate option with a 10% discount for 60 days.",
+    "tr": "Türk Kısa Süreli Kiralama Kanunu No. 7464: Varışta, mülkün envanterini içeren zorunlu bir villa kiralama sözleşmesi gereklidir.\nKBS Nüfus Kayıt Sistemi: Tüm sakinlerin pasaportları gereklidir. Kayıt dışı sakinlerin konaklaması kesinlikle yasaktır.\nEv Güvenliği: Dış çevre video gözetimi, tüm yatak odalarında ve oturma odasında duman dedektörleri, yangın söndürücü ve ilk yardım çantası.\nErişilebilirlik: Engelliler için özel park yeri, düz, aydınlatmalı, basamaksız giriş, en az 81 cm kapı yüksekliği, havuz ve jakuzi asansörü.\nİptal Politikası: 28 geceden az - Esnek değil, 28 gece veya daha fazla - Kesinlikle. 60 gün için %10 indirimli, iade edilmeyen fiyat seçeneği.",
     "media": "",
     "status": "Вкл",
     "enabled": true
@@ -595,7 +595,7 @@ const MASTER_HOME_MAP = {
     "desc": "Спальня 2 [2 этаж] • King size + Single [3 места]",
     "ru": "Спальня 2 [2 этаж] • King size + Single [3 места]",
     "en": "Bedroom 2 [2nd floor] • King size + Single [3 beds]",
-    "tr": "Yatak Odası 2 [2. kat] • Çift kişilik yatak + Tek kişilik yatak [3 yatak]",
+    "tr": "Yatak Odası 2 [2. kat] • Çift kişilik + Tek kişilik [3 yatak]",
     "media": "https://drive.google.com/file/d/1ZDpJ3vhVPizIGd2RzIJtfCQgcD3IWF_F/view?usp=sharing",
     "status": "Вкл",
     "enabled": true
@@ -716,7 +716,7 @@ const MASTER_HOME_MAP = {
     "desc": "Основное удобство 1 на главной",
     "ru": "Приватный открытый бассейн 36 м²",
     "en": "Private outdoor pool 36 m²",
-    "tr": "Özel açık yüzme havuzu 36 m²",
+    "tr": "36 m²'lik özel açık yüzme havuzu",
     "media": "Waves",
     "status": "Вкл",
     "enabled": true
@@ -979,7 +979,7 @@ const MASTER_HOME_MAP = {
     "key": "amenity_cat3_item5",
     "desc": "Модальное окно: Категория 3 Пункт 5",
     "ru": "Полный комплект посуды и бокалов для вина",
-    "en": "A complete set of tableware and wine glasses",
+    "en": "A complete set of dishes and wine glasses",
     "tr": "Komple bir yemek takımı ve şarap kadehleri ​​seti.",
     "media": "Check",
     "status": "Вкл",
@@ -1013,7 +1013,7 @@ const MASTER_HOME_MAP = {
     "desc": "Модальное окно: Категория 4 Пункт 2",
     "ru": "Сплит-системы кондиционирования во всех спальнях",
     "en": "Split-system air conditioning in all bedrooms",
-    "tr": "Tüm yatak odalarında split sistem klima bulunmaktadır.",
+    "tr": "Tüm yatak odalarında split sistem klima mevcuttur.",
     "media": "Check",
     "status": "Вкл",
     "enabled": true
@@ -1287,7 +1287,7 @@ const MASTER_HOME_MAP = {
     "key": "location_badge",
     "desc": "Текст плашки GPS и расстояния до аэропорта",
     "ru": "GPS: 36.8336° N, 28.6439° E • 250м до центра • 11 км до пляжа Изтузу • 30 км до DLM",
-    "en": "GPS: 36.8336° N, 28.6439° E • 250m to the center • 11 km to Iztuzu beach • 30 km to DLM",
+    "en": "GPS: 36.8336° N, 28.6439° E • 250 m to the center • 11 km to Iztuzu beach • 30 km to DLM",
     "tr": "GPS: 36.8336° K, 28.6439° D • Merkeze 250 m • İztuzu plajına 11 km • DLM'ye 30 km",
     "media": "Navigation",
     "status": "Вкл",
@@ -1442,7 +1442,7 @@ const MASTER_HOME_MAP = {
     "desc": "Заголовок секции ориентиров",
     "ru": "14 географических ориентиров Дальяна",
     "en": "14 Geographical Landmarks of Dalyan",
-    "tr": "Dalyan'ın 14 Coğrafi Özelliği",
+    "tr": "Dalyan'ın 14 Coğrafi Yer İşareti",
     "media": "MapPin",
     "status": "Вкл",
     "enabled": true
@@ -1640,7 +1640,7 @@ const MASTER_HOME_MAP = {
     "desc": "Ориентир 14: Морской курортный город Мармарис",
     "ru": "Крупный морской порт и курортный город Мармарис: марины для суперяхт, набережная и шоппинг",
     "en": "The major seaport and resort town of Marmaris: superyacht marinas, a promenade, and shopping",
-    "tr": "Marmaris, önemli bir liman kenti ve tatil beldesidir: süper yat limanları, sahil şeridi ve alışveriş merkezleri bulunmaktadır.",
+    "tr": "Marmaris, önemli bir liman kenti ve tatil beldesidir: süper yat marinaları, sahil şeridi ve alışveriş merkezleri bulunmaktadır.",
     "media": "85 км|1 час 15 мин на авто|city|Эгейская Ривьера|Car",
     "status": "Вкл",
     "enabled": true
@@ -2498,7 +2498,7 @@ const MASTER_HOME_MAP = {
     "desc": "Кнопка показа отзывов",
     "ru": "Показать все 48 отзывов и критерии оценок",
     "en": "Show all 48 reviews and rating criteria",
-    "tr": "Tüm 48 yorumu ve değerlendirme kriterlerini göster",
+    "tr": "Tüm 48 yorumu ve derecelendirme kriterlerini göster",
     "media": "Star",
     "status": "Вкл",
     "enabled": true
@@ -2531,7 +2531,7 @@ const MASTER_HOME_MAP = {
     "desc": "Шаблон рейтинга отзывов",
     "ru": "Рейтинг гостей на основе",
     "en": "Guest rating based on",
-    "tr": "Konuk değerlendirmesi şu kriterlere dayanmaktadır:",
+    "tr": "Misafir değerlendirmesi şu kriterlere dayanmaktadır:",
     "media": "Star",
     "status": "Вкл",
     "enabled": true
@@ -2931,8 +2931,8 @@ const MASTER_HOME_ROWS = [
     "about_sec_3_text",
     "Модальное окно: Раздел 3 Текст",
     "Приватный бассейн с соленой водой: чаша 4×9 метров [площадь 36 кв. м], постоянная глубина 150 см. Без запаха хлора. Доступен с 1 мая по 1 ноября. Чистка в день заселения и каждые 7 дней. Подсветка бассейна: 20:00 - 01:00.\nУличное приватное джакузи: на 4 персоны, автоматический цикл [15 минут работы каждые 45 минут в период 10:00 - 17:00]. Подсветка джакузи: 20:00 - 01:00. Сезон: 1 мая - 1 ноября.\nОсвещение территории: автоматическое [20:00 - 01:00 и 04:00 - 06:00].\nПарковка: бесплатная закрытая частная парковка на территории на 2 авто.\nОткрытые зоны отдыха: огороженный сад, барбекю [BBQ], крыльцо с кофейными столиками, обеденный стол на 8 мест, шезлонги и летний душ.",
-    "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor seating areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
-    "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava oturma alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır.",
+    "Private saltwater pool: 4x9 meter pool (36 sq. m), constant depth of 150 cm. No chlorine odor. Available from May 1st to November 1st. Cleaning on arrival day and every 7 days. Pool lighting: 8:00 PM - 1:00 AM.\nOutdoor private jacuzzi: for 4 people, automatic cycle [15-minute run every 45 minutes from 10:00 AM - 5:00 PM]. Jacuzzi lighting: 8:00 PM - 1:00 AM. Season: May 1st - November 1st.\nGrounds lighting: automatic [8:00 PM - 1:00 AM and 4:00 AM - 6:00 AM].\nParking: Free private enclosed parking on site for 2 cars. Outdoor recreation areas include a fenced garden, BBQ, porch with coffee tables, 8-seat dining table, sun loungers and an outdoor shower.",
+    "Özel tuzlu su havuzu: 4x9 metre havuz (36 m²), 150 cm sabit derinlik. Klor kokusu yok. 1 Mayıs - 1 Kasım tarihleri ​​arasında kullanılabilir. Giriş gününde ve her 7 günde bir temizlik yapılır. Havuz aydınlatması: 20:00 - 01:00.\nÖzel açık hava jakuzisi: 4 kişilik, otomatik döngü [10:00 - 17:00 arası her 45 dakikada bir 15 dakikalık çalışma]. Jakuzi aydınlatması: 20:00 - 01:00. Sezon: 1 Mayıs - 1 Kasım.\nBahçe aydınlatması: otomatik [20:00 - 01:00 ve 04:00 - 06:00].\nOtopark: Tesis bünyesinde 2 araçlık ücretsiz özel kapalı otopark. Açık hava dinlenme alanları arasında çitli bahçe, barbekü, sehpalı veranda, 8 kişilik yemek masası, şezlonglar ve açık duş bulunmaktadır.",
     "",
     "Вкл"
   ],
@@ -2951,8 +2951,8 @@ const MASTER_HOME_ROWS = [
     "about_sec_4_text",
     "Модальное окно: Раздел 4 Текст",
     "Закон Турции № 7464 о краткосрочной аренде: обязательный договор аренды виллы с описью имущества при заселении.\nРегистрация в системе учета населения KBS: обязательное предоставление паспортов всех проживающих. Размещение незарегистрированных лиц строго запрещено.\nБезопасность дома: внешнее видеонаблюдение по периметру, детекторы дыма во всех спальнях и гостиной, огнетушитель, аптечка первой помощи.\nДоступная среда: выделенная парковка для инвалидов, ровный освещенный вход без ступеней, дверь от 81 см, подъемник для бассейна и джакузи.\nПолитика отмены: менее 28 ночей - Негибкие, от 28 ночей - Строгие. Опция невозвратного тарифа со скидкой 10% за 60 дней.",
-    "Turkish Short-Term Rental Law No. 7464: A mandatory villa rental agreement with an inventory of the property is required upon arrival.\nKBS Population Registration System: Passports of all residents are required. Unregistered guests are strictly prohibited.\nHome Security: External perimeter video surveillance, smoke detectors in all bedrooms and the living room, fire extinguisher, and first aid kit.\nAccessibility: Dedicated disabled parking, level, illuminated, step-free entrance, door height of at least 81 cm, pool and jacuzzi lift.\nCancellation Policy: Less than 28 nights - Inflexible, 28 nights or more - Strict. Non-refundable rate option with a 10% discount for 60 days.",
-    "Türk Kısa Süreli Kiralama Kanunu No. 7464: Varışta, mülkün envanterini içeren zorunlu bir villa kiralama sözleşmesi gereklidir.\nKBS Nüfus Kayıt Sistemi: Tüm sakinlerin pasaportları gereklidir. Kayıtlı olmayan misafirler kesinlikle yasaktır.\nEv Güvenliği: Dış çevre video gözetimi, tüm yatak odalarında ve oturma odasında duman dedektörleri, yangın söndürücü ve ilk yardım çantası.\nErişilebilirlik: Engelliler için özel park yeri, düz, aydınlatmalı, basamaksız giriş, en az 81 cm kapı yüksekliği, havuz ve jakuzi asansörü.\nİptal Politikası: 28 geceden az - Esnek değil, 28 gece veya daha fazla - Kesinlikle. 60 gün için %10 indirimli, iade edilmeyen fiyat seçeneği.",
+    "Turkish Short-Term Rental Law No. 7464: A mandatory villa rental agreement with an inventory of the property is required upon arrival.\nKBS Population Registration System: Passports of all residents are required. Unregistered occupants are strictly prohibited.\nHome Security: External perimeter video surveillance, smoke detectors in all bedrooms and the living room, fire extinguisher, and first aid kit.\nAccessibility: Dedicated disabled parking, level, illuminated, step-free entrance, door height of at least 81 cm, pool and jacuzzi lift.\nCancellation Policy: Less than 28 nights - Inflexible, 28 nights or more - Strict. Non-refundable rate option with a 10% discount for 60 days.",
+    "Türk Kısa Süreli Kiralama Kanunu No. 7464: Varışta, mülkün envanterini içeren zorunlu bir villa kiralama sözleşmesi gereklidir.\nKBS Nüfus Kayıt Sistemi: Tüm sakinlerin pasaportları gereklidir. Kayıt dışı sakinlerin konaklaması kesinlikle yasaktır.\nEv Güvenliği: Dış çevre video gözetimi, tüm yatak odalarında ve oturma odasında duman dedektörleri, yangın söndürücü ve ilk yardım çantası.\nErişilebilirlik: Engelliler için özel park yeri, düz, aydınlatmalı, basamaksız giriş, en az 81 cm kapı yüksekliği, havuz ve jakuzi asansörü.\nİptal Politikası: 28 geceden az - Esnek değil, 28 gece veya daha fazla - Kesinlikle. 60 gün için %10 indirimli, iade edilmeyen fiyat seçeneği.",
     "",
     "Вкл"
   ],
@@ -3062,7 +3062,7 @@ const MASTER_HOME_ROWS = [
     "Спальня 2 [2 этаж] • King size + Single [3 места]",
     "Спальня 2 [2 этаж] • King size + Single [3 места]",
     "Bedroom 2 [2nd floor] • King size + Single [3 beds]",
-    "Yatak Odası 2 [2. kat] • Çift kişilik yatak + Tek kişilik yatak [3 yatak]",
+    "Yatak Odası 2 [2. kat] • Çift kişilik + Tek kişilik [3 yatak]",
     "https://drive.google.com/file/d/1ZDpJ3vhVPizIGd2RzIJtfCQgcD3IWF_F/view?usp=sharing",
     "Вкл"
   ],
@@ -3172,7 +3172,7 @@ const MASTER_HOME_ROWS = [
     "Основное удобство 1 на главной",
     "Приватный открытый бассейн 36 м²",
     "Private outdoor pool 36 m²",
-    "Özel açık yüzme havuzu 36 m²",
+    "36 m²'lik özel açık yüzme havuzu",
     "Waves",
     "Вкл"
   ],
@@ -3411,7 +3411,7 @@ const MASTER_HOME_ROWS = [
     "amenity_cat3_item5",
     "Модальное окно: Категория 3 Пункт 5",
     "Полный комплект посуды и бокалов для вина",
-    "A complete set of tableware and wine glasses",
+    "A complete set of dishes and wine glasses",
     "Komple bir yemek takımı ve şarap kadehleri ​​seti.",
     "Check",
     "Вкл"
@@ -3442,7 +3442,7 @@ const MASTER_HOME_ROWS = [
     "Модальное окно: Категория 4 Пункт 2",
     "Сплит-системы кондиционирования во всех спальнях",
     "Split-system air conditioning in all bedrooms",
-    "Tüm yatak odalarında split sistem klima bulunmaktadır.",
+    "Tüm yatak odalarında split sistem klima mevcuttur.",
     "Check",
     "Вкл"
   ],
@@ -3691,7 +3691,7 @@ const MASTER_HOME_ROWS = [
     "location_badge",
     "Текст плашки GPS и расстояния до аэропорта",
     "GPS: 36.8336° N, 28.6439° E • 250м до центра • 11 км до пляжа Изтузу • 30 км до DLM",
-    "GPS: 36.8336° N, 28.6439° E • 250m to the center • 11 km to Iztuzu beach • 30 km to DLM",
+    "GPS: 36.8336° N, 28.6439° E • 250 m to the center • 11 km to Iztuzu beach • 30 km to DLM",
     "GPS: 36.8336° K, 28.6439° D • Merkeze 250 m • İztuzu plajına 11 km • DLM'ye 30 km",
     "Navigation",
     "Вкл"
@@ -3832,7 +3832,7 @@ const MASTER_HOME_ROWS = [
     "Заголовок секции ориентиров",
     "14 географических ориентиров Дальяна",
     "14 Geographical Landmarks of Dalyan",
-    "Dalyan'ın 14 Coğrafi Özelliği",
+    "Dalyan'ın 14 Coğrafi Yer İşareti",
     "MapPin",
     "Вкл"
   ],
@@ -4012,7 +4012,7 @@ const MASTER_HOME_ROWS = [
     "Ориентир 14: Морской курортный город Мармарис",
     "Крупный морской порт и курортный город Мармарис: марины для суперяхт, набережная и шоппинг",
     "The major seaport and resort town of Marmaris: superyacht marinas, a promenade, and shopping",
-    "Marmaris, önemli bir liman kenti ve tatil beldesidir: süper yat limanları, sahil şeridi ve alışveriş merkezleri bulunmaktadır.",
+    "Marmaris, önemli bir liman kenti ve tatil beldesidir: süper yat marinaları, sahil şeridi ve alışveriş merkezleri bulunmaktadır.",
     "85 км|1 час 15 мин на авто|city|Эгейская Ривьера|Car",
     "Вкл"
   ],
@@ -4792,7 +4792,7 @@ const MASTER_HOME_ROWS = [
     "Кнопка показа отзывов",
     "Показать все 48 отзывов и критерии оценок",
     "Show all 48 reviews and rating criteria",
-    "Tüm 48 yorumu ve değerlendirme kriterlerini göster",
+    "Tüm 48 yorumu ve derecelendirme kriterlerini göster",
     "Star",
     "Вкл"
   ],
@@ -4822,7 +4822,7 @@ const MASTER_HOME_ROWS = [
     "Шаблон рейтинга отзывов",
     "Рейтинг гостей на основе",
     "Guest rating based on",
-    "Konuk değerlendirmesi şu kriterlere dayanmaktadır:",
+    "Misafir değerlendirmesi şu kriterlere dayanmaktadır:",
     "Star",
     "Вкл"
   ],
@@ -4937,7 +4937,7 @@ const MASTER_SETTINGS_ROWS = [
   [
     "СИСТЕМА",
     "vercel_url",
-    "https://sitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app",
+    "https://www.villaturaman.com",
     "Боевой URL платформы на Vercel для вебхуков и ревалидации",
     "Синхронизация"
   ],
@@ -5162,7 +5162,7 @@ const MASTER_SETTINGS_ROWS = [
     "МАТРИЦА_ЛИСТОВ",
     "🏠 Главная витрина",
     "РАЗРЕШЕН [ВСЕ]",
-    "Лист содержит главную витрину: 9 блоков с плейсхолдерами, спецификации [10 гостей, 4 спальни], статус Superhost и параметры спален 1-4.",
+    "Лист содержит главную витрину: 16 блоков с плейсхолдерами, спецификации [10 гостей, 4 спальни], статус Superhost и параметры спален 1-4.",
     "Витрина"
   ],
   [
@@ -5174,20 +5174,6 @@ const MASTER_SETTINGS_ROWS = [
   ],
   [
     "МАТРИЦА_ЛИСТОВ",
-    "🛎️ Дополнительные услуги",
-    "РАЗРЕШЕН [ВСЕ]",
-    "Лист содержит каталог платных сервисов: трансферы из аэропорта Даламан DLM, персональный шеф-повар, массажи, прогулка на лодке, барбекю, SUP-борды.",
-    "Каталог услуг"
-  ],
-  [
-    "МАТРИЦА_ЛИСТОВ",
-    "🗺️ Видео-путеводители",
-    "РАЗРЕШЕН [ВСЕ]",
-    "Лист содержит цифровые гиды по Дальяну, пляжу Изтузу, озеру Кёйджегиз, ресторанам и античному Кауносу.",
-    "Каталог гидов"
-  ],
-  [
-    "МАТРИЦА_ЛИСТОВ",
     "⚖️ Юридические документы",
     "РАЗРЕШЕН [ВСЕ]",
     "Лист содержит официальный договор аренды, политику KVKK, реквизиты VKN 9991120181.",
@@ -5195,38 +5181,10 @@ const MASTER_SETTINGS_ROWS = [
   ],
   [
     "МАТРИЦА_ЛИСТОВ",
-    "📋 Заявки и Бронирования",
-    "РАЗРЕШЕН [ВСЕ]",
-    "Лист фиксирует статус заявок гостей, даты заезда и выезда, число гостей и статус оплаты.",
-    "Операции CRM"
-  ],
-  [
-    "МАТРИЦА_ЛИСТОВ",
-    "📅 Календарь и Тарифы",
-    "РАЗРЕШЕН [ВСЕ]",
-    "Лист содержит актуальную сетку занятости дат и тарифные ставки.",
-    "Календарь"
-  ],
-  [
-    "МАТРИЦА_ЛИСТОВ",
-    "👤 Гостевые аккаунты",
+    "🔑 Управление доступом",
     "РАЗРЕШЕН [КОНСЬЕРЖ]",
-    "Лист содержит реестр зарегистрированных гостей и статусы блокировок.",
-    "Гостевой сервис"
-  ],
-  [
-    "МАТРИЦА_ЛИСТОВ",
-    "💳 Заказы услуг и гидов",
-    "РАЗРЕШЕН [ВСЕ]",
-    "Лист содержит историю заказов доп. услуг и путеводителей.",
-    "Заказы"
-  ],
-  [
-    "МАТРИЦА_ЛИСТОВ",
-    "🎟️ Доступы к путеводителям",
-    "РАЗРЕШЕН [ВСЕ]",
-    "Лист персональных доступов к медиа-материалам.",
-    "Доступы"
+    "Лист физических доступов к вилле: Wi-Fi, смарт-замки, сейфы, ворота, инструкции заселения.",
+    "Безопасность"
   ],
   [
     "МАТРИЦА_ЛИСТОВ",
@@ -5234,6 +5192,13 @@ const MASTER_SETTINGS_ROWS = [
     "РАЗРЕШЕН [ВСЕ]",
     "Лист содержит 14 профессиональных шаблонов общения на RU, EN, TR.",
     "Шаблоны коммуникации"
+  ],
+  [
+    "МАТРИЦА_ЛИСТОВ",
+    "⚙️ Системные настройки ИИ Агентов",
+    "РАЗРЕШЕН [ВСЕ]",
+    "Лист управления системой ИИ, генеральными директивами ролей, словарем переменных и матрицей прав доступа.",
+    "Центр управления ИИ"
   ],
   [
     "МАТРИЦА_ЛИСТОВ",
@@ -5251,10 +5216,52 @@ const MASTER_SETTINGS_ROWS = [
   ],
   [
     "МАТРИЦА_ЛИСТОВ",
-    "⚙️ Системные настройки ИИ Агентов",
+    "👤 Гостевые аккаунты",
+    "РАЗРЕШЕН [КОНСЬЕРЖ]",
+    "Лист содержит реестр зарегистрированных гостей и статусы блокировок.",
+    "Гостевой сервис"
+  ],
+  [
+    "МАТРИЦА_ЛИСТОВ",
+    "🛎️ Дополнительные услуги",
     "РАЗРЕШЕН [ВСЕ]",
-    "Лист управления системой ИИ, генеральными директивами ролей, словарем переменных и матрицей прав доступа.",
-    "Центр управления ИИ"
+    "Лист содержит каталог платных сервисов: трансферы из аэропорта Даламан DLM, персональный шеф-повар, массажи, прогулка на лодке, барбекю, SUP-борды.",
+    "Каталог услуг"
+  ],
+  [
+    "МАТРИЦА_ЛИСТОВ",
+    "🗺️ Видео-путеводители",
+    "РАЗРЕШЕН [ВСЕ]",
+    "Лист содержит цифровые гиды по Дальяну, пляжу Изтузу, озеру Кёйджегиз, ресторанам и античному Кауносу.",
+    "Каталог гидов"
+  ],
+  [
+    "МАТРИЦА_ЛИСТОВ",
+    "📋 Заявки и Бронирования",
+    "РАЗРЕШЕН [ВСЕ]",
+    "Лист фиксирует статус заявок гостей, даты заезда и выезда, число гостей и статус оплаты.",
+    "Операции CRM"
+  ],
+  [
+    "МАТРИЦА_ЛИСТОВ",
+    "📅 Календарь и Тарифы",
+    "РАЗРЕШЕН [ВСЕ]",
+    "Лист содержит актуальную сетку занятости дат и тарифные ставки.",
+    "Календарь"
+  ],
+  [
+    "МАТРИЦА_ЛИСТОВ",
+    "💳 Заказы услуг и гидов",
+    "РАЗРЕШЕН [ВСЕ]",
+    "Лист содержит историю заказов доп. услуг и путеводителей.",
+    "Заказы"
+  ],
+  [
+    "МАТРИЦА_ЛИСТОВ",
+    "🎟️ Доступы к путеводителям",
+    "РАЗРЕШЕН [ВСЕ]",
+    "Лист персональных цифровых доступов к медиа-материалам и видео-путеводителям.",
+    "Доступы"
   ],
   [
     "ДИЗАЙН_И_СТИЛЬ",
@@ -5617,7 +5624,7 @@ const MASTER_GALLERY_ROWS = [
     "https://drive.google.com/file/d/1Cnee0dwwTSLl8VfklxXyDgxbp55S4pWJ/view?usp=sharing",
     "Первый этаж: 1 двуспальная кровать Queen Size + 1 односпальная кровать, персональная ванная с душевой кабиной, кондиционер. Queen Size + Single [3 места]",
     "First floor: 1 queen size double bed + 1 single bed, private bathroom with shower, air conditioning. Queen Size + Single [3 beds]",
-    "Birinci kat: 1 adet çift kişilik yatak + 1 adet tek kişilik yatak, duşlu özel banyo, klima. Çift kişilik + Tek kişilik [3 yatak]"
+    "Birinci kat: 1 adet çift kişilik yatak + 1 adet tek kişilik yatak, duşlu özel banyo, klima. Çift kişilik yatak + Tek kişilik yatak [3 yatak]"
   ],
   [
     "gal-13",
@@ -5725,9 +5732,9 @@ const MASTER_SERVICES_ROWS = [
     "VIP-трансфер из аэропорта Даламан [DLM]",
     "Комфортабельный Mercedes Vito с кондиционером и напитками",
     "VIP Transfer from Dalaman Airport [DLM]",
-    "Comfortable Mercedes Vito with air conditioning and drinks",
+    "A comfortable Mercedes Vito with air conditioning and drinks",
     "Dalaman Havalimanından VIP Transfer [DLM]",
-    "Klimalı ve içecek servisi bulunan konforlu Mercedes Vito.",
+    "Klimalı ve içecek servisi bulunan konforlu bir Mercedes Vito.",
     "54",
     "50",
     "5000",
@@ -5753,7 +5760,7 @@ const MASTER_SERVICES_ROWS = [
     "25000",
     "9000",
     "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200",
-    "Да",
+    "нет",
     "Круиз",
     "https://youtube.com/watch?v=cruise",
     "Эксклюзивный дневной маршрут: Ликийские гробницы, ловля голубых крабов, купание на пляже Изтузу и обед от капитана со свежей рыбой.",
@@ -5786,7 +5793,7 @@ const MASTER_SERVICES_ROWS = [
     "Стейки рибай, каре ягненка на косточке и овощи гриль",
     "Premium BBQ evening on coals in the villa's garden",
     "Ribeye steaks, lamb chops and grilled vegetables",
-    "Villanın bahçesinde kömür ateşinde enfes bir barbekü akşamı.",
+    "Villanın bahçesinde kömür ateşinde birinci sınıf barbekü akşamı.",
     "Antrikot biftek, kuzu pirzola ve ızgara sebzeler",
     "175",
     "160",
@@ -5901,7 +5908,8 @@ const MASTER_GUIDES_ROWS = [
     "https://youtube.com/watch?v=preview1",
     "Где встретить гигантских черепах Caretta-Caretta, как взять лодку без наценок и какие дикие бухты скрыты от массовых туристов.",
     "Where to spot giant Caretta-Caretta turtles, how to rent a boat without extra charges, and which wild bays are hidden from the masses.",
-    "Dev Caretta-Caretta kaplumbağalarını nerede görebilirsiniz, ek ücret ödemeden nasıl tekne kiralayabilirsiniz ve kalabalıkların gözünden uzak hangi vahşi koylar var?"
+    "Dev Caretta-Caretta kaplumbağalarını nerede görebilirsiniz, ek ücret ödemeden nasıl tekne kiralayabilirsiniz ve kalabalıkların gözünden uzak hangi vahşi koylar var?",
+    "Да"
   ],
   [
     "guide-2",
@@ -5921,15 +5929,16 @@ const MASTER_GUIDES_ROWS = [
     "https://youtube.com/watch?v=preview2",
     "Маршрут безопасного подъема к амфитеатру Кауноса, тайные тропы древней гавани и лучшие видовые точки для фотосъемки на закате.",
     "A safe route to the Kaunos Amphitheater, the secret paths of the ancient harbor, and the best vantage points for sunset photography.",
-    "Kaunos Amfitiyatrosu'na güvenli bir rota, antik limanın gizli yolları ve gün batımı fotoğrafçılığı için en iyi seyir noktaları."
+    "Kaunos Amfitiyatrosu'na güvenli bir rota, antik limanın gizli yolları ve gün batımı fotoğrafçılığı için en iyi seyir noktaları.",
+    "Да"
   ],
   [
     "guide-3",
     "Гастрономический гид: топ-10 ресторанов и гранатовые сады",
     "Где попробовать настоящую турецкую кухню, свежую рыбу и мезе",
-    "Gastronomic Guide: Top 10 Restaurants and Pomegranate Orchards",
+    "Food Guide: Top 10 Restaurants and Pomegranate Gardens",
     "Where to try authentic Turkish cuisine, fresh fish, and meze",
-    "Gastronomi Rehberi: En İyi 10 Restoran ve Nar Bahçesi",
+    "Yemek Rehberi: En İyi 10 Restoran ve Nar Bahçesi",
     "Gerçek Türk mutfağını, taze balığı ve mezeleri nerede deneyebilirsiniz?",
     "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200",
     "Гастрономия",
@@ -5941,7 +5950,8 @@ const MASTER_GUIDES_ROWS = [
     "https://youtube.com/watch?v=preview3",
     "Список проверенных ресторанов Дальяна, включая культовый ресторан Çiçek Restoran, явки шефов и специальные привилегии для гостей нашей виллы.",
     "A list of Dalyan's trusted restaurants, including the iconic Çiçek Restaurant, chef appearances, and special privileges for our villa guests.",
-    "Dalyan'ın güvenilir restoranlarının listesi, ikonik Çiçek Restoranı da dahil olmak üzere, şeflerin katılımları ve villa misafirlerimiz için özel ayrıcalıklar."
+    "Dalyan'ın güvenilir restoranlarının listesi, ikonik Çiçek Restoranı da dahil olmak üzere, şeflerin katılımları ve villa misafirlerimiz için özel ayrıcalıklar.",
+    "Да"
   ],
   [
     "guide-4",
@@ -5961,7 +5971,8 @@ const MASTER_GUIDES_ROWS = [
     "https://youtube.com/watch?v=preview4",
     "Расписание работы источников, часы отсутствия экскурсионных теплоходов, состав минеральных вод и правильный порядок принятия ванн.",
     "Spring operating hours, hours when excursion boats are closed, composition of mineral waters, and the correct procedure for taking baths.",
-    "İlkbahar çalışma saatleri, gezi teknelerinin kapalı olduğu saatler, maden sularının bileşimi ve banyo yapmanın doğru yöntemi."
+    "İlkbahar çalışma saatleri, gezi teknelerinin kapalı olduğu saatler, maden sularının bileşimi ve banyo yapmanın doğru yöntemi.",
+    "Да"
   ],
   [
     "guide-5",
@@ -5981,7 +5992,8 @@ const MASTER_GUIDES_ROWS = [
     "https://youtube.com/watch?v=preview5",
     "Точные GPS-треки подъема на высоту 500 метров над уровнем моря, рекомендации по обуви, запасу воды и безопасности на Ликийской тропе.",
     "Precise GPS tracking of your ascent to 500 meters above sea level, along with recommendations for footwear, water supplies, and safety on the Lycian Way.",
-    "Deniz seviyesinden 500 metre yüksekliğe tırmanışınızın hassas GPS takibi, Likya Yolu'nda giyilecek ayakkabı, su temini ve güvenlik önerileri."
+    "Deniz seviyesinden 500 metre yüksekliğe tırmanışınızın hassas GPS takibi, Likya Yolu'nda giyilecek ayakkabı, su temini ve güvenlik önerileri.",
+    "Да"
   ],
   [
     "guide-6",
@@ -6001,27 +6013,8 @@ const MASTER_GUIDES_ROWS = [
     "https://youtube.com/watch?v=preview6",
     "С какими фермерами стоит торговаться, где найти натуральное холодное оливковое масло первого отжима и свежайший инжир.",
     "Which farmers are worth bargaining with, where to find natural cold-pressed extra virgin olive oil and the freshest figs.",
-    "Hangi çiftçilerle pazarlık yapmaya değer, doğal soğuk sıkım sızma zeytinyağı ve en taze incirleri nerede bulabilirim?"
-  ],
-  [
-    "guide-7",
-    "проба",
-    "проба",
-    "try",
-    "try",
-    "denemek",
-    "denemek",
-    "",
-    "",
-    "",
-    "100",
-    "92",
-    "9250",
-    "3800",
-    "",
-    "проба",
-    "try",
-    "denemek"
+    "Hangi çiftçilerle pazarlık yapmaya değer, doğal soğuk sıkım sızma zeytinyağı ve en taze incirleri nerede bulabilirim?",
+    "Да"
   ]
 ];
 
@@ -6068,7 +6061,7 @@ const MASTER_LEGAL_ROWS = [
     "Tax status and invoices",
     "Vergi durumu ve faturalar",
     "Регистрация в налоговой инспекции Ortaca Vergi Dairesi, налоговый номер VKN: 9991120181. Выставление официальных электронных счетов e-Arşiv Fatura согласно закону VUK 213 Madde 230.",
-    "Registration with the Ortaca Vergi Dairesi tax office, tax identification number VKN: 9991120181. Issuance of official electronic invoices e-Arşiv Fatura in accordance with the law VUK 213 Madde 230.",
+    "Registration with the Ortaca Vergi Dairesi tax office, tax identification number VKN: 9991120181. Issuance of official electronic invoices e-Arşiv Fatura in accordance with VUK 213 Madde 230.",
     "Ortaca Vergi Dairesi'ne kayıtlı, vergi kimlik numarası VKN: 9991120181. VUK 213 Madde 230 uyarınca resmi elektronik fatura (e-Arşiv Fatura) düzenlenmesi."
   ],
   [
@@ -6152,6 +6145,58 @@ const MASTER_BOOKINGS_ROWS = [
     "1",
     "1 540€",
     "ОЖИДАЕТ ОПЛАТЫ НА IBAN | Код: VT-2026-5449"
+  ],
+  [
+    "28.09.2026, 9:14:54",
+    "Гость",
+    "111111 | zao@gmail.com",
+    "06.11.2026",
+    "12.11.2026",
+    "6",
+    "2",
+    "0",
+    "2",
+    "125 965 ₽",
+    "ОЖИДАЕТ ОПЛАТЫ НА IBAN | Код: VT-2026-2059"
+  ],
+  [
+    "28.09.2026, 9:20:19",
+    "Петя",
+    "+79991234567 | zaomarmaris@gmail.com",
+    "06.11.2026",
+    "12.11.2026",
+    "6",
+    "2",
+    "0",
+    "2",
+    "125 965 ₽",
+    "ОЖИДАЕТ ОПЛАТЫ НА IBAN | Код: VT-2026-5055"
+  ],
+  [
+    "28.09.2026, 10:02:04",
+    "Рус",
+    "9169369 | zao@gmail.com",
+    "06.11.2026",
+    "12.11.2026",
+    "6",
+    "2",
+    "0",
+    "2",
+    "125 965 ₽",
+    "ОЖИДАЕТ ОПЛАТЫ НА IBAN | Код: VT-2026-8995"
+  ],
+  [
+    "28.09.2026, 15:05:41",
+    "Написать",
+    "789654 | zaomarmaris@gmail.com",
+    "06.11.2026",
+    "12.11.2026",
+    "6",
+    "2",
+    "0",
+    "2",
+    "125 965 ₽",
+    "ОПЛАЧЕНО"
   ]
 ];
 
@@ -6234,29 +6279,107 @@ const MASTER_ACCOUNTS_ROWS = [
   [
     "2026-01-15",
     "Алексей Знаменский",
+    "+90 543 335 80 70",
     "villaturaman@gmail.com",
     "205",
     "Нет",
     "Нет",
-    "Нет [Владелец / Главный]"
+    "Нет",
+    "Полная",
+    "2026-01-15 10:00",
+    "Нет",
+    "Активен",
+    "VT-GUEST-1000"
   ],
   [
     "2026-05-01",
     "Служба консьержа",
+    "+90 544 588 58 09",
     "manager@villaturaman.com",
     "manager2026",
     "Нет",
     "Нет",
-    "Нет [Управляющий персоналом]"
+    "Нет",
+    "Полная",
+    "2026-05-01 10:00",
+    "Нет",
+    "Активен",
+    "VT-GUEST-1001"
   ],
   [
-    "27.09.2026, 23:32:36",
-    "Fedor",
-    "3047892 | zaomarmaris@gmail.com",
+    "28.09.2026, 09:14:54",
+    "Гость",
+    "111111",
+    "zao@gmail.com",
     "123456",
     "Нет",
     "Нет",
-    "Нет"
+    "Нет",
+    "Полная",
+    "28.09.2026, 09:15:00",
+    "Нет",
+    "Активен",
+    "VT-GUEST-1002"
+  ],
+  [
+    "28.09.2026, 10:02:03",
+    "Рус",
+    "9169369",
+    "zao@gmail.com",
+    "123456",
+    "Нет",
+    "Нет",
+    "Нет",
+    "Полная",
+    "28.09.2026, 10:03:00",
+    "Нет",
+    "Активен",
+    "VT-GUEST-1003"
+  ],
+  [
+    "28.09.2026, 10:09:04",
+    "Гость",
+    "",
+    "zaoaris@gmail.com",
+    "123456",
+    "Нет",
+    "Нет",
+    "Нет",
+    "Email",
+    "28.09.2026, 10:10:00",
+    "Нет",
+    "Активен",
+    "VT-GUEST-1004"
+  ],
+  [
+    "28.09.2026, 11:41:12",
+    "Гость",
+    "789654",
+    "",
+    "123456",
+    "Нет",
+    "Нет",
+    "Нет",
+    "Телефон",
+    "28.09.2026, 11:42:00",
+    "Нет",
+    "Активен",
+    "VT-GUEST-1005"
+  ],
+  [
+    "28.09.2026, 15:05:41",
+    "ЗАО",
+    "789654",
+    "zaomarmaris@gmail.com",
+    "123456",
+    "Нет",
+    "Нет",
+    "Нет",
+    "Полная",
+    "28.09.2026, 15:06:00",
+    "Нет",
+    "Активен",
+    "VT-GUEST-1006"
   ]
 ];
 
@@ -6283,52 +6406,52 @@ const MASTER_ACCESS_ROWS = [
   [
     "acc-wifi-guest",
     "Wi-Fi гостевой",
-    "Вся вилла и придомовая территория",
-    "DalyanTuramanGuest2026",
-    "VillaTuraman_5G",
-    "Бессрочно / Активен",
-    "Подключитесь к сети VillaTuraman_5G и введите пароль DalyanTuramanGuest2026",
-    "Connect to the VillaTuraman_5G network and enter the password DalyanTuramanGuest2026"
+    "Вся вилла и прилегающая территория",
+    "villa2026",
+    "villa2026master",
+    "Постоянный / Активен",
+    "Подключитесь к сети Villa_Turaman_Guest и введите пароль villa2026",
+    "Connect to Villa_Turaman_Guest network and enter password villa2026"
   ],
   [
     "acc-wifi-host",
-    "Wi-Fi владельца",
-    "Кабинет и служебная сеть",
-    "TuramanSuperHostSecure99!",
-    "VillaTuraman_Admin",
-    "Бессрочно / Активен",
-    "Служебная сеть владельца виллы",
-    "Villa owner's service network"
+    "Wi-Fi служебный",
+    "Роутер в гостиной 1 этаж",
+    "turamanAdmin99",
+    "turamanMasterKey!",
+    "Закрытый / Служебный",
+    "Только для персонала и владельца",
+    "Staff and host only"
   ],
   [
-    "acc-lock-front",
-    "Смарт-замок",
-    "Главная входная дверь",
-    "778899#",
-    "Мастер-ключ у хозяина",
-    "На период проживания",
-    "Введите 6-значный PIN-код на сенсорной панели и нажмите #",
-    "Enter your 6-digit PIN on the touchpad and press #"
+    "acc-door-smartlock",
+    "Электронный замок",
+    "Главный вход на виллу",
+    "147258#",
+    "998877#",
+    "Сменяемый по броням",
+    "Введите 6-значный код на сенсорной панели входной двери и нажмите решетку",
+    "Enter 6-digit code on the front door keypad and press hash"
   ],
   [
-    "acc-safe-keys",
+    "acc-gate-keypad",
+    "Автоматические ворота",
+    "Калитка и въездные ворота",
+    "2580",
+    "1234",
+    "Постоянный / Активен",
+    "Наберите 4 цифры на кодовой панели калитки для открытия ворот",
+    "Enter 4 digits on the gate keypad to open"
+  ],
+  [
+    "acc-key-safe",
     "Механический сейф",
-    "Стена у входа справа от двери",
-    "2026",
-    "Ключ владельца",
-    "Бессрочно / Активен",
-    "Наберите код 2026 на дисковом замке и потяните рычаг вниз",
-    "Enter the code 2026 on the disc lock and pull the lever down"
-  ],
-  [
-    "acc-gate-remote",
-    "Ворота парковки",
-    "Въездная группа и парковка",
-    "Пульт / Код 4321",
-    "Ручной привод",
-    "Бессрочно / Активен",
-    "Используйте радиопульт или введите код 4321 на стойке шлагбаума",
-    "Use the radio remote control or enter the code 4321 at the barrier post"
+    "Справа от входной двери за декоративной панелью",
+    "3579",
+    "Ключ мастера в архиве",
+    "Резервный",
+    "Наберите код на дисковом барабане мини-сейфа и опустите рычажок вниз",
+    "Rotate dials on the key safe box to code and pull lever down"
   ]
 ];
 
@@ -6337,21 +6460,31 @@ const MASTER_GUIDE_ACCESS_ROWS = [
     "2026-05-26",
     "ivan.smirnov@example.com",
     "guide-1",
+    "Секретные маршруты реки Дальян",
     "Видеогиды",
     "Оплачено",
-    "Да",
-    "100% [Просмотрен полностью]",
-    ""
+    "TKN-DAL-8841",
+    "Бессрочно"
   ],
   [
-    "2026-05-26",
-    "ivan.smirnov@example.com",
+    "2026-06-02",
+    "markus.webber@example.com",
     "guide-2",
-    "Видеогиды",
+    "Античный Каунос и Ликийские гробницы",
+    "Исторические гиды",
     "Оплачено",
-    "Да",
-    "40% [В процессе изучения]",
-    ""
+    "TKN-KAU-3319",
+    "Бессрочно"
+  ],
+  [
+    "2026-07-15",
+    "ahmet.yilmaz@example.com",
+    "guide-3",
+    "Озеро Кёйджегиз и грязевые термы",
+    "Природные маршруты",
+    "Оплачено",
+    "TKN-KOY-9921",
+    "Бессрочно"
   ]
 ];
 
@@ -6514,6 +6647,24 @@ const MASTER_KNOWLEDGE_GRAPH_ROWS = [
   ]
 ];
 
+const MASTER_RAW_SHEETS = {
+  HOME: MASTER_HOME_ROWS,
+  SETTINGS: MASTER_SETTINGS_ROWS,
+  LEGAL: MASTER_LEGAL_ROWS,
+  TEMPLATES: MASTER_TEMPLATES_ROWS,
+  SERVICES: MASTER_SERVICES_ROWS,
+  GUIDES: MASTER_GUIDES_ROWS,
+  GALLERY: MASTER_GALLERY_ROWS,
+  CALENDAR: MASTER_CALENDAR_ROWS,
+  BOOKINGS: MASTER_BOOKINGS_ROWS,
+  ACCOUNTS: MASTER_ACCOUNTS_ROWS,
+  ORDERS: MASTER_ORDERS_ROWS,
+  ACCESS: MASTER_ACCESS_ROWS,
+  TASKS: MASTER_TASKS_ROWS,
+  KNOWLEDGE_GRAPH: MASTER_KNOWLEDGE_GRAPH_ROWS,
+  GUIDE_ACCESS: MASTER_GUIDE_ACCESS_ROWS
+};
+
 module.exports = {
   MASTER_ABOUT_SECTIONS,
   MASTER_HOME_MAP,
@@ -6532,5 +6683,6 @@ module.exports = {
   MASTER_GUIDE_ACCESS_ROWS,
   MASTER_TASKS_ROWS,
   MASTER_KNOWLEDGE_GRAPH_ROWS,
+  MASTER_RAW_SHEETS,
   buildHomeDerivedCollections
 };

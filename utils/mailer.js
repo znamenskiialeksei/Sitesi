@@ -1,5 +1,11 @@
-// utils/mailer.js - Модуль генерации и безопасной отправки проверочных кодов гостям
-// [КЛАСТЕР: AUTH_VERIFICATION] [SSOT: GEMINI.md]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 28.09.2026 14:15 | ПЛАН: 280920261415 ПЛАН Комплексная модернизация экосистемы.md | TAG: VILLA-FULL-ECOSYSTEM-UPGRADE-280920261415]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 28.09.2026 19:40 | ПЛАН: 280920261940 ПЛАН 13 колонок ACCOUNTS и восстановление.md | TAG: VILLA-MAILER-VERIFIED-STATUS-280920261940]
+// ==============================================================================
+// МОДУЛЬ ОТПРАВКИ EMAIL И ПРОВЕРОЧНЫХ УВЕДОМЛЕНИЙ VILLA TURAMAN
+// Файл: utils/mailer.js
+// Назначение: Генерация и безопасная доставка проверочных кодов и ваучеров бронирования
+// 100% Zero-Brackets & Zero-Emdash Стандарт.
+// ==============================================================================
 
 export const generateOtpCode = () => {
   return Math.floor(1000 + Math.random() * 9000).toString();
@@ -393,13 +399,13 @@ export const getDetailedBookingEmailHtml = ({
           <tr>
             <td style="padding: 0 36px 20px 36px;">
               <div style="background-color: #0b111d; border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 18px; padding: 20px;">
-                <div style="font-size: 13px; font-weight: 700; color: #f59e0b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px;">
-                  ⚠️ Чек-лист: чего не хватает для брони и оплаты
+                <div style="font-size: 13px; font-weight: 700; color: ${emailVerified ? '#10b981' : '#f59e0b'}; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px;">
+                  ${emailVerified ? '✓ Статус готовности бронирования' : '⚠️ Чек-лист: подтверждение контактов для брони'}
                 </div>
                 <ul style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.7; color: #cbd5e1;">
-                  ${!emailVerified ? '<li style="color: #f59e0b;"><b>Подтверждение Email:</b> требуется подтвердить адрес кодом из письма для открытия онлайн-оплаты.</li>' : '<li style="color: #10b981;"><b>Email подтвержден:</b> контакт проверен.</li>'}
+                  ${!emailVerified ? '<li style="color: #f59e0b;"><b>Подтверждение Email:</b> требуется подтвердить адрес проверочным кодом для завершения оформления.</li>' : '<li style="color: #10b981;"><b>Email подтвержден:</b> контакт проверен, проверочный код не требуется.</li>'}
                   ${isRequest ? '<li><b>Модерация хозяина:</b> ожидается подтверждение дат от владельца виллы в течение 24 часов [24h HOLD].</li>' : ''}
-                  ${isIban ? '<li style="color: #f59e0b;"><b>Оплата по IBAN:</b> выполните перевод по реквизитам ниже с обязательным указанием кода брони <b>' + bookingCode + '</b>.</li>' : ''}
+                  ${isIban ? '<li style="color: #60a5fa;"><b>Оплата по IBAN:</b> выполните перевод по реквизитам ниже с обязательным указанием кода брони <b>' + bookingCode + '</b>.</li>' : ''}
                   ${isPaid ? '<li style="color: #10b981;"><b>Оплата зафиксирована:</b> бронь полностью подтверждена, ваучер готов к загрузке.</li>' : ''}
                 </ul>
               </div>
