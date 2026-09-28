@@ -85,13 +85,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Регистрация нового гостя
-  const register = async (name, contact, password) => {
+  const register = async (name, contact, password, extraData = {}) => {
     try {
       const res = await axios.post('/api/booking', {
         action: 'register',
         name: name.trim(),
         contact: contact.trim(),
-        password: (password || '123456').trim()
+        password: (password || '123456').trim(),
+        ...extraData
       });
 
       if (res.data && res.data.success) {

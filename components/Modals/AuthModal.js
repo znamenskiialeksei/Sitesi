@@ -108,13 +108,19 @@ export default function AuthModal() {
     setIsVerifyOpen(false);
     setLoading(true);
     try {
-      const verifiedContact = (verifiedPayload?.channel === 'email' ? (verifiedPayload.email || email.trim()) : (verifiedPayload?.phone || phone.trim())) || email.trim() || phone.trim();
-      const res = await register(name, verifiedContact, password);
+      const emailTrimmed = (verifiedPayload?.channel === 'email' ? (verifiedPayload.email || email) : email).trim();
+      const phoneTrimmed = (verifiedPayload?.channel === 'phone' ? (verifiedPayload.phone || phone) : phone).trim();
+      const finalContact = phoneTrimmed && emailTrimmed ? `${phoneTrimmed} | ${emailTrimmed}` : (emailTrimmed || phoneTrimmed);
+      
+      const res = await register(name, finalContact, password, {
+        email: emailTrimmed,
+        phone: phoneTrimmed
+      });
       if (res.success) {
         toast.success(`Добро пожаловать, ${name}! Аккаунт успешно создан и верифицирован.`);
         setAuthModalOpen(false);
       } else {
-        toast.error(t(res.error || 'error_registration'));
+        toast.error(res.error || t('error_registration') || 'Ошибка при создании аккаунта');
       }
     } catch (err) {
       toast.error('Ошибка сохранения учетной записи после верификации.');

@@ -1355,24 +1355,51 @@ export default async function handler(req, res) {
   if (action === 'register') {
     try {
       await ensureSystemSheets();
-      const safeContact = (data.contact || '').toString().trim().toLowerCase();
+      const rawEmail = (data.email || '').toString().trim().toLowerCase();
+      const rawPhone = (data.phone || '').toString().trim();
+      const rawContact = (data.contact || '').toString().trim();
       const safeName = (data.name || 'Гость').toString().trim();
       const safePassword = (data.password || '123456').toString().trim();
 
-      if (!safeContact) {
+      // Извлечение email и телефона из контакта или переданных полей
+      let targetEmail = rawEmail;
+      let targetPhone = rawPhone;
+
+      if (!targetEmail && rawContact.includes('@')) {
+        const parts = rawContact.split('|').map((p) => p.trim());
+        const emailPart = parts.find((p) => p.includes('@'));
+        if (emailPart) targetEmail = emailPart.toLowerCase();
+      }
+      if (!targetPhone && rawContact) {
+        const parts = rawContact.split('|').map((p) => p.trim());
+        const phonePart = parts.find((p) => !p.includes('@'));
+        if (phonePart) targetPhone = phonePart;
+      }
+
+      const finalContact = targetPhone && targetEmail
+        ? `${targetPhone} | ${targetEmail}`
+        : (targetEmail || targetPhone || rawContact);
+
+      if (!finalContact) {
         return res.status(400).json({ success: false, error: 'Укажите контакт для регистрации.' });
       }
 
       // Строгая серверная проверка подтверждения проверочным кодом [OTP]
-      const isEmailContact = safeContact.includes('@');
-      const cleanTarget = isEmailContact ? safeContact : safeContact.replace(/\D/g, '');
-      const channel = isEmailContact ? 'email' : 'phone';
-      const isVerified = await safeCacheGet(`verified_${channel}_${cleanTarget}`);
+      let isVerified = false;
+      if (targetEmail) {
+        isVerified = await safeCacheGet(`verified_email_${targetEmail}`);
+      }
+      if (!isVerified && targetPhone) {
+        const cleanPhone = targetPhone.replace(/\D/g, '');
+        if (cleanPhone) {
+          isVerified = await safeCacheGet(`verified_phone_${cleanPhone}`);
+        }
+      }
 
       if (!isVerified) {
         return res.status(400).json({
           success: false,
-          error: `Контакт ${safeContact} не подтвержден проверочным кодом. Пожалуйста, подтвердите код.`
+          error: `Контакт ${finalContact} не подтвержден проверочным кодом. Пожалуйста, подтвердите код.`
         });
       }
 
@@ -1386,7 +1413,17 @@ export default async function handler(req, res) {
           const existingLogins = (accDb.data.values || [])
             .flat()
             .map((v) => (v || '').toString().trim().toLowerCase());
-          if (existingLogins.includes(safeContact)) {
+          const alreadyExists = existingLogins.some((l) => {
+            if (!l) return false;
+            if (targetEmail && l.includes(targetEmail)) return true;
+            if (targetPhone) {
+              const d1 = l.replace(/\D/g, '');
+              const d2 = targetPhone.replace(/\D/g, '');
+              if (d1 && d2 && d1.length >= 7 && d2.length >= 7 && (d1.includes(d2) || d2.includes(d1))) return true;
+            }
+            return isContactMatch(l, finalContact);
+          });
+          if (alreadyExists) {
             return res.status(400).json({
               success: false,
               error: 'Пользователь с таким контактом уже зарегистрирован. Пожалуйста, выполните вход.'
@@ -1400,7 +1437,7 @@ export default async function handler(req, res) {
           range: resolveRange(sheetMap, 'ACCOUNTS', 'A:G'),
           valueInputOption: 'USER_ENTERED',
           insertDataOption: 'INSERT_ROWS',
-          requestBody: { values: [[timestamp, safeName, safeContact, safePassword, "Нет", "Нет", "Нет"]] }
+          requestBody: { values: [[timestamp, safeName, finalContact, safePassword, "Нет", "Нет", "Нет"]] }
         });
       }
 
@@ -1408,11 +1445,11 @@ export default async function handler(req, res) {
         success: true,
         user: {
           name: safeName,
-          contact: safeContact,
-          email: isEmailContact ? safeContact : '',
-          phone: !isEmailContact ? safeContact : '',
-          emailVerified: isEmailContact,
-          phoneVerified: !isEmailContact,
+          contact: finalContact,
+          email: targetEmail,
+          phone: targetPhone,
+          emailVerified: !!targetEmail,
+          phoneVerified: !!targetPhone,
           isHost: false,
           hasChat: true
         }

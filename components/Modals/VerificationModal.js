@@ -264,7 +264,7 @@ export default function VerificationModal({
   const isEmail = channel === 'email';
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in">
+    <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in">
       <div className="relative w-full max-w-md bg-slate-900 border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-rose-950/20 text-slate-100 flex flex-col">
         {/* Кнопка закрытия */}
         <button
