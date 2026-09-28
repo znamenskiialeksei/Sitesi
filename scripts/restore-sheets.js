@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 28.09.2026 19:40 | ПЛАН: 280920261940 ПЛАН 13 колонок ACCOUNTS и восстановление.md | TAG: VILLA-RESTORE-13COLS-ACCOUNTS-280920261940]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 29.09.2026 00:05 | ПЛАН: 290920260005 ПЛАН Перекрестная валидация и диапазоны.md | TAG: VILLA-RESTORE-DYNAMIC-BOUNDING-RANGES-290920260005]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 29.09.2026 00:05 | ПЛАН: 290920260005 ПЛАН Перекрестная валидация и диапазоны.md | TAG: VILLA-RESTORE-DYNAMIC-BOUNDING-RANGES-290920260005]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 29.09.2026 00:30 | ПЛАН: 290920260031 ПЛАН Безопасная валидация и формулы spill.md | TAG: VILLA-SAFE-VALIDATION-SPILL-CORRIDOR-290920260030]
 // ==============================================================================
 // УНИВЕРСАЛЬНЫЙ СКРИПТ САМОИСЦЕЛЕНИЯ И ВОССТАНОВЛЕНИЯ GOOGLE SHEETS CRM
 // Файл: scripts/restore-sheets.js
@@ -310,8 +310,8 @@ async function restoreAllSheets() {
             values: colsG_H
           });
 
-          safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
         }
 
         if (config.key === 'GALLERY') {
@@ -327,12 +327,12 @@ async function restoreAllSheets() {
             values: colsH_J
           });
 
-          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!K2`, values: [['=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!L2`, values: [['=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!K2`, values: [['=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!L2`, values: [['=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
         }
 
         if (config.key === 'SERVICES') {
@@ -360,12 +360,12 @@ async function restoreAllSheets() {
             values: colsH_P
           });
 
-          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!R2`, values: [['=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!R2`, values: [['=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
         }
 
         if (config.key === 'GUIDES') {
@@ -394,19 +394,19 @@ async function restoreAllSheets() {
           });
 
           if (MASTER_GUIDES_ROWS.some(r => r.length >= 18)) {
-            const colsS = MASTER_GUIDES_ROWS.map((r) => [r[18] || 'Вкл']);
+            const colsS = MASTER_GUIDES_ROWS.map((r) => [r[18] || 'Да']);
             dataAppendRequests.push({
               range: `'${actualTitle}'!S2:S${colsS.length + 1}`,
               values: colsS
             });
           }
 
-          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!R2`, values: [['=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!E2`, values: [['=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!Q2`, values: [['=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!R2`, values: [['=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
         }
 
         if (config.key === 'LEGAL') {
@@ -422,10 +422,10 @@ async function restoreAllSheets() {
             values: colE
           });
 
-          safeFormulasToInject.push({ range: `'${actualTitle}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
         }
 
         if (config.key === 'BOOKINGS' && MASTER_BOOKINGS_ROWS && MASTER_BOOKINGS_ROWS.length > 0) {
@@ -481,10 +481,10 @@ async function restoreAllSheets() {
             values: colE
           });
 
-          safeFormulasToInject.push({ range: `'${actualTitle}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
-          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!C2`, values: [['=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!D2`, values: [['=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!F2`, values: [['=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))']] });
+          safeFormulasToInject.push({ range: `'${actualTitle}'!G2`, values: [['=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))']] });
         }
 
         if (config.key === 'SETTINGS' && MASTER_SETTINGS_ROWS && MASTER_SETTINGS_ROWS.length > 0) {

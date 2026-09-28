@@ -5760,7 +5760,7 @@ const MASTER_SERVICES_ROWS = [
     "25000",
     "9000",
     "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200",
-    "нет",
+    "Нет",
     "Круиз",
     "https://youtube.com/watch?v=cruise",
     "Эксклюзивный дневной маршрут: Ликийские гробницы, ловля голубых крабов, купание на пляже Изтузу и обед от капитана со свежей рыбой.",
@@ -5780,7 +5780,7 @@ const MASTER_SERVICES_ROWS = [
     "12000",
     "4300",
     "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200",
-    "нет",
+    "Нет",
     "Шеф",
     "https://youtube.com/watch?v=chef",
     "Шеф-повар лично закупает фермерские продукты на рынке Дальяна, готовит ужин на вашей кухне, сервирует стол и наводит идеальный порядок.",
@@ -5800,7 +5800,7 @@ const MASTER_SERVICES_ROWS = [
     "16000",
     "5800",
     "https://images.unsplash.com/photo-1544025162-d76694265947?w=1200",
-    "нет",
+    "Нет",
     "BBQ",
     "https://youtube.com/watch?v=bbq",
     "В стоимость входит премиальное маринованное фермерское мясо, отборные угли, розжиг, лаваш, соусы и работа гриль-мастера в течение 3 часов.",
@@ -5820,7 +5820,7 @@ const MASTER_SERVICES_ROWS = [
     "7000",
     "2500",
     "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200",
-    "нет",
+    "Нет",
     "СПА",
     "https://youtube.com/watch?v=spa",
     "Трансфер на моторной лодке прямо от причала виллы. Входные билеты в термальные комплексы и радоновые бассейны включены.",
@@ -5840,7 +5840,7 @@ const MASTER_SERVICES_ROWS = [
     "8000",
     "2900",
     "https://images.unsplash.com/photo-1517404215738-15263e9f9178?w=1200",
-    "нет",
+    "Нет",
     "Спорт",
     "https://youtube.com/watch?v=sup",
     "Доставка оборудования прямо к вилле на весь период проживания. В комплекте весла, страховочные лиши и спасательные жилеты.",
@@ -5930,7 +5930,7 @@ const MASTER_GUIDES_ROWS = [
     "Маршрут безопасного подъема к амфитеатру Кауноса, тайные тропы древней гавани и лучшие видовые точки для фотосъемки на закате.",
     "A safe route to the Kaunos Amphitheater, the secret paths of the ancient harbor, and the best vantage points for sunset photography.",
     "Kaunos Amfitiyatrosu'na güvenli bir rota, antik limanın gizli yolları ve gün batımı fotoğrafçılığı için en iyi seyir noktaları.",
-    "нет"
+    "Нет"
   ],
   [
     "guide-3",
@@ -5951,7 +5951,7 @@ const MASTER_GUIDES_ROWS = [
     "Список проверенных ресторанов Дальяна, включая культовый ресторан Çiçek Restoran, явки шефов и специальные привилегии для гостей нашей виллы.",
     "A list of Dalyan's trusted restaurants, including the iconic Çiçek Restaurant, chef appearances, and special privileges for our villa guests.",
     "Dalyan'ın güvenilir restoranlarının listesi, ikonik Çiçek Restoranı da dahil olmak üzere, şeflerin katılımları ve villa misafirlerimiz için özel ayrıcalıklar.",
-    "нет"
+    "Нет"
   ],
   [
     "guide-4",
@@ -5972,7 +5972,7 @@ const MASTER_GUIDES_ROWS = [
     "Расписание работы источников, часы отсутствия экскурсионных теплоходов, состав минеральных вод и правильный порядок принятия ванн.",
     "Spring operating hours, hours when excursion boats are closed, composition of mineral waters, and the correct procedure for taking baths.",
     "İlkbahar çalışma saatleri, gezi teknelerinin kapalı olduğu saatler, maden sularının bileşimi ve banyo yapmanın doğru yöntemi.",
-    "нет"
+    "Нет"
   ],
   [
     "guide-5",
@@ -5993,7 +5993,7 @@ const MASTER_GUIDES_ROWS = [
     "Точные GPS-треки подъема на высоту 500 метров над уровнем моря, рекомендации по обуви, запасу воды и безопасности на Ликийской тропе.",
     "Precise GPS tracking of your ascent to 500 meters above sea level, along with recommendations for footwear, water supplies, and safety on the Lycian Way.",
     "Deniz seviyesinden 500 metre yüksekliğe tırmanışınızın hassas GPS takibi, Likya Yolu'nda giyilecek ayakkabı, su temini ve güvenlik önerileri.",
-    "нет"
+    "Нет"
   ],
   [
     "guide-6",

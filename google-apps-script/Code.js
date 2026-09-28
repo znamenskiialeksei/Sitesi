@@ -1,12 +1,12 @@
 /**
  * ============================================================================
  * [ПРЕДЫДУЩАЯ РЕДАКЦИЯ]
- * Редакция: 28.09.2026 19:40 | Метка: TAG: VILLA-ACCOUNTS-RESTORE-UPGRADE-280920261940
- * План: [280920261940 ПЛАН 13 колонок ACCOUNTS и восстановление.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/280920261940%20ПЛАН%2013%20колонок%20ACCOUNTS%20и%20восстановление.md)
- * ----------------------------------------------------------------------------
- * [АКТУАЛЬНАЯ РЕДАКЦИЯ]
  * Редакция: 29.09.2026 00:05 | Метка: TAG: VILLA-CROSS-VALIDATION-HEADERS-PARITY-290920260005
  * План: [290920260005 ПЛАН Перекрестная валидация и диапазоны.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/290920260005%20ПЛАН%20Перекрестная%20валидация%20и%20диапазоны.md)
+ * ----------------------------------------------------------------------------
+ * [АКТУАЛЬНАЯ РЕДАКЦИЯ]
+ * Редакция: 29.09.2026 00:30 | Метка: TAG: VILLA-SAFE-VALIDATION-SPILL-CORRIDOR-290920260030
+ * План: [290920260031 ПЛАН Безопасная валидация и формулы spill.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/290920260031%20ПЛАН%20Безопасная%20валидация%20и%20формулы%20spill.md)
  * ============================================================================
  * МОДУЛЬ 0: ПАСПОРТ МОДУЛЯ И СИСТЕМНАЯ КОНФИГУРАЦИЯ
  * Название: Монолитный скрипт Google Apps Script экосистемы Villa Turaman CRM
@@ -577,10 +577,11 @@ function autoFormatAllSheetsSilent_() {
     '#fff1f2'  // 16. Словарь чата : нежная роза
   ];
 
-  var yesNoRule = SpreadsheetApp.newDataValidation().requireValueInList(['Да', 'Нет'], true).setAllowInvalid(false).build();
-  var onOffRule = SpreadsheetApp.newDataValidation().requireValueInList(['Вкл', 'Выкл'], true).setAllowInvalid(false).build();
-  var verifRule = SpreadsheetApp.newDataValidation().requireValueInList(['Верифицирован', 'Не верифицирован', 'Требует проверки'], true).setAllowInvalid(false).build();
-  var accStatusRule = SpreadsheetApp.newDataValidation().requireValueInList(['Активен', 'Заблокирован', 'Архив'], true).setAllowInvalid(false).build();
+  var yesNoRule = SpreadsheetApp.newDataValidation().requireValueInList(['Да', 'Нет'], true).setAllowInvalid(true).build();
+  var onOffRule = SpreadsheetApp.newDataValidation().requireValueInList(['Вкл', 'Выкл'], true).setAllowInvalid(true).build();
+  var verifRule = SpreadsheetApp.newDataValidation().requireValueInList(['Верифицирован', 'Не верифицирован', 'Требует проверки'], true).setAllowInvalid(true).build();
+  var accStatusRule = SpreadsheetApp.newDataValidation().requireValueInList(['Активен', 'Заблокирован', 'Архив'], true).setAllowInvalid(true).build();
+  var availabilityRule = SpreadsheetApp.newDataValidation().requireValueInList(['Да', 'Нет', 'Вкл', 'Выкл'], true).setAllowInvalid(true).build();
 
   var keys = Object.keys(VILLA_SHEETS_CONFIG);
   for (var k = 0; k < keys.length; k++) {
@@ -670,7 +671,7 @@ function autoFormatAllSheetsSilent_() {
       if (key === 'SERVICES') {
         try {
           var srvRowsCount = Math.max(1, lastRow - 1);
-          sheet.getRange(2, 13, srvRowsCount, 1).setDataValidation(onOffRule);
+          sheet.getRange(2, 13, srvRowsCount, 1).setDataValidation(availabilityRule);
         } catch (srvValErr) {
           Logger.log("Ошибка валидации SERVICES: " + srvValErr.message);
         }
@@ -680,7 +681,7 @@ function autoFormatAllSheetsSilent_() {
       if (key === 'GUIDES') {
         try {
           var gRowsCount = Math.max(1, lastRow - 1);
-          sheet.getRange(2, 19, gRowsCount, 1).setDataValidation(onOffRule);
+          sheet.getRange(2, 19, gRowsCount, 1).setDataValidation(availabilityRule);
         } catch (gValErr) {
           Logger.log("Ошибка валидации GUIDES: " + gValErr.message);
         }
@@ -1428,6 +1429,7 @@ function ensureAllSystemSheets() {
  */
 function initSingleSheetByKey_(sheet, key) {
   if (!sheet || !key) return;
+  sheet.clearDataValidations();
 
   if (key === 'HOME') {
     var homeHeaders = ['Блок / Раздел', 'Ключ [ID]', 'Место размещения / Описание [RU]', 'RU', 'EN', 'TR', 'Медиа / Иконка / Ссылка', 'Статус [Вкл/Выкл]'];
@@ -1666,8 +1668,8 @@ function initSingleSheetByKey_(sheet, key) {
     var colsG_H = homeRows.map(function(r) { return [r[6] || '', r[7] || 'Вкл']; });
     sheet.getRange(2, 1, colsA_D.length, 4).setValues(colsA_D);
     sheet.getRange(2, 7, colsG_H.length, 2).setValues(colsG_H);
-    sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
   } else if (key === 'GALLERY') {
     var galHeaders = ['ID', 'Группа [RU]', 'Описание [RU]', 'Группа [EN]', 'Описание [EN]', 'Группа [TR]', 'Описание [TR]', 'Тип', 'Медиа ссылки', 'Подпись [RU]', 'Подпись [EN]', 'Подпись [TR]'];
     styleSheetHeader_(sheet, galHeaders, 1);
@@ -1688,7 +1690,7 @@ function initSingleSheetByKey_(sheet, key) {
     ["gal-14","Спальни виллы с санузлами","Второй этаж: 1 двуспальная кровать Queen Size, собственная ванная комната, кондиционер, гардероб. Queen Size [2 места]","Villa bedrooms with bathrooms","Second floor: 1 queen size bed, private bathroom, air conditioning, wardrobe. Queen Size [2 beds]","Banyolu villa yatak odaları","İkinci kat: 1 adet çift kişilik yatak, özel banyo, klima, gardırop. Çift kişilik yatak [2 yatak]","Фото","https://drive.google.com/file/d/1f1-b3TuIPqUR8jTdC52qPOH7cwaUszOM/view?usp=sharing","Второй этаж: 1 двуспальная кровать Queen Size, собственная ванная комната, кондиционер, гардероб. Queen Size [2 места]","Second floor: 1 queen size bed, private bathroom, air conditioning, wardrobe. Queen Size [2 beds]","İkinci kat: 1 adet çift kişilik yatak, özel banyo, klima, gardırop. Çift kişilik yatak [2 yatak]"],
     ["gal-15","Спальни виллы с санузлами","Второй этаж: 1 двуспальная кровать Queen Size, собственная ванная комната, кондиционер, гардероб. Queen Size [2 места]","Villa bedrooms with bathrooms","Second floor: 1 queen size bed, private bathroom, air conditioning, wardrobe. Queen Size [2 beds]","Banyolu villa yatak odaları","İkinci kat: 1 adet çift kişilik yatak, özel banyo, klima, gardırop. Çift kişilik yatak [2 yatak]","Фото","https://drive.google.com/file/d/1WooX7-xPmWMgRC1S4fUTsg9-as_Pskuq/view?usp=sharing","Второй этаж: 1 двуспальная кровать Queen Size, собственная ванная комната, кондиционер, гардероб. Queen Size [2 места]","Second floor: 1 queen size bed, private bathroom, air conditioning, wardrobe. Queen Size [2 beds]","İkinci kat: 1 adet çift kişilik yatak, özel banyo, klima, gardırop. Çift kişilik yatak [2 yatak]"],
     ["gal-16","Спальни виллы с санузлами","4 индивидуальные ванные комнаты с тропическим душем","Villa bedrooms with bathrooms","4 private bathrooms with rain showers","Banyolu villa yatak odaları","Yağmur duşlu 4 özel banyo","Фото","https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=1600","Индивидуальная ванная комната","Private bathroom","Özel banyo"],
-    ["gal-17","Природа Дальяна. Достопримечательности. Пляжи и заповедники.","Набережная реки Дальян в 5 минутах пешком от виллы","Dalyan's nature. Attractions. Beaches and nature reserves.","The Dalyan River embankment is a 5-minute walk from the villa","Dalyan'ın doğası. Gezilecek yerler. Plajlar ve doğa rezervleri.","Villa, Dalyan Nehri kıyısına 5 dakikalık yürüme mesafesindedir.","Фото","https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1600","Живописная река Дальян","The picturesque Dalyan River","Manzarasıyla büyüleyici Dalyan Nehri"],
+    ["gal-17","Природа Дальяна. Достопримечательности. Пляжи и заповедники.","Набережная реки Дальян в 5 минутах пешком от виллы","Dalyan's nature. Attractions. Beaches and nature reserves.","The Dalyan River embankment is a 5-minute walk from the villa","Dalyan'ın doğası. Gezilecek yerler. Plajlar ve doğa rezervleri.","Villa, Dalyan Nehri kıyısına 5 dakikalık yürüme mesafesindedir.","Фото","https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1600","Живописная река Дальян","The picturesque Dalyan River","Manzarasıyla誹büyüleyici Dalyan Nehri"],
     ["gal-18","Природа Дальяна. Достопримечательности. Пляжи и заповедники.","Ликийские скальные гробницы IV века до н.э. с подсветкой","Dalyan's nature. Attractions. Beaches and nature reserves.","Lycian rock tombs from the 4th century BC with illumination","Dalyan'ın doğası. Gezilecek yerler. Plajlar ve doğa rezervleri.","MÖ 4. yüzyıla ait Likya kaya mezarları ve üzerlerindeki resimler.","Фото","https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600","Ликийские скальные гробницы","Lycian rock tombs","Likya kaya mezarları"],
     ["gal-19","Природа Дальяна. Достопримечательности. Пляжи и заповедники.","Песчаный черепаший пляж Изтузу и озеро Кёйджегиз","Dalyan's nature. Attractions. Beaches and nature reserves.","Iztuzu Turtle Beach and Lake Köyceğiz","Dalyan'ın doğası. Gezilecek yerler. Plajlar ve doğa rezervleri.","İztuzu Kaplumbağa Plajı ve Köyceğiz Gölü","Фото","https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1600","Пляж Изтузу и черепахи","Iztuzu Beach and Turtles","İztuzu Plajı ve Kaplumbağalar"]
   ];
@@ -1696,22 +1698,22 @@ function initSingleSheetByKey_(sheet, key) {
     var colsH_J = galRows.map(function(r) { return [r[7], r[8], r[9]]; });
     sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
     sheet.getRange(2, 8, colsH_J.length, 3).setValues(colsH_J);
-    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-    sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-    sheet.getRange("K2").setFormula('=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("L2").setFormula('=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("K2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("L2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
   } else if (key === 'SERVICES') {
     var srvHeaders = ['ID', 'Название услуги [RU]', 'Описание [RU]', 'Название услуги [EN]', 'Описание [EN]', 'Название услуги [TR]', 'Описание [TR]', 'Цена [USD]', 'Цена [EUR]', 'Цена [RUB]', 'Цена [TRY]', 'Изображения', 'Наличие', 'Тип', 'Видео презентации', 'Подробное описание [RU]', 'Подробное описание [EN]', 'Подробное описание [TR]'];
     styleSheetHeader_(sheet, srvHeaders, 1);
     var srvRows = [
     ["prod-1","VIP-трансфер из аэропорта Даламан [DLM]","Комфортабельный Mercedes Vito с кондиционером и напитками","VIP Transfer from Dalaman Airport [DLM]","Comfortable Mercedes Vito with air conditioning and drinks","Dalaman Havalimanından VIP Transfer [DLM]","Klimalı ve içecek servisi bulunan konforlu Mercedes Vito.","54","50","5000","1800","https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1200","Да","Трансфер","https://youtube.com/watch?v=transfer","Встреча в зоне прилета с именной табличкой. Время в пути до виллы 25 минут. В салоне бесплатный Wi-Fi и прохладительные напитки.","Meet in the arrivals area with a name sign. Travel time to the villa is 25 minutes. Complimentary Wi-Fi and refreshments are available in the lounge.","Varış alanında isim tabelasıyla buluşalım. Villaya ulaşım süresi 25 dakikadır. Salonda ücretsiz Wi-Fi ve ikramlar mevcuttur."],
-    ["prod-2","Приватный круиз на яхте по реке Дальян и пляжу Изтузу","Традиционная деревянная лодка: Капитан Адам, Ликийские гробницы","Private Yacht Cruise on the Dalyan River and Iztuzu Beach","Traditional Wooden Boat: Captain Adam, Lycian Tombs","Dalyan Nehri ve İztuzu Plajı'nda Özel Yat Gezisi","Geleneksel Ahşap Tekne: Kaptan Adam, Likya Mezarları","270","250","25000","9000","https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200","нет","Круиз","https://youtube.com/watch?v=cruise","Эксклюзивный дневной маршрут: Ликийские гробницы, ловля голубых крабов, купание на пляже Изтузу и обед от капитана со свежей рыбой.","An exclusive day trip: Lycian tombs, blue crab fishing, swimming at Iztuzu beach and a fresh fish lunch prepared by the captain.","Özel bir günlük gezi: Likya mezarları, mavi yengeç avı, İztuzu plajında ​​yüzme ve kaptan tarafından hazırlanan taze balık öğle yemeği."],
-    ["prod-3","Ужин от персонального шеф-повара на вилле","4-курсовой ужин у бассейна: традиционные турецкие мезе и морепродукты","Private Chef Dinner in the Villa","4-course poolside dinner: traditional Turkish meze and seafood","Villada Özel Şef Eşliğinde Akşam Yemeği","Havuz başında 4 çeşit yemekten oluşan akşam yemeği: geleneksel Türk mezeleri ve deniz ürünleri.","130","120","12000","4300","https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200","нет","Шеф","https://youtube.com/watch?v=chef","Шеф-повар лично закупает фермерские продукты на рынке Дальяна, готовит ужин на вашей кухне, сервирует стол и наводит идеальный порядок.","The chef personally purchases farm produce from the Dalyan market, prepares dinner in your kitchen, sets the table, and keeps everything perfectly tidy.","Şef, Dalyan pazarından bizzat çiftlik ürünleri satın alıyor, mutfağınızda akşam yemeğini hazırlıyor, sofrayı kuruyor ve her şeyi kusursuz bir şekilde düzenli tutuyor."],
-    ["prod-4","Премиальный BBQ-вечер на углях в саду виллы","Стейки рибай, каре ягненка на косточке и овощи гриль","Premium BBQ evening on coals in the villa's garden","Ribeye steaks, lamb chops and grilled vegetables","Villanın bahçesinde kömür ateşinde enfes bir barbekü akşamı.","Antrikot biftek, kuzu pirzola ve ızgara sebzeler","175","160","16000","5800","https://images.unsplash.com/photo-1544025162-d76694265947?w=1200","нет","BBQ","https://youtube.com/watch?v=bbq","В стоимость входит премиальное маринованное фермерское мясо, отборные угли, розжиг, лаваш, соусы и работа гриль-мастера в течение 3 часов.","The price includes premium marinated farm-raised meat, select charcoal, fire starter, lavash, sauces, and a 3-hour grill master.","Fiyata birinci sınıf marine edilmiş çiftlik eti, seçkin mangal kömürü, ateş başlatıcı, lavaş, soslar ve 3 saatlik mangal ustası eğitimi dahildir."],
-    ["prod-5","СПА-тур и грязевые источники Султание","Омолаживающие минеральные термы и ванны озера Кёйджегиз","Sultaniye Spa and Mud Springs Tour","Rejuvenating mineral baths and thermal springs of Lake Köyceğiz","Sultaniye Kaplıcaları ve Çamur Kaplıcaları Turu","Köyceğiz Gölü'nün canlandırıcı mineral banyoları ve termal kaynakları","75","70","7000","2500","https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200","нет","СПА","https://youtube.com/watch?v=spa","Трансфер на моторной лодке прямо от причала виллы. Входные билеты в термальные комплексы и радоновые бассейны включены.","Motorboat transfers directly from the villa's dock. Entrance fees to the thermal baths and radon pools are included.","Villanın iskelesinden doğrudan motorlu tekne transferi sağlanmaktadır. Termal banyolar ve radon havuzlarına giriş ücretleri fiyata dahildir."],
-    ["prod-6","Аренда сапбордов [SUP] и двухместного каяка","2 устойчивых SUP-борда и двухместный экспедиционный каяк","SUP and double kayak rental","2 stable SUP boards and a two-seater expedition kayak","SUP ve çift kişilik kano kiralama","2 adet sağlam SUP tahtası ve iki kişilik bir keşif kayığı","85","80","8000","2900","https://images.unsplash.com/photo-1517404215738-15263e9f9178?w=1200","нет","Спорт","https://youtube.com/watch?v=sup","Доставка оборудования прямо к вилле на весь период проживания. В комплекте весла, страховочные лиши и спасательные жилеты.","Equipment delivered directly to your villa for the entire stay. Includes paddles, leashes, and life jackets.","Konaklamanız boyunca kullanacağınız ekipmanlar doğrudan villanıza teslim edilir. Kürekler, tasmalar ve can yelekleri dahildir."],
+    ["prod-2","Приватный круиз на яхте по реке Дальян и пляжу Изтузу","Традиционная деревянная лодка: Капитан Адам, Ликийские гробницы","Private Yacht Cruise on the Dalyan River and Iztuzu Beach","Traditional Wooden Boat: Captain Adam, Lycian Tombs","Dalyan Nehri ve İztuzu Plajı'nda Özel Yat Gezisi","Geleneksel Ahşap Tekne: Kaptan Adam, Likya Mezarları","270","250","25000","9000","https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200","Нет","Круиз","https://youtube.com/watch?v=cruise","Эксклюзивный дневной маршрут: Ликийские гробницы, ловля голубых крабов, купание на пляже Изтузу и обед от капитана со свежей рыбой.","An exclusive day trip: Lycian tombs, blue crab fishing, swimming at Iztuzu beach and a fresh fish lunch prepared by the captain.","Özel bir günlük gezi: Likya mezarları, mavi yengeç avı, İztuzu plajında ​​yüzme ve kaptan tarafından hazırlanan taze balık öğle yemeği."],
+    ["prod-3","Ужин от персонального шеф-повара на вилле","4-курсовой ужин у бассейна: традиционные турецкие мезе и морепродукты","Private Chef Dinner in the Villa","4-course poolside dinner: traditional Turkish meze and seafood","Villada Özel Şef Eşliğinde Akşam Yemeği","Havuz başında 4 çeşit yemekten oluşan akşam yemeği: geleneksel Türk mezeleri ve deniz ürünleri.","130","120","12000","4300","https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200","Нет","Шеф","https://youtube.com/watch?v=chef","Шеф-повар лично закупает фермерские продукты на рынке Дальяна, готовит ужин на вашей кухне, сервирует стол и наводит идеальный порядок.","The chef personally purchases farm produce from the Dalyan market, prepares dinner in your kitchen, sets the table, and keeps everything perfectly tidy.","Şef, Dalyan pazarından bizzat çiftlik ürünleri satın alıyor, mutfağınızda akşam yemeğini hazırlıyor, sofrayı kuruyor ve her şeyi kusursuz bir şekilde düzenli tutuyor."],
+    ["prod-4","Премиальный BBQ-вечер на углях в саду виллы","Стейки рибай, каре ягненка на косточке и овощи гриль","Premium BBQ evening on coals in the villa's garden","Ribeye steaks, lamb chops and grilled vegetables","Villanın bahçesinde kömür ateşinde enfes bir barbekü akşamı.","Antrikot biftek, kuzu pirzola ve ızgara sebzeler","175","160","16000","5800","https://images.unsplash.com/photo-1544025162-d76694265947?w=1200","Нет","BBQ","https://youtube.com/watch?v=bbq","В стоимость входит премиальное маринованное фермерское мясо, отборные угли, розжиг, лаваш, соусы и работа гриль-мастера в течение 3 часов.","The price includes premium marinated farm-raised meat, select charcoal, fire starter, lavash, sauces, and a 3-hour grill master.","Fiyata birinci sınıf marine edilmiş çiftlik eti, seçkin mangal kömürü, ateş başlatıcı, lavaş, soslar ve 3 saatlik mangal ustası eğitimi dahildir."],
+    ["prod-5","СПА-тур и грязевые источники Султание","Омолаживающие минеральные термы и ванны озера Кёйджегиз","Sultaniye Spa and Mud Springs Tour","Rejuvenating mineral baths and thermal springs of Lake Köyceğiz","Sultaniye Kaplıcaları ve Çamur Kaplıcaları Turu","Köyceğiz Gölü'nün canlandırıcı mineral banyoları ve termal kaynakları","75","70","7000","2500","https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200","Нет","СПА","https://youtube.com/watch?v=spa","Трансфер на моторной лодке прямо от причала виллы. Входные билеты в термальные комплексы и радоновые бассейны включены.","Motorboat transfers directly from the villa's dock. Entrance fees to the thermal baths and radon pools are included.","Villanın iskelesinden doğrudan motorlu tekne transferi sağlanmaktadır. Termal banyolar ve radon havuzlarına giriş ücretleri fiyata dahildir."],
+    ["prod-6","Аренда сапбордов [SUP] и двухместного каяка","2 устойчивых SUP-борда и двухместный экспедиционный каяк","SUP and double kayak rental","2 stable SUP boards and a two-seater expedition kayak","SUP ve çift kişilik kano kiralama","2 adet sağlam SUP tahtası ve iki kişilik bir keşif kayığı","85","80","8000","2900","https://images.unsplash.com/photo-1517404215738-15263e9f9178?w=1200","Нет","Спорт","https://youtube.com/watch?v=sup","Доставка оборудования прямо к вилле на весь период проживания. В комплекте весла, страховочные лиши и спасательные жилеты.","Equipment delivered directly to your villa for the entire stay. Includes paddles, leashes, and life jackets.","Konaklamanız boyunca kullanacağınız ekipmanlar doğrudan villanıza teslim edilir. Kürekler, tasmalar ve can yelekleri dahildir."],
     ["prod-7","Прокат электровелосипедов для прогулок по Дальяну","2 современных электробайка с запасом хода до 60 км","Electric bike rentals for exploring Dalyan","2 modern electric bikes with a range of up to 60 km","Dalyan'ı keşfetmek için elektrikli bisiklet kiralama","60 km'ye kadar menzile sahip 2 adet modern elektrikli bisiklet.","45","40","4000","1500","https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=1200","Да","Транспорт","https://youtube.com/watch?v=bike","Идеальный способ исследовать гранатовые сады и улочки Дальяна. В комплекте шлемы, замки и держатели для смартфонов с навигатором.","The perfect way to explore the pomegranate orchards and streets of Dalyan. Helmets, locks, and smartphone holders with GPS included.","Dalyan'ın nar bahçelerini ve sokaklarını keşfetmenin mükemmel yolu. Kasklar, kilitler ve GPS'li akıllı telefon tutucuları dahildir."],
     ["prod-8","Дополнительная экспресс-уборка и смена белья","Внеплановая влажная уборка виллы, замена полотенец и постельного белья","Additional express cleaning and linen change","Unscheduled wet cleaning of the villa, change of towels and bed linen","Ek ekspres temizlik ve nevresim değişimi","Villanın planlanmamış ıslak temizliği, havlu ve nevresim değişimi.","65","60","6000","2200","https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1200","Да","Сервис","https://youtube.com/watch?v=cleaning","Полная уборка всех 4 спален, кухни и санузлов, мытье полов эко-средствами, замена постельных комплектов сатин премиум и банных полотенец.","Full cleaning of all 4 bedrooms, kitchen, and bathrooms, floor cleaning with eco-friendly products, replacement of premium satin bed linens and bath towels.","4 yatak odasının, mutfağın ve banyoların komple temizliği, çevre dostu ürünlerle yer temizliği, birinci sınıf saten nevresim takımları ve banyo havlularının değiştirilmesi."]
   ];
@@ -1719,33 +1721,33 @@ function initSingleSheetByKey_(sheet, key) {
     var colsH_P = srvRows.map(function(r) { return [r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]]; });
     sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
     sheet.getRange(2, 8, colsH_P.length, 9).setValues(colsH_P);
-    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-    sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-    sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
   } else if (key === 'GUIDES') {
     var gHeaders = ['ID', 'Название путеводителя [RU]', 'Описание [RU]', 'Название путеводителя [EN]', 'Описание [EN]', 'Название путеводителя [TR]', 'Описание [TR]', 'Изображения', 'Категория', 'Ссылка на видео', 'Цена [USD]', 'Цена [EUR]', 'Цена [RUB]', 'Цена [TRY]', 'Видео презентации', 'Подробное описание [RU]', 'Подробное описание [EN]', 'Подробное описание [TR]', 'Наличие'];
     styleSheetHeader_(sheet, gHeaders, 1);
     var gRows = [
     ["guide-1","Секретные маршруты реки Дальян и черепаший пляж Изтузу","Эксклюзивный 40-минутный 4K видео-гид от Алексея Знаменского","Secret Routes of the Dalyan River and Iztuzu Turtle Beach","An exclusive 40-minute 4K video guide from Alexey Znamensky","Dalyan Nehri ve İztuzu Kaplumbağa Plajı'nın Gizli Rotaları","Alexey Znamensky'den özel 40 dakikalık 4K video rehberi.","https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200","Локации","https://youtube.com/watch?v=guide1","22","20","2000","700","https://youtube.com/watch?v=preview1","Где встретить гигантских черепах Caretta-Caretta, как взять лодку без наценок и какие дикие бухты скрыты от массовых туристов.","Where to spot giant Caretta-Caretta turtles, how to rent a boat without extra charges, and which wild bays are hidden from the masses.","Dev Caretta-Caretta kaplumbağalarını nerede görebilirsiniz, ek ücret ödemeden nasıl tekne kiralayabilirsiniz ve kalabalıkların gözünden uzak hangi vahşi koylar var?","Да"],
-    ["guide-2","Ликийские скальные гробницы и древний город Каунос","Историческое погружение в тайны Ликийского царства и акрополя","Lycian Rock Tombs and the Ancient City of Kaunos","A historical dive into the mysteries of the Lycian Kingdom and the Acropolis","Likya Kaya Mezarları ve Kaunos Antik Kenti","Likya Krallığı ve Akropolis'in gizemlerine tarihi bir yolculuk.","https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200","История","https://youtube.com/watch?v=guide2","27","25","2500","900","https://youtube.com/watch?v=preview2","Маршрут безопасного подъема к амфитеатру Кауноса, тайные тропы древней гавани и лучшие видовые точки для фотосъемки на закате.","A safe route to the Kaunos Amphitheater, the secret paths of the ancient harbor, and the best vantage points for sunset photography.","Kaunos Amfitiyatrosu'na güvenli bir rota, antik limanın gizli yolları ve gün batımı fotoğrafçılığı için en iyi seyir noktaları.","нет"],
-    ["guide-3","Гастрономический гид: топ-10 ресторанов и гранатовые сады","Где попробовать настоящую турецкую кухню, свежую рыбу и мезе","Gastronomic Guide: Top 10 Restaurants and Pomegranate Orchards","Where to try authentic Turkish cuisine, fresh fish, and meze","Gastronomi Rehberi: En İyi 10 Restoran ve Nar Bahçesi","Gerçek Türk mutfağını, taze balığı ve mezeleri nerede deneyebilirsiniz?","https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200","Гастрономия","https://youtube.com/watch?v=guide3","16","15","1500","550","https://youtube.com/watch?v=preview3","Список проверенных ресторанов Дальяна, включая культовый ресторан Çiçek Restoran, явки шефов и специальные привилегии для гостей нашей виллы.","A list of Dalyan's trusted restaurants, including the iconic Çiçek Restaurant, chef appearances, and special privileges for our villa guests.","Dalyan'ın güvenilir restoranlarının listesi, ikonik Çiçek Restoranı da dahil olmak üzere, şeflerin katılımları ve villa misafirlerimiz için özel ayrıcalıklar.","нет"],
-    ["guide-4","Термальные источники Султание и минеральные грязи","Как получить максимальный оздоровительный эффект без толп","Sultaniye Thermal Springs and Mineral Mud","How to get maximum health benefits without the crowds","Sultaniye Termal Kaplıcaları ve Mineral Çamuru","Kalabalıktan uzak durarak maksimum sağlık faydasını nasıl elde edebilirsiniz?","https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200","Здоровье","https://youtube.com/watch?v=guide4","22","20","2000","700","https://youtube.com/watch?v=preview4","Расписание работы источников, часы отсутствия экскурсионных теплоходов, состав минеральных вод и правильный порядок принятия ванн.","Spring operating hours, hours when excursion boats are closed, composition of mineral waters, and the correct procedure for taking baths.","İlkbahar çalışma saatleri, gezi teknelerinin kapalı olduğu saatler, maden sularının bileşimi ve banyo yapmanın doğru yöntemi.","нет"],
-    ["guide-5","Горные трекинговые тропы и смотровая площадка Радар","Пешие маршруты с панорамными видами на дельту реки и косу Изтузу","Mountain trekking trails and the Radar observation deck","Hiking trails with panoramic views of the river delta and the Iztuzu Spit","Dağ yürüyüş parkurları ve Radar gözlem güvertesi","Nehir deltası ve İztuzu Yarımadası'nın panoramik manzarasına sahip yürüyüş parkurları.","https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200","Трекинг","https://youtube.com/watch?v=guide5","16","15","1500","550","https://youtube.com/watch?v=preview5","Точные GPS-треки подъема на высоту 500 метров над уровнем моря, рекомендации по обуви, запасу воды и безопасности на Ликийской тропе.","Precise GPS tracking of your ascent to 500 meters above sea level, along with recommendations for footwear, water supplies, and safety on the Lycian Way.","Deniz seviyesinden 500 metre yüksekliğe tırmanışınızın hassas GPS takibi, Likya Yolu'nda giyilecek ayakkabı, su temini ve güvenlik önerileri.","нет"],
+    ["guide-2","Ликийские скальные гробницы и древний город Каунос","Историческое погружение в тайны Ликийского царства и акрополя","Lycian Rock Tombs and the Ancient City of Kaunos","A historical dive into the mysteries of the Lycian Kingdom and the Acropolis","Likya Kaya Mezarları ve Kaunos Antik Kenti","Likya Krallığı ve Akropolis'in gizemlerine tarihi bir yolculuk.","https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200","История","https://youtube.com/watch?v=guide2","27","25","2500","900","https://youtube.com/watch?v=preview2","Маршрут безопасного подъема к амфитеатру Кауноса, тайные тропы древней гавани и лучшие видовые точки для фотосъемки на закате.","A safe route to the Kaunos Amphitheater, the secret paths of the ancient harbor, and the best vantage points for sunset photography.","Kaunos Amfitiyatrosu'na güvenli bir rota, antik limanın gizli yolları ve gün batımı fotoğrafçılığı için en iyi seyir noktaları.","Нет"],
+    ["guide-3","Гастрономический гид: топ-10 ресторанов и гранатовые сады","Где попробовать настоящую турецкую кухню, свежую рыбу и мезе","Gastronomic Guide: Top 10 Restaurants and Pomegranate Orchards","Where to try authentic Turkish cuisine, fresh fish, and meze","Gastronomi Rehberi: En İyi 10 Restoran ve Nar Bahçesi","Gerçek Türk mutfağını, taze balığı ve mezeleri nerede deneyebilirsiniz?","https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200","Гастрономия","https://youtube.com/watch?v=guide3","16","15","1500","550","https://youtube.com/watch?v=preview3","Список проверенных ресторанов Дальяна, включая культовый ресторан Çiçek Restoran, явки шефов и специальные привилегии для гостей нашей виллы.","A list of Dalyan's trusted restaurants, including the iconic Çiçek Restaurant, chef appearances, and special privileges for our villa guests.","Dalyan'ın güvenilir restoranlarının listesi, ikonik Çiçek Restoranı da dahil olmak üzere, şeflerin katılımları ve villa misafirlerimiz için özel ayrıcalıklar.","Нет"],
+    ["guide-4","Термальные источники Султание и минеральные грязи","Как получить максимальный оздоровительный эффект без толп","Sultaniye Thermal Springs and Mineral Mud","How to get maximum health benefits without the crowds","Sultaniye Termal Kaplıcaları ve Mineral Çamuru","Kalabalıktan uzak durarak maksimum sağlık faydasını nasıl elde edebilirsiniz?","https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200","Здоровье","https://youtube.com/watch?v=guide4","22","20","2000","700","https://youtube.com/watch?v=preview4","Расписание работы источников, часы отсутствия экскурсионных теплоходов, состав минеральных вод и правильный порядок принятия ванн.","Spring operating hours, hours when excursion boats are closed, composition of mineral waters, and the correct procedure for taking baths.","İlkbahar çalışma saatleri, gezi teknelerinin kapalı olduğu saatler, maden sularının bileşimi ve banyo yapmanın doğru yöntemi.","Нет"],
+    ["guide-5","Горные трекинговые тропы и смотровая площадка Радар","Пешие маршруты с панорамными видами на дельту реки и косу Изтузу","Mountain trekking trails and the Radar observation deck","Hiking trails with panoramic views of the river delta and the Iztuzu Spit","Dağ yürüyüş parkurları ve Radar gözlem güvertesi","Nehir deltası ve İztuzu Yarımadası'nın panoramik manzarasına sahip yürüyüş parkurları.","https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200","Трекинг","https://youtube.com/watch?v=guide5","16","15","1500","550","https://youtube.com/watch?v=preview5","Точные GPS-треки подъема на высоту 500 метров над уровнем моря, рекомендации по обуви, запасу воды и безопасности на Ликийской тропе.","Precise GPS tracking of your ascent to 500 meters above sea level, along with recommendations for footwear, water supplies, and safety on the Lycian Way.","Deniz seviyesinden 500 metre yüksekliğe tırmanışınızın hassas GPS takibi, Likya Yolu'nda giyilecek ayakkabı, su temini ve güvenlik önerileri.","Нет"],
     ["guide-6","Субботний фермерский рынок Дальяна: секреты и покупки","Инструкция по выбору домашних сыров, оливок, гранатового сиропа","Dalyan's Saturday Farmers' Market: Secrets and Shopping","Instructions for choosing homemade cheeses, olives, and pomegranate syrup","Dalyan'ın Cumartesi Çiftçi Pazarı: Sırlar ve Alışveriş","Ev yapımı peynir, zeytin ve nar şurubu seçimi için talimatlar","https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=1200","Шоппинг","https://youtube.com/watch?v=guide6","11","10","1000","350","https://youtube.com/watch?v=preview6","С какими фермерами стоит торговаться, где найти натуральное холодное оливковое масло первого отжима и свежайший инжир.","Which farmers are worth bargaining with, where to find natural cold-pressed extra virgin olive oil and the freshest figs.","Hangi çiftçilerle pazarlık yapmaya değer, doğal soğuk sıkım sızma zeytinyağı ve en taze incirleri nerede bulabilirim?","Да"]
   ];
     var colsA_C = gRows.map(function(r) { return [r[0], r[1], r[2]]; });
     var colsH_P = gRows.map(function(r) { return [r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]]; });
     sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
     sheet.getRange(2, 8, colsH_P.length, 9).setValues(colsH_P);
-    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-    sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-    sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
     sheet.getRange(2, 19, gRows.length, 1).setValues(gRows.map(function(r) { return [r[18] || 'Да']; }));
   } else if (key === 'LEGAL') {
     var lHeaders = ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'];
@@ -1764,10 +1766,10 @@ function initSingleSheetByKey_(sheet, key) {
     var colE = lRows.map(function(r) { return [r[4]]; });
     sheet.getRange(2, 1, colsA_B.length, 2).setValues(colsA_B);
     sheet.getRange(2, 5, colE.length, 1).setValues(colE);
-    sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-    sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
   } else if (key === 'BOOKINGS') {
     var bHeaders = ['Дата заявки', 'Имя клиента', 'Контакт [Tel/TG]', 'Старт', 'Завершение', 'Ночей', 'Взрослых', 'Детей', 'Всего гостей', 'Итоговая стоимость', 'Статус оплаты'];
     styleSheetHeader_(sheet, bHeaders, 1);
@@ -1843,10 +1845,10 @@ function initSingleSheetByKey_(sheet, key) {
     var colE = tRows.map(function(r) { return [r[4]]; });
     sheet.getRange(2, 1, colsA_B.length, 2).setValues(colsA_B);
     sheet.getRange(2, 5, colE.length, 1).setValues(colE);
-    sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-    sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+    sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
   } else if (key === 'SETTINGS') {
     var sHeaders = ['Категория', 'Параметр / Роль / Лист', 'Значение / Статус доступа', 'Промпт / Описание / Инструкция', 'Заметка'];
     styleSheetHeader_(sheet, sHeaders, 1);
@@ -3338,6 +3340,7 @@ function restoreSheetsFromCloudApiInteractive() {
 
       // 1. Очистка листа и гарантированное создание темно-синей шапки на строке 1
       sheet.clearContents();
+      sheet.clearDataValidations();
       var headers = (cfg && Array.isArray(cfg.headers) && cfg.headers.length > 0) ? cfg.headers : null;
       if (headers) {
         styleSheetHeader_(sheet, headers, 1, cfg.minWidths);
@@ -3399,49 +3402,68 @@ function restoreSheetsFromCloudApiInteractive() {
           for (var r = 0; r < dataRows.length; r++) {
             if (dataRows[r].length > maxCols) maxCols = dataRows[r].length;
           }
+          // Определение колонок формул (0-based) для очистки ячеек под ними (коридор разворачивания spill)
+          var formulaCols = [];
+          if (sKey === 'HOME') {
+            formulaCols = [4, 5];
+          } else if (sKey === 'SERVICES' || sKey === 'GUIDES') {
+            formulaCols = [3, 4, 5, 6, 16, 17];
+          } else if (sKey === 'GALLERY') {
+            formulaCols = [3, 4, 5, 6, 10, 11];
+          } else if (sKey === 'LEGAL' || sKey === 'TEMPLATES') {
+            formulaCols = [2, 3, 5, 6];
+          }
+
           var rectRows = dataRows.map(function(row) {
             var copy = row.slice();
             while (copy.length < maxCols) copy.push('');
+            if (formulaCols.length > 0) {
+              for (var fc = 0; fc < formulaCols.length; fc++) {
+                if (formulaCols[fc] < copy.length) {
+                  copy[formulaCols[fc]] = '';
+                }
+              }
+            }
             return copy;
           });
           // ЗАПИСЬ СТРОГО СО СТРОКИ 2 : сохраняет шапку в строке 1
           sheet.getRange(2, 1, rectRows.length, maxCols).setValues(rectRows);
 
-          // Восстановление формул автоперевода с точкой с запятой
+          // Восстановление формул автоперевода с точкой с запятой и безопасным условием OR(ISBLANK)
           if (sKey === 'HOME') {
-            sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
           } else if (sKey === 'SERVICES') {
-            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-            sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-            sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
           } else if (sKey === 'GUIDES') {
-            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-            sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-            sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
           } else if (sKey === 'GALLERY') {
-            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-            sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-            sheet.getRange("K2").setFormula('=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("L2").setFormula('=MAP(J2:J; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("K2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("L2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
           } else if (sKey === 'LEGAL') {
-            sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-            sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
           } else if (sKey === 'TEMPLATES') {
-            sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-            sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+            sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
           }
         }
         restoredCount++;
@@ -3729,6 +3751,7 @@ function restoreFromDriveSnapshotFileId_(fileId) {
 
     // 1. Очистка и установка шапки
     sheet.clearContents();
+    sheet.clearDataValidations();
     var headers = (cfg && Array.isArray(cfg.headers) && cfg.headers.length > 0) ? cfg.headers : null;
     if (headers) {
       styleSheetHeader_(sheet, headers, 1, cfg.minWidths);
@@ -3764,13 +3787,68 @@ function restoreFromDriveSnapshotFileId_(fileId) {
         for (var r = 0; r < dataRows.length; r++) {
           if (dataRows[r].length > maxCols) maxCols = dataRows[r].length;
         }
+        var formulaCols = [];
+        if (item.key === 'HOME') {
+          formulaCols = [4, 5];
+        } else if (item.key === 'SERVICES' || item.key === 'GUIDES') {
+          formulaCols = [3, 4, 5, 6, 16, 17];
+        } else if (item.key === 'GALLERY') {
+          formulaCols = [3, 4, 5, 6, 10, 11];
+        } else if (item.key === 'LEGAL' || item.key === 'TEMPLATES') {
+          formulaCols = [2, 3, 5, 6];
+        }
+
         var rectRows = dataRows.map(function(row) {
           var copy = row.slice();
           while (copy.length < maxCols) copy.push('');
+          if (formulaCols.length > 0) {
+            for (var fc = 0; fc < formulaCols.length; fc++) {
+              if (formulaCols[fc] < copy.length) {
+                copy[formulaCols[fc]] = '';
+              }
+            }
+          }
           return copy;
         });
         // ЗАПИСЬ СО СТРОКИ 2
         sheet.getRange(2, 1, rectRows.length, maxCols).setValues(rectRows);
+
+        // Восстановление формул автоперевода с точкой с запятой
+        if (item.key === 'HOME') {
+          sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        } else if (item.key === 'SERVICES') {
+          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        } else if (item.key === 'GUIDES') {
+          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        } else if (item.key === 'GALLERY') {
+          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("K2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("L2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        } else if (item.key === 'LEGAL') {
+          sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        } else if (item.key === 'TEMPLATES') {
+          sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
+          sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        }
       }
       restored++;
     }
