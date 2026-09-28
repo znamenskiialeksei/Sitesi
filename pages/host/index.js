@@ -1,10 +1,9 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:55 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-HOST-INDEX-SAFEAUTH-260920262355]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:15 | ПЛАН: 270920260115 Оптимизация кабинета и виджета.md | TAG: VILLA-HOST-WIDGET-CLEAN-270920260115]
 // ==============================================================================
 // ЛИЧНЫЙ КАБИНЕТ ХОЗЯИНА ВИЛЛЫ [HOST DASHBOARD]
 // Файл: pages/host/index.js
 // Назначение: Управление бронированиями, ценами, iCal, сообщениями и 2FA безопасность
 // 100% Zero-Brackets & Zero-Emdash Стандарт.
+// Редакция: 28.09.2026 08:00 | Метка: TAG: VILLA-HOST-CHANNEL-SYNC-280920260800
 // ==============================================================================
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -54,6 +53,7 @@ export default function HostDashboardPage() {
   });
   const [allRequestsList, setAllRequestsList] = useState([]);
   const [lmsModules, setLmsModules] = useState([]);
+  const [channelUsed, setChannelUsed] = useState('channel_1_sheets_api');
   const [loading, setLoading] = useState(false);
   const [isAssistantModalOpen, setIsAssistantModalOpen] = useState(false);
   const [selectedChatSheet, setSelectedChatSheet] = useState(() => {
@@ -105,6 +105,9 @@ export default function HostDashboardPage() {
     try {
       const res = await axios.post('/api/booking', { action: 'master_get_chats' });
       if (res.data && res.data.success) {
+        if (res.data.channelUsed) {
+          setChannelUsed(res.data.channelUsed);
+        }
         if (Array.isArray(res.data.chats) && res.data.chats.length > 0) {
           setChats((prevChats) => {
             // Умное сравнение: если данные не изменились, сохраняем ссылку для предотвращения ре-рендеров
@@ -361,12 +364,15 @@ export default function HostDashboardPage() {
     );
 
     try {
-      await axios.post('/api/booking', {
+      const res = await axios.post('/api/booking', {
         action: 'master_send_chats',
         targetSheets: [sheetName],
         message,
         sender: 'Владелец'
       });
+      if (res.data?.channelUsed) {
+        setChannelUsed(res.data.channelUsed);
+      }
       toast.success(t('messageSentToast'));
       fetchMasterChats();
     } catch (err) {
@@ -378,12 +384,15 @@ export default function HostDashboardPage() {
   // 8. Массовая рассылка
   const handleBroadcast = async (targetSheets, message) => {
     try {
-      await axios.post('/api/booking', {
+      const res = await axios.post('/api/booking', {
         action: 'master_send_chats',
         targetSheets,
         message,
         sender: 'Владелец'
       });
+      if (res.data?.channelUsed) {
+        setChannelUsed(res.data.channelUsed);
+      }
       fetchMasterChats();
     } catch (err) {
       toast.error(t('broadcastErrorToast'));
@@ -559,6 +568,7 @@ export default function HostDashboardPage() {
                 chats={chats}
                 lmsModules={lmsModules}
                 initialSelectedSheet={selectedChatSheet}
+                channelUsed={channelUsed}
                 onSelectChat={handleSelectChat}
                 onSendMessage={handleSendMessage}
                 onBroadcast={handleBroadcast}

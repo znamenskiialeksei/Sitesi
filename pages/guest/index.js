@@ -1,7 +1,8 @@
 // ==============================================================================
-// ЛИЧНЫЙ КАБИНЕТ ПУТЕШЕСТВЕННИКА (TRAVELER DASHBOARD)
+// ЛИЧНЫЙ КАБИНЕТ ПУТЕШЕСТВЕННИКА [TRAVELER DASHBOARD]
 // Файл: pages/guest/index.js
 // Назначение: Управление бронированиями гостя, прямой чат с хозяином, видео-гиды
+// Редакция: 28.09.2026 08:00 | Метка: TAG: VILLA-GUEST-CHANNEL-SYNC-280920260800
 // ==============================================================================
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -32,6 +33,7 @@ export default function GuestDashboard() {
   const [activeTab, setActiveTab] = useState('trips'); // 'trips', 'chat', 'guides', 'profile'
   const [activeRequests, setActiveRequests] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
+  const [channelUsed, setChannelUsed] = useState('channel_1_sheets_api');
   const [timeLefter, setTimeLefter] = useState({});
   const [loadingChat, setLoadingChat] = useState(false);
   const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
@@ -74,6 +76,9 @@ export default function GuestDashboard() {
         sender: currentUser.name
       });
       if (res.data && res.data.success) {
+        if (res.data.channelUsed) {
+          setChannelUsed(res.data.channelUsed);
+        }
         // Защита от исчезновения данных: если сервер вернул непустой список сообщений, обновляем
         if (Array.isArray(res.data.messages) && res.data.messages.length > 0) {
           setChatMessages(res.data.messages);
@@ -163,6 +168,9 @@ export default function GuestDashboard() {
       });
 
       if (res.data && res.data.success) {
+        if (res.data.channelUsed) {
+          setChannelUsed(res.data.channelUsed);
+        }
         if (res.data.messages && res.data.messages.length > 0) {
           setChatMessages(res.data.messages);
         }
@@ -378,6 +386,7 @@ export default function GuestDashboard() {
             {activeTab === 'chat' && (
               <GuestChat
                 messages={chatMessages}
+                channelUsed={channelUsed}
                 onSendMessage={handleSendMessage}
                 loading={loadingChat}
                 activeRequests={activeRequests}

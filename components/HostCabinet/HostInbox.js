@@ -5,9 +5,7 @@
 // 14 динамических смарт-шаблонов из Google Таблиц с офлайн-кэшированием,
 // многострочный редактор textarea без урезания текста и ИИ-суфлер Gemini Copilot.
 // 100% Zero-Brackets & Zero-Emdash Стандарт.
-//
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:30 | ПЛАН: 260920262330 Рефакторинг инбокса.md | TAG: VILLA-HOST-INBOX-260920262330]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:48 | ПЛАН: 270920260148 Исправление кнопок ИИ и локализации инбокса.md | TAG: VILLA-HOST-AI-INBOX-I18N-270920260148]
+// Редакция: 28.09.2026 08:00 | Метка: TAG: VILLA-HOST-CHANNEL-SYNC-280920260800
 // ==============================================================================
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
@@ -51,6 +49,7 @@ export default function HostInbox({
   chats = [],
   lmsModules = [],
   initialSelectedSheet = null,
+  channelUsed = 'channel_1_sheets_api',
   onSelectChat,
   onSendMessage,
   onBroadcast,
@@ -843,9 +842,24 @@ export default function HostInbox({
                       : t('chatWithGuest').replace('{name}', activeChat?.clientName || t('guestLabel'))}
                   </span>
                   {!isBroadcastMode && (
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${guestStageInfo.badge}`}>
-                      {guestStageInfo.label}
-                    </span>
+                    <>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${guestStageInfo.badge}`}>
+                        {guestStageInfo.label}
+                      </span>
+                      {channelUsed === 'channel_2_apps_script_webhook' ? (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/15 border border-blue-500/30 text-blue-300 font-bold" title="Канал 2: Webhook Google Apps Script doPost">
+                          🔵 Канал 2: Apps Script Webhook
+                        </span>
+                      ) : channelUsed === 'channel_3_local_cache' ? (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold" title="Канал 3: Serverless Persistence Guard /tmp">
+                          🟠 Канал 3: Автономный кэш /tmp
+                        </span>
+                      ) : (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold" title="Канал 1: Прямой Google Sheets API v4">
+                          🟢 Канал 1: Таблица Google CRM
+                        </span>
+                      )}
+                    </>
                   )}
                 </div>
                 <span className="text-[10px] sm:text-[11px] text-slate-400 block truncate">{activeChat?.clientContact}</span>

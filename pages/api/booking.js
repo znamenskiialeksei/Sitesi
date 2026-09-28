@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 11:45 | ПЛАН: 270920261145 Модернизация чата спален и задач запускаторов.md | TAG: VILLA-CHAT-BEDROOMS-TASKS-270920261145]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 18:20 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-COMPREHENSIVE-7-TASKS-270920261820]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 18:20 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-COMPREHENSIVE-7-TASKS-270920261820]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 28.09.2026 08:00 | ПЛАН: 280920260800 Восстановление финальной редакции кода.md | TAG: VILLA-BOOKING-FINAL-SYNC-280920260800]
 // ==============================================================================
 // ОСНОВНОЙ API СЕРВЕР GOOGLE SHEETS & CRM VILLA TURAMAN
 // Файл: pages/api/booking.js
@@ -1474,6 +1474,8 @@ export default async function handler(req, res) {
         }
       }
 
+      let channelUsed = 'channel_1_sheets_api';
+
       // Запись нового сообщения
       if (data.message || data.fileBase64 || data.fileName) {
         const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
@@ -1488,6 +1490,7 @@ export default async function handler(req, res) {
         const fTR = translations.tr || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
 
         let sheetSaved = false;
+        let relaySaved = false;
         // Канал 1: Прямой Google Sheets API v4
         if (sheets && targetChatId) {
           try {
@@ -1508,7 +1511,7 @@ export default async function handler(req, res) {
         // Канал 2: Резервная доставка через Google Apps Script Webhook (полные права владельца)
         if (!sheetSaved) {
           try {
-            await relayToAppsScriptWebhook('send_chat_message', {
+            const relayRes = await relayToAppsScriptWebhook('send_chat_message', {
               spreadsheetId: targetChatId,
               clientName,
               clientContact: data.contact || '',
@@ -1519,6 +1522,9 @@ export default async function handler(req, res) {
               tr: translations.tr,
               file: data.fileName || ''
             });
+            if (relayRes?.success) {
+              relaySaved = true;
+            }
           } catch (relayErr) {
             console.warn('[Chat Relay Channel 2 Apps Script Warning]:', relayErr.message);
           }
@@ -1538,6 +1544,14 @@ export default async function handler(req, res) {
         });
         await safeCacheSet(cacheKey, existingCache, { ex: 86400 * 7 });
         await safeCacheDel('master_all_chats_swr_cache');
+
+        if (sheetSaved) {
+          channelUsed = 'channel_1_sheets_api';
+        } else if (relaySaved) {
+          channelUsed = 'channel_2_apps_script_webhook';
+        } else {
+          channelUsed = 'channel_3_local_cache';
+        }
 
         // Мгновенное Telegram-уведомление хозяину о новом сообщении гостя с интерактивными кнопками
         if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
@@ -1760,7 +1774,7 @@ export default async function handler(req, res) {
         }
       }
 
-      return res.status(200).json({ success: true, messages, activeRequests });
+      return res.status(200).json({ success: true, messages, activeRequests, channelUsed });
     } catch (e) {
       return res.status(500).json({ success: false, error: e.message });
     }
@@ -1854,6 +1868,7 @@ export default async function handler(req, res) {
           const fTR = translations.tr || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
 
           let contactHostSaved = false;
+          let contactRelaySaved = false;
           try {
             await sheets.spreadsheets.values.append({
               spreadsheetId: targetChatId,
@@ -1869,7 +1884,7 @@ export default async function handler(req, res) {
 
           if (!contactHostSaved) {
             try {
-              await relayToAppsScriptWebhook('send_chat_message', {
+              const relayRes = await relayToAppsScriptWebhook('send_chat_message', {
                 spreadsheetId: targetChatId,
                 clientName: safeName,
                 clientContact: safeContact,
@@ -1880,6 +1895,9 @@ export default async function handler(req, res) {
                 tr: translations.tr,
                 file: data.fileName || ''
               });
+              if (relayRes?.success) {
+                contactRelaySaved = true;
+              }
             } catch (relayErr) {
               console.warn('[contact_host relay warning]:', relayErr.message);
             }
@@ -1924,10 +1942,18 @@ export default async function handler(req, res) {
         }).catch(() => { });
       }
 
+      let channelUsed = 'channel_3_local_cache';
+      if (contactHostSaved) {
+        channelUsed = 'channel_1_sheets_api';
+      } else if (contactRelaySaved) {
+        channelUsed = 'channel_2_apps_script_webhook';
+      }
+
       return res.status(200).json({
         success: true,
         user: userObj,
-        message: 'Сообщение успешно доставлено владельцу виллы!'
+        message: 'Сообщение успешно доставлено владельцу виллы!',
+        channelUsed
       });
     } catch (e) {
       return res.status(500).json({ success: false, error: e.message });
@@ -2452,6 +2478,7 @@ export default async function handler(req, res) {
       const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
       const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
 
+      let channelUsed = 'channel_3_local_cache';
       for (const sheetName of data.targetSheets || []) {
         const clientName = sheetName.split('_')[1] || 'Гость';
         const clientContact = (sheetName.split('_').slice(2).join('_') || '').toLowerCase();
@@ -2464,6 +2491,7 @@ export default async function handler(req, res) {
         const fTR = translations.tr || '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
 
         let hostSaved = false;
+        let hostRelaySaved = false;
         // Канал 1: Прямой Google Sheets API
         if (sheets && targetChatId) {
           try {
@@ -2484,7 +2512,7 @@ export default async function handler(req, res) {
         // Канал 2: Резервная доставка через Google Apps Script Webhook
         if (!hostSaved) {
           try {
-            await relayToAppsScriptWebhook('send_chat_message', {
+            const relayRes = await relayToAppsScriptWebhook('send_chat_message', {
               spreadsheetId: targetChatId,
               clientName,
               clientContact,
@@ -2495,9 +2523,18 @@ export default async function handler(req, res) {
               tr: translations.tr,
               file: ''
             });
+            if (relayRes?.success) {
+              hostRelaySaved = true;
+            }
           } catch (relayErr) {
             console.warn('[master_send_chats relay warning]:', relayErr.message);
           }
+        }
+
+        if (hostSaved) {
+          channelUsed = 'channel_1_sheets_api';
+        } else if (hostRelaySaved && channelUsed !== 'channel_1_sheets_api') {
+          channelUsed = 'channel_2_apps_script_webhook';
         }
 
         // Канал 3: Кэш сообщений с переводами
@@ -2516,7 +2553,7 @@ export default async function handler(req, res) {
           await safeCacheSet(cacheKey, existingCache, { ex: 86400 * 7 });
         }
       }
-      return res.status(200).json({ success: true });
+      return res.status(200).json({ success: true, channelUsed });
     } catch (e) {
       return res.status(500).json({ success: false, error: e.message });
     }

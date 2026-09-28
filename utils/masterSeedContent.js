@@ -4,7 +4,7 @@
 // Назначение: Эталонный источник истины [SSOT] для всех 15 листов Google Таблиц.
 // Защищен от случайного затирания. Обеспечивает 100% самоисцеление при удалении листов.
 // Сгенерировано автоматически через scripts/save-master-seed.js
-// Дата фиксации: 2026-09-27T16:02:32.024Z
+// Дата фиксации: 2026-09-28T03:06:23.391Z
 // 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
@@ -5728,12 +5728,12 @@ const MASTER_SERVICES_ROWS = [
     "Comfortable Mercedes Vito with air conditioning and drinks",
     "Dalaman Havalimanından VIP Transfer [DLM]",
     "Klimalı ve içecek servisi bulunan konforlu Mercedes Vito.",
-    "90",
-    "83",
-    "8325",
-    "3420",
+    "54",
+    "50",
+    "5000",
+    "1800",
     "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1200",
-    "да",
+    "Да",
     "Трансфер",
     "https://youtube.com/watch?v=transfer",
     "Встреча в зоне прилета с именной табличкой. Время в пути до виллы 25 минут. В салоне бесплатный Wi-Fi и прохладительные напитки.",
@@ -5748,12 +5748,12 @@ const MASTER_SERVICES_ROWS = [
     "Traditional Wooden Boat: Captain Adam, Lycian Tombs",
     "Dalyan Nehri ve İztuzu Plajı'nda Özel Yat Gezisi",
     "Geleneksel Ahşap Tekne: Kaptan Adam, Likya Mezarları",
-    "400",
-    "368",
-    "37000",
-    "15200",
+    "270",
+    "250",
+    "25000",
+    "9000",
     "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200",
-    "нет",
+    "Да",
     "Круиз",
     "https://youtube.com/watch?v=cruise",
     "Эксклюзивный дневной маршрут: Ликийские гробницы, ловля голубых крабов, купание на пляже Изтузу и обед от капитана со свежей рыбой.",
@@ -5833,7 +5833,7 @@ const MASTER_SERVICES_ROWS = [
     "8000",
     "2900",
     "https://images.unsplash.com/photo-1517404215738-15263e9f9178?w=1200",
-    "да",
+    "нет",
     "Спорт",
     "https://youtube.com/watch?v=sup",
     "Доставка оборудования прямо к вилле на весь период проживания. В комплекте весла, страховочные лиши и спасательные жилеты.",
@@ -5853,7 +5853,7 @@ const MASTER_SERVICES_ROWS = [
     "4000",
     "1500",
     "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=1200",
-    "да",
+    "Да",
     "Транспорт",
     "https://youtube.com/watch?v=bike",
     "Идеальный способ исследовать гранатовые сады и улочки Дальяна. В комплекте шлемы, замки и держатели для смартфонов с навигатором.",
@@ -5868,12 +5868,12 @@ const MASTER_SERVICES_ROWS = [
     "Unscheduled wet cleaning of the villa, change of towels and bed linen",
     "Ek ekspres temizlik ve nevresim değişimi",
     "Villanın planlanmamış ıslak temizliği, havlu ve nevresim değişimi.",
-    "100",
-    "92",
-    "9250",
-    "3800",
+    "65",
+    "60",
+    "6000",
+    "2200",
     "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1200",
-    "да",
+    "Да",
     "Сервис",
     "https://youtube.com/watch?v=cleaning",
     "Полная уборка всех 4 спален, кухни и санузлов, мытье полов эко-средствами, замена постельных комплектов сатин премиум и банных полотенец.",
@@ -6002,6 +6002,26 @@ const MASTER_GUIDES_ROWS = [
     "С какими фермерами стоит торговаться, где найти натуральное холодное оливковое масло первого отжима и свежайший инжир.",
     "Which farmers are worth bargaining with, where to find natural cold-pressed extra virgin olive oil and the freshest figs.",
     "Hangi çiftçilerle pazarlık yapmaya değer, doğal soğuk sıkım sızma zeytinyağı ve en taze incirleri nerede bulabilirim?"
+  ],
+  [
+    "guide-7",
+    "проба",
+    "проба",
+    "try",
+    "try",
+    "denemek",
+    "denemek",
+    "",
+    "",
+    "",
+    "100",
+    "92",
+    "9250",
+    "3800",
+    "",
+    "проба",
+    "try",
+    "denemek"
   ]
 ];
 
@@ -6119,6 +6139,19 @@ const MASTER_BOOKINGS_ROWS = [
     "10",
     "$2240",
     "Подтверждено [Direct]"
+  ],
+  [
+    "27.09.2026, 23:32:36",
+    "Fedor",
+    "3047892 | zaomarmaris@gmail.com",
+    "06.11.2026",
+    "13.11.2026",
+    "7",
+    "1",
+    "0",
+    "1",
+    "1 540€",
+    "ОЖИДАЕТ ОПЛАТЫ НА IBAN | Код: VT-2026-5449"
   ]
 ];
 
@@ -6202,7 +6235,7 @@ const MASTER_ACCOUNTS_ROWS = [
     "2026-01-15",
     "Алексей Знаменский",
     "villaturaman@gmail.com",
-    "admin123",
+    "205",
     "Нет",
     "Нет",
     "Нет [Владелец / Главный]"
@@ -6217,13 +6250,13 @@ const MASTER_ACCOUNTS_ROWS = [
     "Нет [Управляющий персоналом]"
   ],
   [
-    "2026-06-01",
-    "Иван Смирнов",
-    "ivan.smirnov@example.com",
-    "guest2026",
+    "27.09.2026, 23:32:36",
+    "Fedor",
+    "3047892 | zaomarmaris@gmail.com",
+    "123456",
     "Нет",
     "Нет",
-    "Нет [Гость виллы]"
+    "Нет"
   ]
 ];
 

@@ -1,13 +1,15 @@
 /**
  * ПАСПОРТ МОДУЛЯ:
  * Имя файла: components/GuestCabinet/GuestChat.js
- * Назначение: Защищенный чат гостя с хозяином виллы, мультиязычные плашки и статусы
+ * Назначение: Защищенный чат гостя с хозяином виллы, мультиязычные плашки, 3 канала связи и статусы
  *
  * ХРОНОЛОГИЯ ИЗМЕНЕНИЙ:
  * 1. Ревизия: 260920261646
  *    - Описание: Создание интерфейса чата гостя с интеграцией вложений и таймеров предложений
  * 2. Ревизия: 270920261820
  *    - Описание: Полная локализация шапки чата RU/EN/TR [чат с хозяином, владелец, онлайн, телеграм, почта, авто-перевод]
+ * 3. Ревизия: 280920260800
+ *    - Описание: Интерактивный бейдж активного канала связи 🟢 Канал 1 / 🔵 Канал 2 / 🟠 Канал 3
  */
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -22,7 +24,8 @@ export default function GuestChat({
   loading = false,
   activeRequests = [],
   timeLefter = {},
-  onPayRequest
+  onPayRequest,
+  channelUsed = 'channel_1_sheets_api'
 }) {
   const { t, lang } = useLanguage();
   const { currentUser } = useAuth();
@@ -117,9 +120,24 @@ export default function GuestChat({
               <div className="text-xs text-slate-300 font-medium leading-none mt-0.5">
                 {t('ownerVillaTuraman') || 'Владелец Villa Turaman'}
               </div>
-              <div className="text-[11px] text-emerald-400 flex items-center gap-1 font-bold mt-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                <span>{t('onlineBadge') || '[Онлайн]'}</span>
+              <div className="flex flex-wrap items-center gap-2 mt-1">
+                <div className="text-[11px] text-emerald-400 flex items-center gap-1 font-bold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                  <span>{t('onlineBadge') || '[Онлайн]'}</span>
+                </div>
+                {channelUsed === 'channel_2_apps_script_webhook' ? (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/15 border border-blue-500/30 text-blue-300 font-bold" title="Канал 2: Webhook Google Apps Script doPost">
+                    🔵 Канал 2: Apps Script Webhook
+                  </span>
+                ) : channelUsed === 'channel_3_local_cache' ? (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold" title="Канал 3: Serverless Persistence Guard /tmp">
+                    🟠 Канал 3: Автономный кэш /tmp
+                  </span>
+                ) : (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold" title="Канал 1: Прямой Google Sheets API v4">
+                    🟢 Канал 1: Таблица Google CRM
+                  </span>
+                )}
               </div>
             </div>
           </div>
