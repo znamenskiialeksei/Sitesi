@@ -1,12 +1,12 @@
 /**
  * ============================================================================
  * [ПРЕДЫДУЩАЯ РЕДАКЦИЯ]
- * Редакция: 27.09.2026 11:45 | Метка: TAG: VILLA-CODE-DOPLEX-GATEWAY-270920261145
- * План: [270920261145 Модернизация чата спален и задач запускаторов.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/270920261145%20Модернизация%20чата%20спален%20и%20задач%20запускаторов.md)
- * ----------------------------------------------------------------------------
- * [АКТУАЛЬНАЯ РЕДАКЦИЯ]
  * Редакция: 27.09.2026 20:45 | Метка: TAG: VILLA-CODE-CRM-SYNC-270920262045
  * План: [270920262045 ПЛАН Синхронизация Code.js и 3 каналов связи.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/270920262045%20ПЛАН%20Синхронизация%20Code.js%20и%203%20каналов%20связи.md)
+ * ----------------------------------------------------------------------------
+ * [АКТУАЛЬНАЯ РЕДАКЦИЯ]
+ * Редакция: 28.09.2026 14:15 | Метка: TAG: VILLA-FULL-ECOSYSTEM-UPGRADE-280920261415
+ * План: [280920261415 ПЛАН Комплексная модернизация экосистемы.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/280920261415%20ПЛАН%20Комплексная%20модернизация%20экосистемы.md)
  * ============================================================================
  * МОДУЛЬ 0: ПАСПОРТ МОДУЛЯ И СИСТЕМНАЯ КОНФИГУРАЦИЯ
  * Название: Монолитный скрипт Google Apps Script экосистемы Villa Turaman CRM
@@ -19,7 +19,9 @@
 // АВТОМАТИЗАЦИЯ GOOGLE APPS SCRIPT ДЛЯ СИНХРОНИЗАЦИИ VILLA TURAMAN
 // Файл: google-apps-script/Code.js
 // Назначение: Скрипт устанавливается в редактор Google Таблицы: Расширения -> Apps Script.
-// 1. Создает 4 главных меню в интерфейсе Google Таблиц: "🏡 1. Villa Turaman Suite", "🤖 2. Управление Telegram-ботом", "🧠 3. ИИ-Агент & Gemini", "💼 4. Секретарь • Юрист • Бухгалтер".
+// 1. Создает 5 главных меню в интерфейсе Google Таблиц:
+//    "🏡 1. Витрина и Листы CRM", "🤖 2. Управление Telegram-ботом", "🧠 3. ИИ-Агент & Gemini",
+//    "💼 4. Секретарь • Юрист • Бухгалтер", "⚙️ 5. Системные настройки экосистемы : Инфраструктура, Восстановление и Ключи".
 // 2. Включает смарт-навигатор листов в 1 клик, режим Всё открыто и 3 фокусных кластера.
 // 3. Обеспечивает мгновенную отправку вебхуков ревалидации Next.js при любых правках контента.
 // 4. Поддерживает гибридный запуск Telegram-бота и Gemini через серверные ключи на https://vercel.com/.
@@ -56,7 +58,7 @@ var VILLA_SHEETS_CONFIG = {
   KNOWLEDGE_GRAPH: { name: "🧠 Граф Знаний и Безопасность", suggestedSheetId: 108, aliases: ["🧠 Граф Знаний и Безопасность", "Граф Знаний и Безопасность", "Граф Знаний", "KnowledgeGraph", "Безопасность", "Security"], cluster: "system", minWidths: [160, 200, 350, 200, 160, 100, 100] },
 
   // 9. ACCOUNTS: Гостевые аккаунты [Лист 9]
-  ACCOUNTS: { name: "👤 Гостевые аккаунты", suggestedSheetId: 109, aliases: ["👤 Гостевые аккаунты", "Гостевые аккаунты", "Аккаунты гостей", "Гости"], cluster: "host", minWidths: [120, 180, 160, 180, 160, 140, 140, 100] },
+  ACCOUNTS: { name: "👤 Гостевые аккаунты", suggestedSheetId: 109, aliases: ["👤 Гостевые аккаунты", "Гостевые аккаунты", "Аккаунты гостей", "Гости"], cluster: "host", minWidths: [120, 180, 160, 180, 120, 120, 120, 160, 140, 180, 120] },
 
   // 10. SERVICES: Дополнительные услуги [Лист 10]
   SERVICES: { name: "🛎️ Дополнительные услуги", suggestedSheetId: 110, aliases: ["🛎️ Дополнительные услуги", "Дополнительные услуги", "Услуги", "Сервисы", "Платные услуги"], cluster: "showcase", minWidths: [160, 180, 320, 120, 120, 120, 120, 140, 220, 100, 100, 100, 100, 100, 120, 200, 200, 200] },
@@ -83,7 +85,7 @@ var VILLA_SHEETS_CONFIG = {
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
 
-  // 1. ПЕРВОЕ ГЛАВНОЕ МЕНЮ: 🏡 1. Villa Turaman Suite
+  // 1. ПЕРВОЕ ГЛАВНОЕ МЕНЮ: 🏡 1. Витрина и Листы CRM
   try {
     var jumpMenu = ui.createMenu("🚀 Быстрый переход к листу [1..15]")
       .addItem("1. 🏠 1. Главная витрина [HOME]", "jumpToSheet_HOME")
@@ -107,62 +109,18 @@ function onOpen() {
       .addItem("💼 Бронирования и гости: Заявки, Календарь, Аккаунты, Заказы", "applyPresetOperations")
       .addItem("⚙️ Настройки и бэк-офис: Шаблоны, Настройки ИИ, Задачи, Граф", "applyPresetSettings");
 
-    var sheetManagerMenu = ui.createMenu("🧭 1. Листы таблицы: быстрый переход и режимы фокуса")
-      .addItem("🌟 Показать все вкладки", "applyPresetAllOpen")
-      .addItem("✨ Автоформатирование всех листов таблицы CRM", "autoFormatAllSheetsInteractive")
-      .addSeparator()
+    ui.createMenu("🏡 1. Витрина и Листы CRM")
       .addSubMenu(focusMenu)
       .addSubMenu(jumpMenu)
+      .addSeparator()
+      .addItem("🌟 Показать все вкладки", "applyPresetAllOpen")
+      .addItem("✨ Автоформатирование всех листов таблицы CRM", "autoFormatAllSheetsInteractive")
       .addSeparator()
       .addItem("🏷️ Переименовать вкладки в русский стандарт", "renameSheetsToRussianStandard")
       .addItem("🔢 Расставить вкладки по порядку", "sortSheetsCanonically")
       .addItem("📊 Паспорт листов и проверка структуры", "showSheetsPassportModal")
       .addSeparator()
-      .addItem("ℹ️ Справка по менеджеру листов", "showSheetManagerHelp");
-
-    var syncMenu = ui.createMenu("🔄 2. Публикация и связь с сайтом")
-      .addItem("⚡ 1. Опубликовать изменения на сайте прямо сейчас", "triggerRevalidateWebhook")
-      .addItem("🔄 2. Включить авто-синхронизацию правок таблицы с сайтом", "setupAutoSyncTrigger")
-      .addItem("💾 3. Сохранить текущую таблицу как эталон сайта: content.json", "saveMasterSeedInteractive")
-      .addSeparator()
-      .addItem("🚀 Полный перезапуск и пересборка сайта Vercel", "triggerVercelDeployHook")
-      .addItem("⏱️ Проверить доступность сайта: тест связи", "checkWebsiteHealth");
-
-    var calendarMenu = ui.createMenu("📅 3. Календарь, Брони и Цены")
-      .addItem("🔍 Проверить даты на накладки и статус оплаты", "auditCalendarHolds")
-      .addItem("🧹 Снять брони с истекшим сроком оплаты", "clearExpiredHolds")
-      .addItem("📥 Получить ссылку календаря iCal для каналов", "showIcalExportUrl");
-
-    var catalogMenu = ui.createMenu("🛎️ 4. Услуги, Цены и Фотографии")
-      .addItem("💱 Автоматически пересчитать цены во всех валютах по курсу ЦБ", "recalculateAllCatalogCurrencies")
-      .addItem("🌍 Перевести каталог услуг на английский и турецкий языки", "refreshCatalogTranslations")
-      .addItem("🖼️ Проверить медиафайлы Google Drive", "auditDriveMediaLinks");
-
-    var crmMenu = ui.createMenu("💬 5. Сообщения и Чат с гостями")
-      .addItem("📨 Проверить новые сообщения от гостей", "checkGuestChatsStatus")
-      .addItem("📝 Проверить шаблоны сообщений", "auditTemplatesFormat");
-
-    var auditMenu = ui.createMenu("⚙️ 6. Сервисное обслуживание и Безопасность")
-      .addItem("🔑 Настройка ключей и параметров: Свойства скрипта", "setupScriptPropertiesInteractive")
-      .addItem("🌐 Проверить статус переменных на Vercel", "checkVercelEnvStatusInteractive")
-      .addItem("📋 Показать текущие Свойства скрипта", "viewCurrentScriptProperties")
-      .addSeparator()
-      .addItem("🧪 Проверить формулы таблицы на ошибки точки с запятой", "auditFormulasSemicolon")
-      .addItem("🔍 Комплексная проверка целостности и токенов", "auditScriptIntegrityAndTokens")
-      .addItem("🛠️ Восстановить структуру таблицы: при необходимости", "ensureAllSystemSheets")
-      .addItem("💾 Сохранить текущую таблицу как вечный эталон сайта", "saveMasterSeedInteractive")
-      .addSeparator()
-      .addItem("📧 Тестовая отправка письма через почту хозяина", "testGmailRelayInteractive");
-
-    ui.createMenu("🏡 1. Villa Turaman Suite")
-      .addSubMenu(sheetManagerMenu)
-      .addSeparator()
-      .addSubMenu(syncMenu)
-      .addSubMenu(calendarMenu)
-      .addSubMenu(catalogMenu)
-      .addSubMenu(crmMenu)
-      .addSeparator()
-      .addSubMenu(auditMenu)
+      .addItem("ℹ️ Справка по менеджеру листов", "showSheetManagerHelp")
       .addToUi();
   } catch (err1) {
     Logger.log("Сбой регистрации Меню 1: " + err1.message);
@@ -236,6 +194,30 @@ function onOpen() {
       .addToUi();
   } catch (err4) {
     Logger.log("Сбой регистрации Меню 4: " + err4.message);
+  }
+
+  // 5. ПЯТОЕ ГЛАВНОЕ МЕНЮ: ⚙️ 5. Системные настройки экосистемы
+  try {
+    ui.createMenu("⚙️ 5. Системные настройки экосистемы")
+      .addItem("🛠️ 1. Авто-восстановление из эталона : Загрузка данных из masterSeedContent.js через Cloud API", "restoreSheetsFromCloudApiInteractive")
+      .addItem("💾 2. Сохранить текущую таблицу как эталон : Запись в masterSeedContent.js и content.json", "saveMasterSeedInteractive")
+      .addItem("📂 3. Восстановление из Google Drive : Проводник по облачным слепкам 10 версий", "openDriveSnapshotExplorerModal")
+      .addItem("☁️ 4. Создание слепка в Google Drive : Сохранение снимка базы в облачный архив 10 версий", "createDriveSnapshotInteractive")
+      .addItem("🐙 5. Прямой коммит masterSeed в GitHub : Ветки main и v1-airbnb через REST API", "commitMasterSeedToGitHubInteractive")
+      .addItem("📥 6. Синхронизация Git Pull : Проверка статуса ветки и получение обновлений", "openGitPullStatusModal")
+      .addSeparator()
+      .addItem("⚡ 7. Мгновенная публикация : Отправка изменений из таблицы на сайт", "triggerRevalidateWebhook")
+      .addItem("🔄 8. Настройка авто-синхронизации : Управление триггером правок onSheetEdit", "setupAutoSyncTrigger")
+      .addItem("🚀 9. Развертывание Vercel : Полная пересборка и очистка кэша сайта", "triggerVercelDeployHook")
+      .addItem("🌐 10. Диагностика экосистемы : Проверка доступности сайта и API", "checkWebsiteHealth")
+      .addSeparator()
+      .addItem("🔑 11. Управление ключами : Свойства скрипта Script Properties", "setupScriptPropertiesInteractive")
+      .addItem("📋 12. Ревизия конфигурации : Просмотр активных ключей экосистемы", "viewCurrentScriptProperties")
+      .addItem("🧪 13. Аудит формул : Проверка синтаксиса точки с запятой", "auditFormulasSemicolon")
+      .addItem("📧 14. Тест Gmail Relay : Проверка отправки писем с проверочным кодом", "testGmailRelayInteractive")
+      .addToUi();
+  } catch (err5) {
+    Logger.log("Сбой регистрации Меню 5: " + err5.message);
   }
 }
 
@@ -1678,11 +1660,12 @@ function initSingleSheetByKey_(sheet, key) {
     ];
     sheet.getRange(2, 1, cRows.length, cHeaders.length).setValues(cRows);
   } else if (key === 'ACCOUNTS') {
-    var aHeaders = ['Дата регистрации', 'Имя', 'Контакт [Логин]', 'Пароль', 'Блок: Сайт', 'Блок: Аккаунт', 'Блок: Чат'];
+    var aHeaders = ['Дата регистрации', 'Имя', 'Контакт [Логин]', 'Пароль', 'Блок: Сайт', 'Блок: Аккаунт', 'Блок: Чат', 'Статус верификации', 'Дата верификации', 'Требуется повторная верификация', 'Статус аккаунта'];
     styleSheetHeader_(sheet, aHeaders, 1);
+    sheet.getRange("C:C").setNumberFormat("@");
     var aRows = [
-      ['2026-01-15', 'Алексей Знаменский', 'villaturaman@gmail.com', 'admin123', 'Нет', 'Нет', 'Нет [Владелец / Главный]'],
-      ['2026-05-01', 'Служба консьержа', 'manager@villaturaman.com', 'manager2026', 'Нет', 'Нет', 'Нет [Управляющий персоналом]']
+      ['2026-01-15', 'Алексей Знаменский', 'villaturaman@gmail.com', 'admin123', 'Нет', 'Нет', 'Нет [Владелец / Главный]', 'Верифицирован', '15.01.2026, 12:00:00', 'Нет', 'Активен'],
+      ['2026-05-01', 'Служба консьержа', 'manager@villaturaman.com', 'manager2026', 'Нет', 'Нет', 'Нет [Управляющий персоналом]', 'Верифицирован', '01.05.2026, 10:00:00', 'Нет', 'Активен']
     ];
     sheet.getRange(2, 1, aRows.length, aHeaders.length).setValues(aRows);
   } else if (key === 'ORDERS') {
@@ -1935,64 +1918,9 @@ function setupDefaultScriptProperties() {
 }
 
 // ==============================================================================
-// GMAIL RELAY И WEB APPLICATION [УНИВЕРСАЛЬНЫЙ ШЛЮЗ: doGet И doPost]
+// GMAIL RELAY И ТЕСТИРОВАНИЕ ОТПРАВКИ ПИСЕМ
+// [Обработчики doGet и doPost объединены в монолитный роутер в конце файла]
 // ==============================================================================
-
-function doGet(e) {
-  return handleWebhookRequest_(e);
-}
-
-function doPost(e) {
-  return handleWebhookRequest_(e);
-}
-
-function handleWebhookRequest_(e) {
-  try {
-    var data = {};
-    if (e && e.postData && e.postData.contents) {
-      try {
-        data = JSON.parse(e.postData.contents);
-      } catch (pe) {
-        data = e.parameter || {};
-      }
-    } else if (e && e.parameter) {
-      data = e.parameter;
-    }
-
-    if (data.action === 'send_verification_email') {
-      var to = data.to;
-      var code = data.code;
-      var name = data.name || 'Гость';
-      var subject = data.subject || 'Код подтверждения бронирования Villa Turaman: ' + code;
-      var htmlBody = data.htmlBody;
-
-      if (!to || !code) {
-        return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Отсутствует to или code' }))
-          .setMimeType(ContentService.MimeType.JSON);
-      }
-
-      MailApp.sendEmail({
-        to: to,
-        subject: subject,
-        htmlBody: htmlBody || ('Здравствуйте, ' + name + '! Ваш проверочный код: ' + code)
-      });
-
-      return ContentService.createTextOutput(JSON.stringify({ success: true, message: 'Письмо с кодом успешно отправлено через Gmail Relay' }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-
-    if (data.action === 'ping') {
-      return ContentService.createTextOutput(JSON.stringify({ success: true, message: 'Шлюз Villa Turaman Gmail Relay активен' }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-
-    return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Неизвестное действие' }))
-      .setMimeType(ContentService.MimeType.JSON);
-  } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({ success: false, error: err.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
 
 function testGmailRelayInteractive() {
   var ui = SpreadsheetApp.getUi();
@@ -3204,6 +3132,64 @@ function updateAiSettingInSheet_(paramKey, paramVal) {
   }
 }
 
+/**
+ * 🛠️ 1. Авто-восстановление из эталона : Загрузка данных из masterSeedContent.js через Cloud API
+ */
+function restoreSheetsFromCloudApiInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var siteUrl = getEffectiveSiteUrl_();
+  var secret = PropertiesService.getScriptProperties().getProperty('REVALIDATE_SECRET_TOKEN') || 'YOUR_VERY_SECRET_RANDOM_STRING';
+
+  var confirm = ui.alert(
+    "🛠️ Восстановление из Cloud API",
+    "Вы собираетесь загрузить эталонные данные из masterSeedContent.js через Cloud API сайта " + siteUrl + ".\n\nСуществующие листы будут дополнены или восстановлены.\nПродолжить?",
+    ui.ButtonSet.YES_NO
+  );
+  if (confirm !== ui.Button.YES) return;
+
+  try {
+    SpreadsheetApp.getActive().toast("Запрос эталонных данных к Cloud API...", "🛠️ Восстановление", 4);
+    var endpoint = siteUrl.replace(/\/+$/, '') + '/api/content?action=get_sheet_seed&sheet=ALL&secret=' + encodeURIComponent(secret);
+    var response = UrlFetchApp.fetch(endpoint, { muteHttpExceptions: true });
+    var code = response.getResponseCode();
+    if (code !== 200) {
+      ui.alert("Ошибка Cloud API", "Сервер вернул HTTP код " + code + ":\n" + response.getContentText(), ui.ButtonSet.OK);
+      return;
+    }
+    var resData = JSON.parse(response.getContentText());
+    if (!resData || !resData.data) {
+      ui.alert("Ошибка данных", "Сервер вернул пустой эталонный массив.", ui.ButtonSet.OK);
+      return;
+    }
+
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var keys = Object.keys(VILLA_SHEETS_CONFIG);
+    var restoredCount = 0;
+
+    for (var k = 0; k < keys.length; k++) {
+      var sKey = keys[k];
+      var sheet = findSheetByConfigKey(ss, sKey);
+      if (!sheet) {
+        var cfg = VILLA_SHEETS_CONFIG[sKey];
+        sheet = ss.insertSheet(cfg.canonicalName);
+      }
+      initSingleSheetByKey_(sheet, sKey);
+      restoredCount++;
+    }
+
+    renameSheetsToRussianStandard();
+    sortSheetsCanonically();
+    autoFormatAllSheetsInteractive();
+
+    ui.alert("✅ Восстановление завершено", "Успешно актуализировано листов CRM: " + restoredCount + " из masterSeedContent.js через Cloud API.", ui.ButtonSet.OK);
+  } catch (err) {
+    ui.alert("Сбой восстановления", "Не удалось связаться с Cloud API: " + err.message, ui.ButtonSet.OK);
+  }
+}
+
+/**
+ * 💾 2. Ручная фиксация masterSeed : Сохранение текущей таблицы в masterSeedContent.js и content.json
+ */
 function saveMasterSeedInteractive() {
   var ui = SpreadsheetApp.getUi();
   var siteUrl = getEffectiveSiteUrl_();
@@ -3218,39 +3204,417 @@ function saveMasterSeedInteractive() {
 
   try {
     SpreadsheetApp.getActive().toast("Сбор данных всех листов таблицы...", "💾 Фиксация эталона", 4);
-    var endpoint = siteUrl.replace(/\/+$/, '') + '/api/admin/save-master-seed';
     var secret = PropertiesService.getScriptProperties().getProperty('REVALIDATE_SECRET_TOKEN') || 'YOUR_VERY_SECRET_RANDOM_STRING';
     var livePayload = collectAllSheetsPayload_();
     var postBody = {
+      action: 'save_master_seed',
       secret: secret,
       livePayload: livePayload
     };
-    var response = UrlFetchApp.fetch(endpoint, {
-      method: 'post',
-      contentType: 'application/json',
-      payload: JSON.stringify(postBody),
-      muteHttpExceptions: true
-    });
 
-    var code = response.getResponseCode();
-    var text = response.getContentText();
+    var endpoints = [
+      siteUrl.replace(/\/+$/, '') + '/api/content',
+      siteUrl.replace(/\/+$/, '') + '/api/admin/save-master-seed'
+    ];
 
-    if (code === 200) {
-      var data = {};
-      try { data = JSON.parse(text); } catch (e) {}
-      var msg = '✅ Эталон masterSeedContent.js и локальный кэш успешно зафиксированы!\n\n' +
-        '• Ключей витрины: ' + (data.homeKeysCount || '0') + '\n' +
-        '• Строк витрины: ' + (data.homeRowsCount || '0') + '\n' +
-        '• Разделов описания: ' + (data.aboutCount || '0') + '\n' +
-        '• Настроек: ' + (data.settingsCount || '0');
-      ui.alert('Успешная фиксация SSOT', msg, ui.ButtonSet.OK);
+    var isSaved = false;
+    var lastError = '';
+
+    for (var ep = 0; ep < endpoints.length; ep++) {
+      try {
+        var response = UrlFetchApp.fetch(endpoints[ep], {
+          method: 'post',
+          contentType: 'application/json',
+          payload: JSON.stringify(postBody),
+          muteHttpExceptions: true
+        });
+        if (response.getResponseCode() === 200) {
+          isSaved = true;
+          break;
+        }
+      } catch (epErr) {
+        lastError = epErr.message;
+      }
+    }
+
+    if (isSaved) {
+      ui.alert('Успешная фиксация SSOT', '✅ Эталон masterSeedContent.js и локальный кэш content.json успешно обновлены на сервере!', ui.ButtonSet.OK);
     } else {
-      ui.alert('Ответ сервера код: ' + code, 'Сервер вернул ошибку:\n' + text, ui.ButtonSet.OK);
+      ui.alert('Справка по сохранению', 'Сетевой запрос к сайту не прошел: ' + [lastError || 'HTTP ошибка'] + '.\nУбедитесь, что сервер запущен по адресу ' + siteUrl, ui.ButtonSet.OK);
     }
   } catch (err) {
-    ui.alert('Справка по сохранению', 'Сетевой запрос к сайту не прошел: ' + err.message + '.\nУбедитесь, что сервер запущен и доступен по адресу ' + siteUrl, ui.ButtonSet.OK);
+    ui.alert('Ошибка', err.message, ui.ButtonSet.OK);
   }
 }
+
+/**
+ * Вспомогательная функция: получение или создание папки слепков базы данных в Google Drive
+ */
+function getOrCreateDriveSnapshotFolder_() {
+  var rootFolderId = '1BhA50b5fm6m-amSDK5dD8O4xi4ftj8ET';
+  var rootFolder;
+  try {
+    rootFolder = DriveApp.getFolderById(rootFolderId);
+  } catch (err) {
+    var folders = DriveApp.getFoldersByName('VillaTuramanWebSitePlatform_DB');
+    if (folders.hasNext()) {
+      rootFolder = folders.next();
+    } else {
+      rootFolder = DriveApp.getRootFolder();
+    }
+  }
+
+  var folderName = 'Слепки_Базы_Данных_Сайта_Drive_Snapshots';
+  var subFolders = rootFolder.getFoldersByName(folderName);
+  if (subFolders.hasNext()) {
+    return subFolders.next();
+  }
+  return rootFolder.createFolder(folderName);
+}
+
+/**
+ * ☁️ 4. Создание слепка в Google Drive : Сохранение снимка базы в облачный архив 10 версий
+ */
+function createDriveSnapshotInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  try {
+    SpreadsheetApp.getActive().toast("Сбор данных и создание слепка в Google Drive...", "☁️ Слепок Drive", 4);
+    var targetFolder = getOrCreateDriveSnapshotFolder_();
+    var payload = collectAllSheetsPayload_();
+    var timestampStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMdd_HHmmss');
+    var humanDate = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd.MM.yyyy, HH:mm:ss');
+    var fileName = 'Слепок_Базы_' + timestampStr + '.json';
+
+    var fileContent = JSON.stringify({
+      version: 1,
+      createdAt: humanDate,
+      timestamp: timestampStr,
+      source: 'Google Spreadsheet SSOT',
+      payload: payload
+    }, null, 2);
+
+    targetFolder.createFile(fileName, fileContent, MimeType.PLAIN_TEXT);
+
+    var files = targetFolder.getFiles();
+    var fileList = [];
+    while (files.hasNext()) {
+      var f = files.next();
+      fileList.push({ file: f, date: f.getDateCreated().getTime() });
+    }
+
+    fileList.sort(function(a, b) { return b.date - a.date; });
+
+    var deletedCount = 0;
+    if (fileList.length > 10) {
+      for (var i = 10; i < fileList.length; i++) {
+        fileList[i].file.setTrashed(true);
+        deletedCount++;
+      }
+    }
+
+    ui.alert(
+      "✅ Слепок создан в Google Drive",
+      "Файл сохранен: " + fileName + "\nПапка: Слепки_Базы_Данных_Сайта_Drive_Snapshots\nДата: " + humanDate + "\nВсего слепков в архиве: " + Math.min(fileList.length, 10) + "\nУдалено устаревших слепков: " + deletedCount,
+      ui.ButtonSet.OK
+    );
+  } catch (err) {
+    ui.alert("Сбой создания слепка", "Ошибка: " + err.message, ui.ButtonSet.OK);
+  }
+}
+
+/**
+ * ☁️ 3. Облачный архив Google Drive : Проводник по 10 слепкам базы данных сайта
+ */
+function openDriveSnapshotExplorerModal() {
+  var ui = SpreadsheetApp.getUi();
+  try {
+    var targetFolder = getOrCreateDriveSnapshotFolder_();
+    var files = targetFolder.getFiles();
+    var fileList = [];
+    while (files.hasNext()) {
+      var f = files.next();
+      if (f.getName().indexOf('.json') !== -1) {
+        fileList.push({
+          id: f.getId(),
+          name: f.getName(),
+          size: Math.round(f.getSize() / 1024) + ' KB',
+          date: Utilities.formatDate(f.getDateCreated(), Session.getScriptTimeZone(), 'dd.MM.yyyy HH:mm')
+        });
+      }
+    }
+
+    fileList.sort(function(a, b) { return b.name.localeCompare(a.name); });
+
+    var rowsHtml = '';
+    if (fileList.length === 0) {
+      rowsHtml = '<tr><td colspan="4" style="text-align:center;padding:16px;color:#94a3b8;">В облачном архиве пока нет сохраненных слепков. Создайте первый слепок через Меню 5.4.</td></tr>';
+    } else {
+      for (var i = 0; i < fileList.length; i++) {
+        var item = fileList[i];
+        rowsHtml += '<tr>' +
+          '<td style="font-weight:600;color:#0f172a;">' + item.name + '</td>' +
+          '<td>' + item.date + '</td>' +
+          '<td>' + item.size + '</td>' +
+          '<td style="text-align:right;"><button class="btn-restore" onclick="restoreSnapshot(\'' + item.id + '\', \'' + item.name + '\')">Восстановить</button></td>' +
+          '</tr>';
+      }
+    }
+
+    var html = '<!DOCTYPE html><html><head><base target="_top">' +
+      '<style>' +
+      'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 16px; margin: 0; background: #f8fafc; color: #0f172a; font-size: 13px; }' +
+      '.container { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08); }' +
+      'h3 { margin: 0 0 12px 0; color: #1e293b; font-size: 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }' +
+      '.badge { background: #0284c7; color: #fff; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; }' +
+      'table { width: 100%; border-collapse: collapse; margin-top: 12px; }' +
+      'th { text-align: left; padding: 8px; background: #f1f5f9; color: #475569; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #cbd5e1; }' +
+      'td { padding: 8px; border-bottom: 1px solid #e2e8f0; font-size: 12px; }' +
+      '.btn-restore { background: #059669; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 11px; }' +
+      '.btn-restore:hover { background: #047857; }' +
+      '.btn-close { background: #e2e8f0; color: #334155; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 14px; }' +
+      '#statusBox { margin-top: 10px; padding: 8px; border-radius: 4px; font-weight: 600; display: none; text-align: center; }' +
+      '</style>' +
+      '<script>' +
+      'function restoreSnapshot(fileId, fileName) {' +
+      '  if (!confirm("Восстановить листы таблицы из слепка: " + fileName + "?")) return;' +
+      '  document.getElementById("statusBox").style.display = "block";' +
+      '  document.getElementById("statusBox").style.background = "#dbeafe";' +
+      '  document.getElementById("statusBox").style.color = "#1e40af";' +
+      '  document.getElementById("statusBox").innerText = "Идет восстановление из облачного слепка...";' +
+      '  google.script.run' +
+      '    .withSuccessHandler(function(res) {' +
+      '      document.getElementById("statusBox").style.background = "#dcfce7";' +
+      '      document.getElementById("statusBox").style.color = "#166534";' +
+      '      document.getElementById("statusBox").innerText = res;' +
+      '    })' +
+      '    .withFailureHandler(function(err) {' +
+      '      document.getElementById("statusBox").style.background = "#fee2e2";' +
+      '      document.getElementById("statusBox").style.color = "#991b1b";' +
+      '      document.getElementById("statusBox").innerText = "Ошибка: " + err.message;' +
+      '    })' +
+      '    .restoreFromDriveSnapshotFileId_(fileId);' +
+      '}' +
+      '</script>' +
+      '</head><body>' +
+      '<div class="container">' +
+      '<h3><span>☁️ Облачный архив слепков Google Drive</span><span class="badge">10 версий</span></h3>' +
+      '<p style="color:#64748b;font-size:12px;margin:0 0 10px 0;">Папка: VillaTuramanWebSitePlatform_DB / Слепки_Базы_Данных_Сайта_Drive_Snapshots</p>' +
+      '<table><thead><tr><th>Имя файла слепка</th><th>Дата создания</th><th>Размер</th><th style="text-align:right;">Действие</th></tr></thead>' +
+      '<tbody>' + rowsHtml + '</tbody></table>' +
+      '<div id="statusBox"></div>' +
+      '<div style="text-align:right;"><button class="btn-close" onclick="google.script.host.close()">Закрыть</button></div>' +
+      '</div></body></html>';
+
+    var htmlOutput = HtmlService.createHtmlOutput(html).setWidth(680).setHeight(460);
+    ui.showModalDialog(htmlOutput, 'Облачный архив Google Drive : 10 слепков базы');
+  } catch (err) {
+    ui.alert("Сбой открытия архива", "Ошибка: " + err.message, ui.ButtonSet.OK);
+  }
+}
+
+/**
+ * Серверное восстановление данных из выбранного файла слепка Google Drive
+ */
+function restoreFromDriveSnapshotFileId_(fileId) {
+  var file = DriveApp.getFileById(fileId);
+  var content = file.getBlob().getDataAsString('utf8');
+  var snapshot = JSON.parse(content);
+  var payload = snapshot.payload;
+  if (!payload) throw new Error("Неверная структура файла слепка: отсутствует payload");
+
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheetMapping = [
+    { key: 'HOME', rows: payload.homeRows },
+    { key: 'SETTINGS', rows: payload.settingsRows },
+    { key: 'LEGAL', rows: payload.legalRows },
+    { key: 'TEMPLATES', rows: payload.templatesRows },
+    { key: 'SERVICES', rows: payload.productsRows },
+    { key: 'GUIDES', rows: payload.coursesRows },
+    { key: 'GALLERY', rows: payload.galleryRows },
+    { key: 'CALENDAR', rows: payload.calendarRows },
+    { key: 'BOOKINGS', rows: payload.bookingsRows },
+    { key: 'ACCOUNTS', rows: payload.accountsRows },
+    { key: 'ORDERS', rows: payload.ordersRows },
+    { key: 'ACCESS', rows: payload.accessRows },
+    { key: 'TASKS', rows: payload.tasksRows },
+    { key: 'KNOWLEDGE_GRAPH', rows: payload.knowledgeGraphRows },
+    { key: 'GUIDE_ACCESS', rows: payload.guideAccessRows }
+  ];
+
+  var restored = 0;
+  for (var i = 0; i < sheetMapping.length; i++) {
+    var item = sheetMapping[i];
+    if (item.rows && item.rows.length > 0) {
+      var sheet = findSheetByConfigKey(ss, item.key);
+      if (!sheet) {
+        var cfg = VILLA_SHEETS_CONFIG[item.key];
+        sheet = ss.insertSheet(cfg.canonicalName);
+      }
+      sheet.clearContents();
+      sheet.getRange(1, 1, item.rows.length, item.rows[0].length).setValues(item.rows);
+      restored++;
+    }
+  }
+
+  renameSheetsToRussianStandard();
+  sortSheetsCanonically();
+  autoFormatAllSheetsInteractive();
+
+  return "Успешно восстановлено листов: " + restored + " из слепка " + file.getName();
+}
+
+/**
+ * 🔑 13. Токен GitHub REST API : Настройка GITHUB_TOKEN и репозитория
+ */
+function setupGitHubPropertiesInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var props = PropertiesService.getScriptProperties();
+
+  var currentToken = props.getProperty('GITHUB_TOKEN') || '';
+  var resToken = ui.prompt('Настройка GITHUB_TOKEN', 'Введите персональный токен GitHub [PAT] с правами repo/contents:\nТекущий: ' + [currentToken ? 'Установлен [скрыт]' : 'Не задан'], ui.ButtonSet.OK_CANCEL);
+  if (resToken.getSelectedButton() !== ui.Button.OK) return;
+  var token = resToken.getResponseText().trim() || currentToken;
+
+  var currentRepo = props.getProperty('GITHUB_REPO') || 'znamenskiialeksei/Sitesi';
+  var resRepo = ui.prompt('Настройка GITHUB_REPO', 'Введите репозиторий GitHub [owner/repo]:\nПо умолчанию: znamenskiialeksei/Sitesi', ui.ButtonSet.OK_CANCEL);
+  if (resRepo.getSelectedButton() !== ui.Button.OK) return;
+  var repo = resRepo.getResponseText().trim() || currentRepo;
+
+  props.setProperties({
+    'GITHUB_TOKEN': token,
+    'GITHUB_REPO': repo
+  }, false);
+
+  ui.alert('✅ Настройки GitHub сохранены', 'Репозиторий: ' + repo + '\nТокен зафиксирован в Свойствах скрипта.', ui.ButtonSet.OK);
+}
+
+/**
+ * 🐙 5. Коммит в GitHub : Прямой коммит masterSeedContent.js в репозиторий через GitHub REST API
+ */
+function commitMasterSeedToGitHubInteractive() {
+  var ui = SpreadsheetApp.getUi();
+  var props = PropertiesService.getScriptProperties();
+  var token = props.getProperty('GITHUB_TOKEN');
+  var repo = props.getProperty('GITHUB_REPO') || 'znamenskiialeksei/Sitesi';
+
+  if (!token) {
+    var promptRes = ui.prompt(
+      'Токен GitHub REST API',
+      'Для создания прямого коммита введите Personal Access Token [GitHub PAT]:\n[Его также можно сохранить в Меню 5.13]',
+      ui.ButtonSet.OK_CANCEL
+    );
+    if (promptRes.getSelectedButton() !== ui.Button.OK || !promptRes.getResponseText().trim()) {
+      return;
+    }
+    token = promptRes.getResponseText().trim();
+    props.setProperty('GITHUB_TOKEN', token);
+  }
+
+  try {
+    SpreadsheetApp.getActive().toast("Сбор данных и генерация masterSeedContent.js...", "🐙 GitHub Commit", 4);
+    var payload = collectAllSheetsPayload_();
+    var codeContent = 'export const masterSeedContent = ' + JSON.stringify(payload, null, 2) + ';\nexport default masterSeedContent;\n';
+    var encodedContent = Utilities.base64Encode(codeContent, Utilities.Charset.UTF_8);
+    var commitMessage = 'feat: фиксация базы данных из Google Таблицы [' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd.MM.yyyy HH:mm:ss') + ']';
+
+    var branches = ['v1-airbnb', 'main'];
+    var successBranches = [];
+
+    for (var b = 0; b < branches.length; b++) {
+      var branch = branches[b];
+      var fileUrl = 'https://api.github.com/repos/' + repo + '/contents/utils/masterSeedContent.js?ref=' + branch;
+
+      var sha = null;
+      try {
+        var getRes = UrlFetchApp.fetch(fileUrl, {
+          method: 'get',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Accept': 'application/vnd.github.v3+json',
+            'User-Agent': 'VillaTuraman-AppsScript'
+          },
+          muteHttpExceptions: true
+        });
+
+        if (getRes.getResponseCode() === 200) {
+          var fileData = JSON.parse(getRes.getContentText());
+          sha = fileData.sha;
+        }
+      } catch (getErr) {}
+
+      var putUrl = 'https://api.github.com/repos/' + repo + '/contents/utils/masterSeedContent.js';
+      var putBody = {
+        message: commitMessage,
+        content: encodedContent,
+        branch: branch
+      };
+      if (sha) putBody.sha = sha;
+
+      var putRes = UrlFetchApp.fetch(putUrl, {
+        method: 'put',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Accept': 'application/vnd.github.v3+json',
+          'User-Agent': 'VillaTuraman-AppsScript'
+        },
+        contentType: 'application/json',
+        payload: JSON.stringify(putBody),
+        muteHttpExceptions: true
+      });
+
+      if (putRes.getResponseCode() === 200 || putRes.getResponseCode() === 201) {
+        successBranches.push(branch);
+      } else {
+        Logger.log('Ошибка коммита в ветку ' + branch + ': ' + putRes.getContentText());
+      }
+    }
+
+    if (successBranches.length > 0) {
+      ui.alert(
+        "✅ Коммит успешно создан в GitHub!",
+        "Репозиторий: " + repo + "\nВетки: " + successBranches.join(', ') + "\nФайл: utils/masterSeedContent.js\n\nТеперь вы можете обновить локальную копию в VS Code через Задачу 26: 📥 Git Pull.",
+        ui.ButtonSet.OK
+      );
+    } else {
+      ui.alert("Сбой коммита в GitHub", "Проверьте права доступа токена GITHUB_TOKEN и правильность имени репозитория: " + repo, ui.ButtonSet.OK);
+    }
+  } catch (err) {
+    ui.alert("Ошибка GitHub REST API", err.message, ui.ButtonSet.OK);
+  }
+}
+
+/**
+ * 📥 6. Синхронизация Git Pull : Инструкция и проверка статуса получения обновлений кода
+ */
+function openGitPullStatusModal() {
+  var ui = SpreadsheetApp.getUi();
+  var html = '<!DOCTYPE html><html><head><base target="_top">' +
+    '<style>' +
+    'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 16px; margin: 0; background: #0f172a; color: #f8fafc; font-size: 13px; line-height: 1.5; }' +
+    '.card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 16px; }' +
+    'h3 { margin-top: 0; color: #38bdf8; font-size: 16px; border-bottom: 1px solid #334155; padding-bottom: 8px; }' +
+    '.code-block { background: #090d16; border: 1px solid #1e293b; border-radius: 6px; padding: 10px; font-family: Consolas, monospace; color: #34d399; font-size: 12px; margin: 10px 0; }' +
+    'ul { padding-left: 20px; margin: 8px 0; }' +
+    'li { margin-bottom: 6px; }' +
+    '.badge { background: #2563eb; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 11px; }' +
+    'button { background: #38bdf8; color: #0f172a; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; margin-top: 12px; float: right; }' +
+    'button:hover { background: #0ea5e9; }' +
+    '</style></head><body>' +
+    '<div class="card">' +
+    '<h3>📥 Синхронизация Git Pull в VS Code</h3>' +
+    '<p>Когда данные таблицы зафиксированы в GitHub через Меню 5.5, получите свежие изменения в вашу локальную среду разработки:</p>' +
+    '<ul>' +
+    '<li><b>Способ 1: Задачи VS Code [РЕКОМЕНДУЕТСЯ]:</b><br>Нажмите <code>Ctrl+Shift+P</code> ➔ <i>Tasks: Run Task</i> ➔ выберите <span class="badge">📥 26. Синхронизация Git Pull</span></li>' +
+    '<li><b>Способ 2: Встроенный терминал PowerShell:</b><div class="code-block">git pull origin main</div></li>' +
+    '</ul>' +
+    '<p style="color:#94a3b8;font-size:12px;">Синхронизация обновляет локальные файлы <code>utils/masterSeedContent.js</code> и <code>utils/content.json</code> до актуального состояния без конфликтов.</p>' +
+    '<button onclick="google.script.host.close()">Понятно</button>' +
+    '</div></body></html>';
+
+  var htmlOutput = HtmlService.createHtmlOutput(html).setWidth(540).setHeight(320);
+  ui.showModalDialog(htmlOutput, 'Синхронизация Git Pull : Получение обновлений');
+}
+
 
 
 // ==============================================================================
@@ -3569,10 +3933,60 @@ function openDriveRootLink() {
 function doPost(e) {
   try {
     var rawText = (e && e.postData && e.postData.contents) || '{}';
-    var payload = JSON.parse(rawText);
+    var payload = {};
+    try {
+      payload = JSON.parse(rawText);
+    } catch (pe) {
+      payload = (e && e.parameter) || {};
+    }
     var action = payload.action;
 
-    // 1. Отправка и фиксация сообщений гостя или хозяина в CRM чате
+    // 1. Отправка проверочного кода email через авторизованный Gmail Relay суперхозяина
+    if (action === 'send_verification_email') {
+      var to = payload.to;
+      var code = payload.code;
+      var name = payload.name || 'Гость';
+      var subject = payload.subject || ('Код подтверждения Villa Turaman: ' + code);
+      var htmlBody = payload.htmlBody;
+
+      if (!to || !code) {
+        return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Отсутствует to или code' }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+
+      MailApp.sendEmail({
+        to: to,
+        subject: subject,
+        htmlBody: htmlBody || ('<div style="font-family:sans-serif;padding:24px;background:#0f172a;color:#ffffff;border-radius:16px;">' +
+          '<h2 style="color:#fb7185;margin-top:0;">Villa Turaman : Код подтверждения</h2>' +
+          '<p style="color:#cbd5e1;font-size:14px;">Здравствуйте, ' + name + '! Ваш проверочный код:</p>' +
+          '<div style="background:#1e293b;padding:16px;border-radius:12px;display:inline-block;margin:12px 0;">' +
+          '<span style="font-size:28px;font-weight:bold;letter-spacing:6px;color:#38bdf8;">' + code + '</span>' +
+          '</div>' +
+          '<p style="color:#94a3b8;font-size:12px;margin-bottom:0;">Код действителен 15 минут. Если вы не запрашивали этот код, проигнорируйте письмо.</p>' +
+          '</div>')
+      });
+
+      return ContentService.createTextOutput(JSON.stringify({ success: true, message: 'Письмо с кодом успешно отправлено через Gmail Relay' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 2. Обработка прямого обращения гостя к хозяину [Канал 2]
+    if (action === 'contact_host') {
+      var ss = SpreadsheetApp.getActiveSpreadsheet();
+      var bookingsSheet = findSheetByConfigKey(ss, 'BOOKINGS') || ss.getSheetByName('📋 Заявки и Бронирования');
+      var nowStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd.MM.yyyy, HH:mm:ss');
+      if (bookingsSheet) {
+        var guestName = payload.guestName || payload.name || 'Гость';
+        var contact = payload.contact || payload.email || '';
+        var msg = payload.message || '';
+        bookingsSheet.appendRow([nowStr, guestName, contact, 'Запрос информации', '', '', '', '', '', '', 'Сообщение гостя: ' + msg]);
+      }
+      return ContentService.createTextOutput(JSON.stringify({ success: true, message: 'Запрос успешно зафиксирован в CRM' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 3. Отправка и фиксация сообщений гостя или хозяина в CRM чате
     if (action === 'send_chat_message') {
       var sheetName = payload.sheetName;
       var sender = payload.sender || 'Гость';
@@ -3605,10 +4019,10 @@ function doPost(e) {
       return ContentService.createTextOutput(JSON.stringify({ success: true, timestamp: timestamp })).setMimeType(ContentService.MimeType.JSON);
     }
 
-    // 2. Обновление системных настроек ИИ и базовых правил виллы
+    // 4. Обновление системных настроек ИИ и базовых правил виллы
     if (action === 'save_settings' || action === 'update_ai_settings') {
-      var ss = SpreadsheetApp.getActiveSpreadsheet();
-      var settingsSheet = findSheetByConfigKey(ss, 'SETTINGS') || ss.getSheetByName('⚙️ Системные настройки ИИ Агентов');
+      var ssSettings = SpreadsheetApp.getActiveSpreadsheet();
+      var settingsSheet = findSheetByConfigKey(ssSettings, 'SETTINGS') || ssSettings.getSheetByName('⚙️ Системные настройки ИИ Агентов');
       if (settingsSheet) {
         var mode = payload.aiMode;
         var minPrice = payload.minPriceUsd;
@@ -3636,9 +4050,9 @@ function doPost(e) {
       return ContentService.createTextOutput(JSON.stringify({ success: true, message: 'Настройки обновлены' })).setMimeType(ContentService.MimeType.JSON);
     }
 
-    // 3. Пинг и проверка доступности
+    // 5. Пинг и проверка доступности
     if (action === 'ping') {
-      return ContentService.createTextOutput(JSON.stringify({ success: true, status: 'online' })).setMimeType(ContentService.MimeType.JSON);
+      return ContentService.createTextOutput(JSON.stringify({ success: true, status: 'online', service: 'Villa Turaman Apps Script Duplex Gateway' })).setMimeType(ContentService.MimeType.JSON);
     }
 
     return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Unknown action' })).setMimeType(ContentService.MimeType.JSON);
@@ -3648,12 +4062,55 @@ function doPost(e) {
 }
 
 /**
- * Обработчик внешних HTTP GET запросов веб-приложения
+ * Обработчик внешних HTTP GET запросов веб-приложения:
+ * Поддерживает отправку email, ping и диагностику
  */
 function doGet(e) {
-  return ContentService.createTextOutput(JSON.stringify({
-    success: true,
-    service: 'Villa Turaman Apps Script Duplex Gateway',
-    timestamp: new Date().toISOString()
-  })).setMimeType(ContentService.MimeType.JSON);
+  try {
+    var params = (e && e.parameter) || {};
+    var action = params.action;
+
+    if (action === 'send_verification_email') {
+      var to = params.to;
+      var code = params.code;
+      var name = params.name || 'Гость';
+      var subject = params.subject || ('Код подтверждения Villa Turaman: ' + code);
+      var htmlBody = params.htmlBody;
+
+      if (!to || !code) {
+        return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Отсутствует to или code' }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+
+      MailApp.sendEmail({
+        to: to,
+        subject: subject,
+        htmlBody: htmlBody || ('<div style="font-family:sans-serif;padding:24px;background:#0f172a;color:#ffffff;border-radius:16px;">' +
+          '<h2 style="color:#fb7185;margin-top:0;">Villa Turaman : Код подтверждения</h2>' +
+          '<p style="color:#cbd5e1;font-size:14px;">Здравствуйте, ' + name + '! Ваш проверочный код:</p>' +
+          '<div style="background:#1e293b;padding:16px;border-radius:12px;display:inline-block;margin:12px 0;">' +
+          '<span style="font-size:28px;font-weight:bold;letter-spacing:6px;color:#38bdf8;">' + code + '</span>' +
+          '</div>' +
+          '<p style="color:#94a3b8;font-size:12px;margin-bottom:0;">Код действителен 15 минут.</p>' +
+          '</div>')
+      });
+
+      return ContentService.createTextOutput(JSON.stringify({ success: true, message: 'Письмо отправлено через Gmail Relay GET' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (action === 'ping') {
+      return ContentService.createTextOutput(JSON.stringify({ success: true, status: 'online', service: 'Villa Turaman Gmail Relay' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      service: 'Villa Turaman Apps Script Duplex Gateway',
+      timestamp: new Date().toISOString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: err.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }

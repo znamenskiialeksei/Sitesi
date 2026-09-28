@@ -238,6 +238,19 @@
         "reveal": "always",
         "panel": "new"
       }
+    },
+    {
+      "label": "📥 26. Синхронизация Git Pull : git pull origin main -> Репозиторий GitHub -> Получение свежих коммитов masterSeed и кода",
+      "type": "shell",
+      "command": "git pull origin main",
+      "options": {
+        "cwd": "${workspaceFolder}/.."
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
     }
   ]
 }

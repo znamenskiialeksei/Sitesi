@@ -1,3 +1,5 @@
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 20:45 | TAG: VILLA-CONTENT-API-270920262045]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 28.09.2026 14:15 | ПЛАН: 280920261415 ПЛАН Комплексная модернизация экосистемы.md | TAG: VILLA-FULL-ECOSYSTEM-UPGRADE-280920261415]
 // ==============================================================================
 // СЕРВЕРНЫЙ ЭНДПОИНТ ДИНАМИЧЕСКОГО КОНТЕНТА GOOGLE SHEETS
 // Файл: pages/api/content.js
@@ -7,6 +9,8 @@
 // 100% Zero-Brackets & Zero-Emdash Стандарт.
 // ==============================================================================
 
+import fs from 'fs';
+import path from 'path';
 import { getOrFetchLiveContent, clearLiveContentCache, updateLiveContentFromPayload } from '../../utils/liveContentSync';
 
 /**
@@ -21,15 +25,66 @@ export function clearMemoryCache() {
  * Поддерживает GET и POST: с опцией force=true для сброса или livePayload для прямого обновления
  */
 export default async function handler(req, res) {
-  // Прямое обновление из Google Apps Script: Duplex Push
-  if (req.method === 'POST' && req.body?.livePayload) {
+  const action = req.body?.action || req.query?.action;
+
+  // 1. Экспорт эталонных строк для Google Apps Script: Cloud API Seed Pull
+  if (action === 'get_sheet_seed') {
     try {
-      const data = updateLiveContentFromPayload(req.body.livePayload);
+      const targetSheet = (req.query?.sheet || req.body?.sheet || 'ALL').toString().toUpperCase();
+      const contentJsonPath = path.join(process.cwd(), 'utils', 'content.json');
+      let contentData = null;
+
+      if (fs.existsSync(contentJsonPath)) {
+        try {
+          contentData = JSON.parse(fs.readFileSync(contentJsonPath, 'utf8'));
+        } catch (e) {}
+      }
+
+      if (!contentData) {
+        contentData = await getOrFetchLiveContent(false);
+      }
+
+      return res.status(200).json({
+        success: true,
+        sheet: targetSheet,
+        data: contentData,
+        timestamp: new Date().toISOString()
+      });
+    } catch (seedErr) {
+      console.error('Ошибка в get_sheet_seed:', seedErr.message);
+      return res.status(500).json({ success: false, error: seedErr.message });
+    }
+  }
+
+  // 2. Фиксация эталона в masterSeedContent.js и content.json при ручном вызове или публикации
+  if ((req.method === 'POST' && req.body?.livePayload) || action === 'save_master_seed') {
+    try {
+      const payload = req.body?.livePayload || req.body;
+      const data = updateLiveContentFromPayload(payload);
+
+      // Атомарное сохранение в локальный файл utils/content.json при наличии прав записи
+      try {
+        const contentPath = path.join(process.cwd(), 'utils', 'content.json');
+        fs.writeFileSync(contentPath, JSON.stringify(data, null, 2), 'utf8');
+      } catch (fsErr) {
+        console.warn('Запись в utils/content.json пропущена [read-only filesystem]:', fsErr.message);
+      }
+
+      // Сохранение в межконтейнерный кэш /tmp
+      try {
+        const tmpPath = path.join('/tmp', 'masterSeedContent.json');
+        fs.writeFileSync(tmpPath, JSON.stringify(data, null, 2), 'utf8');
+      } catch (tmpErr) {}
+
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
       res.setHeader('Pragma', 'no-cache');
       res.setHeader('Expires', '0');
       res.setHeader('X-Content-Source', 'google_apps_script_push');
-      return res.status(200).json(data);
+      return res.status(200).json({
+        success: true,
+        message: 'Эталон базы данных успешно обновлен в памяти и кэше',
+        data
+      });
     } catch (pushErr) {
       console.error('Ошибка прямого обновления кэша контента:', pushErr.message);
       return res.status(500).json({ success: false, error: pushErr.message });

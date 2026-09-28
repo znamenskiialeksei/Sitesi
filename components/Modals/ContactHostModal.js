@@ -15,6 +15,7 @@ import { X, Send, Paperclip, ShieldCheck, Clock, Award, MessageCircle, Sparkles 
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../Toast';
 import { useLanguage } from '../../utils/language';
+import VerificationModal from './VerificationModal';
 
 export default function ContactHostModal() {
   const router = useRouter();
@@ -27,6 +28,7 @@ export default function ContactHostModal() {
   const [message, setMessage] = useState('');
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isVerifyOpen, setIsVerifyOpen] = useState(false);
 
   // Предзаполнение данных, если пользователь уже авторизован
   useEffect(() => {
@@ -62,6 +64,50 @@ export default function ContactHostModal() {
     setMessage((prev) => (prev ? `${prev}\n${text}` : text));
   };
 
+  const sendContactMessage = async (verifiedContact, verifiedName) => {
+    const finalName = verifiedName || currentUser?.name || name.trim();
+    const finalContact = verifiedContact || currentUser?.contact || contact.trim();
+    const finalMessage = message.trim();
+
+    setLoading(true);
+
+    try {
+      const res = await axios.post('/api/booking', {
+        action: 'contact_host',
+        name: finalName,
+        contact: finalContact,
+        sender: finalName,
+        message: finalMessage,
+        fileName: file?.name || null,
+        mimeType: file?.type || null,
+        fileBase64: file?.base64 || null,
+        isVerified: true
+      });
+
+      if (res.data && res.data.success) {
+        // Мгновенная прямая авторизация верифицированного гостя
+        if (res.data.user) {
+          loginGuestDirectly({ ...res.data.user, isVerified: true });
+        }
+
+        toast.success(t('contactSuccessToast') || 'Сообщение отправлено хозяину! Вы вошли как гость.');
+        setContactModalOpen(false);
+        setMessage('');
+        setFile(null);
+
+        // Переход в личный кабинет гостя к открытому диалогу
+        router.push('/guest?tab=chat');
+      } else {
+        toast.error(res.data?.error || 'Не удалось отправить сообщение. Попробуйте снова.');
+      }
+    } catch (err) {
+      console.warn('Ошибка отправки обращения к хозяину:', err);
+      toast.error(err.response?.data?.error || 'Сетевая ошибка при отправке сообщения.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -84,42 +130,24 @@ export default function ContactHostModal() {
       return;
     }
 
-    setLoading(true);
-
-    try {
-      const res = await axios.post('/api/booking', {
-        action: 'contact_host',
-        name: finalName,
-        contact: finalContact,
-        sender: finalName,
-        message: finalMessage,
-        fileName: file?.name || null,
-        mimeType: file?.type || null,
-        fileBase64: file?.base64 || null
-      });
-
-      if (res.data && res.data.success) {
-        // Мгновенная прямая авторизация гостя
-        if (res.data.user) {
-          loginGuestDirectly(res.data.user);
-        }
-
-        toast.success(t('contactSuccessToast') || 'Сообщение отправлено хозяину! Вы вошли как гость.');
-        setContactModalOpen(false);
-        setMessage('');
-        setFile(null);
-
-        // Переход в личный кабинет гостя к открытому диалогу
-        router.push('/guest?tab=chat');
-      } else {
-        toast.error(res.data?.error || 'Не удалось отправить сообщение. Попробуйте снова.');
-      }
-    } catch (err) {
-      console.warn('Ошибка отправки обращения к хозяину:', err);
-      toast.error(err.response?.data?.error || 'Сетевая ошибка при отправке сообщения.');
-    } finally {
-      setLoading(false);
+    // Проверка верификации: если гость уже подтвержден, отправляем сразу
+    const isContactVerified = currentUser?.isVerified || (typeof window !== 'undefined' && sessionStorage.getItem('verified_contact_' + finalContact.toLowerCase()));
+    if (isContactVerified) {
+      await sendContactMessage(finalContact, finalName);
+    } else {
+      // Иначе открываем обязательный модальный шаг подтверждения кодом
+      setIsVerifyOpen(true);
     }
+  };
+
+  const handleVerificationSuccess = () => {
+    setIsVerifyOpen(false);
+    const finalContact = currentUser?.contact || contact.trim();
+    const finalName = currentUser?.name || name.trim();
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('verified_contact_' + finalContact.toLowerCase(), 'true');
+    }
+    sendContactMessage(finalContact, finalName);
   };
 
   return (
@@ -281,6 +309,19 @@ export default function ContactHostModal() {
         </form>
 
       </div>
+
+      {/* Обязательное модальное окно верификации кода */}
+      <VerificationModal
+        isOpen={isVerifyOpen}
+        onClose={() => setIsVerifyOpen(false)}
+        targetChannel={contact.trim().includes('@') ? 'email' : 'phone'}
+        guestData={{
+          name: name.trim() || 'Гость',
+          email: contact.trim().includes('@') ? contact.trim() : '',
+          phone: !contact.trim().includes('@') ? contact.trim() : ''
+        }}
+        onSuccess={handleVerificationSuccess}
+      />
     </div>
   );
 }

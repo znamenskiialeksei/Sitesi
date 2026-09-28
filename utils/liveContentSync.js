@@ -521,6 +521,14 @@ export function processRawRowsToContent({
   }
 
   // 5. Каталог услуг [SERVICES]
+  const parseStatusFlag = (val, defaultVal = true) => {
+    if (val === undefined || val === null || val === '') return defaultVal;
+    const s = String(val).trim().toLowerCase();
+    if (s === 'выкл' || s === 'нет' || s === 'false' || s === 'off' || s === '0' || s === '-') return false;
+    if (s === 'вкл' || s === 'да' || s === 'true' || s === 'on' || s === '1' || s === '+' || s === 'active') return true;
+    return defaultVal;
+  };
+
   if (productsRows.length > 1) {
     const isServicesUsdHeader = (productsRows[0]?.[7] || '').toString().includes('USD');
     content.products = productsRows
@@ -531,11 +539,13 @@ export function processRawRowsToContent({
         const rubVal = isServicesUsdHeader ? (r[9] || '0') : (r[8] || '0');
         const tryVal = isServicesUsdHeader ? (r[10] || '0') : (r[9] || '0');
         const imagesCol = isServicesUsdHeader ? (r[11] || '') : (r[10] || '');
+        const availabilityCol = isServicesUsdHeader ? (r[12] || '') : (r[11] || '');
         const typeCol = isServicesUsdHeader ? (r[13] || '') : (r[12] || '');
         const videosCol = isServicesUsdHeader ? (r[14] || '') : (r[13] || '');
         const descRu = isServicesUsdHeader ? (r[15] || '') : (r[14] || '');
         const descEn = isServicesUsdHeader ? (r[16] || '') : (r[15] || '');
         const descTr = isServicesUsdHeader ? (r[17] || '') : (r[16] || '');
+        const isEnabled = parseStatusFlag(availabilityCol, true);
 
         return {
           id: r[0],
@@ -561,7 +571,10 @@ export function processRawRowsToContent({
             ru: typeCol === 'Пакет' ? 'Пакет услуг' : 'Услуга',
             en: typeCol === 'Пакет' ? 'Service Package' : 'Service',
             tr: typeCol === 'Пакет' ? 'Hizmet Paketi' : 'Hizmet'
-          }
+          },
+          status: isEnabled ? 'Вкл' : 'Выкл',
+          available: isEnabled,
+          enabled: isEnabled
         };
       })
       .filter((p) => p.id && (p.name.ru || p.name.en));
@@ -574,7 +587,10 @@ export function processRawRowsToContent({
         eur: p.price?.eur || '0',
         rub: p.price?.rub || '0',
         try: p.price?.try || '0'
-      }
+      },
+      status: p.status || (p.enabled === false ? 'Выкл' : 'Вкл'),
+      available: p.available !== undefined ? p.available : (p.enabled !== undefined ? p.enabled : true),
+      enabled: p.enabled !== undefined ? p.enabled : true
     }));
   }
 
@@ -595,6 +611,8 @@ export function processRawRowsToContent({
         const descRu = isGuidesUsdHeader ? (r[15] || '') : (r[14] || '');
         const descEn = isGuidesUsdHeader ? (r[16] || '') : (r[15] || '');
         const descTr = isGuidesUsdHeader ? (r[17] || '') : (r[16] || '');
+        const availabilityCol = r[18] !== undefined && r[18] !== '' ? r[18] : (r[19] !== undefined ? r[19] : '');
+        const isEnabled = parseStatusFlag(availabilityCol, true);
 
         return {
           id: r[0],
@@ -618,7 +636,10 @@ export function processRawRowsToContent({
             en: sanitizeText(descEn, ''),
             tr: sanitizeText(descTr, '')
           },
-          level: 'Для гостей'
+          level: 'Для гостей',
+          status: isEnabled ? 'Вкл' : 'Выкл',
+          available: isEnabled,
+          enabled: isEnabled
         };
       })
       .filter((c) => c.id && (c.name.ru || c.name.en));
@@ -631,7 +652,10 @@ export function processRawRowsToContent({
         eur: c.price?.eur || '0',
         rub: c.price?.rub || '0',
         try: c.price?.try || '0'
-      }
+      },
+      status: c.status || (c.enabled === false ? 'Выкл' : 'Вкл'),
+      available: c.available !== undefined ? c.available : (c.enabled !== undefined ? c.enabled : true),
+      enabled: c.enabled !== undefined ? c.enabled : true
     }));
   }
 
