@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #0f172a; /* Темно-синий фон платформы (Slate 900) */
+  color: #f8fafc; /* Светло-серый цвет основного текста для контраста */
+  font-family: ui-sans-serif, system-ui, sans-serif; /* Базовый системный шрифт без засечек */
+  overflow-x: hidden; /* Жесткий запрет горизонтального скролла для защиты верстки */
+}
+
+::-webkit-scrollbar { 
+  width: 6px; /* Тонкая ширина вертикального скроллбара */
+  height: 6px; /* Тонкая высота горизонтального скроллбара (если появится внутри блоков) */
+}
+
+::-webkit-scrollbar-track { 
+  background: #0f172a; /* Цвет дорожки скроллбара сливается с фоном */
+}
+
+::-webkit-scrollbar-thumb { 
+  background: #334155; /* Темно-серый ползунок скроллбара */
+  border-radius: 9999px; /* Максимальное закругление краев ползунка */
+}
+
+::-webkit-scrollbar-thumb:hover { 
+  background: #475569; /* Легкое осветление ползунка при наведении курсора */
+}
+
+.fade-in { 
+  animation: fadeIn 0.3s ease-in-out; /* Плавное появление элементов за 0.3 секунды */
+}
+
+@keyframes fadeIn { 
+  from { opacity: 0; } /* Начальная точка анимации (полностью прозрачный) */
+  to { opacity: 1; } /* Конечная точка анимации (полностью видимый) */
+}
+
+.react-datepicker { 
+  background-color: #1e293b !important; /* Фон выпадающего системного календаря */
+  border: 1px solid #334155 !important; /* Граница выпадающего календаря */
+  border-radius: 1.5rem !important; /* Сильное закругление углов (24px) */
+  font-family: inherit !important; /* Наследование шрифта платформы */
+  overflow: hidden !important; /* Обрезка выходящих за границы элементов */
+}
+
+@media (max-width: 640px) { 
+  .react-datepicker__month-container { 
+    width: 100% !important; /* Растягивание контейнера месяца на весь экран мобильного */
+    float: none !important; /* Отключение обтекания для мобильных экранов */
+  } 
+}
+
+.react-datepicker__header { 
+  background-color: #1e293b !important; /* Цвет фона заголовка календаря */
+  border-bottom: 1px solid #334155 !important; /* Разделительная линия под заголовком */
+  border-radius: 1.5rem 1.5rem 0 0 !important; /* Закругление только верхних углов */
+}
+
+.react-datepicker__current-month, .react-datepicker__day-name, .react-datepicker__day { 
+  color: #e2e8f0 !important; /* Светлый цвет для дней недели и чисел месяца */
+}
+
+.react-datepicker__day:hover { 
+  background-color: #334155 !important; /* Цвет фона дня при наведении мыши */
+  border-radius: 0.5rem !important; /* Небольшое закругление при наведении (8px) */
+}
+
+.react-datepicker__day--in-range { 
+  background-color: #2563eb !important; /* Цвет выбранного диапазона дат (Синий) */
+  color: white !important; /* Белый цвет текста внутри выбранного диапазона */
+}
+
+.react-datepicker__day--selected, .react-datepicker__day--range-start, .react-datepicker__day--range-end { 
+  background-color: #3b82f6 !important; /* Яркий синий цвет для начальной и конечной даты */
+  border-radius: 0.5rem !important; /* Закругление выделенных дат */
+}
+
+.react-datepicker__day--disabled { 
+  color: #475569 !important; /* Темно-серый цвет для недоступных дат */
+  text-decoration: line-through; /* Зачеркивание недоступных дат */
+  opacity: 0.5; /* Полупрозрачность для визуального отключения */
+  cursor: not-allowed !important; /* Курсор запрета наведения */
+}
