@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 23:45 | ПЛАН: 260920262345 Комплексная стабилизация эталона кабинета хозяина и кэша.md | TAG: VILLA-HOME-PERSIST-260920262345]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 18:50 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-HOME-STATUS-SERVICES-270920261850]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 18:50 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-HOME-STATUS-SERVICES-270920261850]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 15.11.2026 21:45 | ПЛАН: 151120262145 ПЛАН Каталог услуг Доп 0_14-0_16 и Code_js.md | TAG: VILLA-HOME-PRESENTATION-TYPE-FIX-151120262145]
 // ==============================================================================
 // ГЛАВНАЯ СТРАНИЦА ВИЛЛЫ VILLA TURAMAN В СТИЛЕ AIRBNB
 // Файл: pages/index.js
@@ -160,6 +160,7 @@ export default function HomeListing({ publicData, contentData }) {
 
   // Состояние выбранной презентации: видео-гид или консьерж-сервис
   const [selectedPresentation, setSelectedPresentation] = useState(null);
+  const [selectedPresentationType, setSelectedPresentationType] = useState('product');
   const [aboutModalOpen, setAboutModalOpen] = useState(false);
   const [safetyModalOpen, setSafetyModalOpen] = useState(false);
   const [landmarksModalOpen, setLandmarksModalOpen] = useState(false);
@@ -1048,7 +1049,9 @@ export default function HomeListing({ publicData, contentData }) {
           onClose={() => setSelectedPresentation(null)}
           onPurchase={async (price, type, item) => {
             setSelectedPresentation(null);
-            const itemName = item.name?.[lang] || item.name?.ru || 'Услуга';
+            const itemName = typeof item?.name === 'string'
+              ? item.name
+              : (item?.name?.[lang] || item?.name?.ru || item?.name?.en || 'Услуга');
             try {
               const res = await fetch('/api/booking', {
                 method: 'POST',

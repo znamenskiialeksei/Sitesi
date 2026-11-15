@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 15:45 | ПЛАН: СТУПЕНЬ_01_Базовый_эталон_старта | TAG: VILLA-CATALOG-BASE-260920261545]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 18:50 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-CATALOG-STATUS-FILTER-270920261850]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 18:50 | ПЛАН: 270920261820 Комплексный план 7 задач.md | TAG: VILLA-CATALOG-STATUS-FILTER-270920261850]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 15.11.2026 21:45 | ПЛАН: 151120262145 ПЛАН Каталог услуг Доп 0_14-0_16 и Code_js.md | TAG: VILLA-CATALOG-MEDIA-SAFE-151120262145]
 // ==============================================================================
 // КАТАЛОГ УСЛУГ И АВТОРСКИХ ПУТЕВОДИТЕЛЕЙ: EXPERIENCES & GUIDES
 // Файл: components/CatalogSection.js
@@ -268,8 +268,13 @@ export default function CatalogSection({
           {effectiveProducts.map((p) => {
             const name = getLocalized(p, 'name');
             const desc = getLocalized(p, 'desc');
-            const mediaList = p.images && p.images.length > 0
-              ? p.images
+            const parsedImages = Array.isArray(p.images)
+              ? p.images.filter(Boolean)
+              : (typeof p.images === 'string' && p.images.trim()
+                  ? p.images.split(',').map((s) => s.trim()).filter(Boolean)
+                  : []);
+            const mediaList = parsedImages.length > 0
+              ? parsedImages
               : ["https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1200"];
 
             return (
@@ -336,8 +341,13 @@ export default function CatalogSection({
           {effectiveCourses.map((c) => {
             const name = getLocalized(c, 'name');
             const desc = getLocalized(c, 'desc');
-            const mediaList = c.images && c.images.length > 0
-              ? c.images
+            const parsedImages = Array.isArray(c.images)
+              ? c.images.filter(Boolean)
+              : (typeof c.images === 'string' && c.images.trim()
+                  ? c.images.split(',').map((s) => s.trim()).filter(Boolean)
+                  : []);
+            const mediaList = parsedImages.length > 0
+              ? parsedImages
               : ["https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200"];
 
             return (

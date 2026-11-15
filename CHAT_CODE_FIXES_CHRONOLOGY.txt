@@ -46,3 +46,54 @@
 - Переключатели услуг и гидов работают синхронно между таблицей и сайтом.
 - Восстановление листов возвращает актуальные данные из masterSeedContent.js с правильными русскими названиями и без зависаний.
 - Вход в аккаунт и бронирования работают с разделенными полями телефона и почты без ложных повторных запросов OTP.
+
+
+--------------------------------------------------------------------------------
+
+[ЗАПИСЬ #130] [2026-11-15 21:45:00]
+МОДУЛЬ: Устранение сбоя Application error в блоке Эксклюзивные услуги и видео-путеводители [CatalogSection / PresentationModal / pages/index.js / pages/api/booking.js], ревизия и гармонизация монолита google-apps-script/Code.js [7 расхождений], внесение нормативных дополнений 0.14 - 0.16 в Блок 0 GEMINI.md, перенос сути Блоков X и XI в 0.15 с их удалением из конца свода и внедрение двухуровневого стандарта фиксации задач [Уровень А дословно + Уровень Б техническое описание]
+ФАЙЛЫ:
+- `villa-turaman-airbnb-platform/pages/index.js`
+- `villa-turaman-airbnb-platform/components/CatalogSection.js`
+- `villa-turaman-airbnb-platform/components/Modals/PresentationModal.js`
+- `villa-turaman-airbnb-platform/pages/api/booking.js`
+- `villa-turaman-airbnb-platform/google-apps-script/Code.js`
+- `villa-turaman-airbnb-platform/ПЛАНЫ/151120261840 ПОЛНЫЙ ТЕКСТ GEMINI С ДОПОЛНЕНИЕМ 0_14.md`
+- `GEMINI.md` [Корень, Накопитель, Запускатор перенос, villa-turaman-airbnb-platform]
+- `AGENTS.md` [Корень, Накопитель, Запускатор перенос, villa-turaman-airbnb-platform]
+- `CHAT_CODE_FIXES_CHRONOLOGY.txt` [Корень, Накопитель, Запускатор перенос, villa-turaman-airbnb-platform]
+- `villa-turaman-airbnb-platform/ПЛАНЫ/151120262145 ПЛАН Каталог услуг Доп 0_14-0_16 и Code_js.md` [НОВЫЙ]
+- `villa-turaman-airbnb-platform/ПЛАНЫ/151120262145 ОТЧЕТ Каталог услуг Доп 0_14-0_16 и Code_js.md` [НОВЫЙ]
+
+ПРОБЛЕМА:
+- **Блок 1 - Уровень А [Дословная формулировка владельца - слово в слово]:**
+  > «дополни план проверкой Code.js и блоки БЛОК X: ИСТОРИЧЕСКАЯ СПРАВКА РАЗРЕШЕННЫХ АРХИТЕКТУРНЫХ ПРОТИВОРЕЧИЙ [СТАТУС: ВЫПОЛНЕНО И ВНЕДРЕНО] ... и БЛОК XI: ТЕХНИЧЕСКИЕ РЕГЛАМЕНТЫ И ЭТАПЫ МОДЕРНИЗАЦИИ ЭКОСИСТЕМЫ [ИСТОРИЧЕСКАЯ СПРАВКА — ВЫПОЛНЕНО И ВНЕДРЕНО В ПРОМЫШЛЕННУЮ ЭКСПЛУАТАЦИЮ] ... нужно убрать а их суть отразить в блоке 0 как неизменяемую харрактеристику кроме этого внести дополнение в блок 0 об обязательном написании в планах отчетах и других документах где указывается поставленная мною задача в двух вариантах рядом 1 вариант дословно слово в слово так как сформулировал я и второй вариант в соседнем абзаце или блоке уже грамотное структурированное техническое описание задачи и его реализации»
+  > «добавить в план решение вопроса Эксклюзивные услуги и видео-путеводители при нажатии подробнее об услуге или заказать выдаёт ошибку Application error: a client-side exception has occurred [see the browser console for more information].»
+
+- **Блок 2 - Уровень Б [Грамотное структурированное техническое описание и реализация]:**
+  1. При нажатии на карточку или кнопки «Подробнее об услуге» / «Заказать» в блоке «Эксклюзивные услуги и видео-путеводители» [`components/CatalogSection.js`] возникало необработанное клиентское исключение Next.js `Application error: a client-side exception has occurred`:
+     - Первопричина 1 [Критическая ошибка `ReferenceError: setSelectedPresentationType is not defined` в `pages/index.js`]: на строках 1372, 1383 и 1638 вызывался сеттер `setSelectedPresentationType` и читалась переменная `selectedPresentationType`, но соответствующий хук `useState` не был объявлен в компоненте `Home`;
+     - Первопричина 2 [Безопасное извлечение `itemName` в `onPurchase` в `pages/index.js`]: на строке 1390 выполнялось `item.name[lang] || item.name.ru || item.name`, что при `item.name === undefined` [когда в объекте задан только `item.title`] вызывало `TypeError: Cannot read properties of undefined`;
+     - Первопричина 3 [Ненормализованные массивы `images` и `videos` в `CatalogSection.js` и `PresentationModal.js`]: при поступлении из Google Таблиц строки URL через запятую вызов `.slice` или `.map` без нормализации приводил к рендеру посимвольных элементов или исключению;
+     - Первопричина 4 [Отсутствие `try / catch` и фоллбэка Канала 2 в `order_service_or_guide` в `pages/api/booking.js`]: ошибка записи в Google Sheets API v4 при отсутствии сервисного ключа вызывала HTTP 500 вместо бесшовного переключения на Канал 2 [`relayToAppsScriptWebhook`].
+  2. В монолитном скрипте `google-apps-script/Code.js` выявлены 7 расхождений с эталонным реестром `utils/sheetsRegistry.js` и правилами `GEMINI.md`: несовпадение `minWidths` и заголовков `VILLA_SHEETS_CONFIG` [включая 8 ширин вместо 9 у Листа 15 `GUIDE_ACCESS`], 9 элементов вместо 10 в `accRows` при инициализации `ACCESS`, наличие 11 устаревших пунктов меню шпаргалок VS Code, использование `"auto"` вместо `"ru"` в `GOOGLETRANSLATE`, 4 вхождения старого Drive ID `11xBSWA02NypliPFbziRSMfC9aAPclYF_` и сообщение `"все 4 меню активны"` вместо 5.
+  3. Требовалось внести 5 согласованных вставок [`0.14.1`, `0.14.4`, `1.1`, `2.2`, опечатка преамбулы] в Блок 0 и свод `GEMINI.md`, перенести суть `БЛОКА X` и `БЛОКА XI` в неизменяемую архитектурную характеристику `0.15` Блока 0 с полным удалением `БЛОКА X` и `БЛОКА XI` из конца документа, а также закрепить в `0.16` обязательный двухуровневый стандарт фиксации задач владельца [Уровень А дословно + Уровень Б техническое описание].
+
+ИСПРАВЛЕНИЕ:
+1. Полностью устранен клиентский и серверный сбой `Application error` в каталоге услуг и видео-путеводителей:
+   - В `villa-turaman-airbnb-platform/pages/index.js` объявлен стейт `const [selectedPresentationType, setSelectedPresentationType] = useState('product');`, а в `onPurchase` внедрено безопасное вычисление `rawName = item?.name || item?.title || ''`;
+   - В `villa-turaman-airbnb-platform/components/CatalogSection.js` и `villa-turaman-airbnb-platform/components/Modals/PresentationModal.js` внедрена защитная нормализация `normalizedImages` и `normalizedVideos` [поддержка как массивов, так и списков URL через запятую] и безопасное извлечение локализованных строк;
+   - В `villa-turaman-airbnb-platform/pages/api/booking.js` обработчик `action === 'order_service_or_guide'` обернут в отказоустойчивый каскад `try / catch` с автоматической ретрансляцией заказа через Канал 2 [`relayToAppsScriptWebhook`].
+2. Выполнена полная ревизия и гармонизация `villa-turaman-airbnb-platform/google-apps-script/Code.js`:
+   - Синхронизированы все `minWidths` и `headers` в `VILLA_SHEETS_CONFIG` с `utils/sheetsRegistry.js` [включая 9 ширин `[140, 160, 200, 180, 220, 180, 160, 100, 100]` для `GUIDE_ACCESS`];
+   - Исправлена размерность строки `accRows` до 10 колонок для листа `ACCESS`;
+   - Полностью удалены 11 пунктов меню и функции-шпаргалки VS Code [`tgVsCodeMenu`, `showVsCodeTaskCard_*`, `showVsCodeTaskGuide_*`, `sendVsCodeTasksSummaryToTelegram`];
+   - Все формулы `GOOGLETRANSLATE` переведены на явный исходный язык `"ru"`, обертку `IF(OR(ISBLANK(val); val=""); ""; ...)` и предварительную очистку коридора `clearContent()` ниже строки 2;
+   - Все 4 вхождения старого Drive ID заменены на канонический `1BhA50b5fm6m-amSDK5dD8O4xi4ftj8ET`;
+   - Обновлена диагностика `auditScriptIntegrityAndTokens` на 5 главных меню и обновлен модульный паспорт-шапка файла.
+3. Во всех 4 контурах `GEMINI.md`, `AGENTS.md` и в эталонном файле `151120261840 ПОЛНЫЙ ТЕКСТ GEMINI С ДОПОЛНЕНИЕМ 0_14.md` внесены разделы `0.14` [с вставками `0.14.1` и `0.14.4`], `0.15` [неизменяемая архитектурная характеристика выполненных этапов модернизации], `0.16` [обязательный двухуровневый стандарт фиксации задач: Уровень А дословно + Уровень Б техническое описание] и правило `9.17`, а `БЛОК X` и `БЛОК XI` полностью удалены из конца свода.
+
+РЕЗУЛЬТАТ ПРОВЕРКИ:
+- Нажатие на кнопки «Подробнее об услуге» и «Заказать» в блоке «Эксклюзивные услуги и видео-путеводители» мгновенно и безошибочно открывает модальное окно презентации `PresentationModal` и оформляет заявку без `Application error`.
+- Монолит `google-apps-script/Code.js` на 100% синхронизирован с `utils/sheetsRegistry.js` и правилами Блока 0 и Блоков I-IX `GEMINI.md`.
+- Все документы Глобального Накопителя, Корня, Переносного пакета и боевого проекта `villa-turaman-airbnb-platform` полностью гармонизированы.

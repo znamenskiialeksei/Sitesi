@@ -1,12 +1,12 @@
 /**
  * ============================================================================
  * [ПРЕДЫДУЩАЯ РЕДАКЦИЯ]
- * Редакция: 29.09.2026 00:30 | Метка: TAG: VILLA-SAFE-VALIDATION-SPILL-CORRIDOR-290920260030
- * План: [290920260031 ПЛАН Безопасная валидация и формулы spill.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/290920260031%20ПЛАН%20Безопасная%20валидация%20и%20формулы%20spill.md)
+ * Редакция: 29.09.2026 00:45 | Метка: TAG: VILLA-SHEET-CLEAR-VALIDATIONS-FIX-290920260045
+ * План: [290920260046 ПЛАН Устранение ошибки clearDataValidations.md](file:///c:/Новый%20сайт%20вилла%2015112026/1%20Вилла%20Сайт%20ГлобПрав%20изм%20осн%20правил%2015062026/villa-turaman-airbnb-platform/ПЛАНЫ/290920260046%20ПЛАН%20Устранение%20ошибки%20clearDataValidations.md)
  * ----------------------------------------------------------------------------
  * [АКТУАЛЬНАЯ РЕДАКЦИЯ]
- * Редакция: 29.09.2026 00:45 | Метка: TAG: VILLA-SHEET-CLEAR-VALIDATIONS-FIX-290920260045
- * План: [290920260046 ПЛАН Устранение ошибки clearDataValidations.md](file:///c:/1%20Вилла%20Сайт%20ГлобПрав%20260920261646/villa-turaman-airbnb-platform/ПЛАНЫ/290920260046%20ПЛАН%20Устранение%20ошибки%20clearDataValidations.md)
+ * Редакция: 15.11.2026 21:45 | Метка: TAG: VILLA-CODEJS-HARMONIZATION-014-016-151120262145
+ * План: [151120262145 ПЛАН Каталог услуг Доп 0_14-0_16 и Code_js.md](file:///c:/Новый%20сайт%20вилла%2015112026/1%20Вилла%20Сайт%20ГлобПрав%20изм%20осн%20правил%2015062026/villa-turaman-airbnb-platform/ПЛАНЫ/151120262145%20ПЛАН%20Каталог%20услуг%20Доп%200_14-0_16%20и%20Code_js.md)
  * ============================================================================
  * МОДУЛЬ 0: ПАСПОРТ МОДУЛЯ И СИСТЕМНАЯ КОНФИГУРАЦИЯ
  * Название: Монолитный скрипт Google Apps Script экосистемы Villa Turaman CRM
@@ -70,7 +70,7 @@ var VILLA_SHEETS_CONFIG = {
     aliases: ["🔑 Управление доступом", "Управление доступом", "Безопасность и Доступ", "Смарт замки", "Коды доступа", "MasterAccess"],
     cluster: "host",
     headers: ['ID', 'Тип доступа [Замок/Wi-Fi/Сейф/Ворота]', 'Локация / Название', 'Код доступа / PIN / Пароль', 'Резервный пароль / Мастер-код', 'Срок действия / Статус', 'Инструкция для гостя [RU]', 'Инструкция [EN]', 'Инструкция [TR]', 'Заметка'],
-    minWidths: [140, 160, 200, 180, 220, 180, 240, 100]
+    minWidths: [140, 160, 200, 180, 220, 180, 240, 240, 240, 100]
   },
 
   // 5. TEMPLATES: Шаблоны сообщений [Лист 5]
@@ -80,7 +80,7 @@ var VILLA_SHEETS_CONFIG = {
     aliases: ["💬 Шаблоны сообщений", "Шаблоны сообщений", "Шаблоны", "Быстрые ответы"],
     cluster: "host",
     headers: ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'],
-    minWidths: [160, 180, 240, 420, 420, 420, 180, 100]
+    minWidths: [160, 180, 240, 420, 420, 420, 180]
   },
 
   // 6. SETTINGS: Системные настройки ИИ Агентов [Лист 6]
@@ -90,7 +90,7 @@ var VILLA_SHEETS_CONFIG = {
     aliases: ["⚙️ Системные настройки ИИ Агентов", "Системные настройки ИИ Агентов", "Системные настройки", "Настройки ИИ", "MasterAccount", "🧩 Словарь переменных", "Словарь переменных"],
     cluster: "system",
     headers: ['Категория', 'Параметр / Роль / Лист', 'Значение / Статус доступа', 'Промпт / Описание / Инструкция', 'Заметка'],
-    minWidths: [180, 200, 260, 260, 200, 100]
+    minWidths: [180, 200, 260, 260, 200]
   },
 
   // 7. TASKS: Задачи и Поручения Секретаря [Лист 7]
@@ -150,7 +150,7 @@ var VILLA_SHEETS_CONFIG = {
     aliases: ["📋 Заявки и Бронирования", "Заявки и Бронирования", "Заявки на бронирование", "Бронирования", "Заявки", "Вилла"],
     cluster: "host",
     headers: ['Дата заявки', 'Имя клиента', 'Контакт [Tel/TG]', 'Старт', 'Завершение', 'Ночей', 'Взрослых', 'Детей', 'Всего гостей', 'Итоговая стоимость', 'Статус оплаты'],
-    minWidths: [120, 180, 160, 120, 120, 100, 140, 140, 140, 140, 160, 200]
+    minWidths: [120, 180, 160, 120, 120, 100, 140, 140, 140, 140, 160]
   },
 
   // 13. CALENDAR: Календарь и Тарифы [Лист 13]
@@ -160,7 +160,7 @@ var VILLA_SHEETS_CONFIG = {
     aliases: ["📅 Календарь и Тарифы", "Календарь и Тарифы", "Календарь и Занятость", "Календарь", "Тарифы", "Настройки календаря"],
     cluster: "host",
     headers: ['Дата старта', 'Дата завершения', 'Тип [Блокировка/Цена/Мин. дней/Заметка/Настройки]', 'Значение', 'Заметка', 'Автор изменения', 'Время фиксации'],
-    minWidths: [120, 140, 140, 140, 180, 160, 140, 140, 160]
+    minWidths: [120, 140, 140, 140, 180, 160, 140]
   },
 
   // 14. ORDERS: Заказы услуг и гидов [Лист 14]
@@ -170,7 +170,7 @@ var VILLA_SHEETS_CONFIG = {
     aliases: ["💳 Заказы услуг и гидов", "Заказы услуг и гидов", "Заказы", "Заказы услуг"],
     cluster: "host",
     headers: ['Дата заказа', 'Контакт', 'Тип [Гид/Услуга/Аренда]', 'Сумма', 'Статус оплаты', 'Детали'],
-    minWidths: [120, 160, 180, 220, 120, 140, 140, 160, 200]
+    minWidths: [120, 160, 180, 220, 120, 140]
   },
 
   // 15. GUIDE_ACCESS: Доступы к путеводителям [Лист 15: LMS студенты и покупатели]
@@ -180,7 +180,7 @@ var VILLA_SHEETS_CONFIG = {
     aliases: ["🎟️ Доступы к путеводителям", "Доступы к путеводителям", "Доступы к гидам", "Доступы", "Студенты"],
     cluster: "host",
     headers: ['Дата выдачи', 'Гость [Имя и Контакт]', 'ID Путеводителя', 'Название путеводителя', 'Категория', 'Статус оплаты', 'Токен доступа', 'Срок действия', 'Статус доступа [Активен/Отозван]'],
-    minWidths: [140, 160, 200, 180, 220, 180, 160, 100]
+    minWidths: [140, 160, 200, 180, 220, 180, 160, 100, 100]
   }
 };
 
@@ -1126,25 +1126,37 @@ function refreshCatalogTranslations() {
     var key = sheetsToCheck[i];
     var sheet = findSheetByConfigKey(ss, key);
     if (sheet && sheet.getLastRow() >= 2) {
+      var maxRowsToClear = sheet.getMaxRows();
       if (key === "SERVICES") {
-        sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-        sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-        sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-        sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-        sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-        sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        if (maxRowsToClear >= 3) {
+          sheet.getRange(3, 4, maxRowsToClear - 2, 4).clearContent();
+          sheet.getRange(3, 17, maxRowsToClear - 2, 2).clearContent();
+        }
+        sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+        sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+        sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+        sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+        sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+        sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
         refreshedSheets.push(sheet.getName());
       } else if (key === "GUIDES") {
-        sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-        sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-        sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-        sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-        sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-        sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        if (maxRowsToClear >= 3) {
+          sheet.getRange(3, 4, maxRowsToClear - 2, 4).clearContent();
+          sheet.getRange(3, 17, maxRowsToClear - 2, 2).clearContent();
+        }
+        sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+        sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+        sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+        sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+        sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+        sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
         refreshedSheets.push(sheet.getName());
       } else if (key === "HOME") {
-        sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-        sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(val=""; ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+        if (maxRowsToClear >= 3) {
+          sheet.getRange(3, 5, maxRowsToClear - 2, 2).clearContent();
+        }
+        sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+        sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
         refreshedSheets.push(sheet.getName());
       }
     }
@@ -1302,7 +1314,7 @@ function auditScriptIntegrityAndTokens() {
   }
   report += "• Листы CRM: " + present + " из " + keys.length + " в наличии " + (present === keys.length ? "✅" : "⚠️") + "\n\n";
 
-  report += "Скрипт Code.js проверен: синтаксис 100% валиден, все 4 меню активны.";
+  report += "Скрипт Code.js проверен: синтаксис 100% валиден, все 5 главных меню экосистемы активны.";
   ui.alert("Аудит целостности системы", report, ui.ButtonSet.OK);
 }
 
@@ -1674,8 +1686,8 @@ function initSingleSheetByKey_(sheet, key) {
     var colsG_H = homeRows.map(function(r) { return [r[6] || '', r[7] || 'Вкл']; });
     sheet.getRange(2, 1, colsA_D.length, 4).setValues(colsA_D);
     sheet.getRange(2, 7, colsG_H.length, 2).setValues(colsG_H);
-    sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+    sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
   } else if (key === 'GALLERY') {
     var galHeaders = ['ID', 'Группа [RU]', 'Описание [RU]', 'Группа [EN]', 'Описание [EN]', 'Группа [TR]', 'Описание [TR]', 'Тип', 'Медиа ссылки', 'Подпись [RU]', 'Подпись [EN]', 'Подпись [TR]'];
     styleSheetHeader_(sheet, galHeaders, 1);
@@ -1704,12 +1716,12 @@ function initSingleSheetByKey_(sheet, key) {
     var colsH_J = galRows.map(function(r) { return [r[7], r[8], r[9]]; });
     sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
     sheet.getRange(2, 8, colsH_J.length, 3).setValues(colsH_J);
-    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-    sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-    sheet.getRange("K2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("L2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+    sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+    sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+    sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+    sheet.getRange("K2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+    sheet.getRange("L2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
   } else if (key === 'SERVICES') {
     var srvHeaders = ['ID', 'Название услуги [RU]', 'Описание [RU]', 'Название услуги [EN]', 'Описание [EN]', 'Название услуги [TR]', 'Описание [TR]', 'Цена [USD]', 'Цена [EUR]', 'Цена [RUB]', 'Цена [TRY]', 'Изображения', 'Наличие', 'Тип', 'Видео презентации', 'Подробное описание [RU]', 'Подробное описание [EN]', 'Подробное описание [TR]'];
     styleSheetHeader_(sheet, srvHeaders, 1);
@@ -1727,12 +1739,12 @@ function initSingleSheetByKey_(sheet, key) {
     var colsH_P = srvRows.map(function(r) { return [r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]]; });
     sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
     sheet.getRange(2, 8, colsH_P.length, 9).setValues(colsH_P);
-    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-    sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-    sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+    sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+    sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+    sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+    sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+    sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
   } else if (key === 'GUIDES') {
     var gHeaders = ['ID', 'Название путеводителя [RU]', 'Описание [RU]', 'Название путеводителя [EN]', 'Описание [EN]', 'Название путеводителя [TR]', 'Описание [TR]', 'Изображения', 'Категория', 'Ссылка на видео', 'Цена [USD]', 'Цена [EUR]', 'Цена [RUB]', 'Цена [TRY]', 'Видео презентации', 'Подробное описание [RU]', 'Подробное описание [EN]', 'Подробное описание [TR]', 'Наличие'];
     styleSheetHeader_(sheet, gHeaders, 1);
@@ -1748,12 +1760,12 @@ function initSingleSheetByKey_(sheet, key) {
     var colsH_P = gRows.map(function(r) { return [r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]]; });
     sheet.getRange(2, 1, colsA_C.length, 3).setValues(colsA_C);
     sheet.getRange(2, 8, colsH_P.length, 9).setValues(colsH_P);
-    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-    sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-    sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+    sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+    sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+    sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+    sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+    sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
     sheet.getRange(2, 19, gRows.length, 1).setValues(gRows.map(function(r) { return [r[18] || 'Да']; }));
   } else if (key === 'LEGAL') {
     var lHeaders = ['ID Раздела', 'Название [RU]', 'Название [EN]', 'Название [TR]', 'Текст [RU]', 'Текст [EN]', 'Текст [TR]'];
@@ -1772,10 +1784,10 @@ function initSingleSheetByKey_(sheet, key) {
     var colE = lRows.map(function(r) { return [r[4]]; });
     sheet.getRange(2, 1, colsA_B.length, 2).setValues(colsA_B);
     sheet.getRange(2, 5, colE.length, 1).setValues(colE);
-    sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-    sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+    sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+    sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
   } else if (key === 'BOOKINGS') {
     var bHeaders = ['Дата заявки', 'Имя клиента', 'Контакт [Tel/TG]', 'Старт', 'Завершение', 'Ночей', 'Взрослых', 'Детей', 'Всего гостей', 'Итоговая стоимость', 'Статус оплаты'];
     styleSheetHeader_(sheet, bHeaders, 1);
@@ -1819,11 +1831,11 @@ function initSingleSheetByKey_(sheet, key) {
     sheet.getRange("D:D").setNumberFormat("@");
     sheet.getRange("E:E").setNumberFormat("@");
     var accRows = [
-    ["acc-wifi-guest","Wi-Fi гостевой","Вся вилла и прилегающая территория","villa2026","villa2026master","Постоянный / Активен","Подключитесь к сети Villa_Turaman_Guest и введите пароль villa2026","Connect to Villa_Turaman_Guest network and enter password villa2026"],
-    ["acc-wifi-host","Wi-Fi служебный","Роутер в гостиной 1 этаж","turamanAdmin99","turamanMasterKey!","Закрытый / Служебный","Только для персонала и владельца","Staff and host only"],
-    ["acc-door-smartlock","Электронный замок","Главный вход на виллу","147258#","998877#","Сменяемый по броням","Введите 6-значный код на сенсорной панели входной двери и нажмите решетку","Enter 6-digit code on the front door keypad and press hash"],
-    ["acc-gate-keypad","Автоматические ворота","Калитка и въездные ворота","2580","1234","Постоянный / Активен","Наберите 4 цифры на кодовой панели калитки для открытия ворот","Enter 4 digits on the gate keypad to open"],
-    ["acc-key-safe","Механический сейф","Справа от входной двери за декоративной панелью","3579","Ключ мастера в архиве","Резервный","Наберите код на дисковом барабане мини-сейфа и опустите рычажок вниз","Rotate dials on the key safe box to code and pull lever down"]
+    ["acc-wifi-guest","Wi-Fi гостевой","Вся вилла и прилегающая территория","villa2026","villa2026master","Постоянный / Активен","Подключитесь к сети Villa_Turaman_Guest и введите пароль villa2026","Connect to Villa_Turaman_Guest network and enter password villa2026","Villa_Turaman_Guest ağına bağlanın ve villa2026 şifresini girin","Гостевая сеть"],
+    ["acc-wifi-host","Wi-Fi служебный","Роутер в гостиной 1 этаж","turamanAdmin99","turamanMasterKey!","Закрытый / Служебный","Только для персонала и владельца","Staff and host only","Sadece personel ve ev sahibi için","Служебный"],
+    ["acc-door-smartlock","Электронный замок","Главный вход на виллу","147258#","998877#","Сменяемый по броням","Введите 6-значный код на сенсорной панели входной двери и нажмите решетку","Enter 6-digit code on the front door keypad and press hash","Ön kapı tuş takımında 6 haneli kodu girin ve kare tuşuna basın","Входная дверь"],
+    ["acc-gate-keypad","Автоматические ворота","Калитка и въездные ворота","2580","1234","Постоянный / Активен","Наберите 4 цифры на кодовой панели калитки для открытия ворот","Enter 4 digits on the gate keypad to open","Kapıyı açmak için tuş takımında 4 rakamı girin","Въезд"],
+    ["acc-key-safe","Механический сейф","Справа от входной двери за декоративной панелью","3579","Ключ мастера в архиве","Резервный","Наберите код на дисковом барабане мини-сейфа и опустите рычажок вниз","Rotate dials on the key safe box to code and pull lever down","Anahtar kasasındaki kadranları koda çevirin ve kolu aşağı çekin","Резервный ключ"]
   ];
     if (accRows.length > 0) {
       sheet.getRange(2, 1, accRows.length, accHeaders.length).setValues(accRows);
@@ -1851,10 +1863,10 @@ function initSingleSheetByKey_(sheet, key) {
     var colE = tRows.map(function(r) { return [r[4]]; });
     sheet.getRange(2, 1, colsA_B.length, 2).setValues(colsA_B);
     sheet.getRange(2, 5, colE.length, 1).setValues(colE);
-    sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-    sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-    sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+    sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+    sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+    sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+    sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
   } else if (key === 'SETTINGS') {
     var sHeaders = ['Категория', 'Параметр / Роль / Лист', 'Значение / Статус доступа', 'Промпт / Описание / Инструкция', 'Заметка'];
     styleSheetHeader_(sheet, sHeaders, 1);
@@ -2624,27 +2636,8 @@ function registerTelegramBotMenu() {
     hasItems = true;
   }
 
-  if (active.vscode) {
-    if (hasItems) tgMenu.addSeparator();
-    var tgVsCodeMenu = ui.createMenu("🛠️ 5. Задачи запуска проекта в VS Code")
-      .addItem("🚀 Задача 1: Запуск сервера разработки Next.js: Порт 3000", "showVsCodeTaskGuide_Dev")
-      .addItem("🧹 Задача 2: Освободить сетевой порт 3000", "showVsCodeTaskGuide_KillPort")
-      .addItem("📦 Задача 3: Сборка проекта Next.js Build", "showVsCodeTaskGuide_Build")
-      .addItem("⚡ Задача 4: Запуск продакшн сервера Next.js Start", "showVsCodeTaskGuide_Start")
-      .addItem("💾 Задача 5: Фиксация таблиц в эталон SSOT: masterSeed", "showVsCodeTaskGuide_Seed")
-      .addItem("💾 Задача 6: Создание двухуровневого бэкапа и сохранение версии", "showVsCodeTaskGuide_Backup")
-      .addItem("📊 Задача 7: Синхронизация контента Google Sheets в кэш", "showVsCodeTaskGuide_Sync")
-      .addItem("📤 Задача 8: Пуш проекта в изолированные ветки GitHub и main", "showVsCodeTaskGuide_Push")
-      .addItem("⏸️ Задача 9: Перевод сайта в режим обслуживания: HTTP 503", "showVsCodeTaskGuide_Pause")
-      .addItem("▶️ Задача 10: Возобновление штатной работы сайта", "showVsCodeTaskGuide_Resume")
-      .addSeparator()
-      .addItem("📱 Отправить дайджест задач VS Code на телефон в Telegram", "sendVsCodeTasksSummaryToTelegram");
-    tgMenu.addSubMenu(tgVsCodeMenu);
-    hasItems = true;
-  }
-
   if (active.sync) {
-    var tgSyncMenu = ui.createMenu("🌐 6. Синхронизация с сайтом")
+    var tgSyncMenu = ui.createMenu("🌐 5. Синхронизация с сайтом")
       .addItem("⚡ Вызвать ревалидацию страниц сайта через бот", "triggerTelegramRevalidate")
       .addItem("👑 Проверить статус доступности кабинета хозяина", "checkTelegramHostCabinetStatus");
     tgMenu.addSubMenu(tgSyncMenu);
@@ -2653,7 +2646,7 @@ function registerTelegramBotMenu() {
 
   if (active.settings) {
     if (hasItems) tgMenu.addSeparator();
-    var tgSettingsMenu = ui.createMenu("⚙️ 7. Конструктор меню и Настройки Webhook")
+    var tgSettingsMenu = ui.createMenu("⚙️ 6. Конструктор меню и Настройки Webhook")
       .addItem("🎛️ Конструктор разделов меню бота: Включить или Выключить", "toggleTelegramMenuSectionsInteractive")
       .addSeparator()
       .addItem("🔗 Установить Webhook на сайт: Next.js API", "setTelegramWebhookToSite")
@@ -2681,7 +2674,6 @@ function getTelegramActiveSections_() {
     requests: true,
     crm: true,
     calendar: true,
-    vscode: true,
     sync: true,
     settings: true
   };
@@ -2708,14 +2700,13 @@ function toggleTelegramMenuSectionsInteractive() {
     '2. requests: 📋 Заявки и 24ч HOLD [текущий: ' + (current.requests ? 'ВКЛ' : 'ВЫКЛ') + ']',
     '3. crm: 💬 CRM и Переписка с гостями [текущий: ' + (current.crm ? 'ВКЛ' : 'ВЫКЛ') + ']',
     '4. calendar: 📅 Календарь занятости и Тарифы [текущий: ' + (current.calendar ? 'ВКЛ' : 'ВЫКЛ') + ']',
-    '5. vscode: 🛠️ Задачи запуска проекта в VS Code [текущий: ' + (current.vscode ? 'ВКЛ' : 'ВЫКЛ') + ']',
-    '6. sync: 🌐 Синхронизация с сайтом [текущий: ' + (current.sync ? 'ВКЛ' : 'ВЫКЛ') + ']',
-    '7. settings: ⚙️ Настройки Webhook и Токена [текущий: ' + (current.settings ? 'ВКЛ' : 'ВЫКЛ') + ']'
+    '5. sync: 🌐 Синхронизация с сайтом [текущий: ' + (current.sync ? 'ВКЛ' : 'ВЫКЛ') + ']',
+    '6. settings: ⚙️ Настройки Webhook и Токена [текущий: ' + (current.settings ? 'ВКЛ' : 'ВЫКЛ') + ']'
   ].join('\n');
 
   var promptRes = ui.prompt(
     'Конструктор разделов Telegram-бота',
-    'Укажите номер раздела от 1 до 7 для переключения статуса ВКЛ или ВЫКЛ, либо введите all для включения всех разделов:\n\n' + menuList,
+    'Укажите номер раздела от 1 до 6 для переключения статуса ВКЛ или ВЫКЛ, либо введите all для включения всех разделов:\n\n' + menuList,
     ui.ButtonSet.OK_CANCEL
   );
 
@@ -2727,9 +2718,8 @@ function toggleTelegramMenuSectionsInteractive() {
     '2': 'requests',
     '3': 'crm',
     '4': 'calendar',
-    '5': 'vscode',
-    '6': 'sync',
-    '7': 'settings'
+    '5': 'sync',
+    '6': 'settings'
   };
 
   if (input === 'all') {
@@ -2738,7 +2728,7 @@ function toggleTelegramMenuSectionsInteractive() {
     var k = keyMap[input];
     current[k] = !current[k];
   } else {
-    ui.alert('Внимание', 'Неверный номер раздела. Введите число от 1 до 7 или all.', ui.ButtonSet.OK);
+    ui.alert('Внимание', 'Неверный номер раздела. Введите число от 1 до 6 или all.', ui.ButtonSet.OK);
     return;
   }
 
@@ -2748,232 +2738,6 @@ function toggleTelegramMenuSectionsInteractive() {
     'Разделы Telegram-бота успешно настроены!\nПерезагрузите таблицу или вызовите меню повторно для применения изменений.',
     ui.ButtonSet.OK
   );
-}
-
-// ------------------------------------------------------------------------------
-// ИНСТРУКЦИИ И ШПАРГАЛКИ ПО ЗАДАЧАМ ЗАПУСКА ПРОЕКТА В VS CODE
-// 100% Zero-Brackets & Zero-Emdash Стандарт.
-// ------------------------------------------------------------------------------
-
-/**
- * Интерактивная карточка задачи запуска проекта в VS Code
- */
-function showVsCodeTaskCard_(taskNum, taskTitle, purpose, vsCodeMenu, hotkey, terminalCmd) {
-  var ui = SpreadsheetApp.getUi();
-  try {
-    var htmlContent = '<!DOCTYPE html><html><head><base target="_top">' +
-      '<style>' +
-      'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 18px; margin: 0; background: #f8fafc; color: #0f172a; line-height: 1.5; }' +
-      '.card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }' +
-      '.header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 14px; }' +
-      '.badge { background: #2563eb; color: #fff; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 12px; text-transform: uppercase; }' +
-      '.title { font-size: 16px; font-weight: 700; color: #1e293b; margin: 0; }' +
-      '.section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b; margin-top: 14px; margin-bottom: 4px; }' +
-      '.desc { font-size: 14px; color: #334155; margin: 0 0 10px 0; }' +
-      '.code-box { background: #0f172a; color: #38bdf8; padding: 12px 14px; border-radius: 8px; font-family: Consolas, Monaco, monospace; font-size: 13px; word-break: break-all; margin: 6px 0 12px 0; user-select: all; }' +
-      '.btn-row { display: flex; gap: 10px; margin-top: 16px; }' +
-      '.btn-copy { flex: 1; background: #2563eb; color: #ffffff; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; transition: background 0.2s; }' +
-      '.btn-copy:hover { background: #1d4ed8; }' +
-      '.btn-close { background: #e2e8f0; color: #334155; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; }' +
-      '.btn-close:hover { background: #cbd5e1; }' +
-      '#toast { display: none; margin-top: 8px; font-size: 12px; color: #16a34a; font-weight: 600; text-align: center; }' +
-      '</style></head><body>' +
-      '<div class="card">' +
-      '<div class="header">' +
-      '<h2 class="title">' + taskTitle + '</h2>' +
-      '<span class="badge">Задача ' + taskNum + '</span>' +
-      '</div>' +
-      '<div class="section-title">Назначение</div>' +
-      '<p class="desc">' + purpose + '</p>' +
-      '<div class="section-title">Запуск через GUI VS Code</div>' +
-      '<p class="desc">Терминал ➔ Запустить задачу ➔ <b>' + vsCodeMenu + '</b></p>' +
-      (hotkey ? ('<div class="section-title">Горячие клавиши</div><p class="desc"><b>' + hotkey + '</b></p>') : '') +
-      '<div class="section-title">Команда для терминала PowerShell</div>' +
-      '<div class="code-box" id="cmdBox">' + terminalCmd.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>' +
-      '<div class="btn-row">' +
-      '<button class="btn-copy" onclick="copyCmd()">📋 Копировать команду</button>' +
-      '<button class="btn-close" onclick="google.script.host.close()">Закрыть</button>' +
-      '</div>' +
-      '<div id="toast">✅ Команда скопирована в буфер обмена</div>' +
-      '</div>' +
-      '<script>' +
-      'function copyCmd() {' +
-      '  var text = ' + JSON.stringify(terminalCmd) + ';' +
-      '  navigator.clipboard.writeText(text).then(function() {' +
-      '    var t = document.getElementById("toast");' +
-      '    t.style.display = "block";' +
-      '    setTimeout(function() { t.style.display = "none"; }, 2500);' +
-      '  });' +
-      '}' +
-      '</script>' +
-      '</body></html>';
-
-    var html = HtmlService.createHtmlOutput(htmlContent).setWidth(540).setHeight(430);
-    ui.showModalDialog(html, 'VS Code Задача ' + taskNum + ': ' + taskTitle);
-  } catch (err) {
-    var fallback = 'Задача ' + taskNum + ': ' + taskTitle + '\n\n' +
-      'Назначение: ' + purpose + '\n\n' +
-      '1. В VS Code: Терминал ➔ Запустить задачу ➔ ' + vsCodeMenu + '\n' +
-      (hotkey ? ('2. Горячие клавиши: ' + hotkey + '\n') : '') +
-      '3. Команда pwsh:\n' + terminalCmd;
-    ui.alert('VS Code Задача ' + taskNum, fallback, ui.ButtonSet.OK);
-  }
-}
-
-function showVsCodeTaskGuide_Dev() {
-  showVsCodeTaskCard_(
-    1,
-    'Запуск сервера Next.js Dev',
-    'Локальный запуск сервера разработки Next.js на сетевом порту 3000.',
-    '1. Запуск Сервера Разработки - Next.js Dev: Port 3000',
-    'Ctrl+Shift+B',
-    'npm run dev'
-  );
-}
-
-function showVsCodeTaskGuide_KillPort() {
-  showVsCodeTaskCard_(
-    2,
-    'Освободить порт 3000',
-    'Принудительное завершение зависшего фонового процесса на порту 3000.',
-    '2. Освободить Порт 3000 - Free Port 3000',
-    '',
-    'pwsh -ExecutionPolicy Bypass -Command "Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }"'
-  );
-}
-
-function showVsCodeTaskGuide_Build() {
-  showVsCodeTaskCard_(
-    3,
-    'Сборка проекта Next.js Build',
-    'Компиляция и строгая проверка типов Next.js перед выкладкой.',
-    '3. Сборка Проекта - Next.js Build',
-    '',
-    'npm run build'
-  );
-}
-
-function showVsCodeTaskGuide_Start() {
-  showVsCodeTaskCard_(
-    4,
-    'Запуск продакшн сервера',
-    'Запуск скомпилированной рабочей версии на порту 3000.',
-    '4. Запуск Продакшн Сервера - Next.js Start',
-    '',
-    'npm start'
-  );
-}
-
-function showVsCodeTaskGuide_Seed() {
-  showVsCodeTaskCard_(
-    5,
-    'Фиксация таблиц в эталон SSOT',
-    'Создание локальной эталонной копии контента masterSeedContent.js и content.json.',
-    '6. Зафиксировать текущие таблицы как эталон SSOT на сайте',
-    '',
-    'node scripts/save-master-seed.js'
-  );
-}
-
-function showVsCodeTaskGuide_Backup() {
-  showVsCodeTaskCard_(
-    6,
-    'Двухуровневый бэкап и сохранение',
-    'Создание локального архива и паспортизированного релиза в СОХР_ПРОЕКТЫ.',
-    '7. SPARK: Универсальное создание двухуровневого бэкапа и сохранение версии',
-    '',
-    'pwsh -ExecutionPolicy Bypass -File .\\create_project_backup.ps1'
-  );
-}
-
-function showVsCodeTaskGuide_Sync() {
-  showVsCodeTaskCard_(
-    7,
-    'Синхронизация Google Sheets в кэш',
-    'Выгрузка контента из Google Sheets в локальный файл content.json.',
-    '8. Синхронизация Контента - Google Sheets -> content.json',
-    '',
-    'node scripts/sync-content.js'
-  );
-}
-
-function showVsCodeTaskGuide_Push() {
-  showVsCodeTaskCard_(
-    8,
-    'Пуш в ветки GitHub и main',
-    'Безопасная синхронизация 4 веток GitHub с автоматической фильтрацией секретов.',
-    '9. SPARK: Пуш проекта в изолированные ветки GitHub и main',
-    '',
-    'pwsh -ExecutionPolicy Bypass -File .\\push_project_to_github.ps1'
-  );
-}
-
-function showVsCodeTaskGuide_Pause() {
-  showVsCodeTaskCard_(
-    9,
-    'Режим обслуживания HTTP 503',
-    'Временная приостановка публичного доступа со стилизованной заглушкой и сохранением SEO позиций.',
-    '11. SPARK: Приостановить сайт - режим тех. обслуживания: HTTP 503',
-    '',
-    'pwsh -ExecutionPolicy Bypass -File .\\pause_site.ps1'
-  );
-}
-
-function showVsCodeTaskGuide_Resume() {
-  showVsCodeTaskCard_(
-    10,
-    'Возобновление работы сайта',
-    'Снятие заглушки 503 и возврат сайта в штатный рабочий режим.',
-    '12. SPARK: Возобновить штатную работу сайта: снятие 503',
-    '',
-    'pwsh -ExecutionPolicy Bypass -File .\\resume_site.ps1'
-  );
-}
-
-function sendVsCodeTasksSummaryToTelegram() {
-  try {
-    var text = '🛠️ РЕЕСТР ВСЕХ 10 ЗАДАЧ VS CODE И СЕРВЕРА [Вариант 1 : Airbnb]\n\n' +
-      '1. 🚀 Dev Сервер: npm run dev [Порт 3000]\n' +
-      '   • VS Code: Terminal -> Run Task... -> 🚀 1. Запуск Dev Сервера\n' +
-      '   • pwsh: npm run dev\n\n' +
-      '2. 🧹 Освободить Порт 3000: Free Port 3000\n' +
-      '   • VS Code: Terminal -> Run Task... -> 🧹 2. Освободить Порт 3000\n' +
-      '   • pwsh: Get-NetTCPConnection -LocalPort 3000 | Stop-Process\n\n' +
-      '3. 📦 Сборка Проекта: Next.js Build\n' +
-      '   • VS Code: Terminal -> Run Task... -> 📦 3. Сборка Проекта\n' +
-      '   • pwsh: npm run build\n\n' +
-      '4. ⚡ Продакшн Сервер: Next.js Start\n' +
-      '   • VS Code: Terminal -> Run Task... -> ⚡ 4. Запуск Продакшн Сервера\n' +
-      '   • pwsh: npm start\n\n' +
-      '5. 📥 Установка Зависимостей: npm install\n' +
-      '   • VS Code: Terminal -> Run Task... -> 📥 5. Установка Зависимостей\n' +
-      '   • pwsh: npm install\n\n' +
-      '6. 💾 Зафиксировать эталон SSOT: masterSeedContent\n' +
-      '   • VS Code: Terminal -> Run Task... -> 💾 6. Зафиксировать текущие таблицы\n' +
-      '   • pwsh: node scripts/save-master-seed.js\n\n' +
-      '7. 💾 Универсальный двухуровневый бэкап: SPARK Backup\n' +
-      '   • VS Code: Terminal -> Run Task... -> 💾 7. SPARK: Универсальное создание бэкапа\n' +
-      '   • pwsh: pwsh -File .\\create_project_backup.ps1\n\n' +
-      '8. 📊 Синхронизация Контента: Sheets -> content.json\n' +
-      '   • VS Code: Terminal -> Run Task... -> 📊 8. Синхронизация Контента\n' +
-      '   • pwsh: node scripts/sync-content.js\n\n' +
-      '9. 🛠️ Восстановление структуры листов: SPARK Restore\n' +
-      '   • VS Code: Terminal -> Run Task... -> 🛠️ 9. SPARK: Восстановить все листы\n' +
-      '   • pwsh: node scripts/restore-sheets.js\n\n' +
-      '10. 🏛️ Инициализация CRM Таблиц: Google Sheets Init\n' +
-      '    • VS Code: Terminal -> Run Task... -> 🏛️ 10. Инициализация CRM Таблиц\n' +
-      '    • pwsh: node scripts/init-google-sheets.js\n\n' +
-      'Все задачи настроены в .vscode/tasks.json и готовы к запуску через встроенный терминал VS Code.';
-
-    var res = sendTelegramMessage_(text, null);
-    if (res.ok) {
-      SpreadsheetApp.getUi().alert('✅ Отправлено', 'Реестр всех 10 задач VS Code доставлен в ваш Telegram.', SpreadsheetApp.getUi().ButtonSet.OK);
-    } else {
-      SpreadsheetApp.getUi().alert('Ошибка', res.description || 'Не удалось отправить сообщение', SpreadsheetApp.getUi().ButtonSet.OK);
-    }
-  } catch (err) {
-    SpreadsheetApp.getUi().alert('Ошибка отправки', err.message, SpreadsheetApp.getUi().ButtonSet.OK);
-  }
 }
 
 // ==============================================================================
@@ -3443,39 +3207,39 @@ function restoreSheetsFromCloudApiInteractive() {
 
           // Восстановление формул автоперевода с точкой с запятой и безопасным условием OR(ISBLANK)
           if (sKey === 'HOME') {
-            sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+            sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
           } else if (sKey === 'SERVICES') {
-            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-            sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-            sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+            sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+            sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+            sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+            sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+            sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
           } else if (sKey === 'GUIDES') {
-            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-            sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-            sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+            sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+            sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+            sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+            sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+            sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
           } else if (sKey === 'GALLERY') {
-            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-            sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-            sheet.getRange("K2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("L2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+            sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+            sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+            sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+            sheet.getRange("K2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+            sheet.getRange("L2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
           } else if (sKey === 'LEGAL') {
-            sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-            sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+            sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+            sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
           } else if (sKey === 'TEMPLATES') {
-            sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-            sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-            sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+            sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+            sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+            sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+            sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
           }
         }
         restoredCount++;
@@ -3833,39 +3597,39 @@ function restoreFromDriveSnapshotFileId_(fileId) {
 
         // Восстановление формул автоперевода с точкой с запятой
         if (item.key === 'HOME') {
-          sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("E2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+          sheet.getRange("F2").setFormula('=MAP(D2:D; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
         } else if (item.key === 'SERVICES') {
-          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-          sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-          sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+          sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+          sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+          sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+          sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+          sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
         } else if (item.key === 'GUIDES') {
-          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-          sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-          sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+          sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+          sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+          sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+          sheet.getRange("Q2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+          sheet.getRange("R2").setFormula('=MAP(P2:P; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
         } else if (item.key === 'GALLERY') {
-          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-          sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-          sheet.getRange("K2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("L2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+          sheet.getRange("E2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+          sheet.getRange("F2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+          sheet.getRange("G2").setFormula('=MAP(C2:C; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+          sheet.getRange("K2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+          sheet.getRange("L2").setFormula('=MAP(J2:J; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
         } else if (item.key === 'LEGAL') {
-          sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-          sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+          sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+          sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
         } else if (item.key === 'TEMPLATES') {
-          sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
-          sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "en"))))');
-          sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "auto"; "tr"))))');
+          sheet.getRange("C2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+          sheet.getRange("D2").setFormula('=MAP(B2:B; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
+          sheet.getRange("F2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "en"))))');
+          sheet.getRange("G2").setFormula('=MAP(E2:E; LAMBDA(val; IF(OR(ISBLANK(val); val=""); ""; GOOGLETRANSLATE(val; "ru"; "tr"))))');
         }
       }
       restored++;
@@ -4195,7 +3959,7 @@ function saveInvoiceCalculationRecord(grossTRY, nights, guestName, matrah, kdv20
         'Бухгалтер',
         'Расчет e-Arşiv Fatura: ' + guestName + ', Брутто: ' + grossTRY + ' TRY, База: ' + matrah + ' TRY, Ночей: ' + nights + ', За ночь: ' + unitPrice + ' TRY',
         'Выполнена',
-        'https://drive.google.com/drive/folders/11xBSWA02NypliPFbziRSMfC9aAPclYF_',
+        'https://drive.google.com/drive/folders/1BhA50b5fm6m-amSDK5dD8O4xi4ftj8ET',
         'Google Apps Script'
       ]);
       return { success: true, taskId: newId };
@@ -4256,7 +4020,7 @@ function openNewTaskModal() {
       direction,
       taskText,
       'Новая',
-      'https://drive.google.com/drive/folders/11xBSWA02NypliPFbziRSMfC9aAPclYF_',
+      'https://drive.google.com/drive/folders/1BhA50b5fm6m-amSDK5dD8O4xi4ftj8ET',
       'Суперхозяин Алексей'
     ]);
     ui.alert('✅ Задача зафиксирована!', 'Поручение добавлено в лист 📋 Задачи и Поручения Секретаря под ID: ' + newId, ui.ButtonSet.OK);
@@ -4279,7 +4043,7 @@ function openCreateDriveFolderModal() {
   var folderPath = promptRes.getResponseText().trim();
   if (!folderPath) return;
 
-  var rootId = '11xBSWA02NypliPFbziRSMfC9aAPclYF_';
+  var rootId = '1BhA50b5fm6m-amSDK5dD8O4xi4ftj8ET';
   try {
     var currentFolder = DriveApp.getFolderById(rootId);
     var parts = folderPath.split(/[\/\\]+/);
@@ -4346,7 +4110,7 @@ function openKbsChecklistModal() {
  */
 function openDriveRootLink() {
   var ui = SpreadsheetApp.getUi();
-  var rootUrl = 'https://drive.google.com/drive/folders/11xBSWA02NypliPFbziRSMfC9aAPclYF_';
+  var rootUrl = 'https://drive.google.com/drive/folders/1BhA50b5fm6m-amSDK5dD8O4xi4ftj8ET';
   var html = HtmlService.createHtmlOutput(
     '<div style="font-family:sans-serif;padding:16px;">' +
     '<h3>📁 Корень архива Villa Turaman на Google Drive</h3>' +

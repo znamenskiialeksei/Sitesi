@@ -1,5 +1,5 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 28.09.2026 19:40 | ПЛАН: 280920261940 ПЛАН 13 колонок ACCOUNTS и восстановление.md | TAG: VILLA-13COLS-ACCOUNTS-AUTH-280920261940]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 29.09.2026 02:25 | ПЛАН: 290920260225 ПЛАН 13 колонок ACCOUNTS и подтверждение по email.md | TAG: VILLA-13COLS-ACCOUNTS-EMAIL-OTP-290920260225]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 29.09.2026 02:25 | ПЛАН: 290920260225 ПЛАН 13 колонок ACCOUNTS и подтверждение по email.md | TAG: VILLA-13COLS-ACCOUNTS-EMAIL-OTP-290920260225]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 15.11.2026 21:45 | ПЛАН: 151120262145 ПЛАН Каталог услуг Доп 0_14-0_16 и Code_js.md | TAG: VILLA-BOOKING-ORDER-SAFE-151120262145]
 // ==============================================================================
 // ОСНОВНОЙ API СЕРВЕР GOOGLE SHEETS & CRM VILLA TURAMAN
 // Файл: pages/api/booking.js
@@ -272,7 +272,7 @@ const splitContactParts = (rawContact) => {
 
 // Конфигурация названий листов и заголовков таблицы Google
 const GOOGLE_CONFIG = {
-  parentFolderId: "11xBSWA02NypliPFbziRSMfC9aAPclYF_",
+  parentFolderId: "1BhA50b5fm6m-amSDK5dD8O4xi4ftj8ET",
   spreadsheetName: "VillaTuramanWebSitePlatform_DB",
   sheetName: SHEETS_REGISTRY.BOOKINGS?.defaultName || "📋 Заявки и Бронирования",
   homePageSheetName: SHEETS_REGISTRY.HOME?.defaultName || "🏠 Главная витрина",
@@ -281,7 +281,7 @@ const GOOGLE_CONFIG = {
   calendarSettingsSheetName: SHEETS_REGISTRY.CALENDAR?.defaultName || "📅 Календарь и Тарифы",
   productsSheetName: SHEETS_REGISTRY.SERVICES?.defaultName || "🛎️ Дополнительные услуги",
   coursesSheetName: SHEETS_REGISTRY.GUIDES?.defaultName || "🗺️ Видео-путеводители",
-  studentsSheetName: SHEETS_REGISTRY.ACCESS?.defaultName || "🎟️ Доступы к путеводителям",
+  studentsSheetName: SHEETS_REGISTRY.GUIDE_ACCESS?.defaultName || "🎟️ Доступы к путеводителям",
   ordersSheetName: SHEETS_REGISTRY.ORDERS?.defaultName || "💳 Заказы услуг и гидов",
   gallerySheetName: SHEETS_REGISTRY.GALLERY?.defaultName || "📸 Фото и Видео Галерея",
   aboutSheetName: SHEETS_REGISTRY.HOME?.defaultName || "🏠 Главная витрина",
@@ -3636,7 +3636,6 @@ export default async function handler(req, res) {
   // --- API: Оформление заказа на доп. услугу или видео-путеводитель с Telegram-уведомлением ---
   if (action === 'order_service_or_guide') {
     try {
-      await ensureSystemSheets();
       const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Istanbul' });
       const guestName = (data.guestName || data.name || 'Гость').toString().trim();
       const contact = (data.contact || '').toString().trim();
@@ -3645,44 +3644,66 @@ export default async function handler(req, res) {
       const price = (data.price || '-').toString().trim();
       const details = (data.details || `Заказ из каталога: ${itemTitle}`).toString().trim();
 
+      let orderSavedToSheets = false;
       if (sheets && spreadsheetId) {
-        // 1. Фиксация заказа в листе ServiceOrders [ORDERS]
-        await sheets.spreadsheets.values.append({
-          spreadsheetId,
-          range: resolveRange(sheetMap, 'ORDERS', 'A:F'),
-          valueInputOption: 'USER_ENTERED',
-          insertDataOption: 'INSERT_ROWS',
-          requestBody: {
-            values: [[
-              timestamp,
-              contact || guestName,
-              itemType,
-              price,
-              'ОЖИДАЕТ ПОДТВЕРЖДЕНИЯ',
-              details
-            ]]
-          }
-        });
+        try {
+          await ensureSystemSheets();
+          // 1. Фиксация заказа в листе ServiceOrders [ORDERS]
+          await sheets.spreadsheets.values.append({
+            spreadsheetId,
+            range: resolveRange(sheetMap, 'ORDERS', 'A:F'),
+            valueInputOption: 'USER_ENTERED',
+            insertDataOption: 'INSERT_ROWS',
+            requestBody: {
+              values: [[
+                timestamp,
+                contact || guestName,
+                itemType,
+                price,
+                'ОЖИДАЕТ ПОДТВЕРЖДЕНИЯ',
+                details
+              ]]
+            }
+          });
+          orderSavedToSheets = true;
 
-        // 2. Добавление записи в чат гостя
-        if (contact) {
-          const targetChatId = getChatSpreadsheetId();
-          const chatSheetName = getChatSheetName(guestName, contact);
-          try {
-            await ensureStyledChatSheet(sheets, targetChatId, chatSheetName);
-            const cardMsg = `🛎️ Оформлен заказ: ${itemTitle}\nКатегория: ${itemType}\nСтоимость: ${price}\nСтатус: Ожидает подтверждения хозяином`;
-            const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
-            const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
-            const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
-            await sheets.spreadsheets.values.append({
-              spreadsheetId: targetChatId,
-              range: `'${chatSheetName}'!A:G`,
-              valueInputOption: 'USER_ENTERED',
-              insertDataOption: 'INSERT_ROWS',
-              requestBody: { values: [[timestamp, 'Система', cardMsg, fRU, fEN, fTR, '']] }
-            });
-          } catch (chatErr) { /* non-fatal */ }
+          // 2. Добавление записи в чат гостя
+          if (contact) {
+            const targetChatId = getChatSpreadsheetId();
+            const chatSheetName = getChatSheetName(guestName, contact);
+            try {
+              await ensureStyledChatSheet(sheets, targetChatId, chatSheetName);
+              const cardMsg = `🛎️ Оформлен заказ: ${itemTitle}\nКатегория: ${itemType}\nСтоимость: ${price}\nСтатус: Ожидает подтверждения хозяином`;
+              const fRU = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "ru")';
+              const fEN = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "en")';
+              const fTR = '=GOOGLETRANSLATE(INDIRECT("C"&ROW()); "auto"; "tr")';
+              await sheets.spreadsheets.values.append({
+                spreadsheetId: targetChatId,
+                range: `'${chatSheetName}'!A:G`,
+                valueInputOption: 'USER_ENTERED',
+                insertDataOption: 'INSERT_ROWS',
+                requestBody: { values: [[timestamp, 'Система', cardMsg, fRU, fEN, fTR, '']] }
+              });
+            } catch (chatErr) { /* non-fatal */ }
+          }
+        } catch (sheetOrderErr) {
+          console.warn('[order_service_or_guide Sheets Warning]:', sheetOrderErr.message);
         }
+      }
+
+      if (!orderSavedToSheets) {
+        try {
+          await relayToAppsScriptWebhook('order_service_or_guide', {
+            spreadsheetId,
+            timestamp,
+            guestName,
+            contact,
+            itemTitle,
+            itemType,
+            price,
+            details
+          });
+        } catch (relayErr) {}
       }
 
       // 3. Мгновенное интерактивное уведомление владельцу в Telegram

@@ -1,5 +1,7 @@
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 26.09.2026 15:45 | ПЛАН: СТУПЕНЬ_01_Базовый_эталон_старта | TAG: VILLA-PRESENTATION-MODAL-BASE-260920261545]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 15.11.2026 21:45 | ПЛАН: 151120262145 ПЛАН Каталог услуг Доп 0_14-0_16 и Code_js.md | TAG: VILLA-PRESENTATION-MODAL-SAFE-151120262145]
 // ==============================================================================
-// МОДАЛЬНОЕ ОКНО ПРЕЗЕНТАЦИИ УСЛУГИ / ПУТЕВОДИТЕЛЯ (PRESENTATION MODAL)
+// МОДАЛЬНОЕ ОКНО ПРЕЗЕНТАЦИИ УСЛУГИ / ПУТЕВОДИТЕЛЯ [PRESENTATION MODAL]
 // Файл: components/Modals/PresentationModal.js
 // Назначение: Подробное описание, медиа-галерея, видео-превью и оформление заказа
 // с полной поддержкой Google Drive видео/фото и мультиязычности из Google Sheets.
@@ -95,11 +97,18 @@ export default function PresentationModal({ item, type, onClose, onPurchase }) {
   const desc = getLocalized(item, 'desc');
   const detailed = getLocalized(item, 'detailedDesc') || desc;
 
-  // Объединение изображений и видео в единый список для карусели
-  const mediaList = [
-    ...(Array.isArray(item.images) ? item.images : (item.images ? [item.images] : [])),
-    ...(Array.isArray(item.videos) ? item.videos : (item.videos ? [item.videos] : []))
-  ].filter(Boolean);
+  // Объединение изображений и видео в единый список для карусели с безопасной нормализацией строк
+  const normalizeMediaField = (fieldVal) => {
+    if (!fieldVal) return [];
+    if (Array.isArray(fieldVal)) return fieldVal.filter(Boolean);
+    if (typeof fieldVal === 'string') {
+      return fieldVal.split(',').map((s) => s.trim()).filter(Boolean);
+    }
+    return [];
+  };
+  const parsedImages = normalizeMediaField(item.images);
+  const parsedVideos = normalizeMediaField(item.videos);
+  const mediaList = [...parsedImages, ...parsedVideos];
 
   // Форматирование стоимости: приоритет прямого значения из ExtraServices и VideoGuides
   const formatItemPrice = (targetItem) => {
@@ -153,7 +162,7 @@ export default function PresentationModal({ item, type, onClose, onPurchase }) {
         <div className="h-64 sm:h-80 w-full relative bg-black shrink-0 overflow-hidden">
           <MediaCarousel
             media={mediaList}
-            type={item.videos && item.videos.length > 0 ? 'video' : 'image'}
+            type={parsedVideos.length > 0 ? 'video' : 'image'}
           />
         </div>
 
