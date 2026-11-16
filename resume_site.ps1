@@ -1,9 +1,11 @@
-# ===============================================================================
+﻿﻿# ===============================================================================
 # VILLA TURAMAN AIRBNB PLATFORM: ВОЗОБНОВЛЕНИЕ РАБОТЫ САЙТА - VERCEL RESUME
 # ===============================================================================
-# Файл: resume_site.ps1
-# Кодировка: UTF-8 с BOM [\uFEFF] - нативный стандарт VS Code и PowerShell 7
-# Целевая ветка Vercel: v1-airbnb
+# Файл:           resume_site.ps1
+# Редакция:       16.11.2026 00:55 | ПЛАН: 161120260055 ПЛАН Фикс vercel_json в pause_site.md
+# Тег:            [TAG: VILLA-VERCEL-RESUME-CLEANUP-161120260055]
+# Кодировка:      UTF-8 с BOM [\uFEFF] - нативный стандарт VS Code и PowerShell 7
+# Целевая ветка:  v1-airbnb
 # ===============================================================================
 
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -30,26 +32,29 @@ Write-Host "  Каталог:        $ProjectRoot" -ForegroundColor DarkGray
 Write-Host "  Целевая ветка:  $TargetBranch" -ForegroundColor DarkGray
 Write-Host ""
 
-# 1. Удаление файлов заглушки и конфигурации обслуживания
-Write-Host "[1/3] Удаление maintenance.html и vercel.json..." -ForegroundColor Cyan
-$maintenancePath = Join-Path $ProjectRoot "maintenance.html"
-$vercelJsonPath = Join-Path $ProjectRoot "vercel.json"
+# 1. Удаление всех файлов заглушки, Edge Middleware и конфигурации обслуживания
+Write-Host "[1/3] Удаление middleware.js, maintenance.html, public/maintenance.html и vercel.json..." -ForegroundColor Cyan
+
+$FilesToClean = @(
+    (Join-Path $ProjectRoot "middleware.js"),
+    (Join-Path $ProjectRoot "vercel.json"),
+    (Join-Path $ProjectRoot "maintenance.html"),
+    (Join-Path $ProjectRoot "public\maintenance.html"),
+    (Join-Path $ProjectRoot "index.html")
+)
 
 $filesRemoved = $false
-if (Test-Path -LiteralPath $maintenancePath) {
-    Remove-Item -LiteralPath $maintenancePath -Force -ErrorAction SilentlyContinue
-    Write-Host "  [OK] Файл maintenance.html удален." -ForegroundColor Green
-    $filesRemoved = $true
-}
-
-if (Test-Path -LiteralPath $vercelJsonPath) {
-    Remove-Item -LiteralPath $vercelJsonPath -Force -ErrorAction SilentlyContinue
-    Write-Host "  [OK] Файл vercel.json удален." -ForegroundColor Green
-    $filesRemoved = $true
+foreach ($targetFile in $FilesToClean) {
+    if (Test-Path -LiteralPath $targetFile) {
+        Remove-Item -LiteralPath $targetFile -Force -ErrorAction SilentlyContinue
+        $leafName = Split-Path -Leaf $targetFile
+        Write-Host "  [OK] Удален файл режима обслуживания: $leafName" -ForegroundColor Green
+        $filesRemoved = $true
+    }
 }
 
 if (-not $filesRemoved) {
-    Write-Host "  [ИНФО] Файлы режима обслуживания уже отсутствовали." -ForegroundColor Yellow
+    Write-Host "  [ИНФО] Файлы режима обслуживания уже отсутствовали на диске." -ForegroundColor Yellow
 }
 
 # 2. Фиксация в Git и отправка в ветку v1-airbnb
@@ -68,23 +73,24 @@ try {
     $ProjectFolder = Split-Path -Leaf $ProjectRoot
     Set-Location -LiteralPath $WorkspaceRoot
 
-    git rm -f "$ProjectFolder/maintenance.html" "$ProjectFolder/vercel.json" 2>$null
+    git rm -f --ignore-unmatch "$ProjectFolder/middleware.js" "$ProjectFolder/vercel.json" "$ProjectFolder/maintenance.html" "$ProjectFolder/public/maintenance.html" "$ProjectFolder/index.html" 2>$null | Out-Null
     git add -A 2>$null
     $gitStatus = git status --porcelain 2>$null
     if ($gitStatus) {
         git commit -m "chore: деактивация режима обслуживания и возврат в строй - $TargetBranch" 2>$null
         Write-Host "  [ИНФО] Коммит отключения техобслуживания сформирован." -ForegroundColor Yellow
-        
+
         Write-Host "  [ИНФО] Формирование изолированного коммита проекта через git subtree split..." -ForegroundColor Cyan
         $subCommit = git subtree split --prefix=$ProjectFolder 2>$null
         if ($subCommit) {
+            $subCommit = $subCommit.Trim()
             Write-Host "  [ИНФО] Отправка изолированного дерева в ветку $TargetBranch на GitHub..." -ForegroundColor Cyan
             git push origin "${subCommit}:refs/heads/${TargetBranch}" --force 2>$null
         } else {
             Write-Host "  [ИНФО] Прямая отправка через git subtree push..." -ForegroundColor Cyan
             git subtree push --prefix=$ProjectFolder origin $TargetBranch 2>$null
         }
-        
+
         if ($LASTEXITCODE -eq 0) {
             Write-Host "  [OK] Ветка $TargetBranch обновлена. Vercel инициировал пересборку боевого сайта." -ForegroundColor Green
         } else {

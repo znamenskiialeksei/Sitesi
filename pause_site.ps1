@@ -1,8 +1,10 @@
-﻿# ===============================================================================
+﻿﻿# ===============================================================================
 # Скрипт:         pause_site.ps1
 # Проект:         Villa Turaman Airbnb Platform
+# Редакция:       16.11.2026 00:55 | ПЛАН: 161120260055 ПЛАН Фикс vercel_json в pause_site.md
+# Тег:            [TAG: VILLA-VERCEL-PAUSE-503-UTF8-NOBOM-161120260055]
 # Назначение:     Активация режима обслуживания Vercel Pause [HTTP 503]
-# Стандарты:      UTF-8 BOM, Zero-Terminal, Zero-Brackets, Modern Vercel Config
+# Стандарты:      UTF-8 BOM для .ps1, UTF-8 No-BOM для JSON/JS/HTML, Zero-Brackets
 # ===============================================================================
 
 $ErrorActionPreference = "Stop"
@@ -37,8 +39,11 @@ if (-not (Test-Path (Join-Path $RepoRoot ".git"))) {
     exit 1
 }
 
-# Шаг 1: Создание страницы заглушки maintenance.html
-Write-Host "[1/3] Создание страницы-заглушки maintenance.html..." -ForegroundColor Yellow
+# Кодировка UTF-8 БЕЗ BOM для всех конфигурационных файлов JSON, JS и HTML [Правило 9.18]
+$Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+
+# Шаг 1: Создание страницы заглушки maintenance.html и нативного Edge Middleware
+Write-Host "[1/3] Создание страницы-заглушки maintenance.html и Edge Middleware HTTP 503..." -ForegroundColor Yellow
 
 $MaintenanceHtml = @"
 <!DOCTYPE html>
@@ -199,31 +204,73 @@ $MaintenancePath = Join-Path $ScriptDir "maintenance.html"
 $IndexPath = Join-Path $ScriptDir "index.html"
 $PublicDir = Join-Path $ScriptDir "public"
 $PublicMaintenancePath = Join-Path $PublicDir "maintenance.html"
+$MiddlewarePath = Join-Path $ScriptDir "middleware.js"
 
-[System.IO.File]::WriteAllText($MaintenancePath, $MaintenanceHtml, [System.Text.Encoding]::UTF8)
-[System.IO.File]::WriteAllText($IndexPath, $MaintenanceHtml, [System.Text.Encoding]::UTF8)
-
-if (Test-Path $PublicDir) {
-    [System.IO.File]::WriteAllText($PublicMaintenancePath, $MaintenanceHtml, [System.Text.Encoding]::UTF8)
+# Удаление устаревшего index.html в корне при наличии
+if (Test-Path -LiteralPath $IndexPath) {
+    Remove-Item -LiteralPath $IndexPath -Force -ErrorAction SilentlyContinue
 }
 
-Write-Host "  [OK] Страница-заглушка создана: maintenance.html и продублирована в index.html" -ForegroundColor Green
+$NormalizedHtml = $MaintenanceHtml -replace "`r`n", "`n"
+[System.IO.File]::WriteAllText($MaintenancePath, $NormalizedHtml, $Utf8NoBom)
 
-# Шаг 2: Настройка конфигурации Vercel vercel.json по современному стандарту
-Write-Host "[2/3] Настройка конфигурации Vercel vercel.json [HTTP 503 modern format]..." -ForegroundColor Yellow
+if (Test-Path -LiteralPath $PublicDir) {
+    [System.IO.File]::WriteAllText($PublicMaintenancePath, $NormalizedHtml, $Utf8NoBom)
+}
+
+$MiddlewareJs = @"
+/**
+ * ============================================================================
+ * МОДУЛЬ: middleware.js - НАТИВНЫЙ EDGE-ПЕРЕХВАТЧИК РЕЖИМА ОБСЛУЖИВАНИЯ HTTP 503
+ * ПРОЕКТ: Villa Turaman Airbnb Platform
+ * ----------------------------------------------------------------------------
+ * [ПРЕДЫДУЩАЯ РЕДАКЦИЯ]: 21.09.2026 22:45 | ПЛАН: 210920262245 ПЛАН Ликвидация ошибки vercel json в режиме паузы.md
+ *   - Статическая переадресация через vercel.json.
+ * [АКТУАЛЬНАЯ РЕДАКЦИЯ]: 16.11.2026 00:55 | ПЛАН: 161120260055 ПЛАН Фикс vercel_json в pause_site.md
+ *   - Нативная отдача страницы технического обслуживания со статусом HTTP 503 Service Unavailable
+ *     на уровне Vercel Edge Runtime и заголовком Retry-After: 3600 для сохранения SEO.
+ *   - Тег: [TAG: VILLA-VERCEL-PAUSE-503-UTF8-NOBOM-161120260055]
+ * ============================================================================
+ */
+import { NextResponse } from 'next/server';
+
+const MAINTENANCE_HTML = ``$NormalizedHtml``;
+
+export function middleware(request) {
+  const { pathname } = request.nextUrl;
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api/') ||
+    pathname === '/favicon.ico'
+  ) {
+    return NextResponse.next();
+  }
+
+  return new NextResponse(MAINTENANCE_HTML, {
+    status: 503,
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+      'Retry-After': '3600'
+    }
+  });
+}
+
+export const config = {
+  matcher: ['/:path*']
+};
+"@
+
+$NormalizedMiddleware = $MiddlewareJs -replace "`r`n", "`n"
+[System.IO.File]::WriteAllText($MiddlewarePath, $NormalizedMiddleware, $Utf8NoBom)
+
+Write-Host "  [OK] Созданы maintenance.html и Edge-перехватчик middleware.js [HTTP 503, UTF-8 без BOM]." -ForegroundColor Green
+
+# Шаг 2: Настройка валидной конфигурации Vercel vercel.json без BOM
+Write-Host "[2/3] Настройка конфигурации Vercel vercel.json [UTF-8 без BOM, валидная схема Next.js]..." -ForegroundColor Yellow
 
 $VercelJson = @"
 {
-  "framework": null,
-  "buildCommand": null,
-  "outputDirectory": ".",
-  "cleanUrls": true,
-  "rewrites": [
-    {
-      "source": "/((?!maintenance\\.html).*)",
-      "destination": "/maintenance.html"
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -243,17 +290,21 @@ $VercelJson = @"
 "@
 
 $VercelPath = Join-Path $ScriptDir "vercel.json"
-[System.IO.File]::WriteAllText($VercelPath, $VercelJson, [System.Text.Encoding]::UTF8)
-Write-Host "  [OK] Конфигурация vercel.json создана [современный стандарт Vercel Static Serving, HTTP 503, framework: null]." -ForegroundColor Green
+$NormalizedVercelJson = $VercelJson -replace "`r`n", "`n"
+[System.IO.File]::WriteAllText($VercelPath, $NormalizedVercelJson, $Utf8NoBom)
+Write-Host "  [OK] Конфигурация vercel.json создана строго в UTF-8 без BOM." -ForegroundColor Green
 
 # Шаг 3: Синхронизация с Git и отправка в целевую ветку
 Write-Host "[3/3] Синхронизация с Git и веткой $TargetBranch..." -ForegroundColor Yellow
 
 Push-Location $RepoRoot
 try {
-    # Добавляем созданные файлы
-    git add "$ProjectFolder/maintenance.html" "$ProjectFolder/index.html" "$ProjectFolder/vercel.json"
-    if (Test-Path (Join-Path $ScriptDir "public/maintenance.html")) {
+    # Удаляем устаревший index.html из индекса Git при наличии
+    git rm -f --ignore-unmatch "$ProjectFolder/index.html" 2>$null | Out-Null
+
+    # Добавляем созданные файлы режима обслуживания
+    git add "$ProjectFolder/maintenance.html" "$ProjectFolder/middleware.js" "$ProjectFolder/vercel.json"
+    if (Test-Path -LiteralPath (Join-Path $ScriptDir "public/maintenance.html")) {
         git add "$ProjectFolder/public/maintenance.html"
     }
 

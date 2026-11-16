@@ -97,3 +97,44 @@
 - Нажатие на кнопки «Подробнее об услуге» и «Заказать» в блоке «Эксклюзивные услуги и видео-путеводители» мгновенно и безошибочно открывает модальное окно презентации `PresentationModal` и оформляет заявку без `Application error`.
 - Монолит `google-apps-script/Code.js` на 100% синхронизирован с `utils/sheetsRegistry.js` и правилами Блока 0 и Блоков I-IX `GEMINI.md`.
 - Все документы Глобального Накопителя, Корня, Переносного пакета и боевого проекта `villa-turaman-airbnb-platform` полностью гармонизированы.
+
+
+--------------------------------------------------------------------------------
+
+[ЗАПИСЬ #131] [2026-11-16 00:55:00]
+МОДУЛЬ: Ликвидация отказа развертывания Vercel [Предоставлен недействительный файл vercel.json / Invalid vercel.json file provided] при запуске pause_site.ps1, переход на кодировку UTF-8 без BOM для JSON/JS/HTML, внедрение нативного Edge-перехватчика middleware.js [HTTP 503 Service Unavailable] и синхронизация очистки в resume_site.ps1
+ФАЙЛЫ:
+- `villa-turaman-airbnb-platform/pause_site.ps1`
+- `villa-turaman-airbnb-platform/resume_site.ps1`
+- `villa-turaman-airbnb-platform/vercel.json`
+- `villa-turaman-airbnb-platform/middleware.js` [НОВЫЙ: АКТИВЕН В РЕЖИМЕ ПАУЗЫ]
+- `villa-turaman-airbnb-platform/maintenance.html`
+- `villa-turaman-airbnb-platform/public/maintenance.html`
+- `GEMINI.md` [Корень, Накопитель, Запускатор перенос, villa-turaman-airbnb-platform]
+- `AGENTS.md` [Корень, Накопитель, Запускатор перенос, villa-turaman-airbnb-platform]
+- `CHAT_CODE_FIXES_CHRONOLOGY.txt` [Корень, Накопитель, Запускатор перенос, villa-turaman-airbnb-platform]
+- `villa-turaman-airbnb-platform/ПЛАНЫ/161120260055 ПЛАН Фикс vercel_json в pause_site.md` [НОВЫЙ]
+- `villa-turaman-airbnb-platform/ПЛАНЫ/161120260055 ОТЧЕТ Фикс vercel_json в pause_site.md` [НОВЫЙ]
+
+ПРОБЛЕМА:
+- **Блок 1 - Уровень А [Дословная формулировка владельца - слово в слово]:**
+  > «попытка использовать задачу  *  Выполнение задачи: pwsh -ExecutionPolicy Bypass -File .\pause_site.ps1 ... привела на платформе vercel к отказу Детали развертывания Сборка не удалась Предоставлен недействительный файл vercel.json. Создано invalid-email-address2 минуты назад СтатусОшибкаПоследние Продолжительность- ОкружениеПредварительный просмотр Доменыsitesi-git-v1-airbnb-znamenskiialekseis-projects.vercel.app sitesi-40812nfje-znamenskiialekseis-projects.vercel.app Источникv1-airbnb 1b6aafachore: activate maintenance mode HTTP 503 for villa-turaman-airbnb-platform»
+
+- **Блок 2 - Уровень Б [Грамотное структурированное техническое описание и реализация]:**
+  1. Первопричина 1 [Запись 3-байтового маркера UTF-8 BOM `0xEF 0xBB 0xBF` в начало `vercel.json`]: в `pause_site.ps1` на строке 246 вызов `[System.IO.File]::WriteAllText($VercelPath, $VercelJson, [System.Text.Encoding]::UTF8)` использовал свойство `[System.Text.Encoding]::UTF8`, которое в среде .NET по умолчанию записывает 3 байта преамбулы UTF-8 BOM перед открывающей фигурной скобкой `{`. Строгий парсер RFC 8259 на стороне Vercel мгновенно отклонял `vercel.json` на этапе валидации коммита [до запуска контейнера сборки] с ошибкой `Предоставлен недействительный файл vercel.json`.
+  2. Первопричина 2 [Конфликтные свойства схемы `vercel.json` и отсутствие истинного статуса `HTTP 503`]: использование PCRE lookahead в секции `rewrites[0].source` и директивы `"outputDirectory": "."` при `"buildCommand": null` и `"framework": null` конфликтовало со схемой и проверкой артефактов Next.js [`.next/routes-manifest.json`], а секция `rewrites` не поддерживает возврат статуса `503`.
+  3. Первопричина 3 [Неполная очистка файлов паузы в `resume_site.ps1`]: в `pause_site.ps1` создавались `index.html` и `public/maintenance.html`, которые не удалялись в `resume_site.ps1`.
+
+ИСПРАВЛЕНИЕ:
+1. В `villa-turaman-airbnb-platform/pause_site.ps1`:
+   - Введена кодировка UTF-8 без BOM `$Utf8NoBom = New-Object System.Text.UTF8Encoding($false)` для записи `vercel.json`, `middleware.js`, `maintenance.html` и `public/maintenance.html`;
+   - Файл `vercel.json` приведен к 100% валидной схеме Next.js на Vercel [секция `headers` с `Cache-Control: no-store, no-cache, must-revalidate, max-age=0` и `Retry-After: 3600`];
+   - Внедрена генерация нативного Edge-перехватчика `villa-turaman-airbnb-platform/middleware.js`, который на уровне Vercel Edge Runtime отдает страницу `maintenance.html` со строгим статусом `HTTP 503 Service Unavailable`;
+   - Добавлено автоматическое удаление лишнего корневого `index.html` с диска и из индекса Git.
+2. В `villa-turaman-airbnb-platform/resume_site.ps1`:
+   - Синхронизировано полное удаление всех файлов режима обслуживания [`middleware.js`, `vercel.json`, `maintenance.html`, `public/maintenance.html`, `index.html`] с диска и через `git rm -f --ignore-unmatch`.
+3. В разделах `4.3` и `9.18` свода `GEMINI.md` и адаптера `AGENTS.md` [во всех 4 контурах] закреплен стандарт записи JSON/JS/HTML без BOM и отдачи `HTTP 503` через `middleware.js`.
+
+РЕЗУЛЬТАТ ПРОВЕРКИ:
+- Файл `vercel.json` записывается строго в UTF-8 без BOM и проходит валидацию схемы Vercel без ошибки `Invalid vercel.json file provided`.
+- Сайт в режиме паузы отдает фирменную страницу обслуживания с истинным кодом ответа `HTTP 503 Service Unavailable` и заголовком `Retry-After: 3600`.
