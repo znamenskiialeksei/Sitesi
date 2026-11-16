@@ -35,6 +35,11 @@ Write-Host ""
 # 1. Удаление всех файлов заглушки, Edge Middleware и конфигурации обслуживания
 Write-Host "[1/3] Удаление middleware.js, maintenance.html, public/maintenance.html и vercel.json..." -ForegroundColor Cyan
 
+$Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+$NpmrcPath = Join-Path $ProjectRoot ".npmrc"
+$NpmrcContent = "loglevel=error`nfund=false`naudit=false`n"
+[System.IO.File]::WriteAllText($NpmrcPath, $NpmrcContent, $Utf8NoBom)
+
 $FilesToClean = @(
     (Join-Path $ProjectRoot "middleware.js"),
     (Join-Path $ProjectRoot "vercel.json"),

@@ -168,9 +168,12 @@
       }
     },
     {
-      "label": "⏸️ 15. Перевести сайт в режим обслуживания - Vercel Pause",
+      "label": "⏸️ 17. Пауза Сайта : pause_site.ps1 -> maintenance.html и middleware.js -> Перевод Vercel в режим обслуживания со статусом HTTP 503",
       "type": "shell",
       "command": "pwsh -ExecutionPolicy Bypass -File .\\pause_site.ps1",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
@@ -178,9 +181,12 @@
       }
     },
     {
-      "label": "▶️ 16. Возобновить штатную работу сайта - Vercel Resume",
+      "label": "▶️ 18. Возобновление Работы Сайта : resume_site.ps1 -> Удаление заглушки 503 -> Возврат Vercel в боевой режим работы",
       "type": "shell",
       "command": "pwsh -ExecutionPolicy Bypass -File .\\resume_site.ps1",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",

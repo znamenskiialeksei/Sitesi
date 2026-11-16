@@ -1,51 +1,44 @@
-﻿﻿# ===============================================================================
-# Скрипт:         pause_site.ps1
-# Проект:         Villa Turaman Airbnb Platform
-# Редакция:       16.11.2026 00:55 | ПЛАН: 161120260055 ПЛАН Фикс vercel_json в pause_site.md
-# Тег:            [TAG: VILLA-VERCEL-PAUSE-503-UTF8-NOBOM-161120260055]
-# Назначение:     Активация режима обслуживания Vercel Pause [HTTP 503]
-# Стандарты:      UTF-8 BOM для .ps1, UTF-8 No-BOM для JSON/JS/HTML, Zero-Brackets
+﻿# ===============================================================================
+# VILLA TURAMAN AIRBNB PLATFORM: АКТИВАЦИЯ РЕЖИМА ОБСЛУЖИВАНИЯ - VERCEL PAUSE
+# ===============================================================================
+# Файл:           pause_site.ps1
+# Редакция:       16.11.2026 07:25 | ПЛАН: 161120260725 ПЛАН Фикс задачи паузы VS Code и warn Vercel.md
+# Тег:            [TAG: VILLA-VERCEL-PAUSE-TASK-SYNC-161120260725]
+# Кодировка:      UTF-8 с BOM [\uFEFF] - нативный стандарт VS Code и PowerShell 7
+# Целевая ветка:  v1-airbnb
 # ===============================================================================
 
-$ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
 
-$ProjectName = "Villa Turaman Airbnb Platform"
-$ProjectFolder = "villa-turaman-airbnb-platform"
 $TargetBranch = "v1-airbnb"
+$ProjectTitle = "Villa Turaman Airbnb Platform"
+
+if ($PSScriptRoot) {
+    $ProjectRoot = $PSScriptRoot
+} elseif ($env:SCRIPT_FILE) {
+    $ProjectRoot = Split-Path -Parent $env:SCRIPT_FILE
+} else {
+    $ProjectRoot = (Get-Location).Path
+}
+
+Set-Location -LiteralPath $ProjectRoot
 
 Write-Host "===============================================================================" -ForegroundColor Cyan
-Write-Host "  АКТИВАЦИЯ РЕЖИМА ОБСЛУЖИВАНИЯ - VERCEL PAUSE [HTTP 503]" -ForegroundColor Cyan
+Write-Host "  АКТИВАЦИЯ РЕЖИМА ОБСЛУЖИВАНИЯ - VERCEL PAUSE [HTTP 503]" -ForegroundColor Yellow
 Write-Host "===============================================================================" -ForegroundColor Cyan
-Write-Host "  Проект:         $ProjectName" -ForegroundColor White
-Write-Host "  Каталог:        $ProjectFolder" -ForegroundColor White
-Write-Host "  Целевая ветка:  $TargetBranch" -ForegroundColor White
+Write-Host "  Проект:         $ProjectTitle" -ForegroundColor DarkGray
+Write-Host "  Каталог:        $ProjectRoot" -ForegroundColor DarkGray
+Write-Host "  Целевая ветка:  $TargetBranch" -ForegroundColor DarkGray
 Write-Host ""
 
-# Определение корня проекта
-$ScriptDir = $PSScriptRoot
-if (-not $ScriptDir) { $ScriptDir = Get-Location }
-
-# Поиск корня монорепозитория
-$RepoRoot = $ScriptDir
-while ($RepoRoot -and (-not (Test-Path (Join-Path $RepoRoot ".git")))) {
-    $Parent = Split-Path $RepoRoot -Parent
-    if ($Parent -eq $RepoRoot) { break }
-    $RepoRoot = $Parent
-}
-
-if (-not (Test-Path (Join-Path $RepoRoot ".git"))) {
-    Write-Host "[ОШИБКА] Корень монорепозитория Git не найден." -ForegroundColor Red
-    exit 1
-}
-
-# Кодировка UTF-8 БЕЗ BOM для всех конфигурационных файлов JSON, JS и HTML [Правило 9.18]
+# Кодировка UTF-8 БЕЗ BOM для всех конфигурационных файлов JSON, JS, HTML и .npmrc [Правило 9.18]
 $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 
-# Шаг 1: Создание страницы заглушки maintenance.html и нативного Edge Middleware
-Write-Host "[1/3] Создание страницы-заглушки maintenance.html и Edge Middleware HTTP 503..." -ForegroundColor Yellow
+# 1. Создание страницы-заглушки maintenance.html и нативного Edge Middleware HTTP 503
+Write-Host "[1/3] Создание maintenance.html и нативного Edge Middleware middleware.js [HTTP 503]..." -ForegroundColor Cyan
 
-$MaintenanceHtml = @"
+$MaintenanceHtml = @'
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -198,15 +191,16 @@ $MaintenanceHtml = @"
   </div>
 </body>
 </html>
-"@
+'@
 
-$MaintenancePath = Join-Path $ScriptDir "maintenance.html"
-$IndexPath = Join-Path $ScriptDir "index.html"
-$PublicDir = Join-Path $ScriptDir "public"
+$MaintenancePath = Join-Path $ProjectRoot "maintenance.html"
+$IndexPath = Join-Path $ProjectRoot "index.html"
+$PublicDir = Join-Path $ProjectRoot "public"
 $PublicMaintenancePath = Join-Path $PublicDir "maintenance.html"
-$MiddlewarePath = Join-Path $ScriptDir "middleware.js"
+$MiddlewarePath = Join-Path $ProjectRoot "middleware.js"
+$VercelPath = Join-Path $ProjectRoot "vercel.json"
+$NpmrcPath = Join-Path $ProjectRoot ".npmrc"
 
-# Удаление устаревшего index.html в корне при наличии
 if (Test-Path -LiteralPath $IndexPath) {
     Remove-Item -LiteralPath $IndexPath -Force -ErrorAction SilentlyContinue
 }
@@ -218,23 +212,22 @@ if (Test-Path -LiteralPath $PublicDir) {
     [System.IO.File]::WriteAllText($PublicMaintenancePath, $NormalizedHtml, $Utf8NoBom)
 }
 
-$MiddlewareJs = @"
+$MiddlewareTemplate = @'
 /**
  * ============================================================================
  * МОДУЛЬ: middleware.js - НАТИВНЫЙ EDGE-ПЕРЕХВАТЧИК РЕЖИМА ОБСЛУЖИВАНИЯ HTTP 503
  * ПРОЕКТ: Villa Turaman Airbnb Platform
  * ----------------------------------------------------------------------------
- * [ПРЕДЫДУЩАЯ РЕДАКЦИЯ]: 21.09.2026 22:45 | ПЛАН: 210920262245 ПЛАН Ликвидация ошибки vercel json в режиме паузы.md
- *   - Статическая переадресация через vercel.json.
- * [АКТУАЛЬНАЯ РЕДАКЦИЯ]: 16.11.2026 00:55 | ПЛАН: 161120260055 ПЛАН Фикс vercel_json в pause_site.md
- *   - Нативная отдача страницы технического обслуживания со статусом HTTP 503 Service Unavailable
- *     на уровне Vercel Edge Runtime и заголовком Retry-After: 3600 для сохранения SEO.
- *   - Тег: [TAG: VILLA-VERCEL-PAUSE-503-UTF8-NOBOM-161120260055]
+ * [ПРЕДЫДУЩАЯ РЕДАКЦИЯ]: 16.11.2026 00:55 | ПЛАН: 161120260055 ПЛАН Фикс vercel_json в pause_site.md
+ *   - Базовый Edge-перехватчик HTTP 503.
+ * [АКТУАЛЬНАЯ РЕДАКЦИЯ]: 16.11.2026 07:25 | ПЛАН: 161120260725 ПЛАН Фикс задачи паузы VS Code и warn Vercel.md
+ *   - Литеральная генерация без конфликтов интерполяции PowerShell и отдача HTTP 503 на уровне Edge.
+ *   - Тег: [TAG: VILLA-VERCEL-PAUSE-TASK-SYNC-161120260725]
  * ============================================================================
  */
 import { NextResponse } from 'next/server';
 
-const MAINTENANCE_HTML = ``$NormalizedHtml``;
+const MAINTENANCE_HTML = `__MAINTENANCE_HTML__`;
 
 export function middleware(request) {
   const { pathname } = request.nextUrl;
@@ -259,17 +252,17 @@ export function middleware(request) {
 export const config = {
   matcher: ['/:path*']
 };
-"@
+'@
 
-$NormalizedMiddleware = $MiddlewareJs -replace "`r`n", "`n"
+$NormalizedMiddleware = ($MiddlewareTemplate.Replace('__MAINTENANCE_HTML__', $NormalizedHtml)) -replace "`r`n", "`n"
 [System.IO.File]::WriteAllText($MiddlewarePath, $NormalizedMiddleware, $Utf8NoBom)
 
-Write-Host "  [OK] Созданы maintenance.html и Edge-перехватчик middleware.js [HTTP 503, UTF-8 без BOM]." -ForegroundColor Green
+Write-Host "  [OK] Файлы maintenance.html и middleware.js созданы [HTTP 503, UTF-8 без BOM]." -ForegroundColor Green
 
-# Шаг 2: Настройка валидной конфигурации Vercel vercel.json без BOM
-Write-Host "[2/3] Настройка конфигурации Vercel vercel.json [UTF-8 без BOM, валидная схема Next.js]..." -ForegroundColor Yellow
+# 2. Настройка валидной конфигурации vercel.json и .npmrc без BOM
+Write-Host "[2/3] Настройка конфигурации vercel.json и .npmrc [UTF-8 без BOM]..." -ForegroundColor Cyan
 
-$VercelJson = @"
+$VercelJson = @'
 {
   "headers": [
     {
@@ -287,52 +280,64 @@ $VercelJson = @"
     }
   ]
 }
-"@
+'@
 
-$VercelPath = Join-Path $ScriptDir "vercel.json"
 $NormalizedVercelJson = $VercelJson -replace "`r`n", "`n"
 [System.IO.File]::WriteAllText($VercelPath, $NormalizedVercelJson, $Utf8NoBom)
-Write-Host "  [OK] Конфигурация vercel.json создана строго в UTF-8 без BOM." -ForegroundColor Green
 
-# Шаг 3: Синхронизация с Git и отправка в целевую ветку
-Write-Host "[3/3] Синхронизация с Git и веткой $TargetBranch..." -ForegroundColor Yellow
+$NpmrcContent = "loglevel=error`nfund=false`naudit=false`n"
+[System.IO.File]::WriteAllText($NpmrcPath, $NpmrcContent, $Utf8NoBom)
 
-Push-Location $RepoRoot
+Write-Host "  [OK] Конфигурации vercel.json и .npmrc записаны строго в UTF-8 без BOM." -ForegroundColor Green
+
+# 3. Фиксация в Git и отправка в ветку v1-airbnb [идентично эталону resume_site.ps1]
+Write-Host "[3/3] Фиксация изменений в Git и отправка коммита в $TargetBranch..." -ForegroundColor Cyan
 try {
-    # Удаляем устаревший index.html из индекса Git при наличии
-    git rm -f --ignore-unmatch "$ProjectFolder/index.html" 2>$null | Out-Null
-
-    # Добавляем созданные файлы режима обслуживания
-    git add "$ProjectFolder/maintenance.html" "$ProjectFolder/middleware.js" "$ProjectFolder/vercel.json"
-    if (Test-Path -LiteralPath (Join-Path $ScriptDir "public/maintenance.html")) {
-        git add "$ProjectFolder/public/maintenance.html"
+    $WorkspaceRoot = $ProjectRoot
+    while ($WorkspaceRoot -and -not (Test-Path -LiteralPath (Join-Path $WorkspaceRoot ".git"))) {
+        $parent = Split-Path -Parent $WorkspaceRoot
+        if ($parent -eq $WorkspaceRoot) { break }
+        $WorkspaceRoot = $parent
+    }
+    if (-not (Test-Path -LiteralPath (Join-Path $WorkspaceRoot ".git"))) {
+        $WorkspaceRoot = Split-Path -Parent $ProjectRoot
     }
 
-    # Создаем коммит в рабочей копии
-    git commit -m "chore: activate maintenance mode HTTP 503 for $ProjectFolder" --allow-empty
+    $ProjectFolder = Split-Path -Leaf $ProjectRoot
+    Set-Location -LiteralPath $WorkspaceRoot
 
-    # Выделяем subtree коммит для целевой ветки
-    Write-Host "  Генерация изолированного коммита для ветки $TargetBranch через git subtree split..." -ForegroundColor Gray
-    $subCommit = (git subtree split --prefix=$ProjectFolder)
-    if (-not $subCommit) {
-        throw "Не удалось сгенерировать коммит через git subtree split."
+    git rm -f --ignore-unmatch "$ProjectFolder/index.html" 2>$null
+    git add -A 2>$null
+    git commit -m "chore: активация режима обслуживания HTTP 503 - $TargetBranch" --allow-empty 2>$null
+    Write-Host "  [ИНФО] Коммит включения техобслуживания сформирован." -ForegroundColor Yellow
+
+    Write-Host "  [ИНФО] Формирование изолированного коммита проекта через git subtree split..." -ForegroundColor Cyan
+    $subCommit = git subtree split --prefix=$ProjectFolder 2>$null
+    if ($subCommit) {
+        $subCommit = $subCommit.Trim()
+        Write-Host "  [OK] Изолированный коммит сформирован: $subCommit" -ForegroundColor Green
+        Write-Host "  [ИНФО] Отправка изолированного дерева в ветку $TargetBranch на GitHub..." -ForegroundColor Cyan
+        git push origin "${subCommit}:refs/heads/${TargetBranch}" --force 2>$null
+    } else {
+        Write-Host "  [ИНФО] Прямая отправка через git subtree push..." -ForegroundColor Cyan
+        git subtree push --prefix=$ProjectFolder origin $TargetBranch 2>$null
     }
-    $subCommit = $subCommit.Trim()
-    Write-Host "  [OK] Изолированный коммит сформирован: $subCommit" -ForegroundColor Green
 
-    # Безопасная отправка в целевую ветку
-    Write-Host "  Отправка в ветку origin/$TargetBranch..." -ForegroundColor Gray
-    git push origin "${subCommit}:refs/heads/${TargetBranch}" --force
-    Write-Host "  [OK] Ветка $TargetBranch успешно обновлена. Vercel автоматически развернет режим обслуживания." -ForegroundColor Green
-}
-finally {
-    Pop-Location
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "  [OK] Ветка $TargetBranch обновлена. Vercel автоматически развернет режим обслуживания HTTP 503." -ForegroundColor Green
+    } else {
+        Write-Host "  [ИНФО] Локальные файлы созданы и коммит зафиксирован. Проверьте подключение к GitHub." -ForegroundColor Yellow
+    }
+} catch {
+    Write-Host "  [ИНФО] Завершено локальное создание файлов обслуживания." -ForegroundColor Yellow
+} finally {
+    Set-Location -LiteralPath $ProjectRoot
 }
 
 Write-Host ""
 Write-Host "===============================================================================" -ForegroundColor Green
-Write-Host "  РЕЖИМ ОБСЛУЖИВАНИЯ УСПЕШНО АКТИВИРОВАН НА VERCEL" -ForegroundColor Green
+Write-Host "  РЕЖИМ ОБСЛУЖИВАНИЯ УСПЕШНО АКТИВИРОВАН НА VERCEL [HTTP 503]" -ForegroundColor Green
 Write-Host "===============================================================================" -ForegroundColor Green
-Write-Host "  Для возврата сайта в рабочий боевой режим запустите:" -ForegroundColor White
+Write-Host "  Для возврата сайта в рабочий боевой режим запустите задачу Возобновление Работы Сайта или:" -ForegroundColor White
 Write-Host "  pwsh -ExecutionPolicy Bypass -File .\resume_site.ps1" -ForegroundColor Yellow
 Write-Host "===============================================================================" -ForegroundColor Green

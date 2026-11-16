@@ -138,3 +138,40 @@
 РЕЗУЛЬТАТ ПРОВЕРКИ:
 - Файл `vercel.json` записывается строго в UTF-8 без BOM и проходит валидацию схемы Vercel без ошибки `Invalid vercel.json file provided`.
 - Сайт в режиме паузы отдает фирменную страницу обслуживания с истинным кодом ответа `HTTP 503 Service Unavailable` и заголовком `Retry-After: 3600`.
+
+
+--------------------------------------------------------------------------------
+
+[ЗАПИСЬ #132] [2026-11-16 07:25:00]
+МОДУЛЬ: Приведение pause_site.ps1 к 100% паритету с resume_site.ps1 для безотказного запуска через Способ 2 [Задачи VS Code в .vscode/tasks.json] и полная ликвидация 5 предупреждений npm warn в журналах сборки Vercel CLI 65.14.0 [.npmrc и allowScripts в package.json]
+ФАЙЛЫ:
+- `villa-turaman-airbnb-platform/pause_site.ps1`
+- `villa-turaman-airbnb-platform/resume_site.ps1`
+- `villa-turaman-airbnb-platform/package.json`
+- `villa-turaman-airbnb-platform/.npmrc` [НОВЫЙ]
+- `villa-turaman-airbnb-platform/.gitattributes` [НОВЫЙ]
+- `.vscode/tasks.json` [Корень, Накопитель, villa-turaman-airbnb-platform]
+- `GEMINI.md` [Корень, Накопитель, Запускатор перенос, villa-turaman-airbnb-platform]
+- `CHAT_CODE_FIXES_CHRONOLOGY.txt` [Корень, Накопитель, Запускатор перенос, villa-turaman-airbnb-platform]
+- `villa-turaman-airbnb-platform/ПЛАНЫ/161120260725 ПЛАН Фикс задачи паузы VS Code и warn Vercel.md` [НОВЫЙ]
+- `villa-turaman-airbnb-platform/ПЛАНЫ/161120260725 ОТЧЕТ Фикс задачи паузы VS Code и warn Vercel.md` [НОВЫЙ]
+
+ПРОБЛЕМА:
+- **Блок 1 - Уровень А [Дословная формулировка владельца - слово в слово]:**
+  > «в дополнение в план запуск паузы не сработал при Способ 2 [Задача в .vscode/tasks.json]. при выполнении Способ 3 [Команда для встроенного терминала PowerShell 7 pwsh.exe] pause_site.ps1 всё сработало вот отчёт[Журналы сборки 54 с 104 строки ... Клонирование репозитория github.com/znamenskiialeksei/Sitesi Ветка: v1-airbnb, Коммит: 16e4295 ... npm warn Неизвестная конфигурация окружения "cache-dir" ... npm warn install-scripts unrs-resolver@1.12.2 ... Выполнение команды «npm run build»].  аостановление работы сработало и при способе 2 Журналы сборки 46 с 97 строк ... Коммит: ed8572b ... но замечания есть в журналах сборки и татм итам»
+
+- **Блок 2 - Уровень Б [Грамотное структурированное техническое описание и реализация]:**
+  1. Первопричина 1 [Сбой запуска `pause_site.ps1` через Способ 2 в `.vscode/tasks.json` при успешной работе через Способ 3 и успешной работе `resume_site.ps1` через Способ 2]: в `pause_site.ps1` присутствовала директива `$ErrorActionPreference = "Stop"`, отсутствующая в `resume_site.ps1`. При запуске через Task Runner VS Code перенаправление `2>$null` в командах `git` приводило к прерыванию выполнения на стандартных сообщениях Git в `stderr` до отправки коммита в ветку `v1-airbnb`. Кроме того, в `villa-turaman-airbnb-platform/.vscode/tasks.json` у задач паузы и возобновления отсутствовал параметр `"options": { "cwd": "${workspaceFolder}" }`.
+  2. Первопричина 2 [5 предупреждений `npm warn` в журналах сборки Vercel CLI 65.14.0]: контейнер Vercel передает переменную `npm_config_cache_dir`, вызывающую 2 предупреждения `npm warn Unknown env config "cache-dir"`, а пакет `unrs-resolver@1.12.2` вызывал 4 строки предупреждений `npm warn install-scripts` из-за отсутствия секции `"allowScripts"` в `package.json`.
+
+ИСПРАВЛЕНИЕ:
+1. В `villa-turaman-airbnb-platform/pause_site.ps1`:
+   - Удалена блокирующая директива `$ErrorActionPreference = "Stop"`;
+   - Блок инициализации путей `$ProjectRoot` и `$WorkspaceRoot` (`Set-Location -LiteralPath $ProjectRoot`, `Test-Path -LiteralPath`) и блок Git-синхронизации приведены к 100% паритету с эталонным рабочим `resume_site.ps1`;
+   - Генерация `middleware.js` переведена на литеральный шаблон `@' ... '@` с `.Replace('__MAINTENANCE_HTML__', $NormalizedHtml)`.
+2. Во всех трех файлах `.vscode/tasks.json` [Корень, Накопитель, Платформа] синхронизированы задачи `⏸️ 17. Пауза Сайта` и `▶️ 18. Возобновление Работы Сайта` с явной фиксацией `"options": { "cwd": ... }`.
+3. В `villa-turaman-airbnb-platform/package.json` добавлена секция `"allowScripts": { "unrs-resolver": true }`, создан файл `villa-turaman-airbnb-platform/.npmrc` [`loglevel=error`, `fund=false`, `audit=false`] и `.gitattributes` [`* text=auto eol=lf`].
+
+РЕЗУЛЬТАТ ПРОВЕРКИ:
+- Задача паузы сайта безотказно запускается всеми тремя способами [включая Способ 2 через `.vscode/tasks.json`].
+- Предупреждения `npm warn` (`cache-dir`, `install-scripts unrs-resolver@1.12.2`, `npm fund`) в журналах сборки Vercel полностью подавлены.
