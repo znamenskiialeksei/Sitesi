@@ -2,8 +2,11 @@
 # VILLA TURAMAN AIRBNB PLATFORM: АКТИВАЦИЯ РЕЖИМА ОБСЛУЖИВАНИЯ - VERCEL PAUSE
 # ===============================================================================
 # Файл:           pause_site.ps1
-# Редакция:       16.11.2026 07:25 | ПЛАН: 161120260725 ПЛАН Фикс задачи паузы VS Code и warn Vercel.md
-# Тег:            [TAG: VILLA-VERCEL-PAUSE-TASK-SYNC-161120260725]
+# Предыдущая ред: 16.11.2026 07:25 | ПЛАН: 161120260725 ПЛАН Фикс задачи паузы VS Code и warn Vercel.md
+# Актуальная ред: 16.11.2026 09:05 | ПЛАН: 161120260902 ПЛАН Реквизиты владельца и сборка.md
+# Уровень А:      "в заглушках не мои данные Telegram: [@villaturaman](https://t.me/villaturaman) WhatsApp:[+90 543 335 80 70](https://wa.me/905433358070) должно быть Telegram: [@marmarisyachtingru](https://t.me/marmarisyachtingru) WhatsApp:[+90 5366140347](https://wa.me/905366140347) Официальный VKN:9991120181 проверь везде не только в заглушках | Согласен с поправкой Официальный VKN: 9991120181 [Аксу / Анталья] это не [Аксу / Анталья] это Мугла Ортаджа"
+# Уровень Б:      Актуализация реквизитов владельца в шаблоне заглушки HTTP 503 и Edge Middleware [Telegram: @marmarisyachtingru, WhatsApp: +90 5366140347, Официальный VKN: 9991120181 Мугла / Ортаджа].
+# Тег:            [TAG: VILLA-OWNER-CONTACTS-SYNC-161120260902]
 # Кодировка:      UTF-8 с BOM [\uFEFF] - нативный стандарт VS Code и PowerShell 7
 # Целевая ветка:  v1-airbnb
 # ===============================================================================
@@ -166,22 +169,22 @@ $MaintenanceHtml = @'
       </div>
       <div class="contact-row">
         <span class="contact-label">Telegram:</span>
-        <a href="https://t.me/villaturaman" class="contact-value" target="_blank">@villaturaman</a>
+        <a href="https://t.me/marmarisyachtingru" class="contact-value" target="_blank">@marmarisyachtingru</a>
       </div>
       <div class="contact-row">
         <span class="contact-label">WhatsApp:</span>
-        <a href="https://wa.me/905433358070" class="contact-value" target="_blank">+90 543 335 80 70</a>
+        <a href="https://wa.me/905366140347" class="contact-value" target="_blank">+90 5366140347</a>
       </div>
       <div class="contact-row">
         <span class="contact-label">Официальный VKN:</span>
-        <span class="contact-value" style="color: #cbd5e1;">9991120181</span>
+        <span class="contact-value" style="color: #cbd5e1;">9991120181 [Мугла / Ортаджа]</span>
       </div>
     </div>
     <div class="btn-group">
-      <a href="https://t.me/villaturaman" class="btn btn-tg" target="_blank">
+      <a href="https://t.me/marmarisyachtingru" class="btn btn-tg" target="_blank">
         Написать в Telegram
       </a>
-      <a href="https://wa.me/905433358070" class="btn btn-wa" target="_blank">
+      <a href="https://wa.me/905366140347" class="btn btn-wa" target="_blank">
         Связаться в WhatsApp
       </a>
     </div>

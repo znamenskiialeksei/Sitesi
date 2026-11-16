@@ -1,3 +1,6 @@
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 16.11.2026 09:05 | ПЛАН: 161120260902 ПЛАН Реквизиты владельца и сборка.md | TAG: VILLA-OWNER-CONTACTS-SYNC-161120260902]
+// Уровень А: "в заглушках не мои данные Telegram: [@villaturaman](https://t.me/villaturaman) WhatsApp:[+90 543 335 80 70](https://wa.me/905433358070) должно быть Telegram: [@marmarisyachtingru](https://t.me/marmarisyachtingru) WhatsApp:[+90 5366140347](https://wa.me/905366140347) Официальный VKN:9991120181 проверь везде не только в заглушках | Согласен с поправкой Официальный VKN: 9991120181 [Аксу / Анталья] это не [Аксу / Анталья] это Мугла Ортаджа"
+// Уровень Б: Закрепление канонических реквизитов владельца [Telegram @marmarisyachtingru, WhatsApp/Телефон +90 5366140347, VKN 9991120181 Мугла / Ортаджа] и отделение от телефона партнера трансфера Ахмета.
 // ==============================================================================
 // ЕДИНЫЙ ДВИЖОК ИИ-КОНСЬЕРЖА: GOOGLE GEMINI 3.6 FLASH
 // Файл: utils/aiConciergeEngine.js
@@ -111,12 +114,17 @@ export async function generateConciergeReply({
   const transferPartnerPhone = vars.transfer_partner_phone || '+90 543 335 80 70';
   const transferPartnerContact = vars.transfer_partner_contact || 'Ahmet';
   const transferPartnerWhatsapp = vars.transfer_partner_whatsapp || '+90 543 335 80 70';
-  const cleanHostPhone = (vars.host_phone && !vars.host_phone.includes('000 00 00')) ? vars.host_phone : '';
-  const cleanHostWhatsapp = (vars.host_whatsapp && !vars.host_whatsapp.includes('000 00 00')) ? vars.host_whatsapp : '';
-  const hostTelegram = vars.host_telegram || '@villaturaman';
-  const hostContactInfo = cleanHostPhone
-    ? `Телефон: ${cleanHostPhone}, WhatsApp: ${cleanHostWhatsapp || cleanHostPhone}, Telegram: ${hostTelegram}`
-    : `Telegram: ${hostTelegram}, прямой телефон и код доступа к вилле отправляются гостю в подтверждении бронирования`;
+  const cleanHostPhone = (vars.host_phone && !vars.host_phone.includes('000 00 00') && !vars.host_phone.includes('543 335 80 70'))
+    ? vars.host_phone
+    : '+90 5366140347';
+  const cleanHostWhatsapp = (vars.host_whatsapp && !vars.host_whatsapp.includes('000 00 00') && !vars.host_whatsapp.includes('543 335 80 70'))
+    ? vars.host_whatsapp
+    : '+90 5366140347';
+  const hostTelegram = (vars.host_telegram && vars.host_telegram !== '@villaturaman')
+    ? vars.host_telegram
+    : '@marmarisyachtingru';
+  const hostVkn = vars.tax_registration_vkn || '9991120181';
+  const hostContactInfo = `Телефон: ${cleanHostPhone}, WhatsApp: ${cleanHostWhatsapp} [https://wa.me/905366140347], Telegram: ${hostTelegram} [https://t.me/marmarisyachtingru], Официальный VKN: ${hostVkn} [Ortaca Vergi Dairesi, Мугла / Ортаджа]`;
 
   const address = vars.address || 'Dalyan, Rodoslu Yaşar Sünger Sk, NO 28/2, 48600 Ortaca / Muğla';
   const wifiName = vars.wifi_name || 'Guest';

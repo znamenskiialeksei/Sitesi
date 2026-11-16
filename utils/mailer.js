@@ -1,5 +1,7 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 28.09.2026 14:15 | ПЛАН: 280920261415 ПЛАН Комплексная модернизация экосистемы.md | TAG: VILLA-FULL-ECOSYSTEM-UPGRADE-280920261415]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 28.09.2026 19:40 | ПЛАН: 280920261940 ПЛАН 13 колонок ACCOUNTS и восстановление.md | TAG: VILLA-MAILER-VERIFIED-STATUS-280920261940]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 28.09.2026 19:40 | ПЛАН: 280920261940 ПЛАН 13 колонок ACCOUNTS и восстановление.md | TAG: VILLA-MAILER-VERIFIED-STATUS-280920261940]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 16.11.2026 09:05 | ПЛАН: 161120260902 ПЛАН Реквизиты владельца и сборка.md | TAG: VILLA-OWNER-CONTACTS-SYNC-161120260902]
+// Уровень А: "в заглушках не мои данные Telegram: [@villaturaman](https://t.me/villaturaman) WhatsApp:[+90 543 335 80 70](https://wa.me/905433358070) должно быть Telegram: [@marmarisyachtingru](https://t.me/marmarisyachtingru) WhatsApp:[+90 5366140347](https://wa.me/905366140347) Официальный VKN:9991120181 проверь везде не только в заглушках | Согласен с поправкой Официальный VKN: 9991120181 [Аксу / Анталья] это не [Аксу / Анталья] это Мугла Ортаджа"
+// Уровень Б: Включение прямого контакта WhatsApp +90 5366140347 [https://wa.me/905366140347], Telegram @marmarisyachtingru и Официального VKN 9991120181 [Ortaca Vergi Dairesi, Мугла / Ортаджа] в шаблоны писем бронирования.
 // ==============================================================================
 // МОДУЛЬ ОТПРАВКИ EMAIL И ПРОВЕРОЧНЫХ УВЕДОМЛЕНИЙ VILLA TURAMAN
 // Файл: utils/mailer.js
@@ -480,11 +482,15 @@ export const getDetailedBookingEmailHtml = ({
               </div>
               <div>
                 <a href="https://t.me/marmarisyachtingru" target="_blank" style="display: inline-block; color: #38bdf8; text-decoration: none; font-size: 12px; font-weight: 600; margin: 0 10px;">
-                  💬 Написать хозяину в Telegram: @marmarisyachtingru
+                  💬 Telegram: @marmarisyachtingru
+                </a>
+                <span style="color: rgba(255, 255, 255, 0.2);">|</span>
+                <a href="https://wa.me/905366140347" target="_blank" style="display: inline-block; color: #10b981; text-decoration: none; font-size: 12px; font-weight: 600; margin: 0 10px;">
+                  📱 WhatsApp: +90 5366140347
                 </a>
                 <span style="color: rgba(255, 255, 255, 0.2);">|</span>
                 <a href="mailto:villaturaman@gmail.com" style="display: inline-block; color: #94a3b8; text-decoration: none; font-size: 12px; font-weight: 600; margin: 0 10px;">
-                  ✉ Связаться по email: villaturaman@gmail.com
+                  ✉ Email: villaturaman@gmail.com
                 </a>
               </div>
             </td>
@@ -494,7 +500,7 @@ export const getDetailedBookingEmailHtml = ({
           <tr>
             <td style="padding: 24px 36px; background-color: #0b111d; border-top: 1px solid rgba(255, 255, 255, 0.05); text-align: center;">
               <p style="font-size: 11px; color: #64748b; margin: 0 0 4px 0;">
-                Villa Turaman Dalyan : Премиальный отдых и консьерж-сервис
+                Villa Turaman Dalyan : Официальный VKN: 9991120181 [Ortaca Vergi Dairesi, Мугла / Ортаджа]
               </p>
               <p style="font-size: 11px; color: #475569; margin: 0;">
                 © Villa Turaman. Все права защищены.

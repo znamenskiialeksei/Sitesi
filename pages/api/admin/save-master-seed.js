@@ -1,5 +1,7 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 00:25 | ПЛАН: 270920260015 Синхронизация translations.md | TAG: VILLA-API-SEED-TRANSLATIONS-270920260025]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:48 | ПЛАН: 270920260148 Исправление кнопок ИИ и локализации инбокса.md | TAG: VILLA-HOST-AI-INBOX-I18N-270920260148]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 01:48 | ПЛАН: 270920260148 Исправление кнопок ИИ и локализации инбокса.md | TAG: VILLA-HOST-AI-INBOX-I18N-270920260148]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 16.11.2026 09:05 | ПЛАН: 161120260902 ПЛАН Реквизиты владельца и сборка.md | TAG: VILLA-OWNER-CONTACTS-SYNC-161120260902]
+// Уровень А: "в заглушках не мои данные Telegram: [@villaturaman](https://t.me/villaturaman) WhatsApp:[+90 543 335 80 70](https://wa.me/905433358070) должно быть Telegram: [@marmarisyachtingru](https://t.me/marmarisyachtingru) WhatsApp:[+90 5366140347](https://wa.me/905366140347) Официальный VKN:9991120181 проверь везде не только в заглушках | Согласен с поправкой Официальный VKN: 9991120181 [Аксу / Анталья] это не [Аксу / Анталья] это Мугла Ортаджа"
+// Уровень Б: Чтение 13 колонок A:M листа ACCOUNTS и синхронизация телефона суперхозяина Алексея Знаменского [+90 5366140347].
 // ==============================================================================
 // СЕРВЕРНЫЙ ЭНДПОИНТ ФИКСАЦИИ ЭТАЛОНА SINGLE SOURCE OF TRUTH
 // Файл: pages/api/admin/save-master-seed.js
@@ -343,10 +345,16 @@ export default async function handler(req, res) {
       ? rawTasks.slice(1).map((r) => r.map((c) => (c || '').toString().trim()))
       : (existingSeed.MASTER_TASKS_ROWS || []);
 
-    // 10. Выгрузка листа ACCOUNTS [Гостевые аккаунты: A:G]
-    const rawAccounts = await safeFetchRows('ACCOUNTS', 'A:G');
+    // 10. Выгрузка листа ACCOUNTS [Гостевые аккаунты: A:M - 13 колонок]
+    const rawAccounts = await safeFetchRows('ACCOUNTS', 'A:M');
     const masterAccountsRows = rawAccounts.length > 1
-      ? rawAccounts.slice(1).map((r) => r.map((c) => (c || '').toString().trim()))
+      ? rawAccounts.slice(1).map((r) => {
+          const row = r.map((c) => (c || '').toString().trim());
+          if (row[1] && row[1].includes('Знаменский') && row[2] === '+90 543 335 80 70') {
+            row[2] = '+90 5366140347';
+          }
+          return row;
+        })
       : (existingSeed.MASTER_ACCOUNTS_ROWS || []);
 
     // 11. Выгрузка листа BOOKINGS [Бронирования и Заявки: A:L]

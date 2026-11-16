@@ -1,5 +1,7 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 29.09.2026 02:25 | ПЛАН: 290920260225 ПЛАН 13 колонок ACCOUNTS и подтверждение по email.md | TAG: VILLA-13COLS-ACCOUNTS-EMAIL-OTP-290920260225]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 15.11.2026 21:45 | ПЛАН: 151120262145 ПЛАН Каталог услуг Доп 0_14-0_16 и Code_js.md | TAG: VILLA-BOOKING-ORDER-SAFE-151120262145]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 15.11.2026 21:45 | ПЛАН: 151120262145 ПЛАН Каталог услуг Доп 0_14-0_16 и Code_js.md | TAG: VILLA-BOOKING-ORDER-SAFE-151120262145]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 16.11.2026 09:05 | ПЛАН: 161120260902 ПЛАН Реквизиты владельца и сборка.md | TAG: VILLA-OWNER-CONTACTS-SYNC-161120260902]
+// Уровень А: "в заглушках не мои данные Telegram: [@villaturaman](https://t.me/villaturaman) WhatsApp:[+90 543 335 80 70](https://wa.me/905433358070) должно быть Telegram: [@marmarisyachtingru](https://t.me/marmarisyachtingru) WhatsApp:[+90 5366140347](https://wa.me/905366140347) Официальный VKN:9991120181 проверь везде не только в заглушках | Согласен с поправкой Официальный VKN: 9991120181 [Аксу / Анталья] это не [Аксу / Анталья] это Мугла Ортаджа"
+// Уровень Б: Синхронизация реквизитов владельца в ACCOUNTS, глобальных правилах CALENDAR, самоисцелении ACCOUNTS и электронном ваучере [Telegram @marmarisyachtingru, WhatsApp/Телефон +90 5366140347, VKN 9991120181 Ortaca Vergi Dairesi, Мугла / Ортаджа].
 // ==============================================================================
 // ОСНОВНОЙ API СЕРВЕР GOOGLE SHEETS & CRM VILLA TURAMAN
 // Файл: pages/api/booking.js
@@ -621,6 +623,12 @@ const sanitizeAndHealAccountsSheet = async (sheets, spreadsheetId, sheetMap) => 
         uid = `VT-GUEST-${1000 + i}`;
       }
 
+      // Признак 3: Актуализация телефона суперхозяина Алексея Знаменского
+      if (name.includes('Знаменский') && (!phone || phone.includes('543 335 80 70'))) {
+        needsHeal = true;
+        phone = '+90 5366140347';
+      }
+
       // Нормализация базовых значений
       if (!pass) pass = '123456';
       if (!bSite) bSite = 'Нет';
@@ -747,14 +755,14 @@ export default async function handler(req, res) {
     </div>
 
     <div class="detail"><span class="label">Гость:</span><span class="val">${bookingData.name}</span></div>
-    <div class="detail"><span class="label">Объект:</span><span class="val">Villa Turaman : Дальян, Мугла, Турция</span></div>
-    <div class="detail"><span class="label">Владелец и Tax ID:</span><span class="val">Алексей Знаменский : VKN 9991120181</span></div>
+    <div class="detail"><span class="label">Объект:</span><span class="val">Villa Turaman : Дальян, Ортаджа, Мугла, Турция</span></div>
+    <div class="detail"><span class="label">Владелец и Tax ID:</span><span class="val">Алексей Знаменский : VKN 9991120181 [Ortaca Vergi Dairesi, Мугла / Ортаджа]</span></div>
     ${checkInHtml}
     <div class="detail"><span class="label">Количество гостей:</span><span class="val">${bookingData.total_guests || bookingData.guests || 2}</span></div>
     <div class="detail"><span class="label">Итоговая стоимость:</span><span class="val" style="color:#10b981; font-weight:bold;">${bookingData.price || 'Оплачено'}</span></div>
     <div class="detail"><span class="label">Время заезда и выезда:</span><span class="val">Заезд с 16:00 • Выезд до 10:00</span></div>
     <div class="detail"><span class="label">Код доступа Wi-Fi:</span><span class="val code">turaman2026</span></div>
-    <div class="detail"><span class="label">Персональный консьерж:</span><span class="val">@marmarisyachtingru</span></div>
+    <div class="detail"><span class="label">Связь с владельцем:</span><span class="val">Telegram: @marmarisyachtingru | WhatsApp: +90 5366140347</span></div>
 
     <div class="btn-group">
       <a href="${pdfLink}" class="btn btn-primary">
@@ -1049,6 +1057,9 @@ export default async function handler(req, res) {
           ibanSwift: 'TCZBTR2A',
           ibanNote: 'Укажите код бронирования в назначении платежа',
           hostTelegram: 'https://t.me/marmarisyachtingru',
+          hostWhatsapp: 'https://wa.me/905366140347',
+          hostPhone: '+90 5366140347',
+          hostVkn: '9991120181',
           hostEmail: 'villaturaman@gmail.com'
         };
         await sheets.spreadsheets.values.append({
@@ -1157,7 +1168,7 @@ export default async function handler(req, res) {
           insertDataOption: 'INSERT_ROWS',
           requestBody: {
             values: [
-              ['15.01.2026, 12:00:00', 'Алексей Знаменский', '+90 543 335 80 70', 'villaturaman@gmail.com', 'admin123', 'Нет', 'Нет', 'Нет', 'Верифицирован', '15.01.2026, 12:00:00', 'Нет', 'Активен', 'VT-GUEST-1000'],
+              ['15.01.2026, 12:00:00', 'Алексей Знаменский', '+90 5366140347', 'villaturaman@gmail.com', 'admin123', 'Нет', 'Нет', 'Нет', 'Верифицирован', '15.01.2026, 12:00:00', 'Нет', 'Активен', 'VT-GUEST-1000'],
               ['01.05.2026, 10:00:00', 'Служба консьержа', '+90 532 000 00 01', 'manager@villaturaman.com', 'manager2026', 'Нет', 'Нет', 'Нет', 'Верифицирован', '01.05.2026, 10:00:00', 'Нет', 'Активен', 'VT-GUEST-1001']
             ]
           }
@@ -1328,6 +1339,9 @@ export default async function handler(req, res) {
           ibanSwift: 'TCZBTR2A',
           ibanNote: 'Укажите код бронирования в назначении платежа',
           hostTelegram: 'https://t.me/marmarisyachtingru',
+          hostWhatsapp: 'https://wa.me/905366140347',
+          hostPhone: '+90 5366140347',
+          hostVkn: '9991120181',
           hostEmail: 'villaturaman@gmail.com'
         };
         return res.status(200).json({
@@ -1355,6 +1369,9 @@ export default async function handler(req, res) {
             if (!globalRules.ibanSwift) globalRules.ibanSwift = 'TCZBTR2A';
             if (!globalRules.ibanNote) globalRules.ibanNote = 'Укажите код бронирования в назначении платежа';
             if (!globalRules.hostTelegram) globalRules.hostTelegram = 'https://t.me/marmarisyachtingru';
+            if (!globalRules.hostWhatsapp) globalRules.hostWhatsapp = 'https://wa.me/905366140347';
+            if (!globalRules.hostPhone) globalRules.hostPhone = '+90 5366140347';
+            if (!globalRules.hostVkn) globalRules.hostVkn = '9991120181';
             if (!globalRules.hostEmail) globalRules.hostEmail = 'villaturaman@gmail.com';
             savePersistedGlobalRules(globalRules);
           } catch (e) { }
@@ -1406,6 +1423,9 @@ export default async function handler(req, res) {
         ibanSwift: 'TCZBTR2A',
         ibanNote: 'Укажите код бронирования в назначении платежа',
         hostTelegram: 'https://t.me/marmarisyachtingru',
+        hostWhatsapp: 'https://wa.me/905366140347',
+        hostPhone: '+90 5366140347',
+        hostVkn: '9991120181',
         hostEmail: 'villaturaman@gmail.com'
       };
 
@@ -1436,6 +1456,9 @@ export default async function handler(req, res) {
         ibanSwift: 'TCZBTR2A',
         ibanNote: 'Укажите код бронирования в назначении платежа',
         hostTelegram: 'https://t.me/marmarisyachtingru',
+        hostWhatsapp: 'https://wa.me/905366140347',
+        hostPhone: '+90 5366140347',
+        hostVkn: '9991120181',
         hostEmail: 'villaturaman@gmail.com'
       };
       const fallbackDateRules = getPersistedCalendarRules();

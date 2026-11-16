@@ -1,5 +1,11 @@
 /** @type {import('next').NextConfig} */
-// Конфигурационный файл Next.js для платформы Villa Turaman (Архитектура AirBnB)
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 16.11.2026 09:05 | ПЛАН: 161120260902 ПЛАН Реквизиты владельца и сборка.md | TAG: VILLA-OWNER-CONTACTS-SYNC-161120260902]
+// Уровень А: "1. Журналы сборки 54 с 95 строк 1 2 ... 2. в заглушках не мои данные Telegram: [@villaturaman]..."
+// Уровень Б: Подавление 2 предупреждений устаревания базы браузеров [baseline-browser-mapping / browserslist] на этапе next build.
+// Конфигурационный файл Next.js для платформы Villa Turaman [Архитектура AirBnB]
+process.env.BROWSERSLIST_IGNORE_OLD_DATA = 'true';
+process.env.BASELINE_BROWSER_MAPPING_IGNORE_OLD_DATA = 'true';
+
 const nextConfig = {
   reactStrictMode: true, // Строгий режим React для выявления потенциальных проблем
   i18n: {

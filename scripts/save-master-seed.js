@@ -1,5 +1,7 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 28.09.2026 22:50 | ПЛАН: 280920261940 ПЛАН 13 колонок ACCOUNTS и восстановление.md | TAG: VILLA-SEED-SCRIPT-DELETED-ROWS-SYNC-280920262250]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 28.09.2026 23:25 | ПЛАН: 280920262322 ПЛАН Восстановление шапок ACCOUNTS.md | TAG: VILLA-RESTORE-ROW2-HEADERS-STAMP-280920262325]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 28.09.2026 23:25 | ПЛАН: 280920262322 ПЛАН Восстановление шапок ACCOUNTS.md | TAG: VILLA-RESTORE-ROW2-HEADERS-STAMP-280920262325]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 16.11.2026 09:05 | ПЛАН: 161120260902 ПЛАН Реквизиты владельца и сборка.md | TAG: VILLA-OWNER-CONTACTS-SYNC-161120260902]
+// Уровень А: "в заглушках не мои данные Telegram: [@villaturaman](https://t.me/villaturaman) WhatsApp:[+90 543 335 80 70](https://wa.me/905433358070) должно быть Telegram: [@marmarisyachtingru](https://t.me/marmarisyachtingru) WhatsApp:[+90 5366140347](https://wa.me/905366140347) Официальный VKN:9991120181 проверь везде не только в заглушках | Согласен с поправкой Официальный VKN: 9991120181 [Аксу / Анталья] это не [Аксу / Анталья] это Мугла Ортаджа"
+// Уровень Б: Синхронизация телефона суперхозяина Алексея Знаменского [+90 5366140347] при выгрузке и выравнивании листа ACCOUNTS.
 // ==============================================================================
 // СЦЕНАРИЙ АВТОМАТИЧЕСКОЙ ФИКСАЦИИ ЭТАЛОНА SINGLE SOURCE OF TRUTH
 // Файл: scripts/save-master-seed.js
@@ -338,8 +340,10 @@ async function saveMasterSeed() {
           const reVerif = row[9] || 'Нет';
           const accStat = row[10] || 'Активен';
           const uidVal = row[12] || ('VT-GUEST-' + (1000 + idx));
-          const phoneVal = row[1].includes('Знаменский') ? '+90 543 335 80 70' : '+90 532 000 00 01';
+          const phoneVal = row[1].includes('Знаменский') ? '+90 5366140347' : '+90 532 000 00 01';
           row = [row[0], row[1], phoneVal, emailVal, passVal, blockSite, blockAcc, blockChat, verifStat, verifDate, reVerif, accStat, uidVal];
+        } else if (row[1] && row[1].includes('Знаменский') && row[2] === '+90 543 335 80 70') {
+          row[2] = '+90 5366140347';
         }
         // Защита: гарантируем наличие неизменяемого UID в Колонке M
         if (!row[12]) {

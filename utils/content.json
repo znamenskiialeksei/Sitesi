@@ -3748,6 +3748,26 @@
       "value": "Краткосрочная аренда Villa Turaman [Дальян, Мугла, Турция]",
       "description": "Юридический вид деятельности и бизнес"
     },
+    "host_phone": {
+      "category": "О_ХОЗЯИНЕ",
+      "value": "+90 5366140347",
+      "description": "Прямой телефон суперхозяина Алексея Знаменского"
+    },
+    "host_whatsapp": {
+      "category": "О_ХОЗЯИНЕ",
+      "value": "+90 5366140347",
+      "description": "Официальный WhatsApp суперхозяина https://wa.me/905366140347"
+    },
+    "host_telegram": {
+      "category": "О_ХОЗЯИНЕ",
+      "value": "@marmarisyachtingru",
+      "description": "Официальный Telegram суперхозяина https://t.me/marmarisyachtingru"
+    },
+    "tax_registration_vkn": {
+      "category": "О_ХОЗЯИНЕ",
+      "value": "9991120181",
+      "description": "Официальный VKN налоговой инспекции Ortaca Vergi Dairesi [Мугла / Ортаджа]"
+    },
     "villa_capacity": {
       "category": "О_ВИЛЛЕ",
       "value": "10 гостей",

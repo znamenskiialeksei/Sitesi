@@ -1,5 +1,7 @@
-// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 01:15 | ПЛАН: 270920260115 Оптимизация кабинета и виджета.md | TAG: VILLA-HOST-WIDGET-CLEAN-270920260115]
-// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 27.09.2026 01:48 | ПЛАН: 270920260148 Исправление кнопок ИИ и локализации инбокса.md | TAG: VILLA-HOST-AI-INBOX-I18N-270920260148]
+// [ПРЕДЫДУЩАЯ РЕДАКЦИЯ: 27.09.2026 01:48 | ПЛАН: 270920260148 Исправление кнопок ИИ и локализации инбокса.md | TAG: VILLA-HOST-AI-INBOX-I18N-270920260148]
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 16.11.2026 09:05 | ПЛАН: 161120260902 ПЛАН Реквизиты владельца и сборка.md | TAG: VILLA-OWNER-CONTACTS-SYNC-161120260902]
+// Уровень А: "в заглушках не мои данные Telegram: [@villaturaman](https://t.me/villaturaman) WhatsApp:[+90 543 335 80 70](https://wa.me/905433358070) должно быть Telegram: [@marmarisyachtingru](https://t.me/marmarisyachtingru) WhatsApp:[+90 5366140347](https://wa.me/905366140347) Официальный VKN:9991120181 проверь везде не только в заглушках | Согласен с поправкой Официальный VKN: 9991120181 [Аксу / Анталья] это не [Аксу / Анталья] это Мугла Ортаджа"
+// Уровень Б: Добавление полей официального WhatsApp [+90 5366140347 / https://wa.me/905366140347] и VKN [9991120181 Ortaca Vergi Dairesi, Мугла / Ортаджа] в панель настроек хозяина.
 // ==============================================================================
 // УПРАВЛЕНИЕ БАЗОВЫМИ ТАРИФАМИ И ПРАВИЛАМИ ВИЛЛЫ [HOST SETTINGS]
 // Файл: components/HostCabinet/HostSettings.js
@@ -137,6 +139,9 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
     ibanSwift: globalRules.ibanSwift || 'TCZBTR2A',
     ibanNote: globalRules.ibanNote || 'Укажите код бронирования в назначении платежа',
     hostTelegram: globalRules.hostTelegram || 'https://t.me/marmarisyachtingru',
+    hostWhatsapp: globalRules.hostWhatsapp || 'https://wa.me/905366140347',
+    hostPhone: globalRules.hostPhone || '+90 5366140347',
+    hostVkn: globalRules.hostVkn || '9991120181',
     hostEmail: globalRules.hostEmail || 'villaturaman@gmail.com'
   });
 
@@ -160,6 +165,9 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
         ibanSwift: globalRules.ibanSwift || 'TCZBTR2A',
         ibanNote: globalRules.ibanNote || 'Укажите код бронирования в назначении платежа',
         hostTelegram: globalRules.hostTelegram || 'https://t.me/marmarisyachtingru',
+        hostWhatsapp: globalRules.hostWhatsapp || 'https://wa.me/905366140347',
+        hostPhone: globalRules.hostPhone || '+90 5366140347',
+        hostVkn: globalRules.hostVkn || '9991120181',
         hostEmail: globalRules.hostEmail || 'villaturaman@gmail.com'
       });
     }
@@ -620,6 +628,36 @@ export default function HostSettings({ globalRules = {}, onSaveSettings, loading
                 className="w-full bg-slate-800 border border-white/10 p-2.5 rounded-xl text-xs font-bold text-blue-300 outline-none focus:border-blue-500"
               />
               <span className="text-[10px] text-slate-500 mt-1 block">{t('hostTelegramHint') || 'Ссылка вида https://t.me/username или @username'}</span>
+            </div>
+
+            <div>
+              <label className="block text-xs uppercase font-bold text-slate-400 mb-1 flex items-center gap-1.5">
+                <MessageCircle className="w-3.5 h-3.5 text-emerald-400" /> WhatsApp / Телефон хозяина
+              </label>
+              <input
+                type="text"
+                name="hostWhatsapp"
+                value={form.hostWhatsapp}
+                onChange={handleChange}
+                placeholder="https://wa.me/905366140347"
+                className="w-full bg-slate-800 border border-white/10 p-2.5 rounded-xl text-xs font-bold text-emerald-300 outline-none focus:border-emerald-500"
+              />
+              <span className="text-[10px] text-slate-500 mt-1 block">Канонический номер: +90 5366140347 [https://wa.me/905366140347]</span>
+            </div>
+
+            <div>
+              <label className="block text-xs uppercase font-bold text-slate-400 mb-1 flex items-center gap-1.5">
+                <Shield className="w-3.5 h-3.5 text-amber-400" /> Официальный VKN [Ortaca Vergi Dairesi, Мугла / Ортаджа]
+              </label>
+              <input
+                type="text"
+                name="hostVkn"
+                value={form.hostVkn}
+                onChange={handleChange}
+                placeholder="9991120181"
+                className="w-full bg-slate-800 border border-white/10 p-2.5 rounded-xl text-xs font-mono font-bold text-amber-300 outline-none focus:border-amber-500"
+              />
+              <span className="text-[10px] text-slate-500 mt-1 block">Официальный VKN: 9991120181 [Мугла / Ортаджа]</span>
             </div>
 
             <div>

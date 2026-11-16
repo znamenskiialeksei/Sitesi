@@ -1,12 +1,14 @@
 /**
  * ============================================================================
  * [ПРЕДЫДУЩАЯ РЕДАКЦИЯ]
- * Редакция: 29.09.2026 00:45 | Метка: TAG: VILLA-SHEET-CLEAR-VALIDATIONS-FIX-290920260045
- * План: [290920260046 ПЛАН Устранение ошибки clearDataValidations.md](file:///c:/Новый%20сайт%20вилла%2015112026/1%20Вилла%20Сайт%20ГлобПрав%20изм%20осн%20правил%2015062026/villa-turaman-airbnb-platform/ПЛАНЫ/290920260046%20ПЛАН%20Устранение%20ошибки%20clearDataValidations.md)
- * ----------------------------------------------------------------------------
- * [АКТУАЛЬНАЯ РЕДАКЦИЯ]
  * Редакция: 15.11.2026 21:45 | Метка: TAG: VILLA-CODEJS-HARMONIZATION-014-016-151120262145
  * План: [151120262145 ПЛАН Каталог услуг Доп 0_14-0_16 и Code_js.md](file:///c:/Новый%20сайт%20вилла%2015112026/1%20Вилла%20Сайт%20ГлобПрав%20изм%20осн%20правил%2015062026/villa-turaman-airbnb-platform/ПЛАНЫ/151120262145%20ПЛАН%20Каталог%20услуг%20Доп%200_14-0_16%20и%20Code_js.md)
+ * ----------------------------------------------------------------------------
+ * [АКТУАЛЬНАЯ РЕДАКЦИЯ]
+ * Редакция: 16.11.2026 09:05 | Метка: TAG: VILLA-OWNER-CONTACTS-SYNC-161120260902
+ * План: [161120260902 ПЛАН Реквизиты владельца и сборка.md](file:///c:/Новый%20сайт%20вилла%2015112026/1%20Вилла%20Сайт%20ГлобПрав%20изм%20осн%20правил%2015062026/villa-turaman-airbnb-platform/ПЛАНЫ/161120260902%20ПЛАН%20Реквизиты%20владельца%20и%20сборка.md)
+ * Уровень А: "в заглушках не мои данные Telegram: [@villaturaman](https://t.me/villaturaman) WhatsApp:[+90 543 335 80 70](https://wa.me/905433358070) должно быть Telegram: [@marmarisyachtingru](https://t.me/marmarisyachtingru) WhatsApp:[+90 5366140347](https://wa.me/905366140347) Официальный VKN:9991120181 проверь везде не только в заглушках | Согласен с поправкой Официальный VKN: 9991120181 [Аксу / Анталья] это не [Аксу / Анталья] это Мугла Ортаджа"
+ * Уровень Б: Синхронизация эталонных реквизитов владельца в CALENDAR, ACCOUNTS, SETTINGS и процедуре самоисцеления restoreSheetsFromCloudApiInteractive [Telegram @marmarisyachtingru, WhatsApp/Телефон +90 5366140347, VKN 9991120181 Ortaca Vergi Dairesi, Мугла / Ортаджа].
  * ============================================================================
  * МОДУЛЬ 0: ПАСПОРТ МОДУЛЯ И СИСТЕМНАЯ КОНФИГУРАЦИЯ
  * Название: Монолитный скрипт Google Apps Script экосистемы Villa Turaman CRM
@@ -1800,7 +1802,7 @@ function initSingleSheetByKey_(sheet, key) {
     var cHeaders = ['Дата старта', 'Дата завершения', 'Тип [Блокировка/Цена/Мин. дней/Заметка/Настройки]', 'Значение', 'Заметка', 'Автор изменения', 'Время фиксации'];
     styleSheetHeader_(sheet, cHeaders, 1);
     var cRows = [
-    ["Глобальные правила","Все даты","Настройки","{\"basePrice\":250,\"currency\":\"USD\",\"minNights\":3,\"maxNights\":30,\"bookingWindowMonths\":18,\"advanceNoticeDays\":2,\"bookingMode\":\"instant\",\"verificationMode\":\"progressive\",\"paymentMode\":\"all\",\"ibanBankName\":\"Ziraat Bankası\",\"ibanReceiver\":\"Aleksei Znamenskii\",\"ibanNumber\":\"TR000000000000000000000000\",\"ibanSwift\":\"TCZBTR2A\",\"ibanNote\":\"Укажите код бронирования в назначении платежа\",\"hostTelegram\":\"https://t.me/marmarisyachtingru\",\"hostEmail\":\"villaturaman@gmail.com\",\"checkInTime\":\"16:00\",\"checkOutTime\":\"10:00\"}","Изменение тарифов","admin","20.09.2026 12:00"]
+    ["Глобальные правила","Все даты","Настройки","{\"basePrice\":250,\"currency\":\"USD\",\"minNights\":3,\"maxNights\":30,\"bookingWindowMonths\":18,\"advanceNoticeDays\":2,\"bookingMode\":\"instant\",\"verificationMode\":\"progressive\",\"paymentMode\":\"all\",\"ibanBankName\":\"Ziraat Bankası\",\"ibanReceiver\":\"Aleksei Znamenskii\",\"ibanNumber\":\"TR000000000000000000000000\",\"ibanSwift\":\"TCZBTR2A\",\"ibanNote\":\"Укажите код бронирования в назначении платежа\",\"hostTelegram\":\"https://t.me/marmarisyachtingru\",\"hostWhatsapp\":\"https://wa.me/905366140347\",\"hostPhone\":\"+90 5366140347\",\"hostVkn\":\"9991120181\",\"hostEmail\":\"villaturaman@gmail.com\",\"checkInTime\":\"16:00\",\"checkOutTime\":\"10:00\"}","Изменение тарифов","admin","20.09.2026 12:00"]
   ];
     if (cRows.length > 0) {
       sheet.getRange(2, 1, cRows.length, cHeaders.length).setValues(cRows);
@@ -1812,7 +1814,7 @@ function initSingleSheetByKey_(sheet, key) {
     sheet.getRange("E:E").setNumberFormat("@");
     sheet.getRange("M:M").setNumberFormat("@");
     var aRows = [
-    ["2026-01-15","Алексей Знаменский","+90 543 335 80 70","villaturaman@gmail.com","admin123","Нет","Нет","Нет","Верифицирован","15.01.2026, 12:00:00","Нет","Активен","VT-GUEST-1000"],
+    ["2026-01-15","Алексей Знаменский","+90 5366140347","villaturaman@gmail.com","admin123","Нет","Нет","Нет","Верифицирован","15.01.2026, 12:00:00","Нет","Активен","VT-GUEST-1000"],
     ["2026-05-01","Служба консьержа","+90 532 000 00 01","manager@villaturaman.com","manager2026","Нет","Нет","Нет","Верифицирован","01.05.2026, 10:00:00","Нет","Активен","VT-GUEST-1001"]
   ];
     if (aRows.length > 0) {
@@ -1891,6 +1893,10 @@ function initSingleSheetByKey_(sheet, key) {
     ["О_ХОЗЯИНЕ","host_languages","Русский, English, Türkçe","Языки общения с гостями","Плейсхолдер [HOST_LANGUAGES]"],
     ["О_ХОЗЯИНЕ","host_response_time","В течение часа","Скорость ответа на сообщения","Плейсхолдер [RESPONSE_TIME]"],
     ["О_ХОЗЯИНЕ","host_business","Краткосрочная аренда Villa Turaman [Дальян, Мугла, Турция]","Юридический вид деятельности и бизнес","Бизнес профиль"],
+    ["О_ХОЗЯИНЕ","host_phone","+90 5366140347","Прямой телефон суперхозяина Алексея Знаменского","Плейсхолдер [HOST_PHONE]"],
+    ["О_ХОЗЯИНЕ","host_whatsapp","+90 5366140347","Официальный WhatsApp суперхозяина https://wa.me/905366140347","Плейсхолдер [HOST_WHATSAPP]"],
+    ["О_ХОЗЯИНЕ","host_telegram","@marmarisyachtingru","Официальный Telegram суперхозяина https://t.me/marmarisyachtingru","Плейсхолдер [HOST_TELEGRAM]"],
+    ["О_ХОЗЯИНЕ","tax_registration_vkn","9991120181","Официальный VKN налоговой инспекции Ortaca Vergi Dairesi [Мугла / Ортаджа]","Налоговый номер VKN"],
     ["О_ВИЛЛЕ","villa_capacity","10 гостей","Максимальная вместимость виллы, включая детей","Плейсхолдер [MAX_GUESTS]"],
     ["О_ВИЛЛЕ","villa_floors","2 этажа. Первый этаж: кухня, гостиная со Smart TV 55\", гостевой санузел, стиральная машина, гладильная доска и утюг, спальня на 3 места с ванной. Второй этаж: 3 спальни с ванными комнатами и кондиционерами, доп. кровать и вторая стиральная машина.","Планировка и оснащение этажей","Плейсхолдер [VILLA_FLOORS]"],
     ["О_ВИЛЛЕ","pool_specs","Приватный бассейн с соленой водой 36 кв.м и уличное джакузи","Характеристики бассейна и гидромассажа","Плейсхолдер [POOL_SPECS]"],
@@ -3163,8 +3169,10 @@ function restoreSheetsFromCloudApiInteractive() {
               var reVerif = row[9] || 'Нет';
               var accStat = row[10] || 'Активен';
               var uidVal = row[12] || ('VT-GUEST-' + (1000 + idx));
-              var phoneVal = (String(row[1] || '').indexOf('Знаменский') !== -1) ? '+90 543 335 80 70' : '+90 532 000 00 01';
+              var phoneVal = (String(row[1] || '').indexOf('Знаменский') !== -1) ? '+90 5366140347' : '+90 532 000 00 01';
               row = [row[0], row[1], phoneVal, emailVal, passVal, blockSite, blockAcc, blockChat, verifStat, verifDate, reVerif, accStat, uidVal];
+            } else if (String(row[1] || '').indexOf('Знаменский') !== -1 && String(row[2] || '') === '+90 543 335 80 70') {
+              row[2] = '+90 5366140347';
             }
             if (!row[12]) {
               row[12] = 'VT-GUEST-' + (1000 + idx);

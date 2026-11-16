@@ -1,3 +1,6 @@
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 16.11.2026 09:05 | ПЛАН: 161120260902 ПЛАН Реквизиты владельца и сборка.md | TAG: VILLA-OWNER-CONTACTS-SYNC-161120260902]
+// Уровень А: "в заглушках не мои данные Telegram: [@villaturaman](https://t.me/villaturaman) WhatsApp:[+90 543 335 80 70](https://wa.me/905433358070) должно быть Telegram: [@marmarisyachtingru](https://t.me/marmarisyachtingru) WhatsApp:[+90 5366140347](https://wa.me/905366140347) Официальный VKN:9991120181 проверь везде не только в заглушках | Согласен с поправкой Официальный VKN: 9991120181 [Аксу / Анталья] это не [Аксу / Анталья] это Мугла Ортаджа"
+// Уровень Б: Синхронизация узла графа знаний host [Telegram @marmarisyachtingru, WhatsApp/Телефон +90 5366140347, Официальный VKN 9991120181 Ortaca Vergi Dairesi, Мугла / Ортаджа].
 // ==============================================================================
 // IN-MEMORY ГРАФ ЗНАНИЙ И ИНТЕЛЛЕКТУАЛЬНЫЙ МАРШРУТИЗАТОР ИНТЕНТОВ
 // Файл: utils/aiKnowledgeGraph.js
@@ -406,11 +409,11 @@ class VillaKnowledgeGraph {
       name: settingsMap.host_name || 'Aleksei Znamenskii',
       status: settingsMap.host_status || 'Суперхозяин на Airbnb • Более 5 лет приема гостей',
       languages: settingsMap.host_languages || 'Русский, English, Türkçe',
-      phone: settingsMap.host_phone || '',
-      whatsapp: settingsMap.host_whatsapp || '',
-      telegram: settingsMap.host_telegram || '@villaturaman',
+      phone: (settingsMap.host_phone && !settingsMap.host_phone.includes('543 335 80 70')) ? settingsMap.host_phone : '+90 5366140347',
+      whatsapp: (settingsMap.host_whatsapp && !settingsMap.host_whatsapp.includes('543 335 80 70')) ? settingsMap.host_whatsapp : '+90 5366140347',
+      telegram: (settingsMap.host_telegram && settingsMap.host_telegram !== '@villaturaman') ? settingsMap.host_telegram : '@marmarisyachtingru',
       vkn: settingsMap.tax_registration_vkn || '9991120181',
-      taxOffice: 'Ortaca Vergi Dairesi'
+      taxOffice: 'Ortaca Vergi Dairesi [Мугла / Ортаджа]'
     }, ['owner', 'superhost', 'host', 'хозяин', 'алексей']);
 
     // 2. Узел: Вилла [Villa]
@@ -699,7 +702,7 @@ WI-FI: ${wifiInfo}
 • Проверенный ресторан Дальяна: Çiçek Restaurant [Rodoslu Yaşar Sünger Sk, баранина, сибас].
 • Бассейн с соленой водой 36м² и уличное джакузи [09:00-18:00].
 • Заезд после 16:00, выезд до 10:00.
-• Официальный Telegram суперхозяина: ${host.telegram || '@villaturaman'}.`;
+• Официальные реквизиты суперхозяина: Telegram ${host.telegram || '@marmarisyachtingru'} [https://t.me/marmarisyachtingru] | WhatsApp ${host.whatsapp || '+90 5366140347'} [https://wa.me/905366140347] | Официальный VKN: ${taxes.vkn || '9991120181'} [Ortaca Vergi Dairesi, Мугла / Ортаджа].`;
         break;
     }
 

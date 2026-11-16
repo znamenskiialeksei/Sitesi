@@ -1,3 +1,6 @@
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 16.11.2026 09:05 | ПЛАН: 161120260902 ПЛАН Реквизиты владельца и сборка.md | TAG: VILLA-OWNER-CONTACTS-SYNC-161120260902]
+// Уровень А: "в заглушках не мои данные Telegram: [@villaturaman](https://t.me/villaturaman) WhatsApp:[+90 543 335 80 70](https://wa.me/905433358070) должно быть Telegram: [@marmarisyachtingru](https://t.me/marmarisyachtingru) WhatsApp:[+90 5366140347](https://wa.me/905366140347) Официальный VKN:9991120181 проверь везде не только в заглушках | Согласен с поправкой Официальный VKN: 9991120181 [Аксу / Анталья] это не [Аксу / Анталья] это Мугла Ортаджа"
+// Уровень Б: Отображение в PDF-ваучере полного комплекта реквизитов владельца [Telegram @marmarisyachtingru, WhatsApp +90 5366140347, Tax ID / VKN 9991120181 Ortaca Vergi Dairesi, Mugla / Ortaca].
 // ==============================================================================
 // ГЕНЕРАЦИЯ PDF-ВАУЧЕРОВ И КВИТАНЦИЙ БРОНИРОВАНИЯ
 // Файл: utils/pdf.js
@@ -25,8 +28,8 @@ export const generateVoucher = async (bookingData) => {
 
       // 1. Верхний колонтитул и логотип
       doc.fontSize(22).font('Helvetica-Bold').text('VILLA TURAMAN', { align: 'center' });
-      doc.fontSize(11).font('Helvetica').text('Luxury Waterfront Residence • Dalyan, Mugla, Turkey', { align: 'center' });
-      doc.fontSize(9).fillColor('#64748b').text('Tax ID / VKN: 9991120181 | Host: Aleksei Znamenskii', { align: 'center' });
+      doc.fontSize(11).font('Helvetica').text('Luxury Waterfront Residence • Dalyan, Ortaca, Mugla, Turkey', { align: 'center' });
+      doc.fontSize(9).fillColor('#64748b').text('Tax ID / VKN: 9991120181 [Ortaca Vergi Dairesi, Mugla / Ortaca] | Host: Aleksei Znamenskii', { align: 'center' });
       doc.moveDown(1.5);
 
       // Разделительная линия
@@ -69,7 +72,7 @@ export const generateVoucher = async (bookingData) => {
       doc.text('• Self Check-in: The villa is equipped with an electronic smart lock. Access code will be sent via chat 24h prior.');
       doc.text('• Smoking inside the villa is strictly prohibited. Permitted only on outdoor terraces.');
       doc.text('• Quiet hours: 23:00 - 08:00 in accordance with Dalyan municipality regulations.');
-      doc.text('• Direct Contact with Host Aleksei Znamenskii: Telegram @marmarisyachtingru | Email: villaturaman@gmail.com');
+      doc.text('• Direct Contact with Host Aleksei Znamenskii: Telegram @marmarisyachtingru | WhatsApp +90 5366140347 | Email: villaturaman@gmail.com');
       doc.moveDown(2);
 
       // 5. Подвал с печатью и благодарностью

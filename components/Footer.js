@@ -1,22 +1,26 @@
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 16.11.2026 09:05 | ПЛАН: 161120260902 ПЛАН Реквизиты владельца и сборка.md | TAG: VILLA-OWNER-CONTACTS-SYNC-161120260902]
+// Уровень А: "в заглушках не мои данные Telegram: [@villaturaman](https://t.me/villaturaman) WhatsApp:[+90 543 335 80 70](https://wa.me/905433358070) должно быть Telegram: [@marmarisyachtingru](https://t.me/marmarisyachtingru) WhatsApp:[+90 5366140347](https://wa.me/905366140347) Официальный VKN:9991120181 проверь везде не только в заглушках | Согласен с поправкой Официальный VKN: 9991120181 [Аксу / Анталья] это не [Аксу / Анталья] это Мугла Ортаджа"
+// Уровень Б: Отображение в подвале сайта полного комплекта реквизитов владельца [Telegram @marmarisyachtingru, WhatsApp +90 5366140347, VKN 9991120181 Ortaca Vergi Dairesi, Мугла / Ортаджа].
 // ==============================================================================
-// ПОДВАЛ САЙТА В СТИЛЕ AIRBNB (FOOTER)
+// ПОДВАЛ САЙТА В СТИЛЕ AIRBNB [FOOTER]
 // Файл: components/Footer.js
-// Назначение: Юридические ссылки (KVKK, Договор), реквизиты VKN, контакты и копирайт,
-// динамически загружаемые из Google Sheets (таблица Legal).
+// Назначение: Юридические ссылки [KVKK, Договор], реквизиты VKN, контакты и копирайт,
+// динамически загружаемые из Google Sheets [таблица Legal].
 // ==============================================================================
 
 import React from 'react';
 import Link from 'next/link';
-import { ShieldCheck, MessageCircle, Mail, MapPin, Heart, QrCode } from 'lucide-react';
+import { ShieldCheck, MessageCircle, Mail, MapPin, Heart, QrCode, Phone } from 'lucide-react';
 import { useLanguage } from '../utils/language';
 
 export default function Footer({ legalData = {} }) {
   const { t, lang } = useLanguage();
 
   const companyName = legalData.company_name?.text?.[lang] || legalData.company_name?.text?.ru || 'ALEKSEI ZNAMENSKII - Villa Turaman';
-  const taxInfo = legalData.tax_info?.text?.[lang] || legalData.tax_info?.text?.ru || 'Ortaca Vergi Dairesi, VKN: 9991120181 - Турция';
+  const taxInfo = legalData.tax_info?.text?.[lang] || legalData.tax_info?.text?.ru || 'Ortaca Vergi Dairesi, VKN: 9991120181 - Мугла, Ортаджа, Турция';
   const contactEmail = legalData.contact_email?.text?.[lang] || legalData.contact_email?.text?.ru || 'villaturaman@gmail.com';
   const contactTelegram = legalData.contact_telegram?.text?.[lang] || legalData.contact_telegram?.text?.ru || 'https://t.me/marmarisyachtingru';
+  const contactWhatsapp = legalData.contact_whatsapp?.text?.[lang] || legalData.contact_whatsapp?.text?.ru || 'https://wa.me/905366140347';
   const etbisText = legalData.etbis_text?.text?.[lang] || legalData.etbis_text?.text?.ru || "ETBİS'e Kayıtlıdır";
   const etbisQr = legalData.etbis_placeholder?.text?.[lang] || legalData.etbis_placeholder?.text?.ru || "ETBIS QR CODE\nVKN: 9991120181";
 
@@ -96,6 +100,16 @@ export default function Footer({ legalData = {} }) {
               </li>
               <li>
                 <a
+                  href={contactWhatsapp}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-white hover:underline transition-colors flex items-center gap-2 text-emerald-400"
+                >
+                  <Phone className="w-4 h-4 shrink-0" /> WhatsApp: +90 5366140347
+                </a>
+              </li>
+              <li>
+                <a
                   href={`mailto:${contactEmail}`}
                   className="hover:text-white hover:underline transition-colors flex items-center gap-2"
                 >
@@ -129,9 +143,9 @@ export default function Footer({ legalData = {} }) {
         <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 text-xs">
           <p>© {new Date().getFullYear()} ALEKSEI ZNAMENSKII • Villa Turaman. {t('allRightsReserved')}</p>
           <div className="flex items-center gap-4 text-slate-400">
-            <span>Dalyan, Turkey</span>
+            <span>Dalyan, Ortaca, Muğla, Turkey</span>
             <span>•</span>
-            <span>VKN: 9991120181</span>
+            <span>Официальный VKN: 9991120181</span>
           </div>
         </div>
 

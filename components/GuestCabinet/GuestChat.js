@@ -10,10 +10,13 @@
  *    - Описание: Полная локализация шапки чата RU/EN/TR [чат с хозяином, владелец, онлайн, телеграм, почта, авто-перевод]
  * 3. Ревизия: 280920260800
  *    - Описание: Интерактивный бейдж активного канала связи 🟢 Канал 1 / 🔵 Канал 2 / 🟠 Канал 3
+ * 4. Ревизия: 161120260902 | План: 161120260902 ПЛАН Реквизиты владельца и сборка.md
+ *    - Уровень А: "в заглушках не мои данные Telegram: [@villaturaman](https://t.me/villaturaman) WhatsApp:[+90 543 335 80 70](https://wa.me/905433358070) должно быть Telegram: [@marmarisyachtingru](https://t.me/marmarisyachtingru) WhatsApp:[+90 5366140347](https://wa.me/905366140347) Официальный VKN:9991120181 проверь везде не только в заглушках | Согласен с поправкой Официальный VKN: 9991120181 [Аксу / Анталья] это не [Аксу / Анталья] это Мугла Ортаджа"
+ *    - Уровень Б: Добавление прямой кнопки WhatsApp суперхозяина [+90 5366140347 / https://wa.me/905366140347] рядом с Telegram [@marmarisyachtingru] в шапке гостевого чата.
  */
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Paperclip, X, MessageCircle, User, Shield, FileText, Sparkles, Clock, CreditCard, Gift, Calendar, Mail } from 'lucide-react';
+import { Send, Paperclip, X, MessageCircle, User, Shield, FileText, Sparkles, Clock, CreditCard, Gift, Calendar, Mail, Phone } from 'lucide-react';
 import { useLanguage } from '../../utils/language';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../Toast';
@@ -149,10 +152,20 @@ export default function GuestChat({
             target="_blank"
             rel="noreferrer"
             className="px-3 py-1.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 text-sky-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm hover:scale-105"
-            title="Открыть диалог с хозяином в Telegram"
+            title="Открыть диалог с хозяином в Telegram: @marmarisyachtingru"
           >
             <Send className="w-3.5 h-3.5 text-sky-400" />
-            <span>{t('hostTelegramBtn') || 'Телеграм хозяина'}</span>
+            <span>Telegram: @marmarisyachtingru</span>
+          </a>
+          <a
+            href="https://wa.me/905366140347"
+            target="_blank"
+            rel="noreferrer"
+            className="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm hover:scale-105"
+            title="Написать хозяину в WhatsApp: +90 5366140347"
+          >
+            <Phone className="w-3.5 h-3.5 text-emerald-400" />
+            <span>WhatsApp: +90 5366140347</span>
           </a>
           <a
             href="mailto:villaturaman@gmail.com"

@@ -1,3 +1,6 @@
+// [АКТУАЛЬНАЯ РЕДАКЦИЯ: 16.11.2026 09:05 | ПЛАН: 161120260902 ПЛАН Реквизиты владельца и сборка.md | TAG: VILLA-OWNER-CONTACTS-SYNC-161120260902]
+// Уровень А: "в заглушках не мои данные Telegram: [@villaturaman](https://t.me/villaturaman) WhatsApp:[+90 543 335 80 70](https://wa.me/905433358070) должно быть Telegram: [@marmarisyachtingru](https://t.me/marmarisyachtingru) WhatsApp:[+90 5366140347](https://wa.me/905366140347) Официальный VKN:9991120181 проверь везде не только в заглушках | Согласен с поправкой Официальный VKN: 9991120181 [Аксу / Анталья] это не [Аксу / Анталья] это Мугла Ортаджа"
+// Уровень Б: Синхронизация эталонных реквизитов владельца в MASTER_SETTINGS_ROWS, MASTER_CALENDAR_ROWS и MASTER_ACCOUNTS_ROWS [Telegram @marmarisyachtingru, WhatsApp/Телефон +90 5366140347, VKN 9991120181 Мугла / Ортаджа].
 // ==============================================================================
 // НЕПРИКОСНОВЕННЫЙ МАСТЕР-ЭТАЛОН БАЗЫ ДАННЫХ И КОНТЕНТА VILLA TURAMAN
 // Файл: utils/masterSeedContent.js
@@ -5040,6 +5043,34 @@ const MASTER_SETTINGS_ROWS = [
     "Бизнес профиль"
   ],
   [
+    "О_ХОЗЯИНЕ",
+    "host_phone",
+    "+90 5366140347",
+    "Прямой телефон суперхозяина Алексея Знаменского",
+    "Плейсхолдер [HOST_PHONE]"
+  ],
+  [
+    "О_ХОЗЯИНЕ",
+    "host_whatsapp",
+    "+90 5366140347",
+    "Официальный WhatsApp суперхозяина https://wa.me/905366140347",
+    "Плейсхолдер [HOST_WHATSAPP]"
+  ],
+  [
+    "О_ХОЗЯИНЕ",
+    "host_telegram",
+    "@marmarisyachtingru",
+    "Официальный Telegram суперхозяина https://t.me/marmarisyachtingru",
+    "Плейсхолдер [HOST_TELEGRAM]"
+  ],
+  [
+    "О_ХОЗЯИНЕ",
+    "tax_registration_vkn",
+    "9991120181",
+    "Официальный VKN налоговой инспекции Ortaca Vergi Dairesi [Мугла / Ортаджа]",
+    "Налоговый номер VKN"
+  ],
+  [
     "О_ВИЛЛЕ",
     "villa_capacity",
     "10 гостей",
@@ -6100,7 +6131,7 @@ const MASTER_CALENDAR_ROWS = [
     "Глобальные правила",
     "Все даты",
     "Настройки",
-    "{\"basePrice\":250,\"currency\":\"USD\",\"minNights\":3,\"maxNights\":30,\"bookingWindowMonths\":18,\"advanceNoticeDays\":2,\"bookingMode\":\"instant\",\"verificationMode\":\"progressive\",\"paymentMode\":\"all\",\"ibanBankName\":\"Ziraat Bankası\",\"ibanReceiver\":\"Aleksei Znamenskii\",\"ibanNumber\":\"TR000000000000000000000000\",\"ibanSwift\":\"TCZBTR2A\",\"ibanNote\":\"Укажите код бронирования в назначении платежа\",\"hostTelegram\":\"https://t.me/marmarisyachtingru\",\"hostEmail\":\"villaturaman@gmail.com\",\"checkInTime\":\"16:00\",\"checkOutTime\":\"10:00\"}",
+    "{\"basePrice\":250,\"currency\":\"USD\",\"minNights\":3,\"maxNights\":30,\"bookingWindowMonths\":18,\"advanceNoticeDays\":2,\"bookingMode\":\"instant\",\"verificationMode\":\"progressive\",\"paymentMode\":\"all\",\"ibanBankName\":\"Ziraat Bankası\",\"ibanReceiver\":\"Aleksei Znamenskii\",\"ibanNumber\":\"TR000000000000000000000000\",\"ibanSwift\":\"TCZBTR2A\",\"ibanNote\":\"Укажите код бронирования в назначении платежа\",\"hostTelegram\":\"https://t.me/marmarisyachtingru\",\"hostWhatsapp\":\"https://wa.me/905366140347\",\"hostPhone\":\"+90 5366140347\",\"hostVkn\":\"9991120181\",\"hostEmail\":\"villaturaman@gmail.com\",\"checkInTime\":\"16:00\",\"checkOutTime\":\"10:00\"}",
     "Изменение тарифов",
     "admin",
     "20.09.2026 12:00"
@@ -6111,7 +6142,7 @@ const MASTER_ACCOUNTS_ROWS = [
   [
     "2026-01-15",
     "Алексей Знаменский",
-    "+90 543 335 80 70",
+    "+90 5366140347",
     "villaturaman@gmail.com",
     "admin123",
     "Нет",
